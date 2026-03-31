@@ -1,0 +1,192 @@
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f8f9fb; --surface: #ffffff; --surface2: #f1f3f7;
+      --border: #e2e5eb; --border-hover: #d0d4dc;
+      --text: #1a1d23; --text2: #3d4250; --text-muted: #8891a0; --text-light: #b4bac6;
+      --accent: #6c5ce7; --accent-light: #f0eefe; --accent-dark: #5a4bd6;
+      --green: #00b894; --green-light: #e6f9f4;
+      --orange: #fdcb6e; --orange-light: #fef9ec;
+      --red: #e17055; --red-light: #fdf0ed;
+      --blue: #0984e3; --blue-light: #eaf3fd;
+      --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 4px 12px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.08);
+    }
+    body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand {
+      font-weight: 700; font-size: 0.95rem; color: var(--accent);
+      text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    nav .brand .icon { font-size: 1.1rem; }
+    nav .nav-right { display: flex; align-items: center; gap: 16px; }
+    nav .streak-badge {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.8rem; font-weight: 600; color: var(--orange);
+      padding: 5px 12px; background: var(--orange-light); border-radius: 20px;
+    }
+    nav .study-link {
+      text-decoration: none; font-size: 0.8rem; font-weight: 600;
+      color: var(--text-muted); padding: 6px 14px; border-radius: 8px;
+      transition: all 0.15s;
+    }
+    nav .study-link:hover { background: var(--surface2); color: var(--text); }
+
+    /* ── Main ── */
+    .main { max-width: 640px; margin: 0 auto; padding: 80px 24px 48px; }
+
+    /* ── Today Card ── */
+    .today-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 32px; box-shadow: var(--shadow-lg);
+      text-align: center; margin-bottom: 24px; position: relative; overflow: hidden;
+    }
+    .today-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, var(--accent), var(--blue));
+    }
+    .today-card .date-label {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--text-muted); margin-bottom: 8px;
+    }
+    .today-card h1 {
+      font-size: 1.6rem; font-weight: 700; color: var(--text); margin-bottom: 6px;
+    }
+    .today-card .challenge-desc {
+      font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px;
+    }
+    .today-card .challenge-meta {
+      display: flex; justify-content: center; gap: 24px; margin-bottom: 24px;
+      font-size: 0.8rem; color: var(--text-muted);
+    }
+    .today-card .challenge-meta .meta-item {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .today-card .challenge-meta .meta-icon { font-size: 1rem; }
+    .start-btn {
+      display: inline-block; padding: 14px 48px;
+      background: var(--accent); color: #fff; font-weight: 700; font-size: 0.95rem;
+      border: none; border-radius: 12px; cursor: pointer; text-decoration: none;
+      transition: all 0.15s; font-family: inherit;
+    }
+    .start-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(108,92,231,0.3); }
+    .completed-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 12px 24px; background: var(--green-light);
+      border-radius: 12px; font-weight: 600; font-size: 0.9rem; color: var(--green);
+    }
+
+    /* ── Countdown ── */
+    .countdown-section {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin-bottom: 24px;
+      text-align: center; box-shadow: var(--shadow);
+    }
+    .countdown-section .label {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 8px;
+    }
+    .countdown-section .timer {
+      font-family: 'IBM Plex Mono', monospace; font-size: 2rem; font-weight: 700;
+      color: var(--text); letter-spacing: 2px;
+    }
+    .countdown-section .timer .sep { color: var(--text-light); }
+
+    /* ── Stats Row ── */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 24px;
+    }
+    .stat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px; text-align: center; box-shadow: var(--shadow);
+    }
+    .stat-card .stat-num {
+      font-size: 1.5rem; font-weight: 700; margin-bottom: 2px;
+    }
+    .stat-card .stat-label {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--text-muted);
+    }
+
+    /* ── Calendar Heatmap ── */
+    .calendar-section {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow);
+    }
+    .calendar-section .cal-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+    }
+    .calendar-section .cal-title {
+      font-size: 0.85rem; font-weight: 700; color: var(--text);
+    }
+    .calendar-section .cal-month {
+      font-size: 0.75rem; font-weight: 600; color: var(--text-muted);
+    }
+    .cal-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px;
+    }
+    .cal-day-label {
+      font-size: 0.6rem; font-weight: 600; color: var(--text-light);
+      text-align: center; padding-bottom: 4px;
+    }
+    .cal-day {
+      aspect-ratio: 1; border-radius: 4px; background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.6rem; color: var(--text-light); font-weight: 500;
+    }
+    .cal-day.completed { background: var(--accent); color: #fff; }
+    .cal-day.today { border: 2px solid var(--accent); background: var(--accent-light); color: var(--accent); font-weight: 700; }
+    .cal-day.future { background: transparent; }
+
+    /* ── Topic Schedule ── */
+    .schedule-section {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin-bottom: 24px; box-shadow: var(--shadow);
+    }
+    .schedule-section h3 {
+      font-size: 0.85rem; font-weight: 700; color: var(--text); margin-bottom: 14px;
+    }
+    .schedule-list { display: flex; flex-direction: column; gap: 6px; }
+    .schedule-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border-radius: 8px; font-size: 0.82rem; transition: background 0.15s;
+    }
+    .schedule-item:hover { background: var(--surface2); }
+    .schedule-item .s-day {
+      font-weight: 700; color: var(--text-muted); min-width: 36px; font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+    .schedule-item .s-icon { font-size: 1rem; }
+    .schedule-item .s-topic { font-weight: 600; color: var(--text); flex: 1; }
+    .schedule-item .s-count { font-size: 0.7rem; color: var(--text-light); }
+    .schedule-item.today-item { background: var(--accent-light); border-radius: 8px; }
+    .schedule-item.today-item .s-day { color: var(--accent); }
+
+    /* ── Study Link ── */
+    .study-cta {
+      display: block; text-decoration: none; text-align: center;
+      padding: 16px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; box-shadow: var(--shadow);
+      font-size: 0.85rem; font-weight: 600; color: var(--text-muted);
+      transition: all 0.15s; margin-bottom: 24px;
+    }
+    .study-cta:hover { border-color: var(--accent); color: var(--accent); }
+
+    footer {
+      text-align: center; padding: 24px; font-size: 0.7rem; color: var(--text-light);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    @media (max-width: 500px) {
+      nav { padding: 0 16px; }
+      .main { padding: 72px 16px 40px; }
+      .stats-row { grid-template-columns: 1fr; }
+    }

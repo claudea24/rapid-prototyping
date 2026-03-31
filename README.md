@@ -1,8 +1,8 @@
 # Data Science Interview Prep — Rapid Prototyping
 
-12 iterations of building a **Data Science Interview Prep Guide** from scratch. Each version (`v01`–`v12`) is a self-contained HTML/CSS/JS prototype that builds on the last.
+13 iterations of building a **Data Science Interview Prep Guide** from scratch. Each version (`v01`–`v13`) is a self-contained HTML/CSS/JS prototype that builds on the last.
 
-The root `index.html` is a gallery that shows all 12 versions side by side with live iframe previews.
+The root `index.html` is a gallery that shows all 13 versions side by side with live iframe previews.
 
 ## The Product
 
@@ -33,6 +33,7 @@ Each topic gets a **cheat sheet** reference section and there is a **quiz** sect
 | **v10** | Spaced Repetition System | Intelligent flashcard system with spaced repetition algorithm — review scheduling, progress tracking, mastery analytics, study streaks, and detailed statistics dashboard |
 | **v11** | Interactive Edition | Clean design combining the best interactive elements from previous versions — feature cards, demo buttons, modal explanations, focus on user engagement without visual clutter |
 | **v12** | Animated Explanations | Transforms v11's interactive demos into educational animations showing step-by-step calculations and derivations that teach why concepts work. SQL join algorithms, confidence interval math, Bayes theorem walkthroughs, A/B test power analysis. Emphasis on "why it works" with mathematical foundations |
+| **v13** | Deep Interactive | Combines textbook-depth explanations with live interactive sandboxes and comparison tables. Each topic features full theoretical breakdowns with analogies, side-by-side method comparisons, worked examples, and editable code editors with instant execution for hands-on learning |
 
 ## Structure
 
