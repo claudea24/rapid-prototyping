@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daily Challenge | Claudea's DS Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f9fb;--surface:#ffffff;--border:#e2e5eb;--text:#1a1d23;--muted:#8891a0;
+  --purple:#6c5ce7;--green:#00b894;--red:#e17055;--blue:#0984e3;--orange:#fdcb6e;--pink:#fd79a8;
+  --shadow:0 2px 8px rgba(0,0,0,0.06);--shadow-md:0 4px 16px rgba(0,0,0,0.08);
+}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+code,.mono{font-family:'IBM Plex Mono',monospace}
+
+/* Top Bar */
+.top-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--shadow)}
+.brand{font-weight:700;font-size:1.05rem;color:var(--purple);text-decoration:none}
+.brand:hover{opacity:0.85}
+.progress-dots{display:flex;gap:8px;align-items:center}
+.dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);background:transparent;transition:all 0.3s}
+.dot.filled{background:var(--purple);border-color:var(--purple)}
+.dot.correct{background:var(--green);border-color:var(--green)}
+.dot.wrong{background:var(--red);border-color:var(--red)}
+.timer{font-family:'IBM Plex Mono',monospace;font-size:0.95rem;color:var(--muted);font-weight:500;min-width:52px;text-align:right}
+
+/* Progress Bar */
+.progress-wrap{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px}
+.progress-track{height:4px;background:var(--border);border-radius:2px;margin:0 auto;max-width:560px}
+.progress-fill{height:100%;background:var(--purple);border-radius:2px;transition:width 0.4s ease;width:0%}
+
+/* Main */
+.main{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:32px 20px 60px}
+
+/* Question Card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-md);max-width:560px;width:100%;padding:32px;animation:fadeIn 0.35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.q-number{font-size:0.85rem;color:var(--muted);font-weight:500;margin-bottom:8px}
+.badge{display:inline-block;padding:4px 12px;border-radius:100px;font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px}
+.badge-sql{background:rgba(9,132,227,0.12);color:var(--blue)}
+.badge-python{background:rgba(253,203,110,0.25);color:#e17055}
+.badge-ml{background:rgba(108,92,231,0.12);color:var(--purple)}
+.badge-statistics{background:rgba(0,184,148,0.12);color:var(--green)}
+.badge-probability{background:rgba(253,203,110,0.25);color:#e17055}
+.badge-casing{background:rgba(253,121,168,0.15);color:var(--pink)}
+.q-text{font-size:1.2rem;font-weight:700;line-height:1.45;margin-bottom:24px}
+.options{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.opt-btn{width:100%;text-align:left;padding:14px 18px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);font-family:'IBM Plex Sans',sans-serif;font-size:0.95rem;font-weight:500;color:var(--text);cursor:pointer;transition:all 0.2s;line-height:1.4}
+.opt-btn:hover:not(:disabled){border-color:var(--purple);background:rgba(108,92,231,0.04)}
+.opt-btn.selected{border-color:var(--purple);background:rgba(108,92,231,0.08)}
+.opt-btn.correct-answer{border-color:var(--green);background:rgba(0,184,148,0.1);color:var(--text)}
+.opt-btn.wrong-answer{border-color:var(--red);background:rgba(225,112,85,0.1);color:var(--text)}
+.opt-btn:disabled{cursor:default}
+
+.action-btn{width:100%;padding:14px;border:none;border-radius:12px;font-family:'IBM Plex Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.2s}
+.submit-btn{background:var(--purple);color:#fff}
+.submit-btn:hover:not(:disabled){background:#5b4bd5}
+.submit-btn:disabled{opacity:0.45;cursor:not-allowed}
+.next-btn{background:var(--purple);color:#fff;margin-top:12px}
+.next-btn:hover{background:#5b4bd5}
+
+.feedback{margin-bottom:14px;padding:14px 16px;border-radius:10px;font-size:0.9rem;font-weight:500;line-height:1.5}
+.feedback.correct{background:rgba(0,184,148,0.1);color:#00a381;border:1px solid rgba(0,184,148,0.25)}
+.feedback.incorrect{background:rgba(225,112,85,0.1);color:#c0553a;border:1px solid rgba(225,112,85,0.25)}
+
+/* Results */
+.results{text-align:center}
+.results h2{font-size:1.5rem;margin-bottom:24px}
+.score-big{font-size:3.2rem;font-weight:700;margin-bottom:4px}
+.score-big.great{color:var(--green)}
+.score-big.ok{color:#e17055}
+.score-big.bad{color:var(--red)}
+.score-label{font-size:0.95rem;color:var(--muted);margin-bottom:6px}
+.score-sub{font-size:1rem;color:var(--muted);margin-bottom:28px}
+.stats-row{display:flex;justify-content:center;gap:32px;margin-bottom:28px}
+.stat{text-align:center}
+.stat-val{font-size:1.3rem;font-weight:700}
+.stat-lbl{font-size:0.8rem;color:var(--muted);margin-top:2px}
+.review-toggle{background:none;border:1.5px solid var(--border);border-radius:10px;padding:10px 20px;font-family:'IBM Plex Sans',sans-serif;font-size:0.9rem;font-weight:600;color:var(--text);cursor:pointer;margin-bottom:20px;transition:all 0.2s}
+.review-toggle:hover{border-color:var(--purple);color:var(--purple)}
+.review-list{text-align:left;margin-bottom:24px;display:none}
+.review-list.show{display:block}
+.review-item{padding:14px 16px;border:1px solid var(--border);border-radius:10px;margin-bottom:10px;font-size:0.88rem;line-height:1.5}
+.review-item .ri-q{font-weight:600;margin-bottom:4px}
+.review-item .ri-result{font-weight:600}
+.review-item .ri-result.ri-correct{color:var(--green)}
+.review-item .ri-result.ri-wrong{color:var(--red)}
+.review-item .ri-explain{color:var(--muted);margin-top:4px}
+.back-btn{background:var(--purple);color:#fff;border:none;border-radius:12px;padding:14px 32px;font-family:'IBM Plex Sans',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.2s;display:inline-block;text-decoration:none}
+.back-btn:hover{background:#5b4bd5}
+
+/* Footer */
+footer{text-align:center;padding:20px;font-size:0.82rem;color:var(--muted);border-top:1px solid var(--border)}
+footer a{color:var(--purple);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* Responsive */
+@media(max-width:500px){
+  .top-bar{padding:12px 16px;font-size:0.92rem}
+  .card{padding:22px 18px;border-radius:12px}
+  .q-text{font-size:1.05rem}
+  .opt-btn{padding:12px 14px;font-size:0.9rem}
+  .stats-row{gap:20px}
+  .main{padding:20px 12px 40px}
+  .progress-wrap{padding:0 16px}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="index.html" class="brand">Claudea's DS Prep</a>
+  <div class="progress-dots" id="dots"></div>
+  <div class="timer" id="timer">00:00</div>
+</div>
+<div class="progress-wrap">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+</div>
+
+<div class="main">
+  <div class="card" id="card"></div>
+</div>
+
+<footer>Claudea's DS Interview Prep &middot; v06 &middot; <a href="../index.html">Back to Gallery</a></footer>
+
+<script>
+const allQuestions = [
+  { cat:"sql", q:"What does COUNT(*) count?", opts:["Only non-NULL values","All rows including NULLs","Distinct values only","Only NULL values"], ans:1, explain:"COUNT(*) counts all rows regardless of NULLs." },
+  { cat:"sql", q:"Which clause filters rows BEFORE grouping?", opts:["HAVING","ORDER BY","WHERE","GROUP BY"], ans:2, explain:"WHERE filters rows before grouping. HAVING filters after." },
+  { cat:"sql", q:"RANK() vs DENSE_RANK()?", opts:["RANK starts at 0","RANK skips numbers after ties, DENSE_RANK doesn't","They're identical","DENSE_RANK only works with PARTITION BY"], ans:1, explain:"RANK: 1,2,2,4. DENSE_RANK: 1,2,2,3." },
+  { cat:"sql", q:"Can you use a SELECT alias in WHERE?", opts:["Yes always","Only in MySQL","No, WHERE runs before SELECT","Only with subqueries"], ans:2, explain:"WHERE executes before SELECT in SQL's logical order." },
+  { cat:"sql", q:"More efficient for existence checks?", opts:["IN with subquery","EXISTS with correlated subquery","CROSS JOIN","LEFT JOIN with IS NOT NULL"], ans:1, explain:"EXISTS short-circuits on first match." },
+  { cat:"python", q:"Dict lookup time complexity?", opts:["O(n)","O(log n)","O(1) average","O(n log n)"], ans:2, explain:"Hash table = O(1) average." },
+  { cat:"python", q:"df.groupby().transform('mean') returns?", opts:["Scalar","DataFrame with group means","Series same length as df","Error"], ans:2, explain:"transform broadcasts group results back to original length." },
+  { cat:"python", q:"Why is def f(x=[]) dangerous?", opts:["Lists can't be args","Default list shared across calls","TypeError","No default args"], ans:1, explain:"Mutable defaults are created once and shared." },
+  { cat:"python", q:"Output of -1 // 2?", opts:["0","-1","0.5","-0.5"], ans:1, explain:"Floor division rounds toward -infinity." },
+  { cat:"ml", q:"Random Forest reduces which error?", opts:["Bias","Variance","Both equally","Neither"], ans:1, explain:"Bagging reduces variance by averaging trees." },
+  { cat:"ml", q:"When to use AUC-ROC over accuracy?", opts:["Balanced classes","Imbalanced classes","Regression only","Speed"], ans:1, explain:"AUC-ROC handles class imbalance better." },
+  { cat:"ml", q:"L1 (Lasso) produces?", opts:["Dense weights","Sparse weights (some exactly 0)","Negative weights","Identical weights"], ans:1, explain:"L1 pushes weights to exactly zero." },
+  { cat:"ml", q:"Fitting scaler before CV risks?", opts:["Slow training","Data leakage","No risk","Bad normalization"], ans:1, explain:"Test fold stats leak into training." },
+  { cat:"statistics", q:"p-value of 0.03 means?", opts:["3% chance H0 is true","3% prob of data if H0 true","Effect size is 3%","97% chance H1 true"], ans:1, explain:"P(data|H0), not P(H0|data)." },
+  { cat:"statistics", q:"What is Type II error?", opts:["Reject true H0","Fail to reject false H0","Wrong test","Alpha too high"], ans:1, explain:"Type II = false negative." },
+  { cat:"statistics", q:"CLT states?", opts:["All data is normal","Sample means approach normal as n increases","Larger samples always better","Variance increases with n"], ans:1, explain:"Sample means → normal regardless of population." },
+  { cat:"statistics", q:"Peeking at A/B results daily?", opts:["More precise","False positive rate inflates","P-values always valid","Reduces Type II"], ans:1, explain:"Repeated testing inflates Type I error." },
+  { cat:"probability", q:"Monty Hall — switch?", opts:["No, 50/50","Yes, 2/3 probability","Doesn't matter","Only if host random"], ans:1, explain:"Switching wins 2/3." },
+  { cat:"probability", q:"99% accurate test, 1% prevalence, P(sick|+)?", opts:["99%","~50%","1%","90%"], ans:1, explain:"Bayes: low prevalence = ~50%." },
+  { cat:"probability", q:"P(A)=0.3, P(B)=0.5 independent, P(A∩B)?", opts:["0.8","0.15","0.2","0.35"], ans:1, explain:"Independent: P(A)×P(B)=0.15." },
+  { cat:"probability", q:"People for >50% shared birthday?", opts:["50","23","365","183"], ans:1, explain:"23 people = 253 pairs." },
+  { cat:"casing", q:"What is a North Star Metric?", opts:["Highest revenue","Single metric capturing core value","First metric tracked","CSAT score"], ans:1, explain:"Core value metric. E.g. Airbnb: nights booked." },
+  { cat:"casing", q:"DAU dropped 15%, first step?", opts:["A/B test","Check tracking/definition","Predictive model","More marketing"], ans:1, explain:"Verify data first." },
+  { cat:"casing", q:"Guardrail metric for conversion test?", opts:["CTR","Revenue/user","Page load time","Cart abandonment"], ans:2, explain:"Page load time = don't break UX." },
+  { cat:"casing", q:"Revenue up 20%, rides down 5%. Why?", opts:["Tracking bug","Price per ride increased","More drivers","Shorter rides"], ans:1, explain:"Revenue = rides × price. Price must have increased." },
+];
+
+const topicMap = {
+  sql:"sql", python:"python", ml:"ml", stats:"statistics", prob:"probability", case:"casing"
+};
+
+function getQuestions() {
+  const params = new URLSearchParams(window.location.search);
+  const topic = params.get("topic");
+  let pool;
+  if (topic && topicMap[topic]) {
+    pool = allQuestions.filter(q => q.cat === topicMap[topic]);
+  } else {
+    pool = [...allQuestions];
+  }
+  // Shuffle and pick 5
+  for (let i = pool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, 5);
+}
+
+const questions = getQuestions();
+let current = 0;
+let selected = -1;
+let answered = false;
+let results = []; // {correct:bool, question, userAnswer}
+let timerStart = Date.now();
+let timerInterval;
+
+// Build dots
+const dotsEl = document.getElementById("dots");
+for (let i = 0; i < 5; i++) {
+  const d = document.createElement("div");
+  d.className = "dot";
+  d.dataset.idx = i;
+  dotsEl.appendChild(d);
+}
+
+// Timer
+function updateTimer() {
+  const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+  const m = String(Math.floor(elapsed / 60)).padStart(2, "0");
+  const s = String(elapsed % 60).padStart(2, "0");
+  document.getElementById("timer").textContent = m + ":" + s;
+}
+timerInterval = setInterval(updateTimer, 1000);
+
+function updateProgress() {
+  document.getElementById("progressFill").style.width = ((current) / 5 * 100) + "%";
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  selected = -1;
+  answered = false;
+  updateProgress();
+
+  const badgeClass = "badge badge-" + q.cat;
+  const catLabel = q.cat.charAt(0).toUpperCase() + q.cat.slice(1);
+
+  let html = `
+    <div class="q-number">Question ${current + 1} of 5</div>
+    <span class="${badgeClass}">${catLabel}</span>
+    <div class="q-text">${q.q}</div>
+    <div class="options" id="options">
+      ${q.opts.map((o, i) => `<button class="opt-btn" data-idx="${i}">${o}</button>`).join("")}
+    </div>
+    <button class="action-btn submit-btn" id="submitBtn" disabled>Submit</button>
+  `;
+  document.getElementById("card").innerHTML = html;
+
+  document.querySelectorAll(".opt-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (answered) return;
+      selected = parseInt(btn.dataset.idx);
+      document.querySelectorAll(".opt-btn").forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      document.getElementById("submitBtn").disabled = false;
+    });
+  });
+
+  document.getElementById("submitBtn").addEventListener("click", submitAnswer);
+}
+
+function submitAnswer() {
+  if (selected < 0 || answered) return;
+  answered = true;
+  const q = questions[current];
+  const isCorrect = selected === q.ans;
+  results.push({ correct: isCorrect, question: q, userAnswer: selected });
+
+  // Update dot
+  const dot = dotsEl.children[current];
+  dot.classList.add("filled");
+  dot.classList.add(isCorrect ? "correct" : "wrong");
+
+  // Highlight options
+  const btns = document.querySelectorAll(".opt-btn");
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.ans) btn.classList.add("correct-answer");
+    if (i === selected && !isCorrect) btn.classList.add("wrong-answer");
+  });
+
+  // Feedback
+  const submitBtn = document.getElementById("submitBtn");
+  submitBtn.style.display = "none";
+
+  const fb = document.createElement("div");
+  fb.className = "feedback " + (isCorrect ? "correct" : "incorrect");
+  fb.innerHTML = isCorrect
+    ? "<strong>Correct!</strong> " + q.explain
+    : "<strong>Incorrect.</strong> " + q.explain;
+
+  const nextBtn = document.createElement("button");
+  nextBtn.className = "action-btn next-btn";
+  nextBtn.textContent = current < 4 ? "Next" : "See Results";
+  nextBtn.addEventListener("click", () => {
+    current++;
+    if (current < 5) {
+      renderQuestion();
+    } else {
+      clearInterval(timerInterval);
+      showResults();
+    }
+  });
+
+  const card = document.getElementById("card");
+  card.querySelector(".options").after(fb);
+  card.appendChild(nextBtn);
+}
+
+function showResults() {
+  const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+  const m = String(Math.floor(elapsed / 60)).padStart(2, "0");
+  const s = String(elapsed % 60).padStart(2, "0");
+  const timeStr = m + ":" + s;
+  const correctCount = results.filter(r => r.correct).length;
+  const pct = Math.round((correctCount / 5) * 100);
+
+  document.getElementById("progressFill").style.width = "100%";
+
+  let colorClass = "bad";
+  if (pct >= 80) colorClass = "great";
+  else if (pct >= 60) colorClass = "ok";
+
+  let reviewHtml = results.map((r, i) => {
+    const cls = r.correct ? "ri-correct" : "ri-wrong";
+    const label = r.correct ? "Correct" : "Incorrect — You chose: " + r.question.opts[r.userAnswer];
+    const correctOpt = r.question.opts[r.question.ans];
+    return `<div class="review-item">
+      <div class="ri-q">${i + 1}. ${r.question.q}</div>
+      <div class="ri-result ${cls}">${label}</div>
+      ${!r.correct ? `<div class="ri-explain">Correct answer: ${correctOpt}</div>` : ""}
+      <div class="ri-explain">${r.question.explain}</div>
+    </div>`;
+  }).join("");
+
+  document.getElementById("card").innerHTML = `
+    <div class="results">
+      <h2>Challenge Complete!</h2>
+      <div class="score-label">Accuracy</div>
+      <div class="score-big ${colorClass}">${pct}%</div>
+      <div class="stats-row">
+        <div class="stat"><div class="stat-val">${correctCount}/5</div><div class="stat-lbl">Correct</div></div>
+        <div class="stat"><div class="stat-val">${timeStr}</div><div class="stat-lbl">Time</div></div>
+      </div>
+      <button class="review-toggle" id="reviewToggle">View Answers</button>
+      <div class="review-list" id="reviewList">${reviewHtml}</div>
+      <a href="index.html" class="back-btn">Back to Dashboard</a>
+    </div>
+  `;
+
+  document.getElementById("reviewToggle").addEventListener("click", () => {
+    const list = document.getElementById("reviewList");
+    list.classList.toggle("show");
+    document.getElementById("reviewToggle").textContent = list.classList.contains("show") ? "Hide Answers" : "View Answers";
+  });
+
+  // Save to localStorage
+  try {
+    const key = "ds-v06-data";
+    const data = JSON.parse(localStorage.getItem(key) || '{"completedDates":{},"scores":[]}');
+    const today = new Date().toISOString().slice(0, 10);
+    data.completedDates[today] = { score: correctCount, pct: pct };
+    data.scores.push(pct);
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch(e) {}
+}
+
+renderQuestion();
+</script>
+</body>
+</html>

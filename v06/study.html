@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Guide — Claudea's DS Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f8f9fb;
+  --surface: #ffffff;
+  --border: #e2e5eb;
+  --text: #1a1d23;
+  --muted: #8891a0;
+  --purple: #6c5ce7;
+  --green: #00b894;
+  --blue: #0984e3;
+  --orange: #fdcb6e;
+  --code-bg: #f1f3f7;
+  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.04);
+}
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* Top Bar */
+.top-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
+}
+
+.top-bar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--purple);
+}
+
+.top-bar-brand span.icon { font-size: 1.25rem; }
+
+.top-bar-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.top-bar-links a {
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.top-bar-links a:hover { color: var(--purple); }
+
+/* Tab Navigation */
+.tab-nav-wrapper {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  position: sticky;
+  top: 56px;
+  z-index: 90;
+}
+
+.tab-nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.tab-nav::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  flex-shrink: 0;
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: var(--surface);
+  color: var(--muted);
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.tab-btn:hover { color: var(--text); border-color: var(--purple); }
+
+.tab-btn.active {
+  background: var(--purple);
+  color: #fff;
+  border-color: var(--purple);
+}
+
+/* Content Area */
+.content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+}
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+/* Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.2s;
+}
+
+.card:hover { box-shadow: var(--shadow-md); }
+
+.card h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.card p, .card ul, .card ol {
+  font-size: 0.88rem;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+
+.card ul, .card ol { padding-left: 18px; }
+.card li { margin-bottom: 4px; font-size: 0.86rem; }
+
+.card strong { font-weight: 600; }
+
+/* Tags */
+.tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+
+.tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.tag-key { background: #e8e4fd; color: var(--purple); }
+.tag-tip { background: #d4f5ec; color: #00997a; }
+.tag-watch { background: #fef3cd; color: #a67c00; }
+.tag-formula { background: #dbeafe; color: var(--blue); }
+
+/* Code Block */
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.8rem;
+  line-height: 1.65;
+  overflow-x: auto;
+  margin: 10px 0;
+  white-space: pre;
+}
+
+.kw { color: #c4566b; }
+.fn { color: #6c5ce7; }
+.str { color: #0984e3; }
+.cm { color: #b4bac6; }
+.num { color: #0984e3; }
+
+/* Formula Block */
+.formula-block {
+  background: #f0edfc;
+  border: 1px solid #d8d3f5;
+  border-radius: 8px;
+  padding: 14px 20px;
+  text-align: center;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.88rem;
+  color: var(--purple);
+  font-weight: 500;
+  margin: 10px 0;
+  line-height: 1.7;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 32px 24px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  border-top: 1px solid var(--border);
+}
+
+.footer a {
+  color: var(--purple);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.footer a:hover { text-decoration: underline; }
+
+/* Responsive */
+@media (max-width: 700px) {
+  .cards-grid { grid-template-columns: 1fr; }
+  .top-bar { padding: 0 16px; }
+  .content { padding: 20px 16px 48px; }
+  .tab-nav-wrapper { padding: 10px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<nav class="top-bar">
+  <a href="index.html" class="top-bar-brand">
+    <span class="icon">&#128197;</span> Claudea's DS Prep
+  </a>
+  <div class="top-bar-links">
+    <a href="index.html">Home</a>
+    <a href="challenge.html">Daily Challenge</a>
+  </div>
+</nav>
+
+<!-- Tab Navigation -->
+<div class="tab-nav-wrapper">
+  <div class="tab-nav">
+    <button class="tab-btn active" data-tab="sql">SQL</button>
+    <button class="tab-btn" data-tab="python">Python</button>
+    <button class="tab-btn" data-tab="ml">ML</button>
+    <button class="tab-btn" data-tab="statistics">Statistics</button>
+    <button class="tab-btn" data-tab="probability">Probability</button>
+    <button class="tab-btn" data-tab="casestudies">Case Studies</button>
+  </div>
+</div>
+
+<!-- Content -->
+<main class="content">
+
+<!-- ===== SQL ===== -->
+<div class="tab-panel active" id="tab-sql">
+<div class="cards-grid">
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Query Execution Order</h3>
+  <p>SQL doesn't execute in the order you write it. The actual processing order is:</p>
+  <ol>
+    <li><strong>FROM</strong> &amp; JOINs — tables are assembled</li>
+    <li><strong>WHERE</strong> — rows filtered</li>
+    <li><strong>GROUP BY</strong> — rows grouped</li>
+    <li><strong>HAVING</strong> — groups filtered</li>
+    <li><strong>SELECT</strong> — columns &amp; expressions computed</li>
+    <li><strong>DISTINCT</strong> — duplicates removed</li>
+    <li><strong>ORDER BY</strong> — results sorted</li>
+    <li><strong>LIMIT / OFFSET</strong> — rows trimmed</li>
+  </ol>
+  <p>This is why you <strong>can't</strong> use a column alias in WHERE but <strong>can</strong> in ORDER BY.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>JOIN Types</h3>
+  <ul>
+    <li><strong>INNER JOIN</strong> — only matching rows from both tables</li>
+    <li><strong>LEFT JOIN</strong> — all rows from left + matches from right (NULLs where no match)</li>
+    <li><strong>RIGHT JOIN</strong> — all rows from right + matches from left</li>
+    <li><strong>FULL OUTER JOIN</strong> — all rows from both; NULLs on non-matching side</li>
+    <li><strong>CROSS JOIN</strong> — cartesian product (every combo)</li>
+    <li><strong>SELF JOIN</strong> — table joined to itself (e.g., employee &rarr; manager)</li>
+  </ul>
+  <p><strong>Tip:</strong> LEFT JOIN + WHERE right.key IS NULL = rows in left <em>not</em> in right (anti-join).</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span><span class="tag tag-tip">Tip</span></div>
+  <h3>Window Functions</h3>
+  <p>Perform calculations across a set of rows related to the current row, without collapsing groups.</p>
+  <div class="code-block"><span class="kw">SELECT</span>
+  employee_id,
+  department,
+  salary,
+  <span class="fn">RANK</span>() <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> department
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> dept_rank,
+  <span class="fn">AVG</span>(salary) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> department
+  ) <span class="kw">AS</span> dept_avg
+<span class="kw">FROM</span> employees;</div>
+  <p><strong>Key functions:</strong> ROW_NUMBER, RANK, DENSE_RANK, NTILE, LAG, LEAD, SUM, AVG.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-watch">Watch</span></div>
+  <h3>Aggregation Gotchas</h3>
+  <ul>
+    <li><strong>COUNT(*)</strong> counts all rows; <strong>COUNT(col)</strong> ignores NULLs</li>
+    <li><strong>AVG</strong> ignores NULLs — can skew results vs. treating NULLs as 0</li>
+    <li>Any column in SELECT with an aggregate must be in <strong>GROUP BY</strong> (or itself aggregated)</li>
+    <li>HAVING filters <em>after</em> grouping; WHERE filters <em>before</em></li>
+    <li><strong>NULL</strong> comparisons: NULL = NULL is <em>not</em> TRUE; use IS NULL</li>
+    <li>GROUP BY 1,2 is shorthand for position; handy but less readable</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>CTEs &amp; Subqueries</h3>
+  <p>Common Table Expressions make complex queries readable and reusable within a query.</p>
+  <div class="code-block"><span class="kw">WITH</span> monthly_revenue <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    <span class="fn">DATE_TRUNC</span>(<span class="str">'month'</span>, order_date) <span class="kw">AS</span> month,
+    <span class="fn">SUM</span>(amount) <span class="kw">AS</span> revenue
+  <span class="kw">FROM</span> orders
+  <span class="kw">GROUP BY</span> <span class="num">1</span>
+)
+<span class="kw">SELECT</span> month, revenue,
+  <span class="fn">LAG</span>(revenue) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> month) <span class="kw">AS</span> prev_month
+<span class="kw">FROM</span> monthly_revenue;</div>
+  <p><strong>Recursive CTEs</strong> useful for hierarchies and sequences.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-tip">Tip</span></div>
+  <h3>Performance Tips</h3>
+  <ul>
+    <li><strong>Index</strong> columns used in WHERE, JOIN, ORDER BY</li>
+    <li>Use <strong>EXPLAIN / EXPLAIN ANALYZE</strong> to inspect query plans</li>
+    <li>Avoid <strong>SELECT *</strong> — fetch only needed columns</li>
+    <li>Filter early: push predicates into subqueries / CTEs</li>
+    <li>Prefer <strong>EXISTS</strong> over <strong>IN</strong> for correlated subqueries</li>
+    <li>Avoid functions on indexed columns in WHERE (breaks index usage)</li>
+    <li>Partition large tables by date or category</li>
+    <li>Use <strong>LIMIT</strong> during exploration to avoid full scans</li>
+  </ul>
+</div>
+
+</div>
+</div>
+
+<!-- ===== Python ===== -->
+<div class="tab-panel" id="tab-python">
+<div class="cards-grid">
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Data Structures Complexity</h3>
+  <ul>
+    <li><strong>list</strong> — append O(1), index O(1), insert/delete O(n), search O(n)</li>
+    <li><strong>dict</strong> — get/set/delete O(1) avg, O(n) worst</li>
+    <li><strong>set</strong> — add/remove/lookup O(1) avg</li>
+    <li><strong>deque</strong> — append/pop both ends O(1)</li>
+    <li><strong>heapq</strong> — push/pop O(log n), peek O(1)</li>
+    <li><strong>defaultdict</strong> — like dict but auto-initializes missing keys</li>
+  </ul>
+  <p><strong>Tip:</strong> Use sets for membership checks, dicts for counting, deques for queues.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span><span class="tag tag-tip">Tip</span></div>
+  <h3>Pandas Essentials</h3>
+  <div class="code-block"><span class="cm"># Reading &amp; inspecting</span>
+df = pd.<span class="fn">read_csv</span>(<span class="str">'data.csv'</span>)
+df.<span class="fn">info</span>(); df.<span class="fn">describe</span>(); df.<span class="fn">head</span>()
+
+<span class="cm"># Filtering &amp; selecting</span>
+df[df[<span class="str">'age'</span>] > <span class="num">30</span>]
+df.<span class="fn">query</span>(<span class="str">"age &gt; 30 and city == 'NYC'"</span>)
+
+<span class="cm"># Grouping &amp; aggregation</span>
+df.<span class="fn">groupby</span>(<span class="str">'dept'</span>)[<span class="str">'salary'</span>].<span class="fn">agg</span>([<span class="str">'mean'</span>,<span class="str">'median'</span>])
+
+<span class="cm"># Merge / Join</span>
+pd.<span class="fn">merge</span>(df1, df2, <span class="str">on=</span><span class="str">'id'</span>, <span class="str">how=</span><span class="str">'left'</span>)
+
+<span class="cm"># Pivot table</span>
+df.<span class="fn">pivot_table</span>(<span class="str">values=</span><span class="str">'revenue'</span>,
+  <span class="str">index=</span><span class="str">'month'</span>, <span class="str">columns=</span><span class="str">'region'</span>,
+  <span class="str">aggfunc=</span><span class="str">'sum'</span>)</div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>NumPy Patterns</h3>
+  <div class="code-block"><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Array creation</span>
+a = np.<span class="fn">array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])
+z = np.<span class="fn">zeros</span>((<span class="num">3</span>,<span class="num">4</span>))
+r = np.<span class="fn">random.randn</span>(<span class="num">100</span>)
+
+<span class="cm"># Vectorized ops (no loops!)</span>
+result = a * <span class="num">2</span> + <span class="num">1</span>
+mask = a > <span class="num">2</span>
+filtered = a[mask]
+
+<span class="cm"># Broadcasting</span>
+matrix = np.<span class="fn">random.randn</span>(<span class="num">3</span>,<span class="num">4</span>)
+row_means = matrix.<span class="fn">mean</span>(<span class="str">axis=</span><span class="num">1</span>, <span class="str">keepdims=</span><span class="kw">True</span>)
+centered = matrix - row_means
+
+<span class="cm"># Linear algebra</span>
+np.linalg.<span class="fn">inv</span>(A)
+np.linalg.<span class="fn">eig</span>(A)</div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-tip">Tip</span></div>
+  <h3>Common Coding Patterns</h3>
+  <div class="code-block"><span class="cm"># Counter for frequency</span>
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+counts = <span class="fn">Counter</span>(words)
+counts.<span class="fn">most_common</span>(<span class="num">5</span>)
+
+<span class="cm"># Two pointers</span>
+left, right = <span class="num">0</span>, <span class="fn">len</span>(arr) - <span class="num">1</span>
+<span class="kw">while</span> left &lt; right: ...
+
+<span class="cm"># Sliding window</span>
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(arr) - k + <span class="num">1</span>):
+    window = arr[i:i+k]
+
+<span class="cm"># Dict comprehension</span>
+{k: v <span class="kw">for</span> k,v <span class="kw">in</span> pairs <span class="kw">if</span> v > <span class="num">0</span>}
+
+<span class="cm"># Enumerate with index</span>
+<span class="kw">for</span> i, val <span class="kw">in</span> <span class="fn">enumerate</span>(items): ...</div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-tip">Tip</span></div>
+  <h3>String &amp; List Tricks</h3>
+  <div class="code-block"><span class="cm"># String methods</span>
+s.<span class="fn">strip</span>().<span class="fn">lower</span>().<span class="fn">replace</span>(<span class="str">' '</span>,<span class="str">'_'</span>)
+<span class="str">', '</span>.<span class="fn">join</span>(items)
+s.<span class="fn">split</span>(<span class="str">','</span>)
+f<span class="str">"Result: {val:.2f}"</span>
+
+<span class="cm"># List operations</span>
+sorted_list = <span class="fn">sorted</span>(data, <span class="str">key=</span><span class="kw">lambda</span> x: x[<span class="num">1</span>])
+flat = [x <span class="kw">for</span> sub <span class="kw">in</span> nested <span class="kw">for</span> x <span class="kw">in</span> sub]
+
+<span class="cm"># zip for parallel iteration</span>
+<span class="kw">for</span> a, b <span class="kw">in</span> <span class="fn">zip</span>(list1, list2): ...
+
+<span class="cm"># Unpacking</span>
+first, *rest = [<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>,<span class="num">4</span>]
+<span class="cm"># first=1, rest=[2,3,4]</span></div>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-watch">Watch</span></div>
+  <h3>Gotchas</h3>
+  <ul>
+    <li><strong>Mutable default args:</strong> def f(x=[]): is shared across calls. Use None instead.</li>
+    <li><strong>Shallow vs deep copy:</strong> list.copy() doesn't clone nested objects. Use copy.deepcopy().</li>
+    <li><strong>Float precision:</strong> 0.1 + 0.2 != 0.3 — use math.isclose() or Decimal.</li>
+    <li><strong>is vs ==:</strong> <code>is</code> checks identity, <code>==</code> checks value equality.</li>
+    <li><strong>Chained assignment:</strong> a = b = [] makes both point to the same list.</li>
+    <li><strong>Global vs local:</strong> Assigning to a variable inside a function makes it local; use <code>global</code> or <code>nonlocal</code> if needed.</li>
+  </ul>
+</div>
+
+</div>
+</div>
+
+<!-- ===== ML ===== -->
+<div class="tab-panel" id="tab-ml">
+<div class="cards-grid">
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Supervised Algorithms</h3>
+  <ul>
+    <li><strong>Linear Regression</strong> — continuous target, interpretable coefficients, assumes linearity</li>
+    <li><strong>Logistic Regression</strong> — binary classification, outputs probabilities, fast baseline</li>
+    <li><strong>Decision Trees</strong> — non-linear, interpretable, prone to overfitting</li>
+    <li><strong>Random Forest</strong> — ensemble of trees, reduces variance, robust</li>
+    <li><strong>Gradient Boosting (XGBoost/LightGBM)</strong> — sequential trees, top performer on tabular data</li>
+    <li><strong>SVM</strong> — effective in high dimensions, kernel trick for non-linearity</li>
+    <li><strong>KNN</strong> — instance-based, no training, slow at prediction time</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Unsupervised Algorithms</h3>
+  <ul>
+    <li><strong>K-Means</strong> — partition into k clusters, sensitive to initialization &amp; outliers</li>
+    <li><strong>Hierarchical Clustering</strong> — builds dendrogram, no need to specify k upfront</li>
+    <li><strong>DBSCAN</strong> — density-based, finds arbitrary shapes, handles noise</li>
+    <li><strong>PCA</strong> — dimensionality reduction, captures maximum variance</li>
+    <li><strong>t-SNE / UMAP</strong> — non-linear embedding for visualization</li>
+    <li><strong>Association Rules</strong> — market basket analysis (support, confidence, lift)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span><span class="tag tag-formula">Formula</span></div>
+  <h3>Evaluation Metrics</h3>
+  <p><strong>Classification:</strong></p>
+  <ul>
+    <li><strong>Accuracy</strong> — (TP+TN) / total; misleading when imbalanced</li>
+    <li><strong>Precision</strong> — TP / (TP+FP); "of predicted positive, how many correct?"</li>
+    <li><strong>Recall</strong> — TP / (TP+FN); "of actual positive, how many found?"</li>
+    <li><strong>F1</strong> — harmonic mean of precision &amp; recall</li>
+    <li><strong>AUC-ROC</strong> — area under TPR vs FPR curve; threshold-independent</li>
+  </ul>
+  <p><strong>Regression:</strong> MSE, RMSE, MAE, R-squared</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Bias-Variance Tradeoff</h3>
+  <ul>
+    <li><strong>Bias</strong> — error from overly simple models (underfitting)</li>
+    <li><strong>Variance</strong> — error from sensitivity to training data (overfitting)</li>
+    <li><strong>Total Error</strong> = Bias&sup2; + Variance + Irreducible Error</li>
+  </ul>
+  <p><strong>High bias fixes:</strong> more features, complex model, less regularization.</p>
+  <p><strong>High variance fixes:</strong> more data, fewer features, regularization (L1/L2), ensembles, dropout.</p>
+  <p><strong>Signal:</strong> Big gap between train &amp; test accuracy = high variance. Both low = high bias.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-tip">Tip</span></div>
+  <h3>Feature Engineering</h3>
+  <ul>
+    <li><strong>Missing values:</strong> impute with mean/median/mode or create an indicator column</li>
+    <li><strong>Encoding categoricals:</strong> one-hot (low cardinality), target encoding (high cardinality), ordinal</li>
+    <li><strong>Scaling:</strong> StandardScaler (z-score) for linear models; MinMaxScaler for neural nets</li>
+    <li><strong>Binning:</strong> convert continuous to categorical (e.g., age groups)</li>
+    <li><strong>Interaction features:</strong> multiply or combine existing features</li>
+    <li><strong>Date features:</strong> day of week, month, is_weekend, time since event</li>
+    <li><strong>Log transform:</strong> right-skewed distributions</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Cross-Validation</h3>
+  <ul>
+    <li><strong>K-Fold CV</strong> — split data into k folds, train on k-1, test on 1, rotate</li>
+    <li><strong>Stratified K-Fold</strong> — preserves class distribution in each fold</li>
+    <li><strong>Leave-One-Out</strong> — k = n; expensive but low bias</li>
+    <li><strong>Time Series Split</strong> — expanding window; never train on future data</li>
+    <li><strong>Nested CV</strong> — outer loop for evaluation, inner loop for hyperparameter tuning</li>
+  </ul>
+  <p><strong>Watch:</strong> Always cross-validate on the <em>training set</em>. The test set is touched only once at the end.</p>
+</div>
+
+</div>
+</div>
+
+<!-- ===== Statistics ===== -->
+<div class="tab-panel" id="tab-statistics">
+<div class="cards-grid">
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Descriptive Stats</h3>
+  <ul>
+    <li><strong>Mean</strong> — average; sensitive to outliers</li>
+    <li><strong>Median</strong> — middle value; robust to outliers</li>
+    <li><strong>Mode</strong> — most frequent value</li>
+    <li><strong>Variance</strong> — average squared deviation from mean</li>
+    <li><strong>Standard Deviation</strong> — square root of variance; same units as data</li>
+    <li><strong>Skewness</strong> — asymmetry (positive = right tail, negative = left tail)</li>
+    <li><strong>Kurtosis</strong> — tail heaviness; high = more outliers</li>
+    <li><strong>IQR</strong> — Q3 - Q1; used for outlier detection (1.5 &times; IQR rule)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Hypothesis Testing</h3>
+  <ol>
+    <li>State <strong>H&#8320;</strong> (null) and <strong>H&#8321;</strong> (alternative)</li>
+    <li>Choose significance level <strong>&alpha;</strong> (typically 0.05)</li>
+    <li>Select the appropriate test</li>
+    <li>Compute the <strong>test statistic</strong> and <strong>p-value</strong></li>
+    <li>If p-value &lt; &alpha;, <strong>reject H&#8320;</strong></li>
+  </ol>
+  <ul>
+    <li><strong>Type I Error (&alpha;)</strong> — false positive; rejecting a true H&#8320;</li>
+    <li><strong>Type II Error (&beta;)</strong> — false negative; failing to reject a false H&#8320;</li>
+    <li><strong>Power</strong> = 1 - &beta;; probability of correctly rejecting H&#8320;</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Common Tests</h3>
+  <ul>
+    <li><strong>t-test (1-sample)</strong> — is the mean different from a known value?</li>
+    <li><strong>t-test (2-sample)</strong> — do two groups have different means?</li>
+    <li><strong>Paired t-test</strong> — before/after on the same subjects</li>
+    <li><strong>Chi-squared test</strong> — association between categorical variables</li>
+    <li><strong>ANOVA</strong> — compare means across 3+ groups</li>
+    <li><strong>Mann-Whitney U</strong> — non-parametric alternative to 2-sample t-test</li>
+    <li><strong>Kolmogorov-Smirnov</strong> — test if data follows a distribution</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span><span class="tag tag-tip">Tip</span></div>
+  <h3>A/B Testing</h3>
+  <ul>
+    <li><strong>Randomization</strong> — randomly assign users to control/treatment</li>
+    <li><strong>Sample size</strong> — compute upfront based on MDE, &alpha;, power</li>
+    <li><strong>Metric selection</strong> — primary metric (OEC) + guardrail metrics</li>
+    <li><strong>Duration</strong> — run long enough to capture weekly cycles</li>
+    <li><strong>Multiple testing</strong> — Bonferroni or FDR correction if many comparisons</li>
+    <li><strong>Novelty &amp; primacy effects</strong> — users may behave differently at first</li>
+    <li><strong>Network effects</strong> — spillover can violate SUTVA; use cluster randomization</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-formula">Formula</span></div>
+  <h3>Confidence Intervals</h3>
+  <p>A range of plausible values for a population parameter.</p>
+  <div class="formula-block">CI = x&#772; &plusmn; z* &middot; (&sigma; / &radic;n)
+
+For proportions:
+CI = p&#770; &plusmn; z* &middot; &radic;(p&#770;(1-p&#770;) / n)</div>
+  <p><strong>z*</strong> = 1.96 for 95% CI, 2.576 for 99% CI</p>
+  <p><strong>Interpretation:</strong> "We are 95% confident the true parameter lies in this interval." It does <em>not</em> mean 95% probability the parameter is in the interval.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-formula">Formula</span><span class="tag tag-key">Key</span></div>
+  <h3>Central Limit Theorem</h3>
+  <div class="formula-block">If X&#8321;, X&#8322;, ..., X&#8345; are i.i.d. with mean &mu; and variance &sigma;&sup2;, then:
+
+X&#772; ~ N(&mu;, &sigma;&sup2;/n) as n &rarr; &infin;</div>
+  <ul>
+    <li>Works regardless of the underlying distribution</li>
+    <li>Generally kicks in around <strong>n &ge; 30</strong></li>
+    <li>Foundation for confidence intervals and hypothesis tests</li>
+    <li>Explains why the normal distribution appears so often in practice</li>
+  </ul>
+</div>
+
+</div>
+</div>
+
+<!-- ===== Probability ===== -->
+<div class="tab-panel" id="tab-probability">
+<div class="cards-grid">
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Fundamentals</h3>
+  <ul>
+    <li><strong>P(A)</strong> is between 0 and 1</li>
+    <li><strong>Complement:</strong> P(A') = 1 - P(A)</li>
+    <li><strong>Addition rule:</strong> P(A&cup;B) = P(A) + P(B) - P(A&cap;B)</li>
+    <li><strong>Multiplication rule:</strong> P(A&cap;B) = P(A) &middot; P(B|A)</li>
+    <li><strong>Independence:</strong> P(A&cap;B) = P(A) &middot; P(B) iff A, B independent</li>
+    <li><strong>Conditional:</strong> P(A|B) = P(A&cap;B) / P(B)</li>
+    <li><strong>Law of Total Probability:</strong> P(A) = &Sigma; P(A|B&#7522;) &middot; P(B&#7522;)</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-formula">Formula</span><span class="tag tag-key">Key</span></div>
+  <h3>Bayes' Theorem</h3>
+  <div class="formula-block">P(A|B) = P(B|A) &middot; P(A) / P(B)
+
+Equivalently:
+Posterior = Likelihood &times; Prior / Evidence</div>
+  <p><strong>Classic example:</strong> Disease testing — even a 99% accurate test has a high false positive rate if the disease prevalence is low.</p>
+  <p><strong>Steps:</strong> 1) Define prior P(A), 2) Compute likelihood P(B|A), 3) Compute evidence P(B) using total probability, 4) Apply formula.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Key Distributions</h3>
+  <ul>
+    <li><strong>Bernoulli</strong> — single trial, success/failure</li>
+    <li><strong>Binomial(n,p)</strong> — number of successes in n independent trials</li>
+    <li><strong>Poisson(&lambda;)</strong> — count of events in a fixed interval; &lambda; = rate</li>
+    <li><strong>Geometric(p)</strong> — number of trials until first success</li>
+    <li><strong>Uniform(a,b)</strong> — all values equally likely</li>
+    <li><strong>Normal(&mu;,&sigma;&sup2;)</strong> — bell curve; 68-95-99.7 rule</li>
+    <li><strong>Exponential(&lambda;)</strong> — time between Poisson events; memoryless</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-formula">Formula</span></div>
+  <h3>Expected Value &amp; Variance</h3>
+  <div class="formula-block">E[X] = &Sigma; x&#7522; &middot; P(x&#7522;)
+
+Var(X) = E[X&sup2;] - (E[X])&sup2;
+
+E[aX + b] = a&middot;E[X] + b
+Var(aX + b) = a&sup2;&middot;Var(X)</div>
+  <p><strong>Linearity of expectation</strong> always holds, even for dependent variables:</p>
+  <p>E[X + Y] = E[X] + E[Y]</p>
+  <p><strong>Variance of sum</strong> (independent): Var(X+Y) = Var(X) + Var(Y)</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Law of Large Numbers</h3>
+  <ul>
+    <li><strong>Weak LLN:</strong> Sample average converges <em>in probability</em> to the expected value as n &rarr; &infin;</li>
+    <li><strong>Strong LLN:</strong> Sample average converges <em>almost surely</em> to the expected value</li>
+    <li>Foundation for why averages stabilize with more data</li>
+    <li><strong>Gambler's fallacy:</strong> Past outcomes don't affect future independent events; LLN applies to averages, not individual trials</li>
+  </ul>
+  <p><strong>Practical implication:</strong> Larger samples give more reliable estimates. But the rate of improvement is &radic;n, not n — diminishing returns.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-tip">Tip</span></div>
+  <h3>Classic Interview Puzzles</h3>
+  <ul>
+    <li><strong>Birthday problem:</strong> ~23 people for 50% chance of a shared birthday (pigeonhole + complement counting)</li>
+    <li><strong>Monty Hall:</strong> Always switch doors; 2/3 chance of winning</li>
+    <li><strong>Coupon collector:</strong> E[n] = n &middot; H&#8345; to collect all n types (H&#8345; = harmonic number)</li>
+    <li><strong>Dice expected value:</strong> E[fair die] = 3.5; E[rolls to get a 6] = 6</li>
+    <li><strong>Card drawing:</strong> P(ace then king) — consider with vs without replacement</li>
+    <li><strong>Random walk:</strong> 1D symmetric walk returns to origin with probability 1</li>
+  </ul>
+</div>
+
+</div>
+</div>
+
+<!-- ===== Case Studies ===== -->
+<div class="tab-panel" id="tab-casestudies">
+<div class="cards-grid">
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Product Metrics Framework</h3>
+  <ul>
+    <li><strong>Acquisition</strong> — how do users find us? (signups, installs, CTR)</li>
+    <li><strong>Activation</strong> — do they have a good first experience? (onboarding completion, "aha" moment)</li>
+    <li><strong>Engagement</strong> — how often do they return? (DAU/MAU, session length, actions per session)</li>
+    <li><strong>Retention</strong> — do they stick around? (D1, D7, D30 retention)</li>
+    <li><strong>Revenue</strong> — do they pay? (ARPU, LTV, conversion rate)</li>
+    <li><strong>Referral</strong> — do they bring others? (NPS, viral coefficient)</li>
+  </ul>
+  <p><strong>Tip:</strong> Always define a <strong>North Star metric</strong> that aligns with long-term value.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-tip">Tip</span></div>
+  <h3>Structuring a Case</h3>
+  <ol>
+    <li><strong>Clarify</strong> — restate the question, ask about context, users, and goals</li>
+    <li><strong>Define metrics</strong> — choose a primary metric and supporting metrics</li>
+    <li><strong>Explore the data</strong> — segment by user type, platform, geography, time</li>
+    <li><strong>Form hypotheses</strong> — list possible explanations; prioritize by likelihood and impact</li>
+    <li><strong>Validate</strong> — describe how you'd test each hypothesis with data</li>
+    <li><strong>Recommend</strong> — propose actions with expected tradeoffs</li>
+  </ol>
+  <p><strong>Key:</strong> Think out loud. Interviewers care about your <em>process</em> as much as the answer.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span><span class="tag tag-watch">Watch</span></div>
+  <h3>Metric Change Questions</h3>
+  <p>"X metric dropped 10% this week. What happened?"</p>
+  <ul>
+    <li><strong>1. Verify</strong> — data issue? Logging bug? Definition change?</li>
+    <li><strong>2. Decompose</strong> — metric = numerator / denominator; which moved?</li>
+    <li><strong>3. Segment</strong> — by platform, region, user cohort, feature</li>
+    <li><strong>4. Timeline</strong> — when exactly? Correlate with releases, events, seasonality</li>
+    <li><strong>5. External factors</strong> — competitors, holidays, press coverage</li>
+    <li><strong>6. Prioritize</strong> — rank hypotheses, propose investigation plan</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-tip">Tip</span></div>
+  <h3>Market Sizing</h3>
+  <ul>
+    <li><strong>Top-down:</strong> Start with total market, narrow by percentages (TAM &rarr; SAM &rarr; SOM)</li>
+    <li><strong>Bottom-up:</strong> Start with unit economics, scale up</li>
+    <li>State assumptions explicitly and sanity-check them</li>
+    <li>Round numbers for easy mental math</li>
+    <li>Use anchors: US population ~330M, world ~8B, households ~130M</li>
+    <li>Show your reasoning clearly; precision matters less than logic</li>
+  </ul>
+  <p><strong>Example:</strong> "How many piano tuners in Chicago?" Break into: pianos &rarr; tuning frequency &rarr; time per tuning &rarr; tuners needed.</p>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-key">Key</span></div>
+  <h3>Experiment Design</h3>
+  <ul>
+    <li><strong>Unit of randomization</strong> — user, session, device, or cluster?</li>
+    <li><strong>Metric selection</strong> — OEC (Overall Evaluation Criterion) + guardrails</li>
+    <li><strong>Sample size calculation</strong> — based on baseline rate, MDE, &alpha;=0.05, power=0.80</li>
+    <li><strong>Duration</strong> — capture full weekly cycles; typically 1-2 weeks minimum</li>
+    <li><strong>Avoiding pitfalls:</strong> peeking (use sequential testing), Simpson's paradox (check segments), interference (use isolation)</li>
+    <li><strong>Ramp-up plan</strong> — 1% &rarr; 10% &rarr; 50% &rarr; 100% to catch issues early</li>
+  </ul>
+</div>
+
+<div class="card">
+  <div class="tags"><span class="tag tag-tip">Tip</span></div>
+  <h3>Communication Tips</h3>
+  <ul>
+    <li><strong>Start with the answer</strong> — lead with the conclusion, then support with data</li>
+    <li><strong>Use frameworks</strong> — show structured thinking (MECE, 2x2, funnel)</li>
+    <li><strong>Quantify</strong> — "a lot of users" &rarr; "~30% of DAU"</li>
+    <li><strong>Acknowledge tradeoffs</strong> — show you understand business context</li>
+    <li><strong>State assumptions</strong> — be explicit about what you're assuming</li>
+    <li><strong>Ask clarifying questions</strong> — don't dive in before understanding the problem</li>
+    <li><strong>Summarize</strong> — end with a crisp recap of findings and recommendations</li>
+  </ul>
+</div>
+
+</div>
+</div>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  Claudea's DS Interview Prep &middot; v06 &middot; <a href="../index.html">Back to Gallery</a>
+</footer>
+
+<script>
+// Tab switching
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabPanels = document.querySelectorAll('.tab-panel');
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = btn.dataset.tab;
+
+    tabBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    tabPanels.forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + target).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
