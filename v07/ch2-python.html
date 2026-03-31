@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter II: Python — The Analyst's Toolkit | The DS Interview Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --page: #faf6f0; --paper: #f5efe6; --surface: #fff;
+      --border: #e0d5c5; --rule: #d4c8b4;
+      --ink: #2c2416; --ink2: #4a3f2f; --ink-muted: #8a7e6e; --ink-light: #b5a998;
+      --burgundy: #7b2d3b; --burgundy-light: #f5eaec;
+      --navy: #1a3a5c; --navy-light: #eaf0f6;
+      --forest: #2d5a3d; --forest-light: #eaf3ed;
+      --gold: #a8862a; --gold-light: #f8f2e4;
+    }
+
+    body {
+      font-family: 'Libre Baskerville', Georgia, serif;
+      background: var(--page); color: var(--ink);
+      line-height: 1.85; font-size: 16px;
+    }
+
+    /* ── Top Nav ── */
+    .top-nav {
+      max-width: 680px; margin: 0 auto;
+      padding: 24px 24px 0;
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+      color: var(--ink-muted);
+    }
+    .top-nav a {
+      color: var(--ink-muted); text-decoration: none;
+      transition: color 0.15s;
+    }
+    .top-nav a:hover { color: var(--burgundy); }
+    .top-nav .book-title { font-style: italic; }
+    .top-nav .chapter-nav {
+      display: flex; align-items: baseline; gap: 16px;
+    }
+    .top-nav .chapter-label {
+      font-weight: 600; letter-spacing: 0.5px;
+    }
+    .top-nav .prev-next a {
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    /* ── Chapter Container ── */
+    .chapter {
+      max-width: 680px; margin: 0 auto;
+      padding: 20px 24px 80px;
+    }
+
+    /* ── Chapter Heading ── */
+    .chapter-header {
+      text-align: center; margin: 48px 0 40px;
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .chapter-number {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 4px;
+      color: var(--burgundy);
+      font-variant: small-caps;
+      margin-bottom: 8px;
+    }
+    .chapter-title {
+      font-size: 1.9rem; font-weight: 700;
+      color: var(--ink); line-height: 1.3;
+      margin-bottom: 4px;
+    }
+    .chapter-rule {
+      width: 40px; height: 2px;
+      background: var(--burgundy);
+      margin: 20px auto 0;
+    }
+
+    /* ── Intro ── */
+    .chapter-intro {
+      font-style: italic; color: var(--ink2);
+      margin-bottom: 40px; font-size: 1.02rem;
+      text-align: center; max-width: 580px;
+      margin-left: auto; margin-right: auto;
+    }
+
+    /* ── Section Headings ── */
+    h2 {
+      font-size: 1.3rem; font-weight: 700; color: var(--ink);
+      margin: 48px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    h2 .section-num {
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600; color: var(--burgundy);
+      margin-right: 6px;
+    }
+
+    h3 {
+      font-size: 1.05rem; font-weight: 700;
+      color: var(--ink2); margin: 28px 0 12px;
+    }
+
+    /* ── Body ── */
+    p { margin-bottom: 16px; }
+    strong { color: var(--ink); }
+    em { color: var(--ink2); }
+
+    /* ── Code Blocks ── */
+    pre {
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.85rem; line-height: 1.6;
+      background: var(--paper); border: 1px solid var(--border);
+      border-radius: 4px; padding: 20px 24px;
+      margin: 20px 0 24px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    code {
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.88em;
+    }
+    p code, li code {
+      background: var(--paper); padding: 2px 6px;
+      border-radius: 3px; border: 1px solid var(--border);
+      font-size: 0.84em; color: var(--ink2);
+    }
+
+    /* Syntax highlighting */
+    .kw { color: #7b2d3b; font-weight: 500; }
+    .fn { color: #1a3a5c; }
+    .str { color: #2d5a3d; }
+    .cm { color: #8a7e6e; font-style: italic; }
+    .num { color: #1a3a5c; }
+    .op { color: var(--ink2); }
+
+    /* ── Example Box ── */
+    .example-box {
+      background: var(--navy-light);
+      border-left: 3px solid var(--navy);
+      border-radius: 0 4px 4px 0;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+    .example-box .example-label {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--navy); margin-bottom: 10px;
+    }
+    .example-box p { margin-bottom: 12px; }
+    .example-box pre {
+      background: rgba(255,255,255,0.6);
+      border-color: rgba(26,58,92,0.15);
+    }
+
+    /* ── Key Insight Box ── */
+    .key-insight {
+      background: var(--gold-light);
+      border-left: 3px solid var(--gold);
+      border-radius: 0 4px 4px 0;
+      padding: 18px 24px;
+      margin: 24px 0;
+    }
+    .key-insight .insight-label {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--gold); margin-bottom: 8px;
+    }
+    .key-insight p { margin-bottom: 8px; }
+    .key-insight p:last-child { margin-bottom: 0; }
+
+    /* ── Tables ── */
+    table {
+      width: 100%; border-collapse: collapse;
+      margin: 20px 0 24px;
+      font-size: 0.9rem;
+    }
+    thead th {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--ink-muted);
+      border-bottom: 2px solid var(--rule);
+      padding: 10px 12px;
+      text-align: left;
+    }
+    tbody td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody td code {
+      font-size: 0.82em;
+    }
+
+    /* ── Lists ── */
+    ul, ol {
+      margin: 12px 0 16px 24px;
+    }
+    li { margin-bottom: 6px; }
+
+    /* ── Chapter Footer ── */
+    .chapter-footer {
+      margin-top: 64px;
+      padding-top: 32px;
+      border-top: 1px solid var(--rule);
+      text-align: center;
+    }
+    .chapter-footer .page-num {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.75rem; color: var(--ink-light);
+      letter-spacing: 1px; margin-bottom: 12px;
+    }
+    .chapter-footer .end-mark {
+      font-size: 0.85rem; color: var(--ink-muted);
+      font-style: italic; margin-bottom: 20px;
+    }
+    .chapter-footer .next-chapter a {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 0.8rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px;
+      color: var(--burgundy); text-decoration: none;
+      transition: color 0.15s;
+    }
+    .chapter-footer .next-chapter a:hover { color: var(--navy); }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .chapter { padding: 16px 16px 60px; }
+      .top-nav { padding: 16px 16px 0; flex-direction: column; gap: 8px; }
+      .chapter-title { font-size: 1.5rem; }
+      h2 { font-size: 1.15rem; }
+      pre { padding: 16px; font-size: 0.8rem; }
+      .example-box, .key-insight { padding: 16px; }
+      table { font-size: 0.82rem; }
+      thead th, tbody td { padding: 8px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Top Navigation ── -->
+<nav class="top-nav">
+  <a href="index.html" class="book-title">The DS Interview Companion</a>
+  <div class="chapter-nav">
+    <span class="chapter-label">Chapter II</span>
+    <span class="prev-next">
+      <a href="ch1-sql.html">&larr; Prev</a> &nbsp;|&nbsp;
+      <a href="ch3-ml.html">Next &rarr;</a>
+    </span>
+  </div>
+</nav>
+
+<!-- ── Chapter Content ── -->
+<article class="chapter">
+
+  <!-- Chapter Header -->
+  <header class="chapter-header">
+    <div class="chapter-number">Chapter II</div>
+    <h1 class="chapter-title">Python &mdash; The Analyst&rsquo;s Toolkit</h1>
+    <div class="chapter-rule"></div>
+  </header>
+
+  <p class="chapter-intro">
+    Python has become the lingua franca of data science &mdash; not because it is the fastest language
+    or the most elegant, but because it sits at a remarkable intersection of readability, ecosystem breadth,
+    and community momentum. From cleaning messy CSVs to training neural networks, Python provides a single
+    thread that ties the entire analytical workflow together. In this chapter, we build the fluency an
+    interviewer expects: mastery of core data structures, dexterity with Pandas and NumPy, familiarity
+    with algorithmic patterns, and awareness of the subtle pitfalls that separate a seasoned practitioner
+    from a beginner.
+  </p>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 2.1 Data Structures and Their Complexity         -->
+  <!-- ════════════════════════════════════════════════ -->
+  <h2><span class="section-num">2.1</span> Data Structures and Their Complexity</h2>
+
+  <p>
+    Choosing the right data structure is often the difference between a solution that passes and one
+    that times out. Python&rsquo;s standard library offers several workhorse structures, each with
+    distinct performance characteristics. Understanding <em>why</em> you would reach for one over
+    another is far more important than memorizing their APIs.
+  </p>
+
+  <h3>List</h3>
+  <p>
+    The <code>list</code> is Python&rsquo;s general-purpose dynamic array. It stores elements
+    contiguously in memory, which means index access is O(1) and appending is amortized O(1).
+    However, inserting or deleting at the front costs O(n) because every subsequent element must
+    shift. Use lists when you need ordered, index-addressable storage and most operations happen
+    at the end.
+  </p>
+
+  <h3>Dict (Hash Map)</h3>
+  <p>
+    A <code>dict</code> maps keys to values via a hash table, giving O(1) average-case lookups,
+    inserts, and deletes. Dicts are the backbone of frequency counting, caching, and any task
+    where you need to answer &ldquo;have I seen this before?&rdquo; quickly. Since Python 3.7,
+    dicts also preserve insertion order.
+  </p>
+
+  <h3>Set</h3>
+  <p>
+    A <code>set</code> is essentially a dict without values &mdash; a hash table of unique keys.
+    Membership testing (<code>in</code>) runs in O(1) on average, compared to O(n) for a list.
+    Use sets when you need to track unique elements or perform mathematical set operations
+    (union, intersection, difference).
+  </p>
+
+  <h3>Deque</h3>
+  <p>
+    The <code>collections.deque</code> is a double-ended queue backed by a doubly-linked list of
+    fixed-size blocks. It offers O(1) appends and pops at <em>both</em> ends, which the list
+    cannot match. Reach for a deque when implementing BFS, sliding window algorithms, or any
+    queue/stack hybrid.
+  </p>
+
+  <h3>Heap (Priority Queue)</h3>
+  <p>
+    Python&rsquo;s <code>heapq</code> module provides a min-heap on top of a regular list.
+    Pushing and popping are both O(log n), while peeking at the minimum is O(1). Heaps are the
+    right choice for &ldquo;give me the k largest/smallest elements&rdquo; problems, Dijkstra&rsquo;s
+    algorithm, and any scenario where you repeatedly need the extreme value from a dynamic collection.
+  </p>
+
+  <h3>Comparison Table</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Structure</th>
+        <th>Lookup</th>
+        <th>Insert</th>
+        <th>Delete</th>
+        <th>Best Use Case</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>list</code></td>
+        <td>O(1) index</td>
+        <td>O(1) end / O(n) front</td>
+        <td>O(n)</td>
+        <td>Ordered sequences, stacks</td>
+      </tr>
+      <tr>
+        <td><code>dict</code></td>
+        <td>O(1) avg</td>
+        <td>O(1) avg</td>
+        <td>O(1) avg</td>
+        <td>Key-value mapping, counting</td>
+      </tr>
+      <tr>
+        <td><code>set</code></td>
+        <td>O(1) avg</td>
+        <td>O(1) avg</td>
+        <td>O(1) avg</td>
+        <td>Membership tests, dedup</td>
+      </tr>
+      <tr>
+        <td><code>deque</code></td>
+        <td>O(n)</td>
+        <td>O(1) both ends</td>
+        <td>O(1) both ends</td>
+        <td>BFS, sliding windows</td>
+      </tr>
+      <tr>
+        <td><code>heapq</code></td>
+        <td>O(1) min</td>
+        <td>O(log n)</td>
+        <td>O(log n)</td>
+        <td>Top-k, priority scheduling</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      Choosing the right data structure can turn an O(n&sup2;) solution into O(n). A classic example:
+      checking whether a list contains duplicates takes O(n&sup2;) with nested loops, but only O(n) if you
+      pour the elements into a <code>set</code> and compare lengths. When an interview solution feels
+      too slow, the first question to ask is: <em>&ldquo;Am I using the right container?&rdquo;</em>
+    </p>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 2.2 Pandas for Data Manipulation                -->
+  <!-- ════════════════════════════════════════════════ -->
+  <h2><span class="section-num">2.2</span> Pandas for Data Manipulation</h2>
+
+  <p>
+    At its heart, a Pandas <strong>DataFrame</strong> is a two-dimensional, labeled data structure &mdash;
+    think of it as a spreadsheet with named columns and an index that can be anything from integers to
+    dates. Under the hood, each column is stored as a contiguous NumPy array, which is why column-wise
+    operations are fast while row-wise iteration is slow. The golden rule of Pandas: <em>if you are
+    writing a for-loop over rows, you are almost certainly doing it wrong.</em>
+  </p>
+
+  <h3>GroupBy: Split-Apply-Combine</h3>
+  <p>
+    The <code>groupby</code> operation follows a three-stage mental model introduced by Hadley Wickham:
+  </p>
+  <ol>
+    <li><strong>Split</strong> &mdash; partition the DataFrame into groups based on one or more keys.</li>
+    <li><strong>Apply</strong> &mdash; apply a function (aggregation, transformation, or filtration) to each group independently.</li>
+    <li><strong>Combine</strong> &mdash; stitch the results back into a single DataFrame.</li>
+  </ol>
+  <p>
+    This pattern underpins nearly every analytical question that starts with &ldquo;for each
+    category, compute&hellip;&rdquo;
+  </p>
+
+  <h3>Merge: SQL-Style Joins in Pandas</h3>
+  <p>
+    <code>pd.merge()</code> mirrors the join operations you learned in SQL. The <code>how</code>
+    parameter maps directly: <code>'inner'</code>, <code>'left'</code>, <code>'right'</code>,
+    <code>'outer'</code>. The <code>on</code> parameter specifies the join key(s). When column
+    names differ between tables, use <code>left_on</code> and <code>right_on</code>. Always
+    verify the resulting row count after a merge &mdash; unexpected duplicates from many-to-many
+    joins are a common source of bugs.
+  </p>
+
+  <h3>Pivot Tables</h3>
+  <p>
+    A <code>pivot_table</code> reshapes long-form data into a summary matrix &mdash; rows as one
+    dimension, columns as another, and cell values as an aggregation. It is the Pandas equivalent
+    of a spreadsheet pivot table and is invaluable for cross-tabulation analysis.
+  </p>
+
+  <div class="example-box">
+    <div class="example-label">Example 2.1 &mdash; GroupBy with Summary Statistics</div>
+    <p>
+      Given a sales DataFrame, group by region and compute the total revenue, average order size,
+      and number of transactions.
+    </p>
+<pre><span class="cm"># Input DataFrame</span>
+<span class="cm">#   region   product   revenue</span>
+<span class="cm">#   East     Widget      120</span>
+<span class="cm">#   West     Gadget      340</span>
+<span class="cm">#   East     Gadget      210</span>
+<span class="cm">#   West     Widget      150</span>
+<span class="cm">#   East     Widget       95</span>
+
+<span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+df = pd.DataFrame({
+    <span class="str">'region'</span>:  [<span class="str">'East'</span>, <span class="str">'West'</span>, <span class="str">'East'</span>, <span class="str">'West'</span>, <span class="str">'East'</span>],
+    <span class="str">'product'</span>: [<span class="str">'Widget'</span>, <span class="str">'Gadget'</span>, <span class="str">'Gadget'</span>, <span class="str">'Widget'</span>, <span class="str">'Widget'</span>],
+    <span class="str">'revenue'</span>: [<span class="num">120</span>, <span class="num">340</span>, <span class="num">210</span>, <span class="num">150</span>, <span class="num">95</span>]
+})
+
+summary = df.<span class="fn">groupby</span>(<span class="str">'region'</span>)[<span class="str">'revenue'</span>].<span class="fn">agg</span>(
+    total_revenue=<span class="str">'sum'</span>,
+    avg_order=<span class="str">'mean'</span>,
+    num_transactions=<span class="str">'count'</span>
+)
+
+<span class="fn">print</span>(summary)
+<span class="cm"># Output:</span>
+<span class="cm">#         total_revenue  avg_order  num_transactions</span>
+<span class="cm"># region</span>
+<span class="cm"># East              425     141.67                 3</span>
+<span class="cm"># West              490     245.00                 2</span></pre>
+    <p>
+      The <code>agg()</code> method accepts named aggregations &mdash; each keyword argument
+      becomes a column name, and the value specifies which function to apply. This is the
+      idiomatic Pandas approach; avoid calling <code>.sum()</code> and <code>.mean()</code>
+      separately and merging them back.
+    </p>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 2.3 NumPy for Numerical Computing               -->
+  <!-- ════════════════════════════════════════════════ -->
+  <h2><span class="section-num">2.3</span> NumPy for Numerical Computing</h2>
+
+  <p>
+    NumPy is the foundation upon which almost every numerical library in Python is built. Its core
+    contribution is the <strong>ndarray</strong> &mdash; a homogeneous, fixed-type, contiguous block
+    of memory that enables <em>vectorized</em> operations.
+  </p>
+
+  <h3>Why Vectorization Is Faster</h3>
+  <p>
+    A Python <code>for</code>-loop that adds two lists element-by-element must, for each iteration:
+    look up the list element (a Python object), unbox the numeric value, perform the addition,
+    box the result, and store it. NumPy sidesteps all of this. Because the array is a raw C buffer
+    of, say, 64-bit floats, it hands the entire operation to a compiled C loop that processes
+    thousands of elements in the time Python would handle one. Speedups of 10&ndash;100&times; are typical.
+  </p>
+
+  <h3>Broadcasting</h3>
+  <p>
+    Broadcasting is NumPy&rsquo;s mechanism for performing operations on arrays of different shapes.
+    The smaller array is &ldquo;broadcast&rdquo; across the larger one without actually copying data.
+    The rules are simple: dimensions are compared from right to left; they are compatible if they
+    are equal or one of them is 1. Broadcasting eliminates the need for explicit loops and tile
+    operations.
+  </p>
+
+  <h3>Array Operations and Dot Products</h3>
+  <p>
+    NumPy overloads Python operators: <code>+</code>, <code>*</code>, <code>/</code> all work
+    element-wise. For matrix multiplication (the dot product), use <code>@</code> or
+    <code>np.dot()</code>. This distinction trips up many beginners &mdash; <code>*</code> is
+    Hadamard (element-wise) product, while <code>@</code> is the true matrix product.
+  </p>
+
+  <div class="example-box">
+    <div class="example-label">Example 2.2 &mdash; Matrix Multiplication for Linear Regression</div>
+    <p>
+      In ordinary least squares, the closed-form solution for the coefficient vector is
+      <strong>&beta; = (X<sup>T</sup>X)<sup>&minus;1</sup> X<sup>T</sup>y</strong>. Let&rsquo;s
+      compute this with NumPy.
+    </p>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Design matrix X (3 observations, 2 features + intercept)</span>
+X = np.<span class="fn">array</span>([
+    [<span class="num">1</span>, <span class="num">2</span>, <span class="num">5</span>],
+    [<span class="num">1</span>, <span class="num">3</span>, <span class="num">8</span>],
+    [<span class="num">1</span>, <span class="num">5</span>, <span class="num">12</span>]
+], dtype=<span class="fn">float</span>)
+
+<span class="cm"># Response vector</span>
+y = np.<span class="fn">array</span>([<span class="num">10</span>, <span class="num">15</span>, <span class="num">24</span>], dtype=<span class="fn">float</span>)
+
+<span class="cm"># Closed-form OLS: beta = (X^T X)^(-1) X^T y</span>
+XtX     = X.T @ X              <span class="cm"># (3x3) matrix</span>
+XtX_inv = np.linalg.<span class="fn">inv</span>(XtX)  <span class="cm"># invert</span>
+beta    = XtX_inv @ X.T @ y    <span class="cm"># coefficient vector</span>
+
+<span class="fn">print</span>(beta)
+<span class="cm"># array([ 0.5,  0.5,  1.5])</span>
+<span class="cm"># Interpretation: y ≈ 0.5 + 0.5·x1 + 1.5·x2</span></pre>
+    <p>
+      Notice how the entire computation uses the <code>@</code> operator &mdash; no loops,
+      no manual indexing. This is not just concise; it runs orders of magnitude faster than
+      the equivalent loop-based implementation for larger matrices.
+    </p>
+  </div>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      When you see yourself writing <code>for i in range(len(arr))</code> with NumPy arrays,
+      stop and ask: &ldquo;Can I express this as a vectorized operation?&rdquo; Almost always,
+      the answer is yes. Vectorized code is shorter, faster, and less error-prone.
+    </p>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 2.4 Common Coding Patterns                      -->
+  <!-- ════════════════════════════════════════════════ -->
+  <h2><span class="section-num">2.4</span> Common Coding Patterns</h2>
+
+  <p>
+    Many interview problems reduce to a handful of recurring patterns. Recognizing the pattern
+    early lets you skip the brute-force stage and jump straight to the optimal approach.
+  </p>
+
+  <h3>Two-Pointer</h3>
+  <p>
+    Place one pointer at each end of a <em>sorted</em> array and walk them inward. If the
+    current sum is too small, advance the left pointer; too large, retreat the right. This
+    pattern solves &ldquo;find a pair that satisfies a condition&rdquo; in O(n) time without
+    extra space. Classic applications: two-sum on a sorted array, container with most water,
+    removing duplicates in place.
+  </p>
+
+  <h3>Sliding Window</h3>
+  <p>
+    Maintain a window (usually defined by two indices) that slides across a sequence. As the
+    right boundary expands, update a running aggregate; when a constraint is violated, shrink
+    from the left. This pattern handles &ldquo;longest/shortest subarray with property X&rdquo;
+    problems in O(n). Examples: longest substring without repeating characters, minimum window
+    substring.
+  </p>
+
+  <h3>Hash Map</h3>
+  <p>
+    Use a dictionary to remember previously seen values, converting nested-loop lookups into
+    O(1) checks. This is the most versatile pattern &mdash; it appears in two-sum, group
+    anagrams, subarray sum equals k, and dozens more. The tradeoff is O(n) extra space for
+    the hash map.
+  </p>
+
+  <div class="example-box">
+    <div class="example-label">Example 2.3 &mdash; Two Sum: Brute Force vs. Hash Map</div>
+    <p>
+      <strong>Problem:</strong> Given a list of integers and a target, find two numbers that
+      add up to the target. Return their indices.
+    </p>
+<pre><span class="cm"># ── Naive approach: O(n²) ──</span>
+<span class="kw">def</span> <span class="fn">two_sum_naive</span>(nums, target):
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(nums)):
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(i + <span class="num">1</span>, <span class="fn">len</span>(nums)):
+            <span class="kw">if</span> nums[i] + nums[j] == target:
+                <span class="kw">return</span> [i, j]
+    <span class="kw">return</span> []
+
+<span class="cm"># ── Hash map approach: O(n) ──</span>
+<span class="kw">def</span> <span class="fn">two_sum</span>(nums, target):
+    seen = {}  <span class="cm"># value -> index</span>
+    <span class="kw">for</span> i, num <span class="kw">in</span> <span class="fn">enumerate</span>(nums):
+        complement = target - num
+        <span class="kw">if</span> complement <span class="kw">in</span> seen:
+            <span class="kw">return</span> [seen[complement], i]
+        seen[num] = i
+    <span class="kw">return</span> []
+
+<span class="cm"># Test</span>
+<span class="fn">print</span>(<span class="fn">two_sum</span>([<span class="num">2</span>, <span class="num">7</span>, <span class="num">11</span>, <span class="num">15</span>], <span class="num">9</span>))
+<span class="cm"># [0, 1]  — because 2 + 7 = 9</span></pre>
+    <p>
+      The naive approach checks every pair, giving O(n&sup2;) time. The hash map version makes a single
+      pass: for each element, it computes the needed complement, checks the dictionary in O(1), and
+      either returns or stores the current element. Total: O(n) time, O(n) space.
+    </p>
+  </div>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      The hash map pattern is, arguably, the single most important tool in coding interviews.
+      Whenever a brute-force solution uses a nested loop where the inner loop is <em>searching</em>
+      for something, ask: &ldquo;Can I replace that search with a dictionary lookup?&rdquo;
+      If yes, you have just shaved an order of magnitude off your complexity.
+    </p>
+  </div>
+
+  <!-- ════════════════════════════════════════════════ -->
+  <!-- 2.5 Python Gotchas                              -->
+  <!-- ════════════════════════════════════════════════ -->
+  <h2><span class="section-num">2.5</span> Python Gotchas</h2>
+
+  <p>
+    Python&rsquo;s readability is a double-edged sword: many behaviours <em>look</em> intuitive but
+    harbour subtle surprises. Interviewers love testing these because they reveal depth of
+    understanding.
+  </p>
+
+  <h3>Mutable Default Arguments</h3>
+  <p>
+    Default argument values are evaluated <strong>once</strong> &mdash; when the function is defined,
+    not each time it is called. If the default is a mutable object (like a list), it is shared across
+    all calls. Here is exactly what happens:
+  </p>
+<pre><span class="kw">def</span> <span class="fn">append_to</span>(item, target=[]):
+    target.<span class="fn">append</span>(item)
+    <span class="kw">return</span> target
+
+<span class="cm"># Call 1</span>
+<span class="fn">print</span>(<span class="fn">append_to</span>(<span class="num">1</span>))   <span class="cm"># [1]         — list created at def time</span>
+<span class="cm"># Call 2</span>
+<span class="fn">print</span>(<span class="fn">append_to</span>(<span class="num">2</span>))   <span class="cm"># [1, 2]      — SAME list, not a new one!</span>
+<span class="cm"># Call 3</span>
+<span class="fn">print</span>(<span class="fn">append_to</span>(<span class="num">3</span>))   <span class="cm"># [1, 2, 3]   — it just keeps growing</span></pre>
+  <p>
+    <strong>Step by step:</strong> When Python executes the <code>def</code> statement, it creates a
+    single list object <code>[]</code> and binds it to the parameter <code>target</code>. On Call 1,
+    <code>1</code> is appended to that list, yielding <code>[1]</code>. On Call 2, no new list is
+    created &mdash; the same object is reused &mdash; so <code>2</code> is appended to
+    <code>[1]</code>, producing <code>[1, 2]</code>. This continues indefinitely.
+  </p>
+<pre><span class="cm"># The fix: use None as a sentinel</span>
+<span class="kw">def</span> <span class="fn">append_to</span>(item, target=<span class="kw">None</span>):
+    <span class="kw">if</span> target <span class="kw">is</span> <span class="kw">None</span>:
+        target = []
+    target.<span class="fn">append</span>(item)
+    <span class="kw">return</span> target</pre>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      Never use a mutable object (<code>list</code>, <code>dict</code>, <code>set</code>) as a
+      default argument. Use <code>None</code> and create the object inside the function body. This
+      is one of the most frequently tested Python trivia questions.
+    </p>
+  </div>
+
+  <h3>Shallow vs. Deep Copy</h3>
+  <p>
+    Assignment in Python never copies data &mdash; it copies <em>references</em>. A
+    <strong>shallow copy</strong> (<code>list.copy()</code>, <code>copy.copy()</code>) creates a
+    new outer container but still shares the inner objects. A <strong>deep copy</strong>
+    (<code>copy.deepcopy()</code>) recursively duplicates everything.
+  </p>
+<pre><span class="kw">import</span> copy
+
+original = [[<span class="num">1</span>, <span class="num">2</span>], [<span class="num">3</span>, <span class="num">4</span>]]
+
+shallow = copy.<span class="fn">copy</span>(original)
+shallow[<span class="num">0</span>].<span class="fn">append</span>(<span class="num">99</span>)
+<span class="fn">print</span>(original)  <span class="cm"># [[1, 2, 99], [3, 4]] — inner list was shared!</span>
+
+deep = copy.<span class="fn">deepcopy</span>(original)
+deep[<span class="num">0</span>].<span class="fn">append</span>(<span class="num">777</span>)
+<span class="fn">print</span>(original)  <span class="cm"># [[1, 2, 99], [3, 4]] — unaffected</span></pre>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      If your data contains nested structures (lists of lists, dicts of lists), a shallow copy is
+      almost never what you want. Reach for <code>copy.deepcopy()</code> when you need true independence.
+    </p>
+  </div>
+
+  <h3>Floor Division Rounds Toward &minus;&infin;</h3>
+  <p>
+    Python&rsquo;s <code>//</code> operator performs floor division &mdash; it always rounds toward
+    negative infinity, not toward zero. This matches the mathematical definition but differs from
+    C/Java truncation:
+  </p>
+<pre><span class="fn">print</span>(<span class="num">7</span> // <span class="num">2</span>)     <span class="cm">#  3   — both languages agree</span>
+<span class="fn">print</span>(-<span class="num">7</span> // <span class="num">2</span>)    <span class="cm"># -4   — Python floors toward -∞</span>
+                    <span class="cm">#       — C/Java would give -3 (truncate toward 0)</span></pre>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      When dividing negative numbers in Python, remember: <code>//</code> floors, it does not
+      truncate. If you need C-style truncation, use <code>int(a / b)</code> or
+      <code>math.trunc(a / b)</code>.
+    </p>
+  </div>
+
+  <h3><code>is</code> vs. <code>==</code></h3>
+  <p>
+    The <code>==</code> operator compares <em>values</em>; <code>is</code> compares
+    <em>identity</em> (whether two names point to the exact same object in memory). Python
+    interns small integers (&minus;5 to 256) and short strings, so <code>is</code> may appear to
+    &ldquo;work&rdquo; for those &mdash; but this is an implementation detail, not a guarantee.
+  </p>
+<pre>a = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+b = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+
+<span class="fn">print</span>(a == b)   <span class="cm"># True  — same value</span>
+<span class="fn">print</span>(a <span class="kw">is</span> b)   <span class="cm"># False — different objects in memory</span>
+
+x = <span class="num">256</span>
+y = <span class="num">256</span>
+<span class="fn">print</span>(x <span class="kw">is</span> y)   <span class="cm"># True  — interned (implementation detail!)</span>
+
+x = <span class="num">257</span>
+y = <span class="num">257</span>
+<span class="fn">print</span>(x <span class="kw">is</span> y)   <span class="cm"># False — not interned, different objects</span></pre>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      Use <code>is</code> only to check for <code>None</code> (i.e., <code>if x is None</code>).
+      For everything else, use <code>==</code>. Relying on <code>is</code> for integers or strings
+      is a bug waiting to happen.
+    </p>
+  </div>
+
+  <!-- ── Chapter Footer ── -->
+  <footer class="chapter-footer">
+    <div class="page-num">Page 2</div>
+    <div class="end-mark">End of Chapter II</div>
+    <div class="next-chapter">
+      <a href="ch3-ml.html">Chapter III: Machine Learning Fundamentals &rarr;</a>
+    </div>
+  </footer>
+
+</article>
+
+</body>
+</html>

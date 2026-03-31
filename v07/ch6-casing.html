@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter VI — Case Studies | The DS Interview Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+  :root{
+    --bg:#faf6f0;
+    --ink:#2c2416;
+    --burgundy:#7b2d3b;
+    --navy:#1a3a5c;
+    --forest:#2d5a3d;
+    --gold:#a8862a;
+    --navy-light:#eaf0f6;
+    --gold-light:#f8f2e4;
+    --col:680px;
+  }
+
+  html{font-size:18px;scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Source Sans 3','Source Sans Pro',sans-serif;
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── Navigation ── */
+  nav{
+    border-bottom:1px solid rgba(44,36,22,.12);
+    padding:1rem 1.5rem;
+  }
+  .nav-inner{
+    max-width:var(--col);
+    margin:0 auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:.5rem;
+  }
+  .nav-title a{
+    font-family:'Libre Baskerville',serif;
+    font-size:.85rem;
+    color:var(--burgundy);
+    text-decoration:none;
+    letter-spacing:.03em;
+  }
+  .nav-title a:hover{text-decoration:underline}
+  .nav-chapter{
+    display:flex;
+    align-items:center;
+    gap:1.25rem;
+    font-size:.85rem;
+  }
+  .nav-chapter span{
+    font-family:'Libre Baskerville',serif;
+    font-weight:700;
+    color:var(--ink);
+    letter-spacing:.05em;
+  }
+  .nav-chapter a{
+    color:var(--navy);
+    text-decoration:none;
+    font-weight:600;
+  }
+  .nav-chapter a:hover{text-decoration:underline}
+
+  /* ── Main column ── */
+  main{
+    max-width:var(--col);
+    margin:0 auto;
+    padding:3rem 1.5rem 5rem;
+  }
+
+  /* ── Chapter header ── */
+  .chapter-label{
+    font-family:'Source Sans 3',sans-serif;
+    font-size:.8rem;
+    font-weight:600;
+    letter-spacing:.25em;
+    text-transform:uppercase;
+    color:var(--burgundy);
+    margin-bottom:.25rem;
+  }
+  h1{
+    font-family:'Libre Baskerville',serif;
+    font-size:2rem;
+    font-weight:700;
+    color:var(--ink);
+    line-height:1.3;
+    margin-bottom:.5rem;
+  }
+  .chapter-subtitle{
+    font-family:'Libre Baskerville',serif;
+    font-style:italic;
+    font-size:1.1rem;
+    color:var(--burgundy);
+    margin-bottom:2.5rem;
+  }
+
+  /* ── Section headings ── */
+  h2{
+    font-family:'Libre Baskerville',serif;
+    font-size:1.35rem;
+    font-weight:700;
+    color:var(--navy);
+    margin:3rem 0 .75rem;
+    padding-bottom:.35rem;
+    border-bottom:2px solid var(--navy);
+  }
+  h3{
+    font-family:'Libre Baskerville',serif;
+    font-size:1.05rem;
+    font-weight:700;
+    color:var(--forest);
+    margin:1.75rem 0 .5rem;
+  }
+  h4{
+    font-family:'Source Sans 3',sans-serif;
+    font-size:.95rem;
+    font-weight:700;
+    color:var(--ink);
+    margin:1.25rem 0 .35rem;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+  }
+
+  p{margin-bottom:1rem}
+  strong{font-weight:700}
+  em{font-style:italic}
+
+  /* ── Lists ── */
+  ul,ol{margin:0 0 1rem 1.5rem}
+  li{margin-bottom:.35rem}
+  li::marker{color:var(--burgundy)}
+
+  /* ── Example box ── */
+  .example-box{
+    background:var(--navy-light);
+    border-left:4px solid var(--navy);
+    border-radius:0 6px 6px 0;
+    padding:1.25rem 1.5rem;
+    margin:1.5rem 0;
+  }
+  .example-box .example-label{
+    font-family:'Libre Baskerville',serif;
+    font-size:.85rem;
+    font-weight:700;
+    color:var(--navy);
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    margin-bottom:.65rem;
+  }
+  .example-box p{margin-bottom:.75rem}
+  .example-box p:last-child{margin-bottom:0}
+  .example-box ul,.example-box ol{margin-bottom:.75rem}
+
+  /* ── Key Insight box ── */
+  .key-insight{
+    background:var(--gold-light);
+    border-left:4px solid var(--gold);
+    border-radius:0 6px 6px 0;
+    padding:1.25rem 1.5rem;
+    margin:1.5rem 0;
+  }
+  .key-insight .insight-label{
+    font-family:'Libre Baskerville',serif;
+    font-size:.85rem;
+    font-weight:700;
+    color:var(--gold);
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    margin-bottom:.5rem;
+  }
+  .key-insight p{margin-bottom:.5rem}
+  .key-insight p:last-child{margin-bottom:0}
+
+  /* ── Step list (numbered framework) ── */
+  .step-list{
+    counter-reset:steps;
+    list-style:none;
+    margin-left:0;
+    padding-left:0;
+  }
+  .step-list li{
+    counter-increment:steps;
+    padding-left:2.25rem;
+    position:relative;
+    margin-bottom:.85rem;
+  }
+  .step-list li::before{
+    content:counter(steps);
+    position:absolute;
+    left:0;top:.05em;
+    width:1.6rem;height:1.6rem;
+    background:var(--navy);
+    color:#fff;
+    font-family:'Libre Baskerville',serif;
+    font-size:.8rem;
+    font-weight:700;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .step-list li::marker{display:none;color:transparent}
+
+  /* ── Inline code / formula ── */
+  code{
+    font-family:'Source Code Pro',Menlo,monospace;
+    font-size:.88em;
+    background:rgba(44,36,22,.06);
+    padding:.1em .35em;
+    border-radius:3px;
+  }
+
+  /* ── Table ── */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin:1.25rem 0;
+    font-size:.92rem;
+  }
+  thead th{
+    font-family:'Libre Baskerville',serif;
+    font-size:.85rem;
+    text-align:left;
+    padding:.6rem .75rem;
+    border-bottom:2px solid var(--ink);
+    color:var(--navy);
+  }
+  tbody td{
+    padding:.55rem .75rem;
+    border-bottom:1px solid rgba(44,36,22,.1);
+    vertical-align:top;
+  }
+  tbody tr:last-child td{border-bottom:none}
+
+  /* ── Footer ── */
+  footer{
+    max-width:var(--col);
+    margin:0 auto;
+    padding:2rem 1.5rem 3rem;
+    border-top:1px solid rgba(44,36,22,.12);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:.85rem;
+    color:rgba(44,36,22,.5);
+  }
+  footer a{
+    color:var(--navy);
+    text-decoration:none;
+    font-weight:600;
+  }
+  footer a:hover{text-decoration:underline}
+
+  /* ── Responsive ── */
+  @media(max-width:740px){
+    html{font-size:16px}
+    main{padding:2rem 1.25rem 3.5rem}
+    h1{font-size:1.6rem}
+    h2{font-size:1.15rem}
+    .nav-inner{flex-direction:column;align-items:flex-start}
+    footer{flex-direction:column;gap:.75rem;text-align:center}
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ Navigation ═══════════ -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-title"><a href="index.html">The DS Interview Companion</a></div>
+    <div class="nav-chapter">
+      <a href="ch5.html">&larr; Prev</a>
+      <span>Chapter VI</span>
+      <a href="appendix-quiz.html">Next &rarr;</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════ Main Content ═══════════ -->
+<main>
+
+<p class="chapter-label">Chapter VI</p>
+<h1>Case Studies</h1>
+<p class="chapter-subtitle">Thinking Like a Data Scientist</p>
+
+<!-- ────────────────────────────────────
+     6.1 Product Metrics
+     ──────────────────────────────────── -->
+<h2>6.1 &nbsp; Product Metrics</h2>
+
+<p>
+  Before you can diagnose a problem, design an experiment, or size a market, you
+  need a shared language for <em>what to measure</em>. In product analytics the
+  most widely adopted vocabulary comes from the <strong>AARRR framework</strong>,
+  sometimes called "Pirate Metrics" for the sound its acronym makes. Originally
+  proposed by Dave McClure, AARRR maps the full user lifecycle into five stages.
+  Understanding each stage deeply is the foundation of any product case study.
+</p>
+
+<h3>Acquisition</h3>
+<p>
+  <strong>Definition.</strong> How do users discover your product? Acquisition
+  measures the top of the funnel &mdash; the channels and campaigns that bring
+  people to your door.
+</p>
+<p>
+  <strong>Example metrics:</strong> new sign-ups per week, cost per acquisition
+  (CPA), organic vs. paid traffic split, channel-specific conversion rates.
+</p>
+<p>
+  <strong>Why it matters.</strong> A product cannot grow if nobody knows it
+  exists. But acquisition alone is vanity &mdash; 100,000 sign-ups mean nothing
+  if those users never return. Tracking acquisition <em>by channel</em> lets you
+  allocate marketing spend toward the sources that bring in high-value users, not
+  merely high volumes.
+</p>
+
+<h3>Activation</h3>
+<p>
+  <strong>Definition.</strong> When does a new user first experience the core
+  value of your product? Activation captures the "aha moment" &mdash; the point
+  at which a visitor becomes a meaningful user.
+</p>
+<p>
+  <strong>Example metrics:</strong> percentage of sign-ups who complete onboarding,
+  time to first key action (e.g., sending a first message, creating a first
+  playlist), onboarding funnel completion rate.
+</p>
+<p>
+  <strong>Why it matters.</strong> Activation is the bridge between acquisition
+  and retention. If your product fails to deliver value quickly, users churn
+  before they ever become regulars. Improving activation often yields the highest
+  leverage of any growth initiative because it multiplies the value of every
+  dollar spent on acquisition.
+</p>
+
+<h3>Retention</h3>
+<p>
+  <strong>Definition.</strong> Do users come back? Retention measures ongoing
+  engagement over time &mdash; whether the product is truly sticky.
+</p>
+<p>
+  <strong>Example metrics:</strong> Day-1 / Day-7 / Day-30 retention rates,
+  weekly active users (WAU) / monthly active users (MAU), cohort retention
+  curves, churn rate.
+</p>
+<p>
+  <strong>Why it matters.</strong> Retention is the single most important stage.
+  No amount of acquisition can outrun a leaky bucket. A product with strong
+  retention compounds its user base over time; a product with poor retention is
+  perpetually running uphill. Investors and seasoned PMs look at retention curves
+  before anything else.
+</p>
+
+<h3>Revenue</h3>
+<p>
+  <strong>Definition.</strong> How does the product make money? Revenue tracks
+  the monetization layer &mdash; the conversion of engaged users into paying
+  customers.
+</p>
+<p>
+  <strong>Example metrics:</strong> average revenue per user (ARPU), lifetime
+  value (LTV), conversion rate from free to paid, monthly recurring revenue
+  (MRR), LTV-to-CAC ratio.
+</p>
+<p>
+  <strong>Why it matters.</strong> Revenue validates the business model. A
+  product may have devoted users, but if they will not pay (or if the cost of
+  serving them exceeds what they generate), the company is not sustainable.
+  Tracking revenue alongside retention lets you distinguish high-value cohorts
+  from low-value ones.
+</p>
+
+<h3>Referral</h3>
+<p>
+  <strong>Definition.</strong> Do users bring in other users? Referral measures
+  organic word-of-mouth and viral growth loops.
+</p>
+<p>
+  <strong>Example metrics:</strong> net promoter score (NPS), viral coefficient
+  (invites sent &times; conversion per invite), percentage of new users arriving
+  via referral.
+</p>
+<p>
+  <strong>Why it matters.</strong> Referral is the closest proxy for genuine user
+  satisfaction. When users love a product enough to recommend it, you gain a
+  nearly free acquisition channel that also tends to deliver higher-quality users
+  (because they come pre-qualified by a friend's recommendation).
+</p>
+
+<h3>The North Star Metric</h3>
+<p>
+  While the AARRR framework provides a comprehensive map of the user lifecycle,
+  most successful product teams also identify a single <strong>North Star
+  Metric</strong> &mdash; one number that best captures the core value the product
+  delivers. The North Star sits at the intersection of user satisfaction and
+  business sustainability. It is the metric that, if it grows, you can be confident
+  both users and the business are winning.
+</p>
+
+<table>
+  <thead>
+    <tr><th>Company</th><th>North Star Metric</th><th>Rationale</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Airbnb</td>
+      <td>Nights booked</td>
+      <td>Captures both guest value (finding a stay) and host value (earning income)</td>
+    </tr>
+    <tr>
+      <td>Spotify</td>
+      <td>Time spent listening</td>
+      <td>Reflects genuine engagement; correlated with retention and willingness to pay</td>
+    </tr>
+    <tr>
+      <td>Facebook</td>
+      <td>Daily active users</td>
+      <td>Measures habitual use; a prerequisite for ad revenue and network effects</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="key-insight">
+  <p class="insight-label">Key Insight</p>
+  <p>
+    A good North Star Metric aligns user value with business value. If your
+    North Star can grow while users are unhappy (e.g., revenue driven by dark
+    patterns), it is the wrong metric. If it can grow while the business is
+    losing money (e.g., free usage with no path to monetization), it is also the
+    wrong metric. The best North Stars make user success and business success
+    <em>the same thing</em>.
+  </p>
+</div>
+
+
+<!-- ────────────────────────────────────
+     6.2 Structuring Your Approach
+     ──────────────────────────────────── -->
+<h2>6.2 &nbsp; Structuring Your Approach</h2>
+
+<p>
+  When an interviewer presents a product case &mdash; "engagement dropped,"
+  "revenue is flat," "should we launch this feature?" &mdash; the worst thing
+  you can do is jump straight into analysis. The best candidates follow a
+  deliberate, repeatable <strong>6-step framework</strong> that demonstrates both
+  analytical rigor and business maturity.
+</p>
+
+<ol class="step-list">
+  <li>
+    <strong>Clarify.</strong> Repeat the problem back in your own words to
+    confirm understanding. Ask scope questions: Which product or platform? Which
+    user segment? What time window? Is this global or regional? Clarification is
+    not a sign of weakness &mdash; it shows you know that the same question can
+    have very different answers depending on context.
+  </li>
+  <li>
+    <strong>Define metrics.</strong> Identify a <em>primary metric</em> that
+    directly measures the problem and one or two <em>guardrail metrics</em> that
+    prevent you from solving the problem in a way that causes harm elsewhere.
+    For example, if engagement is the primary metric, a guardrail might be
+    revenue per user (to ensure you are not boosting engagement by giving
+    everything away for free).
+  </li>
+  <li>
+    <strong>Hypothesize.</strong> Before touching any data, state your leading
+    hypotheses out loud. "I suspect the drop is driven by a seasonal pattern,"
+    or "My initial hypothesis is that a recent UI change affected new users
+    disproportionately." This frames your analysis and shows the interviewer you
+    think before you compute.
+  </li>
+  <li>
+    <strong>Analyze.</strong> Segment the data along relevant dimensions &mdash;
+    by user cohort, platform, geography, time, feature, or traffic source.
+    Segmentation is how you move from "something changed" to "this specific thing
+    changed for this specific group."
+  </li>
+  <li>
+    <strong>Recommend.</strong> Translate your findings into a concrete action.
+    "I recommend we roll back the UI change for mobile users and A/B test a
+    revised version." Always pair the recommendation with an <em>expected
+    impact</em>: "Based on the segment sizes, I estimate this will recover
+    roughly 10 of the 15 percentage points we lost."
+  </li>
+  <li>
+    <strong>Measure.</strong> Close the loop by describing how you would validate
+    your recommendation. What experiment would you run? What metric would you
+    track? Over what time horizon? This final step shows you think in terms of
+    continuous learning, not one-off answers.
+  </li>
+</ol>
+
+<div class="example-box">
+  <p class="example-label">Example 6.1 &mdash; Engagement Dropped 15% Last Week</p>
+  <p>
+    <strong>Prompt:</strong> "Our weekly active users dropped 15% last week.
+    What happened?"
+  </p>
+  <p>
+    <strong>Step 1 &mdash; Clarify.</strong> "To make sure I understand: we are
+    looking at a 15% week-over-week decline in WAU across the entire product?
+    Is this on all platforms &mdash; web, iOS, and Android &mdash; or a specific
+    one? And just to confirm, we are comparing last week to the week before, not
+    to the same week last year?"
+  </p>
+  <p>
+    <strong>Step 2 &mdash; Define metrics.</strong> "My primary metric is WAU.
+    As guardrails, I will also track revenue per user and session quality (pages
+    per session, time per session) to make sure any recovery effort does not
+    artificially inflate WAU at the expense of real engagement."
+  </p>
+  <p>
+    <strong>Step 3 &mdash; Hypothesize.</strong> "My initial hypotheses are:
+    (a) a product or app update introduced a bug that is preventing some users
+    from accessing the product; (b) a seasonal or external event reduced usage
+    (e.g., a holiday week); (c) a change in marketing or push-notification
+    strategy reduced re-engagement. Let me investigate each."
+  </p>
+  <p>
+    <strong>Step 4 &mdash; Analyze.</strong> "I would segment the drop by
+    platform first. If the decline is concentrated on iOS but not Android or web,
+    that strongly suggests a bug in the latest iOS release. Next, I would segment
+    by user tenure &mdash; are we losing new users (an acquisition or activation
+    problem) or existing users (a retention problem)? Finally, I would look at
+    geography: if the drop is concentrated in one region, an external event is
+    more likely."
+  </p>
+  <p>
+    <strong>Step 5 &mdash; Recommend.</strong> "Suppose the data shows the drop
+    is almost entirely on iOS, concentrated among users who updated to version
+    4.7. I would recommend an immediate hotfix for the identified bug, along
+    with a re-engagement push notification to affected users once the fix is
+    deployed. Based on the segment size, I estimate this recovers approximately
+    12 of the 15 lost percentage points within one week of the fix."
+  </p>
+  <p>
+    <strong>Step 6 &mdash; Measure.</strong> "After the hotfix ships, I would
+    track the iOS WAU recovery curve daily. I would also monitor session crash
+    rates and app-store ratings as leading indicators. If WAU has not recovered
+    within 10 days, I would investigate whether a secondary factor is at play."
+  </p>
+</div>
+
+
+<!-- ────────────────────────────────────
+     6.3 Diagnosing Metric Changes
+     ──────────────────────────────────── -->
+<h2>6.3 &nbsp; Diagnosing Metric Changes</h2>
+
+<p>
+  A common interview pattern is: "Metric X changed by Y%. Why?" The instinct is
+  to guess. The disciplined approach is to follow an <strong>investigation
+  framework</strong> that systematically rules out categories of causes.
+</p>
+
+<h3>The Investigation Framework</h3>
+
+<h4>1. Is It a Data Problem?</h4>
+<p>
+  Before assuming the metric truly changed, verify the data pipeline. Did a
+  logging change alter how events are captured? Did a schema migration break a
+  join? Was there a delay in data processing that made the number look smaller
+  than it really is? Data problems are embarrassingly common and should always be
+  the first thing you rule out.
+</p>
+
+<h4>2. Is It an External Factor?</h4>
+<p>
+  Look outside the product. Holidays, competitor launches, news events, changes
+  in app-store ranking algorithms, or even weather patterns can all affect
+  metrics. A ride-sharing company might see a spike during a transit strike; a
+  food-delivery app might see a dip during a week of unusually pleasant weather
+  when people go out to eat instead.
+</p>
+
+<h4>3. Is It an Internal Change?</h4>
+<p>
+  Check the product changelog. Was a new feature launched? A UI redesigned? A
+  pricing plan adjusted? An experiment ramped up? Internal changes are the most
+  actionable category because you can reverse or modify them.
+</p>
+
+<h4>4. Segment to Isolate</h4>
+<p>
+  Once you have a category, drill down. Segment by platform, geography, user
+  cohort, device type, subscription tier, or any other dimension relevant to the
+  product. The goal is to move from "revenue went up" to "revenue went up among
+  Premium users in North America on iOS."
+</p>
+
+<h4>5. Quantify the Contribution</h4>
+<p>
+  After isolating the driver, quantify how much of the overall metric movement
+  it explains. If Premium users in North America account for 18 of a 20
+  percentage-point increase, you have found the primary driver and can focus your
+  explanation there. If it only explains 5 of 20 points, keep looking.
+</p>
+
+<div class="example-box">
+  <p class="example-label">Example 6.2 &mdash; Revenue Up 20% but Rides Down 5%</p>
+  <p>
+    <strong>Prompt:</strong> "Revenue increased 20% this quarter, but the total
+    number of rides decreased 5%. What is going on?"
+  </p>
+  <p>
+    <strong>Decomposition.</strong> Start with the fundamental identity:
+  </p>
+  <p style="text-align:center;font-family:'Libre Baskerville',serif;font-size:1.05rem;margin:1rem 0;">
+    Revenue &nbsp;=&nbsp; Rides &nbsp;&times;&nbsp; Revenue per Ride
+  </p>
+  <p>
+    If rides are down 5% but revenue is up 20%, then revenue per ride must have
+    increased significantly. Specifically:
+  </p>
+  <p style="text-align:center;">
+    <code>1.20 = 0.95 &times; X</code> &nbsp;&rarr;&nbsp; <code>X &asymp; 1.263</code>
+  </p>
+  <p>
+    Revenue per ride increased roughly 26%. Now the question becomes: <em>why</em>
+    did revenue per ride jump 26%?
+  </p>
+  <p>
+    <strong>Hypothesis 1 &mdash; Price increase.</strong> Did the company raise
+    prices or introduce surge pricing more aggressively? Check whether the
+    average price charged per ride changed.
+  </p>
+  <p>
+    <strong>Hypothesis 2 &mdash; Mix shift.</strong> Are users taking fewer but
+    <em>longer</em> or more <em>expensive</em> rides? Perhaps short commute
+    rides declined (people returned to public transit) while airport rides and
+    long-distance trips held steady. A shift in ride-type mix toward higher-fare
+    rides would increase average revenue per ride even without a price change.
+  </p>
+  <p>
+    <strong>Hypothesis 3 &mdash; Product mix shift.</strong> Did the company
+    launch or promote a premium tier (e.g., Black or XL vehicles)? If a larger
+    share of rides are now premium, average revenue per ride rises.
+  </p>
+  <p>
+    <strong>Quantification.</strong> You would segment revenue per ride by ride
+    type, geography, and time to see which factor contributes most. If 80% of
+    the increase is explained by a new surge-pricing algorithm rolled out
+    mid-quarter, you have your answer &mdash; and you can also flag the risk
+    that aggressive pricing may be driving the decline in ride volume.
+  </p>
+</div>
+
+
+<!-- ────────────────────────────────────
+     6.4 Market Sizing
+     ──────────────────────────────────── -->
+<h2>6.4 &nbsp; Market Sizing</h2>
+
+<p>
+  Market-sizing questions &mdash; also called Fermi estimations &mdash; test your
+  ability to break an unknowable number into knowable components, make reasonable
+  assumptions, and arrive at a defensible order-of-magnitude answer. There are two
+  primary approaches.
+</p>
+
+<h3>Top-Down</h3>
+<p>
+  Start with a large, known number (total population, total market revenue) and
+  narrow it down through successive filters. Top-down is fast and works well when
+  reliable macro data exists.
+</p>
+<p>
+  <strong>Structure:</strong> Total addressable market &rarr; relevant segment
+  &rarr; penetration rate &rarr; target metric.
+</p>
+
+<h3>Bottom-Up</h3>
+<p>
+  Start with a single unit of activity (one store, one user, one transaction)
+  and scale it up. Bottom-up tends to produce more grounded estimates because
+  each assumption is about something concrete and observable.
+</p>
+<p>
+  <strong>Structure:</strong> Unit economics &rarr; units per location or user
+  &rarr; number of locations or users &rarr; total.
+</p>
+
+<div class="example-box">
+  <p class="example-label">Example 6.3 &mdash; How Many Piano Tuners Are in Chicago?</p>
+  <p>
+    This is the classic Fermi estimation, famously attributed to physicist Enrico
+    Fermi himself. Let us work through it bottom-up.
+  </p>
+  <p><strong>Step 1 &mdash; Estimate the number of pianos in Chicago.</strong></p>
+  <ul>
+    <li>Chicago metro population: ~9.5 million people, or roughly 3.5 million households.</li>
+    <li>Assume about 5% of households own a piano: 3,500,000 &times; 0.05 = 175,000 pianos in homes.</li>
+    <li>Add institutional pianos (schools, churches, concert halls, hotels, studios): estimate roughly 10,000 more.</li>
+    <li>Total pianos: approximately <strong>185,000</strong>.</li>
+  </ul>
+  <p><strong>Step 2 &mdash; Estimate tunings per year.</strong></p>
+  <ul>
+    <li>A well-maintained piano should be tuned 1&ndash;2 times per year. Many owners neglect this, so assume an average of 1 tuning per piano per year.</li>
+    <li>Total tunings per year: ~185,000.</li>
+  </ul>
+  <p><strong>Step 3 &mdash; Estimate how many tunings one tuner can do.</strong></p>
+  <ul>
+    <li>A tuning takes about 1.5&ndash;2 hours including travel. Call it 2 hours.</li>
+    <li>A tuner works roughly 8 hours per day, 5 days per week, 50 weeks per year = 2,000 hours/year.</li>
+    <li>At 2 hours per tuning: 2,000 / 2 = <strong>1,000 tunings per tuner per year</strong>.</li>
+  </ul>
+  <p><strong>Step 4 &mdash; Divide.</strong></p>
+  <ul>
+    <li>185,000 tunings / 1,000 tunings per tuner = <strong>~185 piano tuners</strong>.</li>
+  </ul>
+  <p>
+    A quick search suggests the actual number is in the range of 100&ndash;300.
+    Our estimate of 185 is comfortably in that range. The precise number matters
+    far less than the clarity of the structure.
+  </p>
+</div>
+
+<div class="key-insight">
+  <p class="insight-label">Key Insight</p>
+  <p>
+    Interviewers care about your <em>structure and assumptions</em>, not the
+    exact number. A clearly reasoned estimate that is off by a factor of two is
+    far more impressive than a lucky guess. Always state your assumptions
+    explicitly, flag which ones you are least confident about, and note how
+    sensitive the final answer is to those assumptions.
+  </p>
+</div>
+
+
+<!-- ────────────────────────────────────
+     6.5 Experiment Design
+     ──────────────────────────────────── -->
+<h2>6.5 &nbsp; Experiment Design</h2>
+
+<p>
+  Designing a rigorous A/B test is one of the most frequently assessed skills in
+  data science interviews. A complete answer covers the full lifecycle of an
+  experiment, from hypothesis through analysis.
+</p>
+
+<h3>Unit of Randomization</h3>
+<p>
+  The first decision is <em>what</em> to randomize. The three common choices are:
+</p>
+<ul>
+  <li><strong>User-level:</strong> each user is assigned to treatment or control for the duration of the experiment. This is the default and usually the right choice &mdash; it avoids the inconsistency of a user seeing different experiences across sessions.</li>
+  <li><strong>Session-level:</strong> each session is independently randomized. Useful when the change is session-scoped (e.g., a different search algorithm) and there is no carryover between sessions.</li>
+  <li><strong>Page-level:</strong> each page view is randomized. Rarely appropriate because it creates a jarring user experience, but sometimes used for low-stakes UI variations.</li>
+</ul>
+
+<h3>Duration and Sample Size</h3>
+<p>
+  The required sample size depends on four parameters: the baseline metric value,
+  the minimum detectable effect (MDE) you care about, the significance level
+  (&alpha;, typically 0.05), and the statistical power (1 &minus; &beta;,
+  typically 0.80). From the sample size and your daily traffic, you derive the
+  experiment duration. A common mistake is running an experiment for too short a
+  period &mdash; always ensure you capture at least one full weekly cycle to
+  account for day-of-week effects.
+</p>
+
+<h3>Guardrail Metrics</h3>
+<p>
+  Beyond the primary metric you are trying to move, define guardrail metrics that
+  must not degrade. For a checkout-flow experiment, the primary metric might be
+  conversion rate, while guardrails include average order value, customer support
+  ticket rate, and return rate. If the new flow increases conversions but also
+  increases returns, the net effect may be negative.
+</p>
+
+<h3>Network Effects and Cluster Randomization</h3>
+<p>
+  Standard A/B tests assume that one user's experience does not affect another's
+  outcome. This assumption breaks down in products with strong network effects
+  &mdash; social networks, marketplaces, messaging apps. If you change the
+  experience for treatment users, their behavior may "spill over" to control
+  users (e.g., treated users send more messages to control users, inflating
+  control-group engagement).
+</p>
+<p>
+  The solution is <strong>cluster randomization</strong>: randomize at the level
+  of a cluster (a geographic region, a social graph community, or a market) so
+  that spillover is contained within the treatment group. Cluster randomization
+  requires larger sample sizes because effective sample size is measured in
+  clusters, not individuals.
+</p>
+
+<h3>Novelty and Primacy Effects</h3>
+<p>
+  <strong>Novelty effect:</strong> users may engage more with a new feature
+  simply because it is new. The treatment looks better initially but the lift
+  fades over time. <strong>Primacy effect:</strong> users who are accustomed to
+  the old experience may initially react negatively to any change, making the
+  treatment look worse at first, even if it is objectively better. The remedy
+  for both is to run the experiment long enough (typically 2&ndash;4 weeks) and
+  to analyze the treatment effect over time, looking for stabilization.
+</p>
+
+<div class="example-box">
+  <p class="example-label">Example 6.4 &mdash; Designing a Test for a New Checkout Flow</p>
+  <p>
+    <strong>Prompt:</strong> "We redesigned the checkout flow from 4 steps to 2.
+    Design an A/B test."
+  </p>
+  <p>
+    <strong>Unit of randomization:</strong> User-level. We want each user to
+    have a consistent checkout experience across all their sessions. Randomizing
+    at the session level would mean the same user might see the old flow one day
+    and the new flow the next, creating confusion.
+  </p>
+  <p>
+    <strong>Primary metric:</strong> Checkout completion rate (proportion of
+    users who reach the payment confirmation page after adding an item to cart).
+  </p>
+  <p>
+    <strong>Guardrail metrics:</strong> (1) Average order value &mdash; ensure
+    the streamlined flow does not cause users to skip adding items; (2) Return
+    rate within 14 days &mdash; ensure speed does not lead to accidental
+    purchases; (3) Customer support contacts related to checkout &mdash; ensure
+    the new flow is not confusing.
+  </p>
+  <p>
+    <strong>Sample size calculation:</strong> Suppose our current checkout
+    completion rate is 65%. We want to detect a minimum 2 percentage-point lift
+    (to 67%) with &alpha; = 0.05 and power = 0.80. Using a two-proportion z-test
+    formula, the required sample size is approximately 4,400 users per arm, or
+    8,800 total. If we see 2,000 checkout-eligible users per day, the experiment
+    needs to run about 5 days for statistical power &mdash; but we should round
+    up to <strong>14 days</strong> to capture two full weekly cycles and to allow
+    novelty effects to fade.
+  </p>
+  <p>
+    <strong>Network effects:</strong> Checkout is an individual activity with no
+    meaningful spillover between users, so standard user-level randomization is
+    sufficient. Cluster randomization is not needed here.
+  </p>
+  <p>
+    <strong>Analysis plan:</strong> After 14 days, compare checkout completion
+    rates between treatment and control using a two-proportion z-test. Check
+    guardrail metrics for statistically significant degradation. Also plot the
+    treatment effect by day to verify it has stabilized (no lingering novelty or
+    primacy effect). If the primary metric shows a significant lift and no
+    guardrail has degraded, recommend a full rollout.
+  </p>
+</div>
+
+
+<!-- ────────────────────────────────────
+     6.6 Communicating Your Analysis
+     ──────────────────────────────────── -->
+<h2>6.6 &nbsp; Communicating Your Analysis</h2>
+
+<p>
+  Technical skill gets you to the right answer. Communication skill gets the
+  answer <em>heard, believed, and acted on</em>. In an interview, the two carry
+  roughly equal weight. Here is how to communicate effectively.
+</p>
+
+<h3>Lead with the Answer</h3>
+<p>
+  Use the <strong>pyramid principle</strong>: state your conclusion first, then
+  provide supporting evidence. "The 15% engagement drop was caused by a bug in
+  the iOS 4.7 release that crashed the app on launch for users with older
+  devices. Here is how I arrived at that conclusion." This is the opposite of how
+  most people naturally communicate (building up to a punchline), but it is far
+  more effective in a business context because it respects the listener's time
+  and gives them a framework for processing the details that follow.
+</p>
+
+<h3>Signal Your Structure</h3>
+<p>
+  Before diving into analysis, tell the interviewer where you are going. "I will
+  approach this in three parts: first, I will clarify the metric and scope;
+  second, I will investigate the most likely causes; third, I will recommend an
+  action and a way to measure its impact." This simple act of sign-posting makes
+  your answer dramatically easier to follow and shows that you think in an
+  organized way.
+</p>
+
+<h3>Quantify Everything</h3>
+<p>
+  Vague answers erode trust. Instead of "this affected a lot of users," say
+  "this affected approximately 120,000 users, or 8% of our monthly active
+  base." Instead of "we should see improvement," say "I estimate this will
+  recover 10 of the 15 lost percentage points within two weeks." Even when you
+  are estimating, a specific number with stated uncertainty ("roughly 120K,
+  give or take 20%") is more useful than a qualitative hedge.
+</p>
+
+<h3>Acknowledge Trade-Offs</h3>
+<p>
+  No recommendation is without cost. Strong communicators proactively name the
+  trade-offs: "Rolling back the UI change will recover engagement but delay the
+  redesign project by two sprints. An alternative is to ship a targeted hotfix
+  that addresses the crash without reverting the design, though that carries
+  some risk of introducing new bugs." Acknowledging trade-offs does not weaken
+  your recommendation; it strengthens your credibility.
+</p>
+
+<h3>Ask Clarifying Questions</h3>
+<p>
+  The importance of clarifying questions goes beyond just getting the right
+  answer. It demonstrates intellectual maturity. It shows you understand that
+  real-world problems are ambiguous and that making assumptions without checking
+  them is a common source of wasted effort. In an interview, asking "When you
+  say engagement, do you mean DAU, time spent, or actions taken?" shows the
+  interviewer that you have seen enough messy real-world problems to know that
+  the definition matters.
+</p>
+
+<div class="key-insight">
+  <p class="insight-label">Key Insight</p>
+  <p>
+    The best technical answer, poorly communicated, loses to a decent answer
+    that is well communicated. This is not cynicism &mdash; it is reality. In a
+    professional setting, your analysis only creates value if someone understands
+    it well enough to act on it. Practice your communication with the same
+    discipline you bring to your technical preparation.
+  </p>
+</div>
+
+</main>
+
+<!-- ═══════════ Footer ═══════════ -->
+<footer>
+  <span>Page 6</span>
+  <a href="appendix-quiz.html">Appendix: Quiz &rarr;</a>
+</footer>
+
+</body>
+</html>

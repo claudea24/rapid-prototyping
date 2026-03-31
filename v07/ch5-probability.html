@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter V: Probability — The Data Science Interview Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --page: #faf6f0; --paper: #f5efe6; --surface: #fff;
+      --border: #e0d5c5; --rule: #d4c8b4;
+      --ink: #2c2416; --ink2: #4a3f2f; --ink-muted: #8a7e6e; --ink-light: #b5a998;
+      --burgundy: #7b2d3b; --burgundy-light: #f5eaec;
+      --navy: #1a3a5c; --navy-light: #eaf0f6;
+      --forest: #2d5a3d; --forest-light: #eaf3ed;
+      --gold: #a8862a; --gold-light: #f8f2e4;
+    }
+    body {
+      font-family: 'Libre Baskerville', Georgia, serif;
+      background: var(--page); color: var(--ink);
+      line-height: 1.85; font-size: 16px;
+    }
+
+    /* ── Navigation ── */
+    .top-nav {
+      max-width: 680px; margin: 0 auto; padding: 28px 24px 0;
+      display: flex; justify-content: space-between; align-items: baseline;
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+    }
+    .top-nav a {
+      color: var(--ink-muted); text-decoration: none; transition: color 0.15s;
+    }
+    .top-nav a:hover { color: var(--burgundy); }
+    .top-nav .book-title { letter-spacing: 0.5px; }
+    .top-nav .chapter-ref {
+      display: flex; gap: 16px; align-items: baseline;
+    }
+    .top-nav .chapter-label {
+      font-weight: 600; color: var(--ink2); letter-spacing: 0.5px;
+    }
+    .top-nav .nav-arrows { display: flex; gap: 10px; }
+    .top-nav .nav-arrows a {
+      font-size: 0.85rem; color: var(--ink-light);
+    }
+    .top-nav .nav-arrows a:hover { color: var(--burgundy); }
+
+    /* ── Chapter ── */
+    .chapter { max-width: 680px; margin: 0 auto; padding: 0 24px 80px; }
+
+    .chapter-header {
+      text-align: center; padding: 60px 0 48px;
+      border-bottom: 1px solid var(--rule); margin-bottom: 48px;
+    }
+    .chapter-number {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 4px;
+      color: var(--ink-muted); margin-bottom: 12px;
+    }
+    .chapter-title {
+      font-size: 2rem; font-weight: 700; line-height: 1.3;
+      color: var(--ink); margin-bottom: 8px;
+    }
+    .chapter-subtitle {
+      font-size: 1rem; font-style: italic; color: var(--ink-muted);
+    }
+
+    /* ── Typography ── */
+    h2 {
+      font-size: 1.35rem; font-weight: 700; color: var(--ink);
+      margin: 56px 0 20px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--rule);
+    }
+    h3 {
+      font-size: 1.05rem; font-weight: 700; color: var(--ink2);
+      margin: 36px 0 12px;
+    }
+    p { margin-bottom: 18px; color: var(--ink2); }
+    strong { color: var(--ink); font-weight: 700; }
+    em { font-style: italic; }
+
+    ul, ol { margin: 0 0 18px 28px; color: var(--ink2); }
+    li { margin-bottom: 6px; }
+    li::marker { color: var(--ink-muted); }
+
+    /* ── Formula Block ── */
+    .formula-block {
+      background: var(--burgundy-light); border-left: 3px solid var(--burgundy);
+      padding: 20px 24px; margin: 24px 0; border-radius: 0 6px 6px 0;
+      font-family: 'Source Code Pro', monospace; font-size: 0.92rem;
+      color: var(--burgundy); line-height: 1.7;
+    }
+    .formula-block .formula-label {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--burgundy); opacity: 0.7; margin-bottom: 8px;
+    }
+    .formula-block .formula-main {
+      font-size: 1.05rem; font-weight: 500;
+    }
+    .formula-block p { color: var(--burgundy); margin-bottom: 8px; }
+    .formula-block p:last-child { margin-bottom: 0; }
+
+    /* ── Example Block ── */
+    .example-block {
+      background: var(--navy-light); border-left: 3px solid var(--navy);
+      padding: 20px 24px; margin: 24px 0; border-radius: 0 6px 6px 0;
+    }
+    .example-block .example-label {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--navy); margin-bottom: 8px;
+    }
+    .example-block p { color: var(--navy); margin-bottom: 10px; }
+    .example-block p:last-child { margin-bottom: 0; }
+    .example-block code {
+      font-family: 'Source Code Pro', monospace; font-size: 0.9rem;
+      background: rgba(26, 58, 92, 0.08); padding: 1px 5px; border-radius: 3px;
+    }
+
+    /* ── Key Insight Block ── */
+    .key-insight {
+      background: var(--gold-light); border-left: 3px solid var(--gold);
+      padding: 20px 24px; margin: 24px 0; border-radius: 0 6px 6px 0;
+    }
+    .key-insight .insight-label {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--gold); margin-bottom: 8px;
+    }
+    .key-insight p { color: var(--gold); margin-bottom: 10px; }
+    .key-insight p:last-child { margin-bottom: 0; }
+
+    /* ── Summary Table ── */
+    .summary-table-wrapper {
+      overflow-x: auto; margin: 24px 0;
+    }
+    .summary-table {
+      width: 100%; border-collapse: collapse; font-size: 0.88rem;
+    }
+    .summary-table th {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--ink-muted); text-align: left;
+      padding: 10px 12px; border-bottom: 2px solid var(--rule);
+      background: var(--paper);
+    }
+    .summary-table td {
+      padding: 10px 12px; border-bottom: 1px solid var(--border);
+      color: var(--ink2); vertical-align: top;
+    }
+    .summary-table td:first-child { font-weight: 700; color: var(--ink); white-space: nowrap; }
+    .summary-table code {
+      font-family: 'Source Code Pro', monospace; font-size: 0.82rem;
+      background: rgba(0,0,0,0.04); padding: 1px 4px; border-radius: 3px;
+    }
+
+    /* ── Inline Code ── */
+    code {
+      font-family: 'Source Code Pro', monospace; font-size: 0.9rem;
+    }
+
+    /* ── Footer ── */
+    .chapter-footer {
+      max-width: 680px; margin: 0 auto; padding: 32px 24px;
+      border-top: 1px solid var(--rule);
+      display: flex; justify-content: space-between; align-items: center;
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+    }
+    .chapter-footer a {
+      color: var(--ink-muted); text-decoration: none; transition: color 0.15s;
+    }
+    .chapter-footer a:hover { color: var(--burgundy); }
+    .chapter-footer .footer-center {
+      color: var(--ink-light); font-size: 0.75rem; letter-spacing: 0.5px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .chapter-title { font-size: 1.5rem; }
+      h2 { font-size: 1.15rem; }
+      .chapter { padding: 0 16px 60px; }
+      .top-nav { padding: 20px 16px 0; }
+      .formula-block, .example-block, .key-insight { padding: 16px 18px; }
+      .chapter-footer { padding: 24px 16px; flex-direction: column; gap: 12px; }
+      .summary-table { font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="top-nav">
+  <a href="index.html" class="book-title">The DS Interview Companion</a>
+  <div class="chapter-ref">
+    <span class="chapter-label">Chapter V</span>
+    <div class="nav-arrows">
+      <a href="ch4-stats.html" title="Previous chapter">&larr; Prev</a>
+      <a href="ch6-casing.html" title="Next chapter">Next &rarr;</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Chapter Content -->
+<article class="chapter">
+
+  <header class="chapter-header">
+    <div class="chapter-number">Chapter V</div>
+    <h1 class="chapter-title">Probability</h1>
+    <p class="chapter-subtitle">Reasoning Under Uncertainty</p>
+  </header>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- 5.1 Fundamentals                            -->
+  <!-- ═══════════════════════════════════════════ -->
+  <h2>5.1 &ensp; Fundamentals</h2>
+
+  <p>
+    Probability is the mathematical language we use to quantify uncertainty. Before we can reason about machine learning models, A/B tests, or Bayesian inference, we need a firm grasp of the ground rules.
+  </p>
+
+  <h3>The Addition Rule</h3>
+  <p>
+    When we want the probability that <em>at least one</em> of two events occurs, we use the addition rule. For any two events A and B:
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Addition Rule</div>
+    <p class="formula-main">P(A &cup; B) = P(A) + P(B) &minus; P(A &cap; B)</p>
+    <p>We subtract the intersection because it gets counted twice &mdash; once in P(A) and once in P(B).</p>
+  </div>
+  <p>
+    If A and B are <strong>mutually exclusive</strong> (they cannot both happen), the intersection is zero, and the formula simplifies to P(A &cup; B) = P(A) + P(B).
+  </p>
+
+  <h3>The Multiplication Rule</h3>
+  <p>
+    When we want the probability that <em>both</em> events occur, we use the multiplication rule:
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Multiplication Rule</div>
+    <p class="formula-main">P(A &cap; B) = P(A) &middot; P(B | A)</p>
+    <p>The probability of both A and B equals the probability of A times the probability of B <em>given</em> that A has occurred.</p>
+  </div>
+
+  <h3>Independence</h3>
+  <p>
+    Two events are <strong>independent</strong> if learning that one occurred tells you absolutely nothing about whether the other occurred. Formally, A and B are independent when P(B | A) = P(B). Intuitively: learning A happened doesn't change P(B).
+  </p>
+  <p>
+    When events are independent, the multiplication rule simplifies beautifully to P(A &cap; B) = P(A) &middot; P(B). This is what lets us, for instance, multiply the probability of getting heads on successive coin flips.
+  </p>
+
+  <h3>The Complement Technique</h3>
+  <p>
+    One of the most powerful problem-solving tricks in probability: sometimes it's far easier to count what <em>doesn't</em> happen than what does. Since P(A) = 1 &minus; P(A<sup>c</sup>), if computing P(A) directly is messy, try computing the complement instead.
+  </p>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      "What is the probability that at least one person..." is almost always easier to solve as 1 &minus; P(nobody does). This complementary counting technique appears in the birthday problem, network reliability, and dozens of interview questions.
+    </p>
+  </div>
+
+  <h3>Permutations vs. Combinations</h3>
+  <p>
+    <strong>Permutations</strong> count ordered arrangements. If you're choosing 3 flavors from 10 at an ice cream shop and the order matters (because the first scoop goes on the bottom), you have P(10, 3) = 10 &times; 9 &times; 8 = 720 possibilities.
+  </p>
+  <p>
+    <strong>Combinations</strong> count unordered selections. If you don't care which scoop goes where &mdash; you just want any 3 flavors &mdash; you divide out the 3! = 6 redundant orderings, giving C(10, 3) = 720 / 6 = 120 possibilities.
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Counting Formulas</div>
+    <p class="formula-main">P(n, k) = n! / (n &minus; k)!</p>
+    <p class="formula-main">C(n, k) = n! / (k! &middot; (n &minus; k)!)</p>
+    <p>Permutations when order matters. Combinations when it doesn't.</p>
+  </div>
+
+  <div class="example-block">
+    <div class="example-label">Example 5.1 &mdash; Committee Formation</div>
+    <p>
+      <strong>How many ways can we form a committee of 3 from 10 people?</strong>
+    </p>
+    <p>
+      A committee is an unordered group &mdash; being "selected first" doesn't give you a special role. So we need combinations:
+    </p>
+    <p>
+      C(10, 3) = 10! / (3! &middot; 7!) = (10 &times; 9 &times; 8) / (3 &times; 2 &times; 1) = 720 / 6 = <strong>120 ways</strong>.
+    </p>
+    <p>
+      If the committee had a chair, secretary, and treasurer (distinct roles), we'd need permutations instead: P(10, 3) = 720.
+    </p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- 5.2 Conditional Probability & Bayes         -->
+  <!-- ═══════════════════════════════════════════ -->
+  <h2>5.2 &ensp; Conditional Probability and Bayes' Theorem</h2>
+
+  <h3>Conditional Probability</h3>
+  <p>
+    Conditional probability answers the question: "Given that B has occurred, what is the probability of A?" It's about <strong>narrowing the sample space</strong>. Once we know B happened, B becomes our new universe, and we ask how much of B also contains A.
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Conditional Probability</div>
+    <p class="formula-main">P(A | B) = P(A &cap; B) / P(B)</p>
+    <p>Read as: "the probability of A given B."</p>
+  </div>
+
+  <h3>Deriving Bayes' Theorem</h3>
+  <p>
+    From the multiplication rule, we know that P(A &cap; B) = P(B | A) &middot; P(A). We also know that P(A &cap; B) = P(A | B) &middot; P(B). Setting these equal:
+  </p>
+  <p>
+    P(A | B) &middot; P(B) = P(B | A) &middot; P(A)
+  </p>
+  <p>
+    Dividing both sides by P(B) gives us Bayes' theorem:
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Bayes' Theorem</div>
+    <p class="formula-main">P(A | B) = P(B | A) &middot; P(A) / P(B)</p>
+    <p>Or in the language of Bayesian reasoning:</p>
+    <p class="formula-main">Posterior = (Likelihood &times; Prior) / Evidence</p>
+    <p><strong>Prior</strong> &mdash; our belief before seeing data. <strong>Likelihood</strong> &mdash; how probable the data is under our hypothesis. <strong>Evidence</strong> &mdash; the overall probability of the data. <strong>Posterior</strong> &mdash; our updated belief.</p>
+  </div>
+
+  <div class="example-block">
+    <div class="example-label">Example 5.2 &mdash; The Medical Test Problem</div>
+    <p>
+      <strong>Setup:</strong> A disease affects 1% of the population. A test for this disease is 99% accurate &mdash; it correctly identifies sick people 99% of the time (sensitivity), and correctly identifies healthy people 99% of the time (specificity). You test positive. What is the probability you actually have the disease?
+    </p>
+    <p>
+      Most people's intuition says "99%!" But the answer is roughly <strong>50%</strong>. Let's work through it.
+    </p>
+    <p>
+      <strong>Define events:</strong><br>
+      D = has disease, D<sup>c</sup> = healthy<br>
+      + = tests positive, &minus; = tests negative
+    </p>
+    <p>
+      <strong>What we know:</strong><br>
+      P(D) = 0.01 &ensp; (prevalence)<br>
+      P(+ | D) = 0.99 &ensp; (sensitivity)<br>
+      P(&minus; | D<sup>c</sup>) = 0.99, so P(+ | D<sup>c</sup>) = 0.01 &ensp; (false positive rate)
+    </p>
+    <p>
+      <strong>Step 1:</strong> Find P(+) using the law of total probability:<br>
+      P(+) = P(+ | D) &middot; P(D) + P(+ | D<sup>c</sup>) &middot; P(D<sup>c</sup>)<br>
+      P(+) = 0.99 &times; 0.01 + 0.01 &times; 0.99<br>
+      P(+) = 0.0099 + 0.0099 = 0.0198
+    </p>
+    <p>
+      <strong>Step 2:</strong> Apply Bayes' theorem:<br>
+      P(D | +) = P(+ | D) &middot; P(D) / P(+)<br>
+      P(D | +) = 0.99 &times; 0.01 / 0.0198<br>
+      P(D | +) = 0.0099 / 0.0198 = <strong>0.50 (50%)</strong>
+    </p>
+    <p>
+      <strong>Why so low?</strong> The disease is rare. Out of 10,000 people, about 100 are sick and 9,900 are healthy. The test correctly flags 99 of the 100 sick people, but it also falsely flags 99 of the 9,900 healthy people. So among the ~198 positive results, only half actually have the disease. The base rate matters enormously.
+    </p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- 5.3 Key Distributions                       -->
+  <!-- ═══════════════════════════════════════════ -->
+  <h2>5.3 &ensp; Key Distributions</h2>
+
+  <p>
+    A probability distribution tells us how likely each outcome is. Mastering a handful of fundamental distributions equips you to model an enormous range of real-world phenomena.
+  </p>
+
+  <h3>Bernoulli &amp; Binomial</h3>
+  <p>
+    A <strong>Bernoulli</strong> distribution models a single yes/no experiment: a coin flip, whether a customer clicks, whether a part is defective. It has one parameter <em>p</em> (the probability of success).
+  </p>
+  <p>
+    The <strong>Binomial</strong> distribution extends this to <em>n</em> independent trials. "Out of 100 manufactured parts, how many are defective?" If each part has a 2% defect rate independently, the number of defective parts follows Binomial(n=100, p=0.02).
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Binomial Distribution</div>
+    <p class="formula-main">P(X = k) = C(n, k) &middot; p<sup>k</sup> &middot; (1 &minus; p)<sup>n&minus;k</sup></p>
+    <p>Mean: E[X] = np &emsp; Variance: Var(X) = np(1 &minus; p)</p>
+  </div>
+
+  <h3>Poisson</h3>
+  <p>
+    The Poisson distribution models the <strong>number of events in a fixed interval</strong> when events occur independently at a constant average rate. How many customers arrive at a store per hour? How many typos on a page? How many server errors per day?
+  </p>
+  <p>
+    It has a single parameter &lambda; (lambda), which is both the mean and the variance.
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Poisson Distribution</div>
+    <p class="formula-main">P(X = k) = e<sup>&minus;&lambda;</sup> &middot; &lambda;<sup>k</sup> / k!</p>
+    <p>Mean: E[X] = &lambda; &emsp; Variance: Var(X) = &lambda;</p>
+  </div>
+
+  <h3>Geometric</h3>
+  <p>
+    The Geometric distribution models the <strong>number of trials until the first success</strong>. How many calls until a salesperson makes a sale? How many interviews until you get an offer? Each trial is independent with success probability <em>p</em>.
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Geometric Distribution</div>
+    <p class="formula-main">P(X = k) = (1 &minus; p)<sup>k&minus;1</sup> &middot; p</p>
+    <p>Mean: E[X] = 1/p &emsp; Variance: Var(X) = (1 &minus; p) / p<sup>2</sup></p>
+  </div>
+
+  <h3>Normal (Gaussian)</h3>
+  <p>
+    The Normal distribution is the most important distribution in statistics. It describes heights, measurement errors, test scores, and &mdash; thanks to the Central Limit Theorem &mdash; the distribution of sample means from virtually any population. Its familiar bell curve is defined by two parameters: the mean &mu; (center) and standard deviation &sigma; (spread).
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Normal Distribution</div>
+    <p class="formula-main">f(x) = (1 / &sigma;&radic;(2&pi;)) &middot; e<sup>&minus;(x&minus;&mu;)<sup>2</sup> / (2&sigma;<sup>2</sup>)</sup></p>
+    <p>Mean: E[X] = &mu; &emsp; Variance: Var(X) = &sigma;<sup>2</sup></p>
+    <p>The 68-95-99.7 rule: ~68% of values fall within 1&sigma; of the mean, ~95% within 2&sigma;, ~99.7% within 3&sigma;.</p>
+  </div>
+
+  <h3>Exponential</h3>
+  <p>
+    The Exponential distribution models <strong>time between events</strong> in a Poisson process. If customers arrive at a rate of &lambda; per hour (Poisson), then the time between arrivals follows an Exponential(&lambda;) distribution. It is the only continuous distribution with the "memoryless" property: the probability of waiting another 5 minutes is the same whether you've already waited 2 minutes or 20.
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Exponential Distribution</div>
+    <p class="formula-main">f(x) = &lambda; &middot; e<sup>&minus;&lambda;x</sup> &ensp; for x &ge; 0</p>
+    <p>Mean: E[X] = 1/&lambda; &emsp; Variance: Var(X) = 1/&lambda;<sup>2</sup></p>
+  </div>
+
+  <h3>Summary of Distributions</h3>
+  <div class="summary-table-wrapper">
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Distribution</th>
+          <th>Type</th>
+          <th>Models</th>
+          <th>Parameters</th>
+          <th>Mean</th>
+          <th>Variance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Bernoulli</td>
+          <td>Discrete</td>
+          <td>Single yes/no trial</td>
+          <td><code>p</code></td>
+          <td><code>p</code></td>
+          <td><code>p(1-p)</code></td>
+        </tr>
+        <tr>
+          <td>Binomial</td>
+          <td>Discrete</td>
+          <td>Successes in n trials</td>
+          <td><code>n, p</code></td>
+          <td><code>np</code></td>
+          <td><code>np(1-p)</code></td>
+        </tr>
+        <tr>
+          <td>Poisson</td>
+          <td>Discrete</td>
+          <td>Events in fixed interval</td>
+          <td><code>&lambda;</code></td>
+          <td><code>&lambda;</code></td>
+          <td><code>&lambda;</code></td>
+        </tr>
+        <tr>
+          <td>Geometric</td>
+          <td>Discrete</td>
+          <td>Trials until first success</td>
+          <td><code>p</code></td>
+          <td><code>1/p</code></td>
+          <td><code>(1-p)/p&sup2;</code></td>
+        </tr>
+        <tr>
+          <td>Normal</td>
+          <td>Continuous</td>
+          <td>Symmetric bell curve</td>
+          <td><code>&mu;, &sigma;</code></td>
+          <td><code>&mu;</code></td>
+          <td><code>&sigma;&sup2;</code></td>
+        </tr>
+        <tr>
+          <td>Exponential</td>
+          <td>Continuous</td>
+          <td>Time between events</td>
+          <td><code>&lambda;</code></td>
+          <td><code>1/&lambda;</code></td>
+          <td><code>1/&lambda;&sup2;</code></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- 5.4 Expected Value and Variance              -->
+  <!-- ═══════════════════════════════════════════ -->
+  <h2>5.4 &ensp; Expected Value and Variance</h2>
+
+  <h3>Expected Value</h3>
+  <p>
+    The expected value of a random variable is its <strong>long-run average</strong>. If you repeated the experiment infinitely many times, E[X] is what the average outcome would converge to.
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Expected Value</div>
+    <p class="formula-main">E[X] = &Sigma; x &middot; P(X = x)</p>
+    <p>Sum each possible value times its probability.</p>
+  </div>
+
+  <h3>Variance</h3>
+  <p>
+    Variance measures the <strong>spread around the mean</strong>. A low variance means outcomes cluster tightly around E[X]; a high variance means they are widely dispersed.
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Variance</div>
+    <p class="formula-main">Var(X) = E[(X &minus; &mu;)<sup>2</sup>] = E[X<sup>2</sup>] &minus; (E[X])<sup>2</sup></p>
+    <p>Standard deviation &sigma; = &radic;Var(X) gives the spread in the same units as X.</p>
+  </div>
+
+  <h3>Linearity of Expectation</h3>
+  <p>
+    One of the most elegant properties in probability: <strong>linearity of expectation always holds</strong>, even when variables are dependent.
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Linearity of Expectation</div>
+    <p class="formula-main">E[aX + bY] = a &middot; E[X] + b &middot; E[Y]</p>
+    <p>This works for any random variables X and Y &mdash; they do not need to be independent! This seemingly simple property is incredibly powerful and is the key to solving many interview problems efficiently.</p>
+  </div>
+
+  <div class="example-block">
+    <div class="example-label">Example 5.3 &mdash; Expected Winnings in a Dice Game</div>
+    <p>
+      <strong>You pay $5 to roll a fair die. If you roll a 6, you win $20. If you roll a 4 or 5, you win $10. Otherwise you win nothing. Should you play?</strong>
+    </p>
+    <p>
+      Calculate expected net winnings:
+    </p>
+    <p>
+      E[winnings] = P(6) &middot; $20 + P(4 or 5) &middot; $10 + P(1, 2, or 3) &middot; $0 &minus; $5<br>
+      E[winnings] = (1/6) &middot; 20 + (2/6) &middot; 10 + (3/6) &middot; 0 &minus; 5<br>
+      E[winnings] = 3.33 + 3.33 + 0 &minus; 5<br>
+      E[winnings] = <strong>$1.67</strong>
+    </p>
+    <p>
+      The expected value is positive &mdash; on average, you gain $1.67 per game. In the long run, this is a favorable bet.
+    </p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- 5.5 The Law of Large Numbers                 -->
+  <!-- ═══════════════════════════════════════════ -->
+  <h2>5.5 &ensp; The Law of Large Numbers</h2>
+
+  <p>
+    The Law of Large Numbers (LLN) formalizes something we all intuit: <strong>the more data you collect, the closer the sample average gets to the true expected value.</strong>
+  </p>
+  <p>
+    Flip a fair coin 10 times &mdash; you might easily get 7 heads (70%). That feels unremarkable. Flip it 10,000 times and getting 7,000 heads would be astonishing. The LLN guarantees that as your sample size grows, the sample mean converges to the population mean.
+  </p>
+
+  <div class="formula-block">
+    <div class="formula-label">Law of Large Numbers</div>
+    <p>As n &rarr; &infin;, the sample mean X&#772;<sub>n</sub> converges in probability to E[X] = &mu;.</p>
+    <p>In plain terms: more data means more reliable estimates.</p>
+  </div>
+
+  <h3>Why This Matters for Data Science</h3>
+  <p>
+    The LLN is the theoretical backbone of <strong>A/B testing</strong>. When you run an experiment, the conversion rate you observe is a sample mean. With a small sample, it's noisy &mdash; you might see a "winner" that's really just random fluctuation. With a large enough sample, the observed rate will be close to the true rate.
+  </p>
+  <p>
+    This is why sample size matters. It's why we run experiments for weeks rather than hours. And it's why "we tried it once and it didn't work" is not a valid statistical argument.
+  </p>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      The LLN tells us sample means converge to the true mean. The Central Limit Theorem (Chapter IV) tells us <em>how</em> they converge &mdash; normally, with standard error &sigma;/&radic;n. Together, they are the foundation of statistical inference.
+    </p>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- 5.6 Classic Interview Puzzles                -->
+  <!-- ═══════════════════════════════════════════ -->
+  <h2>5.6 &ensp; Classic Interview Puzzles</h2>
+
+  <p>
+    These problems show up in interviews not because the answers are useful in daily work, but because they test your ability to <strong>reason carefully under uncertainty</strong>. Let's break each one down.
+  </p>
+
+  <h3>The Birthday Problem</h3>
+  <p>
+    <strong>Question:</strong> How many people do you need in a room before there's a &ge;50% chance that two share a birthday?
+  </p>
+  <p>
+    <strong>Approach:</strong> Use complementary counting. Instead of computing the probability that some pair shares a birthday (messy), compute the probability that <em>everyone</em> has a unique birthday, then subtract from 1.
+  </p>
+  <p>
+    With n people in a room (and 365 possible birthdays):
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Birthday Problem &mdash; Complementary Counting</div>
+    <p class="formula-main">P(all unique) = (365/365) &middot; (364/365) &middot; (363/365) &middot; ... &middot; ((365&minus;n+1)/365)</p>
+    <p class="formula-main">P(at least one match) = 1 &minus; P(all unique)</p>
+  </div>
+  <p>
+    The first person can have any birthday. The second must avoid 1 date (364/365). The third must avoid 2 dates (363/365). And so on.
+  </p>
+  <p>
+    Working through the numbers: at n = 23, P(at least one match) crosses 50%. At n = 50, it exceeds 97%. The answer is surprisingly small because the number of <em>pairs</em> grows much faster than the number of people: 23 people form C(23, 2) = 253 pairs, each a potential match.
+  </p>
+
+  <h3>The Monty Hall Problem</h3>
+  <p>
+    <strong>Setup:</strong> You're on a game show with 3 doors. One hides a car; the other two hide goats. You pick a door. The host, who knows what's behind each door, opens a different door to reveal a goat. Should you switch?
+  </p>
+  <p>
+    <strong>Answer: Yes. Switching wins 2/3 of the time.</strong> Here's why:
+  </p>
+  <p>
+    Consider all possible scenarios when you initially pick Door 1:
+  </p>
+  <ul>
+    <li><strong>Car is behind Door 1</strong> (prob 1/3): Host opens Door 2 or 3 (goat). Switching &rarr; you <em>lose</em>.</li>
+    <li><strong>Car is behind Door 2</strong> (prob 1/3): Host must open Door 3 (the only goat). Switching to Door 2 &rarr; you <em>win</em>.</li>
+    <li><strong>Car is behind Door 3</strong> (prob 1/3): Host must open Door 2 (the only goat). Switching to Door 3 &rarr; you <em>win</em>.</li>
+  </ul>
+  <p>
+    Switching wins in 2 out of 3 equally likely scenarios. The key insight is that your initial pick has a 1/3 chance of being correct and the host's action doesn't change that &mdash; it just concentrates the remaining 2/3 probability onto the one unopened door.
+  </p>
+
+  <h3>The Coupon Collector Problem</h3>
+  <p>
+    <strong>Question:</strong> A cereal box contains one of <em>n</em> different coupons (each equally likely). How many boxes do you need to buy, on average, to collect all <em>n</em> coupons?
+  </p>
+  <p>
+    After collecting <em>k</em> unique coupons, the probability that the next box gives you a new one is (n &minus; k)/n. The expected number of boxes to get the next new coupon is therefore n/(n &minus; k), which is a geometric random variable.
+  </p>
+  <p>
+    Using linearity of expectation, the total expected boxes needed is:
+  </p>
+  <div class="formula-block">
+    <div class="formula-label">Coupon Collector</div>
+    <p class="formula-main">E[T] = n/n + n/(n&minus;1) + n/(n&minus;2) + ... + n/1 = n &middot; H(n)</p>
+    <p>Where H(n) = 1 + 1/2 + 1/3 + ... + 1/n is the n-th harmonic number.</p>
+    <p>For large n: H(n) &asymp; ln(n) + 0.5772, so E[T] &asymp; n &middot; ln(n).</p>
+  </div>
+  <p>
+    For example, with n = 50 coupons: E[T] &asymp; 50 &times; (ln(50) + 0.5772) &asymp; 50 &times; 4.49 &asymp; <strong>225 boxes</strong>. The last few coupons take disproportionately long to find &mdash; a pattern familiar to anyone who has tried to complete a collection.
+  </p>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      These classic puzzles test your ability to reason carefully, not memorize formulas. Interviewers are looking for clear problem decomposition, correct use of complementary counting and conditional probability, and the ability to check whether an answer passes the "smell test." When in doubt, try a small example first.
+    </p>
+  </div>
+
+</article>
+
+<!-- Footer Navigation -->
+<footer class="chapter-footer">
+  <a href="ch4-stats.html">&larr; Chapter IV: Statistics</a>
+  <span class="footer-center">The Data Science Interview Companion</span>
+  <a href="ch6-casing.html">Chapter VI: Case Studies &rarr;</a>
+</footer>
+
+</body>
+</html>

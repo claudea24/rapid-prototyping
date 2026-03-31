@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter I — SQL: The Language of Data</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Code+Pro:wght@400;500;600&family=Source+Sans+3:ital,opsz,wght@0,12..40,300;0,12..40,400;0,12..40,600;1,12..40,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #faf6f0;
+  --surface: #fff;
+  --border: #e0d5c5;
+  --rule: #d4c8b4;
+  --ink: #2c2416;
+  --ink2: #4a3f2f;
+  --muted: #8a7e6e;
+  --light: #b5a998;
+  --burgundy: #7b2d3b;
+  --navy: #1a3a5c;
+  --forest: #2d5a3d;
+  --gold: #a8862a;
+  --serif: 'Libre Baskerville', Georgia, serif;
+  --sans: 'Source Sans 3', 'Helvetica Neue', sans-serif;
+  --mono: 'Source Code Pro', 'Consolas', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Top Navigation ── */
+.top-nav {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.top-nav .book-title {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--ink2);
+  text-decoration: none;
+}
+
+.top-nav .book-title:hover {
+  color: var(--burgundy);
+}
+
+.top-nav .nav-right {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-family: var(--sans);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.top-nav .chapter-label {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--light);
+}
+
+.top-nav .nav-link {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.2s;
+}
+
+.top-nav .nav-link:hover {
+  color: var(--burgundy);
+}
+
+.nav-sep {
+  color: var(--light);
+  font-size: 11px;
+}
+
+/* ── Chapter Column ── */
+.chapter {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 60px 24px 100px;
+}
+
+/* ── Chapter Header ── */
+.chapter-number {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--burgundy);
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.chapter-title {
+  font-family: var(--serif);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.3;
+  text-align: center;
+  color: var(--ink);
+  margin-bottom: 28px;
+}
+
+.ornamental-rule {
+  text-align: center;
+  margin: 28px 0 36px;
+  color: var(--rule);
+  font-size: 22px;
+  letter-spacing: 12px;
+}
+
+.chapter-intro {
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.9;
+  color: var(--ink2);
+  margin-bottom: 48px;
+  text-align: justify;
+}
+
+/* ── Sections ── */
+h2 {
+  font-family: var(--serif);
+  font-size: 23px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-top: 56px;
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+h2 .section-num {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--burgundy);
+  margin-right: 6px;
+}
+
+.section-rule {
+  border: none;
+  border-top: 1px solid var(--rule);
+  margin-bottom: 24px;
+}
+
+p {
+  margin-bottom: 20px;
+  text-align: justify;
+  hyphens: auto;
+}
+
+strong { color: var(--ink); }
+
+em { color: var(--ink2); }
+
+/* ── Code Blocks ── */
+pre {
+  background: #f5efe6;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 20px 24px;
+  overflow-x: auto;
+  margin: 24px 0;
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink2);
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+
+p code, li code {
+  background: #f5efe6;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.85em;
+  color: var(--ink2);
+}
+
+/* Syntax Highlighting */
+.kw { color: var(--burgundy); font-weight: 600; }
+.fn { color: var(--navy); }
+.str { color: var(--forest); }
+.cm { color: var(--muted); font-style: italic; }
+.num { color: var(--navy); }
+
+/* ── Example Callout ── */
+.example-box {
+  background: #f0f4f8;
+  border-left: 4px solid var(--navy);
+  border-radius: 0 4px 4px 0;
+  padding: 24px 28px;
+  margin: 28px 0;
+}
+
+.example-box .example-label {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--navy);
+  margin-bottom: 12px;
+}
+
+.example-box p {
+  margin-bottom: 14px;
+  text-align: left;
+}
+
+.example-box p:last-child {
+  margin-bottom: 0;
+}
+
+.example-box pre {
+  background: #e8eef4;
+  border-color: #c8d4e0;
+  margin: 16px 0;
+}
+
+/* ── Key Insight Box ── */
+.insight-box {
+  background: #faf5eb;
+  border-left: 4px solid var(--gold);
+  border-radius: 0 4px 4px 0;
+  padding: 20px 28px;
+  margin: 28px 0;
+}
+
+.insight-box .insight-label {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--gold);
+  margin-bottom: 8px;
+}
+
+.insight-box p {
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.insight-box p:last-child {
+  margin-bottom: 0;
+}
+
+/* ── Aside / Margin Tip ── */
+.aside-tip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 16px 20px;
+  margin: 24px 0;
+  font-size: 15px;
+  color: var(--ink2);
+}
+
+.aside-tip .aside-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--light);
+  margin-bottom: 6px;
+}
+
+/* ── Data Tables ── */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14px;
+  font-family: var(--mono);
+}
+
+.data-table th {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+  background: #f5efe6;
+  padding: 8px 14px;
+  text-align: left;
+  border-bottom: 2px solid var(--rule);
+}
+
+.data-table td {
+  padding: 7px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--ink2);
+}
+
+.data-table .null-val {
+  color: var(--light);
+  font-style: italic;
+}
+
+/* ── Execution Order Diagram ── */
+.exec-order {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 24px 0;
+  font-family: var(--sans);
+  font-size: 14px;
+}
+
+.exec-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: none;
+}
+
+.exec-step:first-child {
+  border-radius: 4px 4px 0 0;
+}
+
+.exec-step:last-child {
+  border-bottom: 1px solid var(--border);
+  border-radius: 0 0 4px 4px;
+}
+
+.exec-step .step-num {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--burgundy);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.exec-step .step-kw {
+  font-weight: 600;
+  color: var(--burgundy);
+  font-family: var(--mono);
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.exec-step .step-desc {
+  color: var(--ink2);
+  font-size: 13px;
+}
+
+/* ── Ordered and Unordered Lists ── */
+ol, ul {
+  margin: 16px 0 20px 28px;
+}
+
+li {
+  margin-bottom: 8px;
+}
+
+/* ── Chapter Footer ── */
+.chapter-footer {
+  margin-top: 72px;
+  text-align: center;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule);
+}
+
+.chapter-footer .end-mark {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--light);
+  margin-bottom: 16px;
+}
+
+.chapter-footer .page-num {
+  font-family: var(--serif);
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+.chapter-footer .next-link {
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--burgundy);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.chapter-footer .next-link:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ── */
+@media (max-width: 700px) {
+  .chapter {
+    padding: 36px 16px 60px;
+  }
+
+  .chapter-title {
+    font-size: 26px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .chapter-intro {
+    font-size: 16px;
+  }
+
+  body {
+    font-size: 16px;
+  }
+
+  pre {
+    padding: 14px 16px;
+    font-size: 13px;
+  }
+
+  .example-box, .insight-box {
+    padding: 18px 20px;
+  }
+
+  .top-nav {
+    padding: 12px 16px;
+  }
+
+  .top-nav .book-title {
+    font-size: 13px;
+  }
+
+  .exec-step .step-desc {
+    font-size: 12px;
+  }
+
+  .exec-step .step-kw {
+    width: 76px;
+    font-size: 13px;
+  }
+
+  .data-table {
+    font-size: 12px;
+  }
+
+  .data-table th, .data-table td {
+    padding: 6px 8px;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ── Top Navigation ── -->
+<nav class="top-nav">
+  <a href="index.html" class="book-title">The DS Interview Companion</a>
+  <div class="nav-right">
+    <span class="chapter-label">Chapter I</span>
+    <span class="nav-sep">&middot;</span>
+    <a href="ch2-statistics.html" class="nav-link">Next &rarr;</a>
+  </div>
+</nav>
+
+<!-- ── Chapter Content ── -->
+<article class="chapter">
+
+  <div class="chapter-number">Chapter I</div>
+  <h1 class="chapter-title">SQL &mdash; The Language of Data</h1>
+  <div class="ornamental-rule">&bull; &bull; &bull;</div>
+
+  <p class="chapter-intro">
+    Structured Query Language is the lingua franca of anyone who works with data. Whether you are
+    an analyst pulling a report, a data scientist building a feature pipeline, or an engineer
+    designing a schema, fluency in SQL is non-negotiable. This chapter treats SQL not as a
+    checklist of syntax to memorise, but as a way of thinking &mdash; a declarative logic for
+    asking precise questions of structured data. We begin where most confusion originates: the
+    order in which the database actually processes your query.
+  </p>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- Section 1.1 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2><span class="section-num">1.1</span> The Logical Order of Query Execution</h2>
+  <hr class="section-rule">
+
+  <p>
+    When you write a SQL query, you begin with <code>SELECT</code>, follow it with
+    <code>FROM</code>, perhaps a <code>WHERE</code> clause, and so on. This written order
+    feels natural &mdash; you are declaring <em>what</em> you want, then <em>where</em> to
+    find it, then <em>how</em> to filter it. But the database engine does not read your query
+    top to bottom. It follows its own logical execution order, and understanding that order is
+    the single most important step toward writing correct, efficient SQL.
+  </p>
+
+  <p>
+    Consider a common frustration: you create an alias in the <code>SELECT</code> clause
+    &mdash; say, <code>revenue - cost AS profit</code> &mdash; and then attempt to filter on it
+    in the <code>WHERE</code> clause. The query fails. Why? Because <code>WHERE</code> is
+    evaluated <em>before</em> <code>SELECT</code>. The alias does not yet exist at the time
+    the engine processes the filter. This is not a quirk; it is a direct consequence of the
+    logical execution order.
+  </p>
+
+  <p>
+    The full order is as follows:
+  </p>
+
+  <div class="exec-order">
+    <div class="exec-step">
+      <span class="step-num">1</span>
+      <span class="step-kw">FROM</span>
+      <span class="step-desc">Identify source tables and perform joins</span>
+    </div>
+    <div class="exec-step">
+      <span class="step-num">2</span>
+      <span class="step-kw">WHERE</span>
+      <span class="step-desc">Filter individual rows before grouping</span>
+    </div>
+    <div class="exec-step">
+      <span class="step-num">3</span>
+      <span class="step-kw">GROUP BY</span>
+      <span class="step-desc">Collapse rows into groups</span>
+    </div>
+    <div class="exec-step">
+      <span class="step-num">4</span>
+      <span class="step-kw">HAVING</span>
+      <span class="step-desc">Filter groups after aggregation</span>
+    </div>
+    <div class="exec-step">
+      <span class="step-num">5</span>
+      <span class="step-kw">SELECT</span>
+      <span class="step-desc">Evaluate expressions and aliases</span>
+    </div>
+    <div class="exec-step">
+      <span class="step-num">6</span>
+      <span class="step-kw">ORDER BY</span>
+      <span class="step-desc">Sort the result set</span>
+    </div>
+    <div class="exec-step">
+      <span class="step-num">7</span>
+      <span class="step-kw">LIMIT</span>
+      <span class="step-desc">Restrict the number of returned rows</span>
+    </div>
+  </div>
+
+  <p>
+    Let us trace through a concrete query. Suppose we have a table called
+    <code>orders</code> with columns <code>customer_id</code>, <code>amount</code>, and
+    <code>order_date</code>. We want to find customers who spent more than $1,000 in 2024,
+    sorted by total spending:
+  </p>
+
+  <pre><span class="kw">SELECT</span>   customer_id,
+         <span class="fn">SUM</span>(amount) <span class="kw">AS</span> total_spent
+<span class="kw">FROM</span>     orders
+<span class="kw">WHERE</span>    order_date &gt;= <span class="str">'2024-01-01'</span>
+<span class="kw">GROUP BY</span> customer_id
+<span class="kw">HAVING</span>   <span class="fn">SUM</span>(amount) &gt; <span class="num">1000</span>
+<span class="kw">ORDER BY</span> total_spent <span class="kw">DESC</span>
+<span class="kw">LIMIT</span>    <span class="num">10</span>;</pre>
+
+  <p>
+    The engine proceeds as follows. <strong>Step 1 (FROM):</strong> it loads the
+    <code>orders</code> table. <strong>Step 2 (WHERE):</strong> it discards all rows where
+    <code>order_date</code> is before 2024. <strong>Step 3 (GROUP BY):</strong> it groups the
+    remaining rows by <code>customer_id</code>. <strong>Step 4 (HAVING):</strong> it removes
+    any group whose <code>SUM(amount)</code> is $1,000 or less. <strong>Step 5 (SELECT):</strong>
+    it computes <code>SUM(amount)</code> for each surviving group and assigns the alias
+    <code>total_spent</code>. <strong>Step 6 (ORDER BY):</strong> it sorts results by
+    <code>total_spent</code> descending. <strong>Step 7 (LIMIT):</strong> it returns only the
+    top 10 rows.
+  </p>
+
+  <div class="insight-box">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      Notice that <code>HAVING</code> must use <code>SUM(amount)</code> rather than the alias
+      <code>total_spent</code>, because the alias is not created until <code>SELECT</code>
+      runs in step 5. Some databases (MySQL, for instance) relax this rule as a convenience, but
+      standard SQL does not. Always write with the standard in mind.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- Section 1.2 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2><span class="section-num">1.2</span> Joining Tables</h2>
+  <hr class="section-rule">
+
+  <p>
+    Real-world data rarely lives in a single table. Customers are stored separately from
+    their orders; employees are stored separately from their departments. Joins are the
+    mechanism by which we reunite these related pieces of information.
+  </p>
+
+  <p>
+    An <strong>INNER JOIN</strong> returns only the rows that have a match in <em>both</em>
+    tables. Think of two class rosters: if you inner-join them on student name, you get only the
+    students enrolled in both classes. Anyone exclusive to one list is dropped entirely.
+  </p>
+
+  <p>
+    A <strong>LEFT JOIN</strong> (or <code>LEFT OUTER JOIN</code>) returns every row from the
+    left table, regardless of whether a match exists on the right. Where no match is found, the
+    right-side columns are filled with <code>NULL</code>. This is indispensable when you need
+    a complete roster &mdash; for example, all employees including those not yet assigned to any
+    department.
+  </p>
+
+  <p>
+    A <strong>RIGHT JOIN</strong> is the mirror image: all rows from the right table are
+    preserved. In practice it is rarely used, since you can always swap the table order and use a
+    LEFT JOIN instead, which most people find easier to read.
+  </p>
+
+  <p>
+    A <strong>FULL OUTER JOIN</strong> keeps all rows from both sides, filling <code>NULL</code>
+    wherever a match is absent. It is useful for reconciliation tasks &mdash; comparing two data
+    sources to find records missing from either side.
+  </p>
+
+  <p>
+    Finally, a <strong>CROSS JOIN</strong> produces the Cartesian product: every row from the
+    left paired with every row from the right. It has niche uses (generating date spines, for
+    instance) but should be used with caution, as the output size is multiplicative.
+  </p>
+
+  <div class="example-box">
+    <div class="example-label">Example 1.1 &mdash; Inner Join vs. Left Join</div>
+    <p>Consider two small tables:</p>
+
+    <p><strong>employees</strong></p>
+    <table class="data-table">
+      <tr><th>emp_id</th><th>name</th><th>dept_id</th></tr>
+      <tr><td>1</td><td>Alice</td><td>10</td></tr>
+      <tr><td>2</td><td>Bob</td><td>20</td></tr>
+      <tr><td>3</td><td>Carol</td><td class="null-val">NULL</td></tr>
+    </table>
+
+    <p><strong>departments</strong></p>
+    <table class="data-table">
+      <tr><th>dept_id</th><th>dept_name</th></tr>
+      <tr><td>10</td><td>Engineering</td></tr>
+      <tr><td>20</td><td>Marketing</td></tr>
+      <tr><td>30</td><td>Finance</td></tr>
+    </table>
+
+    <pre><span class="cm">-- INNER JOIN: only matched rows</span>
+<span class="kw">SELECT</span> e.name, d.dept_name
+<span class="kw">FROM</span>   employees e
+<span class="kw">INNER JOIN</span> departments d
+  <span class="kw">ON</span> e.dept_id = d.dept_id;</pre>
+
+    <p><strong>Result:</strong></p>
+    <table class="data-table">
+      <tr><th>name</th><th>dept_name</th></tr>
+      <tr><td>Alice</td><td>Engineering</td></tr>
+      <tr><td>Bob</td><td>Marketing</td></tr>
+    </table>
+
+    <p>Carol is excluded because her <code>dept_id</code> is NULL &mdash; there is no match.
+    Finance is excluded because no employee belongs to it.</p>
+
+    <pre><span class="cm">-- LEFT JOIN: all employees, even unmatched</span>
+<span class="kw">SELECT</span> e.name, d.dept_name
+<span class="kw">FROM</span>   employees e
+<span class="kw">LEFT JOIN</span> departments d
+  <span class="kw">ON</span> e.dept_id = d.dept_id;</pre>
+
+    <p><strong>Result:</strong></p>
+    <table class="data-table">
+      <tr><th>name</th><th>dept_name</th></tr>
+      <tr><td>Alice</td><td>Engineering</td></tr>
+      <tr><td>Bob</td><td>Marketing</td></tr>
+      <tr><td>Carol</td><td class="null-val">NULL</td></tr>
+    </table>
+
+    <p>Now Carol appears. Her department name is NULL because no match was found, but the left
+    table&rsquo;s row is preserved.</p>
+  </div>
+
+  <div class="aside-tip">
+    <div class="aside-label">Tip</div>
+    <p>
+      A common interview pattern is to find rows in one table that have <em>no</em> match in
+      another. Use a LEFT JOIN and filter with <code>WHERE d.dept_id IS NULL</code>. This is
+      often more readable (and equally efficient) than a <code>NOT EXISTS</code> subquery.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- Section 1.3 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2><span class="section-num">1.3</span> Window Functions</h2>
+  <hr class="section-rule">
+
+  <p>
+    Aggregate functions like <code>SUM</code> and <code>COUNT</code> collapse multiple rows into
+    one. But what if you need to compute a value across a set of related rows while keeping every
+    individual row intact? This is the domain of <strong>window functions</strong>.
+  </p>
+
+  <p>
+    A window function performs a calculation across a &ldquo;window&rdquo; of rows defined by an
+    <code>OVER</code> clause. The key distinction is that the rows are not collapsed: you still
+    get one output row for each input row, but each row now carries an additional computed value
+    that reflects its context within the window.
+  </p>
+
+  <p>
+    Three ranking functions appear constantly in interviews:
+  </p>
+
+  <ul>
+    <li>
+      <code>ROW_NUMBER()</code> assigns a unique sequential integer to each row within its
+      partition. Ties are broken arbitrarily &mdash; no two rows share the same number.
+    </li>
+    <li>
+      <code>RANK()</code> assigns the same number to tied rows, then <em>skips</em> the next
+      values. If two rows tie for rank 1, the next row is rank 3.
+    </li>
+    <li>
+      <code>DENSE_RANK()</code> also assigns the same number to ties, but does <em>not</em>
+      skip. After two rows at rank 1, the next row is rank 2.
+    </li>
+  </ul>
+
+  <p>
+    Choosing between them depends on the business question. If you need exactly one winner per
+    partition (e.g., deduplicate rows), use <code>ROW_NUMBER</code>. If you need to know
+    competitive standing with gaps (like Olympic medals: gold, gold, bronze), use
+    <code>RANK</code>. If you need consecutive labels regardless of ties, use
+    <code>DENSE_RANK</code>.
+  </p>
+
+  <div class="example-box">
+    <div class="example-label">Example 1.2 &mdash; Salary Ranking by Department</div>
+    <p>Given an <strong>employees</strong> table:</p>
+
+    <table class="data-table">
+      <tr><th>name</th><th>department</th><th>salary</th></tr>
+      <tr><td>Alice</td><td>Engineering</td><td>95000</td></tr>
+      <tr><td>Bob</td><td>Engineering</td><td>95000</td></tr>
+      <tr><td>Carol</td><td>Engineering</td><td>88000</td></tr>
+      <tr><td>Diana</td><td>Marketing</td><td>78000</td></tr>
+      <tr><td>Eve</td><td>Marketing</td><td>72000</td></tr>
+    </table>
+
+    <pre><span class="kw">SELECT</span>
+  name,
+  department,
+  salary,
+  <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> department <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> row_num,
+  <span class="fn">RANK</span>() <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> department <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> rnk,
+  <span class="fn">DENSE_RANK</span>() <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> department <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> d_rnk
+<span class="kw">FROM</span> employees;</pre>
+
+    <p><strong>Result:</strong></p>
+    <table class="data-table">
+      <tr><th>name</th><th>department</th><th>salary</th><th>row_num</th><th>rnk</th><th>d_rnk</th></tr>
+      <tr><td>Alice</td><td>Engineering</td><td>95000</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr><td>Bob</td><td>Engineering</td><td>95000</td><td>2</td><td>1</td><td>1</td></tr>
+      <tr><td>Carol</td><td>Engineering</td><td>88000</td><td>3</td><td>3</td><td>2</td></tr>
+      <tr><td>Diana</td><td>Marketing</td><td>78000</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr><td>Eve</td><td>Marketing</td><td>72000</td><td>2</td><td>2</td><td>2</td></tr>
+    </table>
+
+    <p>
+      Notice that Alice and Bob tie at $95,000. <code>ROW_NUMBER</code> still assigns them
+      distinct values (1 and 2). <code>RANK</code> gives both a 1 and then skips to 3 for Carol.
+      <code>DENSE_RANK</code> gives both a 1 and proceeds to 2 for Carol.
+    </p>
+  </div>
+
+  <div class="aside-tip">
+    <div class="aside-label">Tip</div>
+    <p>
+      Beyond ranking, window functions support running totals (<code>SUM() OVER</code>),
+      moving averages (<code>AVG() OVER (ROWS BETWEEN ...)</code>), and access to other rows
+      via <code>LAG()</code> and <code>LEAD()</code>. We will use <code>LAG</code> in
+      Section 1.5.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- Section 1.4 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2><span class="section-num">1.4</span> Aggregation and Grouping</h2>
+  <hr class="section-rule">
+
+  <p>
+    Aggregation is the act of reducing many rows into fewer rows by computing summary statistics
+    &mdash; sums, counts, averages, minima, maxima. The <code>GROUP BY</code> clause defines
+    which rows should be collapsed together: all rows sharing the same values in the grouped
+    columns become a single row in the output.
+  </p>
+
+  <p>
+    A question that surfaces repeatedly in interviews is the difference between
+    <code>WHERE</code> and <code>HAVING</code>. The answer follows directly from the execution
+    order we discussed in Section 1.1. <code>WHERE</code> filters individual rows
+    <em>before</em> grouping occurs, so it cannot reference aggregate functions. <code>HAVING</code>
+    filters <em>after</em> grouping, so it can.
+  </p>
+
+  <pre><span class="cm">-- This FAILS: WHERE cannot use aggregates</span>
+<span class="kw">SELECT</span>   department, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> headcount
+<span class="kw">FROM</span>     employees
+<span class="kw">WHERE</span>    <span class="fn">COUNT</span>(*) &gt; <span class="num">5</span>      <span class="cm">-- ERROR!</span>
+<span class="kw">GROUP BY</span> department;
+
+<span class="cm">-- This WORKS: HAVING filters after aggregation</span>
+<span class="kw">SELECT</span>   department, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> headcount
+<span class="kw">FROM</span>     employees
+<span class="kw">GROUP BY</span> department
+<span class="kw">HAVING</span>   <span class="fn">COUNT</span>(*) &gt; <span class="num">5</span>;</pre>
+
+  <p>
+    Another subtle but critical distinction is between <code>COUNT(*)</code> and
+    <code>COUNT(column)</code>. The former counts all rows in the group, including those where
+    every column is NULL. The latter counts only the rows where the specified column is
+    <em>not</em> NULL. Consider this table:
+  </p>
+
+  <table class="data-table">
+    <tr><th>id</th><th>name</th><th>email</th></tr>
+    <tr><td>1</td><td>Alice</td><td>alice@co.com</td></tr>
+    <tr><td>2</td><td>Bob</td><td class="null-val">NULL</td></tr>
+    <tr><td>3</td><td>Carol</td><td>carol@co.com</td></tr>
+    <tr><td>4</td><td>Diana</td><td class="null-val">NULL</td></tr>
+  </table>
+
+  <pre><span class="kw">SELECT</span>
+  <span class="fn">COUNT</span>(*)      <span class="kw">AS</span> total_rows,     <span class="cm">-- 4</span>
+  <span class="fn">COUNT</span>(email)  <span class="kw">AS</span> has_email       <span class="cm">-- 2</span>
+<span class="kw">FROM</span> users;</pre>
+
+  <p>
+    <code>COUNT(*)</code> returns 4 because there are four rows. <code>COUNT(email)</code>
+    returns 2 because only Alice and Carol have non-NULL email values.
+  </p>
+
+  <div class="insight-box">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      Every column in the <code>SELECT</code> clause must either appear in <code>GROUP BY</code>
+      or be wrapped in an aggregate function. If you select <code>department</code> and
+      <code>name</code> but only group by <code>department</code>, the database does not know
+      which <code>name</code> to display for each group. Most databases will raise an error;
+      MySQL in its default mode may silently pick an arbitrary value, which is almost always a bug.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- Section 1.5 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2><span class="section-num">1.5</span> Common Table Expressions</h2>
+  <hr class="section-rule">
+
+  <p>
+    A Common Table Expression (CTE) is a named, temporary result set that exists only for the
+    duration of a single query. Introduced with the <code>WITH</code> keyword, CTEs let you
+    break a complex query into digestible, named steps &mdash; much like assigning intermediate
+    results to variables in a programming language.
+  </p>
+
+  <p>
+    Without CTEs, the alternative is deeply nested subqueries, which quickly become unreadable.
+    Consider a task where you need to compute monthly revenue and then compare each month to
+    the previous one. With subqueries, you would nest a derived table inside another derived
+    table. With CTEs, each logical step gets a clear name:
+  </p>
+
+  <div class="example-box">
+    <div class="example-label">Example 1.3 &mdash; Month-over-Month Revenue</div>
+    <p>We want to calculate each month&rsquo;s total revenue and its change from the prior month.</p>
+
+    <pre><span class="kw">WITH</span> monthly_revenue <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    <span class="fn">DATE_TRUNC</span>(<span class="str">'month'</span>, order_date) <span class="kw">AS</span> month,
+    <span class="fn">SUM</span>(amount)                       <span class="kw">AS</span> revenue
+  <span class="kw">FROM</span>   orders
+  <span class="kw">GROUP BY</span> <span class="num">1</span>
+),
+with_prior <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    month,
+    revenue,
+    <span class="fn">LAG</span>(revenue) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> month) <span class="kw">AS</span> prev_revenue
+  <span class="kw">FROM</span> monthly_revenue
+)
+<span class="kw">SELECT</span>
+  month,
+  revenue,
+  prev_revenue,
+  <span class="fn">ROUND</span>(
+    <span class="num">100.0</span> * (revenue - prev_revenue) / prev_revenue, <span class="num">1</span>
+  ) <span class="kw">AS</span> pct_change
+<span class="kw">FROM</span>   with_prior
+<span class="kw">ORDER BY</span> month;</pre>
+
+    <p>
+      The first CTE, <code>monthly_revenue</code>, computes the aggregate. The second,
+      <code>with_prior</code>, uses the window function <code>LAG</code> to fetch the
+      preceding month&rsquo;s revenue. The final <code>SELECT</code> calculates the
+      percentage change. Each step is self-contained and easy to verify independently.
+    </p>
+  </div>
+
+  <p>
+    CTEs are also invaluable for recursive queries (traversing hierarchies, generating series),
+    though recursive CTEs are less commonly tested in data science interviews. Focus on mastering
+    the non-recursive form: chaining two or three CTEs to build up a result step by step.
+  </p>
+
+  <div class="aside-tip">
+    <div class="aside-label">Tip</div>
+    <p>
+      In most databases, CTEs are optimised the same way as subqueries &mdash; the planner
+      inlines them. In PostgreSQL 12+, you can add <code>MATERIALIZED</code> or
+      <code>NOT MATERIALIZED</code> to control this behaviour explicitly.
+    </p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ -->
+  <!-- Section 1.6 -->
+  <!-- ═══════════════════════════════════════════════ -->
+  <h2><span class="section-num">1.6</span> Query Optimisation</h2>
+  <hr class="section-rule">
+
+  <p>
+    Writing correct SQL is necessary but not sufficient. In production, queries run against
+    tables with millions or billions of rows, and a poorly written query can take minutes
+    instead of milliseconds. While deep optimisation is a specialised discipline, a few
+    principles go a long way.
+  </p>
+
+  <p>
+    <strong>Use <code>EXPLAIN</code> (or <code>EXPLAIN ANALYZE</code>).</strong> This is
+    your primary diagnostic tool. It shows the query plan the database intends to use &mdash;
+    which indexes it will leverage, whether it will perform a sequential scan, how it estimates
+    row counts. Reading execution plans is a skill that improves dramatically with practice.
+  </p>
+
+  <pre><span class="kw">EXPLAIN ANALYZE</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> orders
+<span class="kw">WHERE</span> customer_id = <span class="num">42</span>;</pre>
+
+  <p>
+    <strong>Index the columns you filter and join on.</strong> An index on
+    <code>customer_id</code> turns the query above from a full table scan (reading every row)
+    into an index lookup (reading only the relevant rows). Without it, performance degrades
+    linearly with table size.
+  </p>
+
+  <p>
+    <strong>Avoid <code>SELECT *</code>.</strong> Selecting all columns forces the database to
+    read and transmit data you may not need. Specify only the columns your analysis requires.
+    This is especially impactful in columnar storage systems (Redshift, BigQuery) where each
+    column is stored separately.
+  </p>
+
+  <p>
+    <strong>Filter early.</strong> Push <code>WHERE</code> conditions as close to the base
+    tables as possible. If you are joining a large fact table to a small dimension table,
+    filtering the fact table before the join reduces the number of rows that need to be matched.
+  </p>
+
+  <div class="insight-box">
+    <div class="insight-label">Key Insight</div>
+    <p>
+      Optimisation is about reducing the amount of data the engine must read and process at each
+      step. Every principle above &mdash; indexing, projection, early filtering &mdash; serves
+      that single goal. When a query is slow, ask: &ldquo;Where is the engine reading more data
+      than it needs to?&rdquo;
+    </p>
+  </div>
+
+  <!-- ── Chapter Footer ── -->
+  <footer class="chapter-footer">
+    <div class="end-mark">End of Chapter I</div>
+    <div class="page-num">15</div>
+    <a href="ch2-statistics.html" class="next-link">Continue to Chapter II: Statistics &amp; Probability &rarr;</a>
+  </footer>
+
+</article>
+
+</body>
+</html>

@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter III — Machine Learning | The DS Interview Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --page: #faf6f0; --paper: #f5efe6; --surface: #fff;
+      --border: #e0d5c5; --rule: #d4c8b4;
+      --ink: #2c2416; --ink2: #4a3f2f; --ink-muted: #8a7e6e; --ink-light: #b5a998;
+      --burgundy: #7b2d3b; --burgundy-light: #f5eaec;
+      --navy: #1a3a5c; --navy-light: #eaf0f6;
+      --forest: #2d5a3d; --forest-light: #eaf3ed;
+      --gold: #a8862a; --gold-light: #f8f2e4;
+    }
+    body {
+      font-family: 'Libre Baskerville', Georgia, serif;
+      background: var(--page); color: var(--ink);
+      line-height: 1.85; font-size: 16px;
+    }
+
+    /* ── Navigation ── */
+    .top-nav {
+      position: sticky; top: 0; z-index: 100;
+      background: var(--page); border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.8rem;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .top-nav a {
+      text-decoration: none; color: var(--ink-muted); transition: color 0.15s;
+    }
+    .top-nav a:hover { color: var(--burgundy); }
+    .top-nav .book-title {
+      font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+      font-size: 0.7rem; color: var(--ink-light);
+    }
+    .top-nav .chapter-nav { display: flex; gap: 16px; align-items: center; }
+    .top-nav .chapter-label {
+      font-weight: 600; color: var(--ink2); letter-spacing: 0.5px;
+    }
+    .top-nav .nav-arrow {
+      font-size: 0.85rem; padding: 2px 6px; border-radius: 3px;
+      border: 1px solid var(--border); color: var(--ink-muted);
+      transition: all 0.15s;
+    }
+    .top-nav .nav-arrow:hover {
+      border-color: var(--burgundy); color: var(--burgundy);
+    }
+
+    /* ── Chapter Content ── */
+    .chapter { max-width: 680px; margin: 0 auto; padding: 60px 24px 80px; }
+
+    /* Chapter opener */
+    .chapter-opener {
+      text-align: center; margin-bottom: 56px; padding-bottom: 40px;
+      border-bottom: 1px solid var(--rule);
+    }
+    .chapter-opener .chapter-num {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.75rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 4px;
+      color: var(--burgundy); margin-bottom: 12px;
+    }
+    .chapter-opener h1 {
+      font-size: 2rem; font-weight: 700; line-height: 1.25;
+      color: var(--ink); margin-bottom: 8px;
+    }
+    .chapter-opener .chapter-sub {
+      font-style: italic; color: var(--ink-muted); font-size: 0.95rem;
+    }
+    .chapter-opener .ornament {
+      margin-top: 20px; font-size: 1rem; color: var(--ink-light);
+      letter-spacing: 8px;
+    }
+
+    /* Sections */
+    .section { margin-bottom: 48px; }
+    .section-num {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--burgundy); margin-bottom: 4px;
+    }
+    h2 {
+      font-size: 1.35rem; font-weight: 700; line-height: 1.3;
+      color: var(--ink); margin-bottom: 20px;
+    }
+    h3 {
+      font-size: 1.05rem; font-weight: 700; color: var(--navy);
+      margin-top: 28px; margin-bottom: 12px;
+    }
+    p { margin-bottom: 16px; }
+    em { font-style: italic; }
+    strong { font-weight: 700; }
+
+    /* ── Code blocks ── */
+    pre {
+      background: var(--paper); border: 1px solid var(--border);
+      border-radius: 4px; padding: 20px 24px; margin: 20px 0;
+      overflow-x: auto; font-size: 0.82rem; line-height: 1.7;
+    }
+    code {
+      font-family: 'Source Code Pro', monospace;
+    }
+    pre code { font-size: 0.82rem; }
+    p code, li code, td code {
+      background: var(--paper); border: 1px solid var(--border);
+      padding: 1px 5px; border-radius: 3px; font-size: 0.85em;
+      color: var(--burgundy);
+    }
+    /* Syntax highlighting */
+    .kw { color: var(--burgundy); font-weight: 500; }   /* keywords */
+    .fn { color: var(--navy); }                           /* functions */
+    .st { color: var(--forest); }                         /* strings */
+    .cm { color: var(--ink-muted); font-style: italic; }  /* comments */
+    .nu { color: var(--gold); }                           /* numbers */
+    .op { color: var(--ink2); }                           /* operators */
+    .va { color: var(--ink); }                            /* variables */
+    .bi { color: #6a5acd; }                               /* builtins */
+
+    /* ── Example boxes ── */
+    .example-box {
+      background: var(--navy-light); border-left: 4px solid var(--navy);
+      border-radius: 4px; padding: 24px 28px; margin: 24px 0;
+    }
+    .example-box .example-label {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--navy); margin-bottom: 8px;
+    }
+    .example-box p { margin-bottom: 10px; }
+    .example-box p:last-child { margin-bottom: 0; }
+
+    /* ── Key Insight boxes ── */
+    .key-insight {
+      background: var(--gold-light); border-left: 4px solid var(--gold);
+      border-radius: 4px; padding: 24px 28px; margin: 24px 0;
+    }
+    .key-insight .insight-label {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
+      color: var(--gold); margin-bottom: 8px;
+    }
+    .key-insight p { margin-bottom: 10px; }
+    .key-insight p:last-child { margin-bottom: 0; }
+
+    /* ── Tables ── */
+    .table-wrap { overflow-x: auto; margin: 24px 0; }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: 0.88rem; line-height: 1.6;
+    }
+    thead th {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.72rem;
+      font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--ink-muted); text-align: left;
+      padding: 10px 14px; border-bottom: 2px solid var(--rule);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 10px 14px; border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: rgba(0,0,0,0.015); }
+
+    /* ── Lists ── */
+    ul, ol { margin: 12px 0 16px 24px; }
+    li { margin-bottom: 6px; }
+
+    /* ── Math-style ── */
+    .math {
+      font-family: 'Libre Baskerville', serif; font-style: italic;
+      color: var(--navy); background: var(--navy-light);
+      display: inline-block; padding: 2px 8px; border-radius: 3px;
+      font-size: 0.95em;
+    }
+    .math-block {
+      text-align: center; margin: 20px 0; padding: 16px;
+      background: var(--navy-light); border-radius: 4px;
+      font-family: 'Libre Baskerville', serif; font-style: italic;
+      color: var(--navy); font-size: 1.05rem;
+    }
+
+    /* ── Section dividers ── */
+    .section-divider {
+      text-align: center; margin: 48px 0;
+      font-size: 0.85rem; color: var(--ink-light); letter-spacing: 8px;
+    }
+
+    /* ── Footer ── */
+    .chapter-footer {
+      border-top: 1px solid var(--rule); margin-top: 56px; padding-top: 32px;
+      text-align: center;
+    }
+    .chapter-footer .footer-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 24px;
+    }
+    .chapter-footer .footer-nav a {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.85rem;
+      text-decoration: none; color: var(--ink-muted); transition: color 0.15s;
+    }
+    .chapter-footer .footer-nav a:hover { color: var(--burgundy); }
+    .chapter-footer .footer-nav .label {
+      font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px;
+      color: var(--ink-light); display: block; margin-bottom: 2px;
+    }
+    .chapter-footer .copyright {
+      font-family: 'Source Sans 3', sans-serif; font-size: 0.7rem;
+      color: var(--ink-light);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      .chapter { padding: 40px 18px 60px; }
+      .chapter-opener h1 { font-size: 1.6rem; }
+      h2 { font-size: 1.2rem; }
+      pre { padding: 16px; font-size: 0.78rem; }
+      .example-box, .key-insight { padding: 18px 20px; }
+      table { font-size: 0.8rem; }
+      thead th, tbody td { padding: 8px 10px; }
+    }
+    @media (max-width: 480px) {
+      .top-nav .book-title { display: none; }
+      .chapter-opener h1 { font-size: 1.35rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="top-nav">
+  <a href="index.html" class="book-title">The DS Interview Companion</a>
+  <div class="chapter-nav">
+    <a href="ch2-python.html" class="nav-arrow" title="Previous chapter">&larr; Prev</a>
+    <span class="chapter-label">Chapter III</span>
+    <a href="ch4-stats.html" class="nav-arrow" title="Next chapter">Next &rarr;</a>
+  </div>
+</nav>
+
+<!-- Chapter Content -->
+<article class="chapter">
+
+  <!-- Chapter Opener -->
+  <header class="chapter-opener">
+    <div class="chapter-num">Chapter III</div>
+    <h1>Machine Learning</h1>
+    <p class="chapter-sub">From Theory to Practice</p>
+    <div class="ornament">&bull; &bull; &bull;</div>
+  </header>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- 3.1 Supervised Learning Algorithms      -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="section" id="s3-1">
+    <div class="section-num">Section 3.1</div>
+    <h2>Supervised Learning Algorithms</h2>
+
+    <p>
+      Supervised learning is the most widely used family of machine learning techniques.
+      The premise is simple: you have labeled data&mdash;inputs paired with known outputs&mdash;and
+      you want to learn a mapping from inputs to outputs that generalizes to unseen examples.
+      What makes this domain rich is the variety of ways we can learn that mapping, each with
+      its own geometric intuition, assumptions, and failure modes.
+    </p>
+
+    <h3>Linear Regression</h3>
+    <p>
+      Linear regression fits a straight line (or hyperplane) through your data by minimizing
+      the sum of squared residuals&mdash;the vertical distances between observed and predicted values.
+      The model assumes a <em>linear relationship</em> between features and the target, that residuals
+      are normally distributed and homoscedastic (constant variance), and that features are not
+      highly collinear.
+    </p>
+    <p>
+      When does it fail? When the true relationship is nonlinear, when outliers dominate the
+      squared-error objective, or when multicollinearity inflates coefficient variance. In
+      interviews, emphasize that linear regression is not just a model&mdash;it is a
+      <em>diagnostic framework</em>. You learn more from its residual plots than from its predictions.
+    </p>
+
+    <h3>Logistic Regression</h3>
+    <p>
+      Despite the name, logistic regression is a <em>classification</em> algorithm. It models the
+      <em>log-odds</em> of belonging to the positive class as a linear function of features:
+    </p>
+    <div class="math-block">
+      log(p / (1 &minus; p)) = &beta;<sub>0</sub> + &beta;<sub>1</sub>x<sub>1</sub> + &hellip; + &beta;<sub>n</sub>x<sub>n</sub>
+    </div>
+    <p>
+      The sigmoid function squashes this output to the (0, 1) range, yielding a probability.
+      The decision boundary is linear in feature space, meaning logistic regression works well
+      when classes are roughly separable by a line. Its coefficients are directly interpretable
+      as the change in log-odds per unit change in a feature&mdash;a property beloved by
+      stakeholders who want to understand <em>why</em> the model makes its predictions.
+    </p>
+
+    <h3>Decision Trees</h3>
+    <p>
+      A decision tree recursively partitions the feature space by choosing, at each node, the
+      feature and threshold that best separates the target classes. &ldquo;Best&rdquo; is measured by
+      <strong>impurity criteria</strong>: <em>Gini impurity</em> quantifies the probability of
+      misclassifying a randomly chosen sample, while <em>entropy</em> measures the information
+      content of the split. In practice they produce very similar trees, but Gini is slightly
+      faster to compute (no logarithm).
+    </p>
+    <p>
+      Trees are wonderfully interpretable and handle nonlinear relationships, missing values,
+      and mixed feature types naturally. Their downfall is <em>variance</em>&mdash;a small change in
+      the data can produce a completely different tree structure. Left unchecked, they will
+      memorize the training data.
+    </p>
+
+    <h3>Random Forest</h3>
+    <p>
+      A random forest corrects the high variance of individual trees through <strong>bagging</strong>
+      (bootstrap aggregating). It trains many trees on random subsets of both rows and features,
+      then averages their predictions (regression) or takes a majority vote (classification).
+      The magic is that by <em>decorrelating</em> the trees&mdash;each sees a different slice of the
+      data&mdash;the ensemble&rsquo;s variance drops dramatically while bias stays roughly the same.
+      This is the statistical equivalent of &ldquo;the wisdom of crowds.&rdquo;
+    </p>
+
+    <h3>Gradient Boosting</h3>
+    <p>
+      Where random forests build trees <em>in parallel</em>, gradient boosting builds them
+      <em>sequentially</em>. Each new tree is trained on the <strong>residual errors</strong> of the
+      previous ensemble&mdash;it learns to correct the mistakes its predecessors made. The &ldquo;gradient&rdquo;
+      comes from the fact that we are performing gradient descent in function space, stepping
+      toward lower loss one tree at a time. Implementations like XGBoost, LightGBM, and CatBoost
+      add regularization, histogram-based splits, and GPU support, making gradient boosting the
+      dominant algorithm in tabular-data competitions.
+    </p>
+
+    <h3>Support Vector Machines (SVM)</h3>
+    <p>
+      SVMs find the hyperplane that maximizes the <em>margin</em>&mdash;the distance to the nearest
+      data points of each class (the &ldquo;support vectors&rdquo;). The intuition is geometric:
+      a wider margin means greater confidence in the boundary. For nonlinear problems, the
+      <strong>kernel trick</strong> implicitly maps features into a higher-dimensional space where
+      a linear separator exists, without ever computing the transformation explicitly. SVMs
+      are elegant but scale poorly to very large datasets, and their performance is sensitive to
+      hyperparameters (C, gamma).
+    </p>
+
+    <h3>K-Nearest Neighbors (KNN)</h3>
+    <p>
+      KNN is the ultimate <em>lazy learner</em>&mdash;it stores the entire training set and
+      defers all computation to prediction time. To classify a new point, it finds the
+      <em>k</em> closest training points (by Euclidean distance or another metric) and takes a
+      majority vote. There is no training phase, no learned parameters. This simplicity is
+      its strength and its weakness: it captures complex boundaries effortlessly, but is
+      slow at inference, sensitive to the curse of dimensionality, and requires careful feature
+      scaling since distances are meaningless when features have wildly different ranges.
+    </p>
+
+    <h3>Algorithm Comparison</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>Strengths</th>
+            <th>Weaknesses</th>
+            <th>When to Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Linear Regression</strong></td>
+            <td>Interpretable, fast, coefficients reveal feature importance</td>
+            <td>Assumes linearity, sensitive to outliers</td>
+            <td>Baseline for regression; when interpretability is paramount</td>
+          </tr>
+          <tr>
+            <td><strong>Logistic Regression</strong></td>
+            <td>Probabilistic output, interpretable coefficients, regularizable</td>
+            <td>Linear decision boundary only</td>
+            <td>Binary classification with explainability needs; medical/legal contexts</td>
+          </tr>
+          <tr>
+            <td><strong>Decision Tree</strong></td>
+            <td>Handles nonlinearity, no scaling needed, highly interpretable</td>
+            <td>High variance, prone to overfitting</td>
+            <td>Quick exploration; when a visual decision path is needed</td>
+          </tr>
+          <tr>
+            <td><strong>Random Forest</strong></td>
+            <td>Low variance, robust, handles missing values well</td>
+            <td>Less interpretable, slower than single tree</td>
+            <td>General-purpose; when you need accuracy without much tuning</td>
+          </tr>
+          <tr>
+            <td><strong>Gradient Boosting</strong></td>
+            <td>State-of-the-art on tabular data, flexible loss functions</td>
+            <td>Prone to overfitting if not regularized, slower to train</td>
+            <td>Competitions and production where accuracy is king</td>
+          </tr>
+          <tr>
+            <td><strong>SVM</strong></td>
+            <td>Effective in high-dimensional spaces, kernel flexibility</td>
+            <td>Slow on large data, opaque, sensitive to hyperparameters</td>
+            <td>Text classification; small-to-medium datasets with many features</td>
+          </tr>
+          <tr>
+            <td><strong>KNN</strong></td>
+            <td>No training needed, captures complex boundaries</td>
+            <td>Slow inference, curse of dimensionality, needs scaling</td>
+            <td>Small datasets; anomaly detection; recommendation prototyping</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="section-divider">&bull; &bull; &bull;</div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- 3.2 Unsupervised Learning               -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="section" id="s3-2">
+    <div class="section-num">Section 3.2</div>
+    <h2>Unsupervised Learning</h2>
+
+    <p>
+      Unsupervised learning operates without labels. Instead of predicting a target, we seek
+      to discover <em>structure</em> hidden in the data&mdash;clusters of similar observations,
+      lower-dimensional representations, or latent patterns. These techniques are invaluable
+      when labels are expensive or nonexistent.
+    </p>
+
+    <h3>K-Means Clustering</h3>
+    <p>
+      K-Means begins with <em>k</em> randomly placed centroids. It alternates two steps:
+      (1) assign each point to its nearest centroid, and (2) recompute each centroid as the
+      mean of its assigned points. This process repeats until assignments stabilize. The
+      algorithm converges to a local optimum&mdash;different initializations can yield different
+      results, which is why <code>k-means++</code> uses smart seeding to improve outcomes.
+    </p>
+    <p>
+      The critical question is <em>how to choose k</em>. The <strong>elbow method</strong> plots
+      the within-cluster sum of squares (inertia) against increasing values of <em>k</em>. You
+      look for the &ldquo;elbow&rdquo;&mdash;the point where adding more clusters yields diminishing
+      returns. The silhouette score offers a complementary view, measuring how similar each point
+      is to its own cluster versus neighboring clusters.
+    </p>
+
+    <h3>Hierarchical Clustering</h3>
+    <p>
+      Instead of specifying <em>k</em> upfront, hierarchical clustering builds a tree of merges
+      (agglomerative, bottom-up) or splits (divisive, top-down). The result is a
+      <strong>dendrogram</strong>&mdash;a tree diagram where the height of each merge indicates the
+      distance between the clusters being joined. You &ldquo;cut&rdquo; the dendrogram at the desired
+      level to obtain a specific number of clusters. This approach is especially useful when
+      you want to explore cluster structure at multiple granularities.
+    </p>
+
+    <h3>DBSCAN</h3>
+    <p>
+      DBSCAN (Density-Based Spatial Clustering of Applications with Noise) is fundamentally
+      different from K-Means. It defines clusters as <em>dense regions</em> separated by areas
+      of low density. A point is a <strong>core point</strong> if at least <em>minPts</em> neighbors
+      fall within a radius <em>&epsilon;</em>. Core points that are within &epsilon; of each other
+      are linked into the same cluster, and non-core points near a core point are absorbed.
+      Points that belong to no cluster are labeled as <em>noise</em>.
+    </p>
+    <p>
+      The beauty of DBSCAN is that it does not require specifying the number of clusters, it
+      can discover clusters of arbitrary shape, and it naturally identifies outliers. The
+      trade-off: choosing &epsilon; and <em>minPts</em> requires domain knowledge or a k-distance
+      plot.
+    </p>
+
+    <h3>PCA (Principal Component Analysis)</h3>
+    <p>
+      PCA is a dimensionality reduction technique that finds new axes (principal components) along
+      which the data exhibits <em>maximum variance</em>. Mathematically, it computes the eigenvectors
+      of the covariance matrix; the eigenvalues tell you how much variance each component captures.
+      By keeping only the top components, you project high-dimensional data into a lower space while
+      preserving as much information as possible. PCA is linear&mdash;it cannot capture nonlinear
+      manifolds&mdash;but it is fast, deterministic, and an essential preprocessing step for
+      downstream models.
+    </p>
+
+    <h3>t-SNE and UMAP</h3>
+    <p>
+      t-SNE (t-distributed Stochastic Neighbor Embedding) and UMAP (Uniform Manifold Approximation
+      and Projection) are <em>nonlinear</em> dimensionality reduction techniques designed primarily
+      for <strong>visualization</strong>. They excel at preserving local neighborhood structure,
+      making clusters visually apparent in 2D. However, both distort global distances&mdash;the
+      relative positions and sizes of clusters in the plot do not reflect true relationships.
+      Use them to <em>see</em> your data, never to measure it.
+    </p>
+
+    <div class="example-box">
+      <div class="example-label">Example 3.1 &mdash; Customer Segmentation</div>
+      <p>
+        An e-commerce company collects features on each customer: average order value, purchase
+        frequency, days since last purchase, product category preferences, and session duration.
+        After standardizing all features (essential because K-Means uses Euclidean distance),
+        we run K-Means with <em>k</em> = 2 through 10 and examine the elbow plot.
+      </p>
+      <p>
+        The elbow appears at <em>k</em> = 4. Inspecting each cluster&rsquo;s centroid reveals
+        four distinct personas: <strong>Loyal High-Spenders</strong> (frequent, high AOV),
+        <strong>Bargain Hunters</strong> (frequent but low AOV, spike during sales),
+        <strong>Window Shoppers</strong> (high session duration but low conversion), and
+        <strong>Churning Customers</strong> (long recency, declining frequency). The marketing
+        team now tailors campaigns to each segment&mdash;loyalty rewards for the first group,
+        flash-sale alerts for the second, conversion-optimization nudges for the third, and
+        re-engagement emails for the fourth.
+      </p>
+      <p>
+        We validate with silhouette scores (0.42&mdash;reasonable for real-world data) and
+        overlay a UMAP projection to confirm that the four groups form visually distinct regions.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-divider">&bull; &bull; &bull;</div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- 3.3 Evaluation Metrics                  -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="section" id="s3-3">
+    <div class="section-num">Section 3.3</div>
+    <h2>Evaluation Metrics</h2>
+
+    <p>
+      A model is only as good as the metric you use to judge it. Choosing the wrong metric
+      is one of the most common&mdash;and most consequential&mdash;mistakes in applied machine
+      learning. This section builds your intuition for <em>why</em> certain metrics exist and
+      <em>when</em> each is appropriate.
+    </p>
+
+    <h3>Accuracy (and Why It Fails)</h3>
+    <p>
+      Accuracy is the proportion of correct predictions. It is intuitive and satisfying, but
+      dangerously misleading with <strong>imbalanced data</strong>. Consider a fraud detection
+      dataset where 99.5% of transactions are legitimate. A model that predicts &ldquo;not
+      fraud&rdquo; for every transaction achieves 99.5% accuracy while catching zero fraud.
+      Accuracy tells you how often the model is right; it says nothing about <em>which</em>
+      kinds of errors it makes.
+    </p>
+
+    <h3>Precision and Recall</h3>
+    <p>
+      <strong>Precision</strong> answers: &ldquo;Of all the items the model flagged as positive,
+      how many actually were?&rdquo; <strong>Recall</strong> answers: &ldquo;Of all the actual
+      positives, how many did the model catch?&rdquo; These two metrics are in tension&mdash;improving
+      one typically hurts the other.
+    </p>
+    <p>
+      Consider a spam filter. <em>High precision, low recall</em> means the filter rarely marks
+      a legitimate email as spam (few false positives), but it lets many spam messages through
+      (many false negatives). <em>High recall, low precision</em> means it catches nearly all spam,
+      but frequently blocks legitimate messages. Which is worse? For most users, missing an
+      important email from a client (false positive) is far costlier than seeing an occasional
+      spam message. So you would optimize for <strong>precision</strong>. But for a security-critical
+      system filtering phishing attacks, you would optimize for <strong>recall</strong>&mdash;you
+      cannot afford to let threats through.
+    </p>
+
+    <h3>F1 Score</h3>
+    <p>
+      The F1 score is the <em>harmonic mean</em> of precision and recall:
+    </p>
+    <div class="math-block">
+      F1 = 2 &times; (Precision &times; Recall) / (Precision + Recall)
+    </div>
+    <p>
+      Why the harmonic mean rather than the arithmetic mean? Because the harmonic mean punishes
+      extreme imbalances. If precision is 1.0 and recall is 0.01, the arithmetic mean is a
+      deceptively respectable 0.505, but the harmonic mean (F1) is only 0.0198&mdash;reflecting
+      the reality that the model is essentially useless for finding positives.
+    </p>
+
+    <h3>AUC-ROC</h3>
+    <p>
+      The ROC curve plots the <em>True Positive Rate</em> (recall) against the
+      <em>False Positive Rate</em> at every possible classification threshold. The
+      <strong>AUC</strong> (Area Under the Curve) summarizes this curve as a single number
+      between 0 and 1. An AUC of 0.5 means the model is no better than random guessing;
+      1.0 means perfect separation. AUC is <em>threshold-independent</em>&mdash;it tells you
+      how well the model ranks positives above negatives, regardless of where you set the
+      decision boundary. This makes it especially useful when you have not yet decided
+      on a threshold or when comparing models.
+    </p>
+
+    <h3>Regression Metrics: RMSE vs. MAE</h3>
+    <p>
+      <strong>RMSE</strong> (Root Mean Squared Error) penalizes large errors disproportionately
+      because it squares residuals before averaging. <strong>MAE</strong> (Mean Absolute Error)
+      treats all errors linearly. If your application is particularly intolerant of big
+      misses&mdash;say, predicting hospital wait times where a 3-hour error is much worse
+      than three 1-hour errors&mdash;use RMSE. If all errors are equally bad per unit, MAE
+      gives a more robust and interpretable measure.
+    </p>
+
+    <div class="key-insight">
+      <div class="insight-label">Key Insight</div>
+      <p>
+        Before choosing a metric, always ask: <strong>&ldquo;What is the cost of a false positive
+        versus a false negative?&rdquo;</strong> The answer should drive every downstream
+        decision&mdash;your metric, your threshold, your model, and how you present results
+        to stakeholders. A model is not &ldquo;good&rdquo; or &ldquo;bad&rdquo; in the
+        abstract; it is good or bad <em>relative to the costs of its errors</em>.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-divider">&bull; &bull; &bull;</div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- 3.4 The Bias-Variance Tradeoff          -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="section" id="s3-4">
+    <div class="section-num">Section 3.4</div>
+    <h2>The Bias-Variance Tradeoff</h2>
+
+    <p>
+      Every prediction error can be decomposed into three components: bias, variance, and
+      irreducible noise. Understanding this decomposition is perhaps the single most
+      important conceptual tool in machine learning.
+    </p>
+
+    <h3>The Dartboard Analogy</h3>
+    <p>
+      Imagine you are throwing darts at a target, and the bullseye represents the true answer.
+    </p>
+    <ul>
+      <li>
+        <strong>High bias, low variance:</strong> Your darts cluster tightly together, but
+        consistently away from the bullseye. The model has learned a systematically wrong
+        pattern&mdash;it <em>underfits</em>.
+      </li>
+      <li>
+        <strong>Low bias, high variance:</strong> Your darts are centered around the bullseye
+        on average, but scattered widely. The model is capturing noise as if it were
+        signal&mdash;it <em>overfits</em>.
+      </li>
+      <li>
+        <strong>Low bias, low variance:</strong> Darts are tightly clustered around the
+        bullseye. This is the sweet spot&mdash;the model generalizes well.
+      </li>
+    </ul>
+
+    <h3>The Error Decomposition</h3>
+    <div class="math-block">
+      Total Error = Bias&sup2; + Variance + Irreducible Noise
+    </div>
+    <p>
+      <strong>Bias</strong> measures how far the average prediction is from the truth.
+      <strong>Variance</strong> measures how much predictions fluctuate across different
+      training sets. <strong>Irreducible noise</strong> is the error inherent in the data
+      itself&mdash;no model can eliminate it. The tradeoff arises because reducing bias
+      (using a more complex model) typically increases variance, and vice versa.
+    </p>
+
+    <h3>Regularization: L1 and L2</h3>
+    <p>
+      Regularization explicitly constrains model complexity to manage this tradeoff.
+    </p>
+    <p>
+      <strong>L1 regularization (Lasso)</strong> adds the sum of absolute coefficient values
+      to the loss function. Its key property is <em>sparsity</em>&mdash;it drives some
+      coefficients exactly to zero, effectively performing feature selection. Use Lasso when
+      you suspect many features are irrelevant.
+    </p>
+    <p>
+      <strong>L2 regularization (Ridge)</strong> adds the sum of squared coefficient values.
+      It shrinks all coefficients toward zero but rarely eliminates any. The result is
+      <em>stability</em>&mdash;it is especially effective when features are correlated.
+    </p>
+    <p>
+      <strong>Elastic Net</strong> combines both, blending L1&rsquo;s sparsity with L2&rsquo;s
+      stability.
+    </p>
+
+    <div class="example-box">
+      <div class="example-label">Example 3.2 &mdash; Complexity vs. Generalization</div>
+      <p>
+        Suppose we are predicting house prices with polynomial regression and vary the degree
+        from 1 to 15:
+      </p>
+      <ul>
+        <li>
+          <strong>Degree 1 (linear):</strong> The model draws a straight line through curved
+          data. Training error is high, test error is high. This is <em>underfitting</em>&mdash;high
+          bias, low variance.
+        </li>
+        <li>
+          <strong>Degree 3&ndash;4 (sweet spot):</strong> The curve captures the true nonlinear
+          trend without chasing noise. Training error is moderate, test error is at its
+          minimum. Bias and variance are balanced.
+        </li>
+        <li>
+          <strong>Degree 15:</strong> The polynomial wiggles wildly to pass through every
+          training point. Training error is near zero, but test error explodes. This is
+          <em>overfitting</em>&mdash;low bias, high variance.
+        </li>
+      </ul>
+      <p>
+        The gap between training and test error is a direct measure of overfitting. When you
+        see that gap widening, it is time to simplify the model, add regularization, or
+        gather more data.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-divider">&bull; &bull; &bull;</div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- 3.5 Feature Engineering                 -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="section" id="s3-5">
+    <div class="section-num">Section 3.5</div>
+    <h2>Feature Engineering</h2>
+
+    <p>
+      Feature engineering is the art of transforming raw data into representations that make
+      machine learning algorithms work better. It is often the difference between a mediocre
+      model and a great one&mdash;and frequently matters more than the choice of algorithm itself.
+    </p>
+
+    <h3>One-Hot Encoding</h3>
+    <p>
+      Nominal categorical variables (color, city, product category) have no inherent order.
+      One-hot encoding creates a binary column for each category. This prevents the model
+      from assuming that &ldquo;red = 1, blue = 2, green = 3&rdquo; implies blue is somehow
+      &ldquo;between&rdquo; red and green.
+    </p>
+    <p>
+      For <em>ordinal</em> variables (education level, satisfaction rating), one-hot encoding
+      throws away the ordering information. Instead, use integer encoding or map to a meaningful
+      numeric scale that preserves the rank.
+    </p>
+<pre><code><span class="cm"># One-hot encoding with pandas</span>
+df <span class="op">=</span> pd.<span class="fn">get_dummies</span>(df, columns<span class="op">=</span>[<span class="st">'city'</span>, <span class="st">'color'</span>], drop_first<span class="op">=</span><span class="kw">True</span>)
+
+<span class="cm"># Ordinal encoding — preserves rank</span>
+edu_order <span class="op">=</span> {<span class="st">'high_school'</span>: <span class="nu">1</span>, <span class="st">'bachelors'</span>: <span class="nu">2</span>, <span class="st">'masters'</span>: <span class="nu">3</span>, <span class="st">'phd'</span>: <span class="nu">4</span>}
+df[<span class="st">'education'</span>] <span class="op">=</span> df[<span class="st">'education'</span>].<span class="fn">map</span>(edu_order)</code></pre>
+
+    <h3>Feature Scaling</h3>
+    <p>
+      Scaling matters for any algorithm that relies on <em>distances</em> or <em>gradients</em>:
+      KNN, SVM, logistic regression with gradient descent, PCA, and neural networks. Tree-based
+      models (decision trees, random forests, gradient boosting) are immune because they split
+      on thresholds, not magnitudes.
+    </p>
+    <p>
+      <strong>Standardization</strong> (z-score) centers features to mean zero and unit variance.
+      <strong>Min-max scaling</strong> compresses features to [0, 1]. Use standardization as the
+      default; min-max when you need bounded outputs or when the algorithm assumes inputs in a
+      fixed range.
+    </p>
+<pre><code><span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler, MinMaxScaler
+
+scaler <span class="op">=</span> <span class="fn">StandardScaler</span>()
+X_train_scaled <span class="op">=</span> scaler.<span class="fn">fit_transform</span>(X_train)     <span class="cm"># fit on train only</span>
+X_test_scaled  <span class="op">=</span> scaler.<span class="fn">transform</span>(X_test)           <span class="cm"># transform test with train params</span></code></pre>
+
+    <h3>Log Transforms</h3>
+    <p>
+      Many real-world distributions are right-skewed: income, house prices, page views, time
+      between events. Applying <code>log(x + 1)</code> compresses the long tail and makes the
+      distribution more symmetric. This helps linear models (which assume normally distributed
+      residuals) and reduces the outsized influence of extreme values. Always remember to
+      reverse the transform (<code>exp(y) - 1</code>) when interpreting predictions.
+    </p>
+
+    <h3>Target Encoding</h3>
+    <p>
+      Target encoding replaces each category with the mean of the target variable for that
+      category. It is powerful for high-cardinality features (thousands of zip codes, for example)
+      where one-hot encoding would create an unwieldy number of columns. However, it introduces
+      a subtle but dangerous form of <strong>data leakage</strong>: the target variable is used
+      to construct the feature. Rare categories are especially vulnerable&mdash;their target means
+      are noisy and effectively memorize the training labels. Mitigate this with smoothing
+      (blending the category mean with the global mean) and always compute target encoding
+      within cross-validation folds.
+    </p>
+
+    <div class="key-insight">
+      <div class="insight-label">Key Insight</div>
+      <p>
+        In interviews and in practice, <strong>feature engineering often matters more than
+        model choice</strong>. A simple logistic regression on well-crafted features can outperform
+        a gradient boosting model on raw features. Invest time in understanding your data
+        deeply&mdash;domain knowledge, not algorithmic complexity, is the moat.
+      </p>
+    </div>
+  </section>
+
+  <div class="section-divider">&bull; &bull; &bull;</div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- 3.6 Cross-Validation and Data Leakage   -->
+  <!-- ═══════════════════════════════════════ -->
+  <section class="section" id="s3-6">
+    <div class="section-num">Section 3.6</div>
+    <h2>Cross-Validation and Data Leakage</h2>
+
+    <p>
+      The goal of validation is to estimate how well your model will perform on
+      <em>unseen data</em>. Get this wrong, and you will ship a model that looks great
+      in development and fails in production.
+    </p>
+
+    <h3>K-Fold Cross-Validation</h3>
+    <p>
+      In k-fold CV, you split the data into <em>k</em> equal parts (folds). For each of the
+      <em>k</em> iterations, one fold serves as the test set and the remaining <em>k &minus; 1</em>
+      folds form the training set. You train and evaluate <em>k</em> times, then average the
+      scores. This gives you a more reliable estimate than a single train/test split because
+      every data point appears in both training and testing exactly once.
+    </p>
+    <p>
+      Conceptually, picture a dataset split into five colored bands. In round one, the first
+      band is held out; in round two, the second band; and so on. The final score is the mean
+      across all five rounds. Five-fold or ten-fold CV is standard practice.
+    </p>
+
+<pre><code><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+
+model <span class="op">=</span> <span class="fn">RandomForestClassifier</span>(n_estimators<span class="op">=</span><span class="nu">200</span>, random_state<span class="op">=</span><span class="nu">42</span>)
+scores <span class="op">=</span> <span class="fn">cross_val_score</span>(model, X, y, cv<span class="op">=</span><span class="nu">5</span>, scoring<span class="op">=</span><span class="st">'f1'</span>)
+
+<span class="fn">print</span>(<span class="st">f"F1 scores: </span>{scores}<span class="st">"</span>)
+<span class="fn">print</span>(<span class="st">f"Mean F1:   </span>{scores.<span class="fn">mean</span>():<span class="st">.3f</span>}<span class="st"> (+/- </span>{scores.<span class="fn">std</span>():<span class="st">.3f</span>}<span class="st">)"</span>)</code></pre>
+
+    <h3>Time Series Cross-Validation</h3>
+    <p>
+      Standard k-fold CV randomly shuffles the data, which is <em>fatal</em> for time series.
+      If you train on data from March and test on data from January, your model has access to
+      the future&mdash;a severe form of leakage. Time series CV respects temporal order: each
+      training set includes only data <em>before</em> the test period, and the test window
+      slides forward in time. Scikit-learn&rsquo;s <code>TimeSeriesSplit</code> implements this
+      pattern.
+    </p>
+
+<pre><code><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> TimeSeriesSplit
+
+tscv <span class="op">=</span> <span class="fn">TimeSeriesSplit</span>(n_splits<span class="op">=</span><span class="nu">5</span>)
+<span class="kw">for</span> train_idx, test_idx <span class="kw">in</span> tscv.<span class="fn">split</span>(X):
+    X_train, X_test <span class="op">=</span> X[train_idx], X[test_idx]
+    y_train, y_test <span class="op">=</span> y[train_idx], y[test_idx]
+    <span class="cm"># Train and evaluate — test always comes after train in time</span></code></pre>
+
+    <h3>The Cardinal Sin: Data Leakage</h3>
+    <p>
+      Data leakage occurs whenever information from outside the training set bleeds into the
+      model during training. The most insidious form is <strong>fitting preprocessing on the
+      full dataset</strong> before splitting. If you standardize features using the mean and
+      standard deviation of the entire dataset (including the test set), the model implicitly
+      &ldquo;knows&rdquo; something about the test data. The same applies to imputing missing
+      values, computing target encodings, or selecting features based on correlations with
+      the target.
+    </p>
+    <p>
+      The rule is simple: <strong>everything that learns from data must be fit inside the
+      training fold only.</strong> Use <code>Pipeline</code> objects in scikit-learn to
+      ensure preprocessing steps are properly contained within cross-validation.
+    </p>
+
+<pre><code><span class="kw">from</span> sklearn.pipeline <span class="kw">import</span> Pipeline
+<span class="kw">from</span> sklearn.preprocessing <span class="kw">import</span> StandardScaler
+<span class="kw">from</span> sklearn.linear_model <span class="kw">import</span> LogisticRegression
+
+<span class="cm"># CORRECT: scaler is fit inside each CV fold</span>
+pipe <span class="op">=</span> <span class="fn">Pipeline</span>([
+    (<span class="st">'scaler'</span>, <span class="fn">StandardScaler</span>()),
+    (<span class="st">'model'</span>,  <span class="fn">LogisticRegression</span>())
+])
+scores <span class="op">=</span> <span class="fn">cross_val_score</span>(pipe, X, y, cv<span class="op">=</span><span class="nu">5</span>, scoring<span class="op">=</span><span class="st">'accuracy'</span>)</code></pre>
+
+    <div class="example-box">
+      <div class="example-label">Example 3.3 &mdash; How Leakage Inflates Accuracy</div>
+      <p>
+        A data scientist builds a model to predict 30-day hospital readmission. During feature
+        engineering, they compute each patient&rsquo;s average length of stay, including
+        the <em>current</em> visit (which hasn&rsquo;t concluded at prediction time). They also
+        scale all features using the mean and variance of the entire dataset before splitting
+        into train and test sets.
+      </p>
+      <p>
+        The model reports 94% AUC on the test set. Excited, they deploy it. In production,
+        the AUC drops to 68%. What happened?
+      </p>
+      <p>
+        Two leaks compounded. First, the average-length-of-stay feature encoded future
+        information&mdash;you cannot know the length of a stay that has not ended. Second,
+        standardizing on the full dataset meant the test set&rsquo;s distribution was already
+        &ldquo;baked in&rdquo; to the scaling parameters. Together, these leaks inflated the
+        offline metric by over 25 points. The fix: compute only historically available features,
+        and wrap all preprocessing inside a <code>Pipeline</code> within cross-validation.
+      </p>
+    </div>
+
+    <div class="key-insight">
+      <div class="insight-label">Key Insight</div>
+      <p>
+        If your model&rsquo;s performance seems &ldquo;too good to be true,&rdquo; it almost
+        certainly is. The most common culprit is data leakage. Before celebrating a high score,
+        audit every feature: <em>&ldquo;Would I have this information at the moment of
+        prediction?&rdquo;</em> If the answer is no, remove it.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Chapter Footer ── -->
+  <footer class="chapter-footer">
+    <div class="footer-nav">
+      <a href="ch2-python.html">
+        <span class="label">Previous</span>
+        Chapter II &mdash; Python
+      </a>
+      <a href="index.html" style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px;">
+        Contents
+      </a>
+      <a href="ch4-stats.html" style="text-align:right;">
+        <span class="label">Next</span>
+        Chapter IV &mdash; Statistics
+      </a>
+    </div>
+    <p class="copyright">
+      The Data Science Interview Companion &middot; v07 Prototype Edition
+    </p>
+  </footer>
+
+</article>
+
+</body>
+</html>

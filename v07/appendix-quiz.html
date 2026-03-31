@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Practice Examination — The DS Interview Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #faf6f0;
+  --ink: #2c2416;
+  --burgundy: #7b2d3b;
+  --navy: #1a3a5c;
+  --green: #2e6b3a;
+  --gold: #c8a84e;
+  --gold-light: #fdf6e3;
+  --gold-border: #d4b860;
+  --serif: 'Libre Baskerville', 'Georgia', serif;
+  --sans: 'Source Sans 3', 'Helvetica Neue', sans-serif;
+  --mono: 'Source Code Pro', 'Menlo', monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.85;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── NAV ── */
+nav {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid #d6cfc4;
+  font-family: var(--sans);
+  font-size: 0.88rem;
+}
+nav a {
+  color: var(--navy);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+nav a:hover { color: var(--burgundy); }
+.nav-title { font-style: italic; color: var(--ink); }
+.nav-right { display: flex; gap: 1.5rem; align-items: baseline; }
+.nav-label { color: #8a7f72; font-size: 0.82rem; letter-spacing: 0.04em; }
+
+/* ── MAIN COLUMN ── */
+main {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ── HEADING ── */
+.appendix-label {
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--burgundy);
+  font-variant: small-caps;
+  margin-bottom: 0.25rem;
+}
+h1 {
+  font-family: var(--serif);
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 1.5rem;
+  line-height: 1.3;
+}
+.intro {
+  font-style: italic;
+  color: #5a5145;
+  margin-bottom: 2.5rem;
+  font-size: 0.97rem;
+  line-height: 1.85;
+}
+
+/* ── SCORE TRACKER ── */
+.score-tracker {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  color: var(--ink);
+  background: #f3ede4;
+  border: 1px solid #d6cfc4;
+  border-radius: 4px;
+  padding: 0.65rem 1.1rem;
+  margin-bottom: 3rem;
+  display: inline-block;
+}
+.score-tracker strong { color: var(--burgundy); }
+
+/* ── QUESTION BLOCK ── */
+.question-block {
+  margin-bottom: 2.8rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid #e8e2d8;
+}
+.question-block:last-of-type { border-bottom: none; }
+
+.q-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+.q-number {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--ink);
+}
+.q-chapter {
+  font-family: var(--sans);
+  font-size: 0.78rem;
+  color: #8a7f72;
+  letter-spacing: 0.02em;
+}
+.q-text {
+  margin-bottom: 1.1rem;
+  font-size: 1rem;
+  line-height: 1.85;
+}
+.q-text code {
+  font-family: var(--mono);
+  font-size: 0.88em;
+  background: #efe9df;
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+/* ── OPTIONS ── */
+.options-list {
+  list-style: none;
+  margin-bottom: 0.5rem;
+}
+.options-list li {
+  padding: 0.45rem 0.75rem;
+  margin-bottom: 0.3rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 0.97rem;
+  line-height: 1.7;
+  border: 1px solid transparent;
+}
+.options-list li:hover:not(.answered) {
+  background: #f0eae0;
+}
+.option-label {
+  font-weight: 600;
+  margin-right: 0.3rem;
+  color: var(--ink);
+}
+
+/* Answered states */
+.options-list li.correct-selected {
+  background: #e8f5e9;
+  border-color: var(--green);
+  color: var(--green);
+}
+.options-list li.correct-revealed {
+  background: #e8f5e9;
+  border-color: var(--green);
+  color: var(--green);
+}
+.options-list li.incorrect-selected {
+  background: #fce8ec;
+  border-color: var(--burgundy);
+  color: var(--burgundy);
+}
+.options-list li.answered {
+  cursor: default;
+  opacity: 0.7;
+}
+.options-list li.correct-selected,
+.options-list li.correct-revealed,
+.options-list li.incorrect-selected {
+  opacity: 1;
+}
+
+/* ── EXPLANATION BOX ── */
+.explanation {
+  display: none;
+  background: var(--gold-light);
+  border-left: 3px solid var(--gold-border);
+  padding: 1rem 1.2rem;
+  margin-top: 1rem;
+  border-radius: 0 4px 4px 0;
+}
+.explanation.visible { display: block; }
+.explanation-title {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #8a7040;
+  margin-bottom: 0.4rem;
+}
+.explanation p {
+  font-style: italic;
+  font-size: 0.93rem;
+  line-height: 1.8;
+  color: #5a5145;
+}
+
+/* ── FINAL SCORE CARD ── */
+.final-score {
+  background: #f3ede4;
+  border: 1px solid #d6cfc4;
+  border-radius: 6px;
+  padding: 2rem 2rem;
+  text-align: center;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+  display: none;
+}
+.final-score.visible { display: block; }
+.final-score h2 {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.6rem;
+}
+.final-score .score-number {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--burgundy);
+  font-family: var(--sans);
+}
+.final-score .score-pct {
+  font-family: var(--sans);
+  font-size: 1rem;
+  color: #8a7f72;
+  margin-bottom: 1.2rem;
+}
+.final-score a {
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  color: var(--navy);
+  text-decoration: none;
+  border-bottom: 1px solid var(--navy);
+}
+.final-score a:hover { color: var(--burgundy); border-color: var(--burgundy); }
+
+/* ── FOOTER ── */
+footer {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  border-top: 1px solid #d6cfc4;
+  text-align: center;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  color: #8a7f72;
+}
+footer a {
+  color: var(--navy);
+  text-decoration: none;
+}
+footer a:hover { color: var(--burgundy); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 700px) {
+  nav { padding: 1.5rem 1rem 0.75rem; font-size: 0.82rem; }
+  main { padding: 1.8rem 1rem 3rem; }
+  h1 { font-size: 1.6rem; }
+  .options-list li { padding: 0.5rem 0.6rem; font-size: 0.93rem; }
+  .score-tracker { font-size: 0.85rem; }
+  .final-score { padding: 1.5rem 1.2rem; }
+  .final-score .score-number { font-size: 1.8rem; }
+  footer { padding: 1.5rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-title">The DS Interview Companion</a>
+  <div class="nav-right">
+    <span class="nav-label">Appendix</span>
+    <a href="ch6.html">&larr; Prev</a>
+  </div>
+</nav>
+
+<main>
+  <div class="appendix-label">Appendix</div>
+  <h1>Practice Examination</h1>
+
+  <p class="intro">The following examination contains twenty-six questions spanning all six chapters. Answers and explanations are provided below each question. We recommend attempting each question before revealing the solution.</p>
+
+  <div class="score-tracker" id="scoreTracker">Score: <strong id="scoreCorrect">0</strong> / <strong id="scoreTotal">0</strong> answered</div>
+
+  <div id="questionsContainer">
+
+    <!-- ═══════════════ SQL (5 questions) ═══════════════ -->
+
+    <div class="question-block" data-correct="b">
+      <div class="q-header">
+        <span class="q-number">1.</span>
+        <span class="q-chapter">(Chapter I &mdash; SQL)</span>
+      </div>
+      <p class="q-text">What does <code>COUNT(*)</code> count in a SQL query?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> Only non-NULL values in the first column</li>
+        <li data-value="b"><span class="option-label">(b)</span> All rows, including those with NULL values</li>
+        <li data-value="c"><span class="option-label">(c)</span> Only distinct rows</li>
+        <li data-value="d"><span class="option-label">(d)</span> All columns in each row</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p><code>COUNT(*)</code> counts every row in the result set regardless of NULL values. In contrast, <code>COUNT(column)</code> only counts non-NULL values in that specific column.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="a">
+      <div class="q-header">
+        <span class="q-number">2.</span>
+        <span class="q-chapter">(Chapter I &mdash; SQL)</span>
+      </div>
+      <p class="q-text">Which clause filters rows <em>before</em> grouping in a SQL query?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> <code>WHERE</code></li>
+        <li data-value="b"><span class="option-label">(b)</span> <code>HAVING</code></li>
+        <li data-value="c"><span class="option-label">(c)</span> <code>GROUP BY</code></li>
+        <li data-value="d"><span class="option-label">(d)</span> <code>ORDER BY</code></li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p><code>WHERE</code> filters individual rows before any aggregation occurs. <code>HAVING</code> filters after grouping, operating on the results of aggregate functions.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="c">
+      <div class="q-header">
+        <span class="q-number">3.</span>
+        <span class="q-chapter">(Chapter I &mdash; SQL)</span>
+      </div>
+      <p class="q-text">What is the key difference between <code>RANK()</code> and <code>DENSE_RANK()</code>?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> <code>RANK()</code> is faster to compute</li>
+        <li data-value="b"><span class="option-label">(b)</span> <code>DENSE_RANK()</code> ignores NULL values</li>
+        <li data-value="c"><span class="option-label">(c)</span> <code>RANK()</code> leaves gaps after ties; <code>DENSE_RANK()</code> does not</li>
+        <li data-value="d"><span class="option-label">(d)</span> They are identical in behavior</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>When two rows tie for rank 2, <code>RANK()</code> assigns both rank 2 and skips to rank 4, leaving a gap. <code>DENSE_RANK()</code> assigns both rank 2 and continues to rank 3 with no gap.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="d">
+      <div class="q-header">
+        <span class="q-number">4.</span>
+        <span class="q-chapter">(Chapter I &mdash; SQL)</span>
+      </div>
+      <p class="q-text">Can you use a column alias defined in <code>SELECT</code> within the <code>WHERE</code> clause of the same query?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> Yes, aliases are available everywhere in the query</li>
+        <li data-value="b"><span class="option-label">(b)</span> Yes, but only in MySQL</li>
+        <li data-value="c"><span class="option-label">(c)</span> Yes, but only if the alias is numeric</li>
+        <li data-value="d"><span class="option-label">(d)</span> No, <code>WHERE</code> is evaluated before <code>SELECT</code></li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>In standard SQL, the logical order of evaluation processes <code>WHERE</code> before <code>SELECT</code>, so aliases defined in the <code>SELECT</code> clause are not yet available. You must repeat the expression or use a subquery.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="b">
+      <div class="q-header">
+        <span class="q-number">5.</span>
+        <span class="q-chapter">(Chapter I &mdash; SQL)</span>
+      </div>
+      <p class="q-text">When is <code>EXISTS</code> generally preferred over <code>IN</code> for subqueries?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> When the subquery returns exactly one row</li>
+        <li data-value="b"><span class="option-label">(b)</span> When the subquery is large, because <code>EXISTS</code> short-circuits on the first match</li>
+        <li data-value="c"><span class="option-label">(c)</span> When you need to check for NULL values in the subquery</li>
+        <li data-value="d"><span class="option-label">(d)</span> <code>IN</code> is always preferred over <code>EXISTS</code></li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p><code>EXISTS</code> returns <code>TRUE</code> as soon as it finds the first matching row and stops scanning, making it more efficient for large subqueries. <code>IN</code> may evaluate the entire subquery result set before filtering.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════════ PYTHON (4 questions) ═══════════════ -->
+
+    <div class="question-block" data-correct="a">
+      <div class="q-header">
+        <span class="q-number">6.</span>
+        <span class="q-chapter">(Chapter II &mdash; Python)</span>
+      </div>
+      <p class="q-text">What is the average time complexity of looking up a key in a Python dictionary?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> O(1)</li>
+        <li data-value="b"><span class="option-label">(b)</span> O(log n)</li>
+        <li data-value="c"><span class="option-label">(c)</span> O(n)</li>
+        <li data-value="d"><span class="option-label">(d)</span> O(n log n)</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>Python dictionaries are implemented as hash tables, providing average-case O(1) lookup. In the worst case (many hash collisions), it degrades to O(n), but this is rare in practice.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="c">
+      <div class="q-header">
+        <span class="q-number">7.</span>
+        <span class="q-chapter">(Chapter II &mdash; Python)</span>
+      </div>
+      <p class="q-text">Which method is most idiomatic for transforming every element of a list in Python?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> A <code>for</code> loop appending to a new list</li>
+        <li data-value="b"><span class="option-label">(b)</span> Using <code>map()</code> with a lambda</li>
+        <li data-value="c"><span class="option-label">(c)</span> A list comprehension</li>
+        <li data-value="d"><span class="option-label">(d)</span> Using <code>reduce()</code></li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>List comprehensions are considered the most Pythonic approach for element-wise transformations. They are concise, readable, and generally faster than <code>map()</code> with a lambda or manual loops.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="b">
+      <div class="q-header">
+        <span class="q-number">8.</span>
+        <span class="q-chapter">(Chapter II &mdash; Python)</span>
+      </div>
+      <p class="q-text">What is the danger of using a mutable default argument (e.g., <code>def f(x=[])</code>) in Python?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> It raises a <code>SyntaxError</code></li>
+        <li data-value="b"><span class="option-label">(b)</span> The default object is shared across all calls, so mutations persist between invocations</li>
+        <li data-value="c"><span class="option-label">(c)</span> It creates a new list on every call, wasting memory</li>
+        <li data-value="d"><span class="option-label">(d)</span> It forces the function to return <code>None</code></li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>Default arguments are evaluated once at function definition time, not at each call. A mutable default like a list is shared across invocations, so appending to it in one call affects subsequent calls. The standard fix is to use <code>None</code> as the default and create the list inside the function.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="d">
+      <div class="q-header">
+        <span class="q-number">9.</span>
+        <span class="q-chapter">(Chapter II &mdash; Python)</span>
+      </div>
+      <p class="q-text">What does <code>-1 // 2</code> evaluate to in Python 3?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> <code>0</code></li>
+        <li data-value="b"><span class="option-label">(b)</span> <code>-0.5</code></li>
+        <li data-value="c"><span class="option-label">(c)</span> <code>0.5</code></li>
+        <li data-value="d"><span class="option-label">(d)</span> <code>-1</code></li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>The <code>//</code> operator performs floor division, rounding toward negative infinity. <code>-1 / 2</code> equals <code>-0.5</code>, and the floor of <code>-0.5</code> is <code>-1</code>. This often surprises programmers coming from languages where integer division truncates toward zero.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════════ ML (4 questions) ═══════════════ -->
+
+    <div class="question-block" data-correct="b">
+      <div class="q-header">
+        <span class="q-number">10.</span>
+        <span class="q-chapter">(Chapter III &mdash; Machine Learning)</span>
+      </div>
+      <p class="q-text">Compared to a single decision tree, a Random Forest typically has:</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> Higher variance and higher bias</li>
+        <li data-value="b"><span class="option-label">(b)</span> Lower variance and similar or slightly higher bias</li>
+        <li data-value="c"><span class="option-label">(c)</span> Higher variance and lower bias</li>
+        <li data-value="d"><span class="option-label">(d)</span> Identical bias and variance</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>By averaging many de-correlated trees (via bagging and feature subsampling), a Random Forest substantially reduces variance compared to a single tree while keeping bias roughly the same or slightly increasing it.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="c">
+      <div class="q-header">
+        <span class="q-number">11.</span>
+        <span class="q-chapter">(Chapter III &mdash; Machine Learning)</span>
+      </div>
+      <p class="q-text">Why is AUC-ROC often preferred over accuracy for imbalanced classification problems?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> AUC-ROC is faster to compute</li>
+        <li data-value="b"><span class="option-label">(b)</span> AUC-ROC penalises false positives more heavily</li>
+        <li data-value="c"><span class="option-label">(c)</span> AUC-ROC evaluates performance across all thresholds and is insensitive to class imbalance</li>
+        <li data-value="d"><span class="option-label">(d)</span> AUC-ROC only measures precision</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>Accuracy can be misleading when classes are imbalanced&mdash;a model predicting only the majority class can achieve high accuracy. AUC-ROC measures the trade-off between true positive rate and false positive rate across all classification thresholds, giving a more balanced view of model performance.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="a">
+      <div class="q-header">
+        <span class="q-number">12.</span>
+        <span class="q-chapter">(Chapter III &mdash; Machine Learning)</span>
+      </div>
+      <p class="q-text">Why does L1 (Lasso) regularisation tend to produce sparse models?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> The diamond-shaped constraint region has corners on the axes, pushing coefficients to exactly zero</li>
+        <li data-value="b"><span class="option-label">(b)</span> It squares the coefficients, magnifying small values</li>
+        <li data-value="c"><span class="option-label">(c)</span> It randomly drops features during training</li>
+        <li data-value="d"><span class="option-label">(d)</span> It uses a logarithmic penalty that favours zeros</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>L1 regularisation adds the sum of absolute values of coefficients to the loss function. Geometrically, the L1 constraint region is diamond-shaped with vertices on the coordinate axes, making it likely that the optimal solution lies at a corner where one or more coefficients are exactly zero.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="d">
+      <div class="q-header">
+        <span class="q-number">13.</span>
+        <span class="q-chapter">(Chapter III &mdash; Machine Learning)</span>
+      </div>
+      <p class="q-text">What problem arises from fitting a scaler (e.g., <code>StandardScaler</code>) on the entire dataset before splitting into train and test sets?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> The scaler becomes too slow</li>
+        <li data-value="b"><span class="option-label">(b)</span> Features become non-normally distributed</li>
+        <li data-value="c"><span class="option-label">(c)</span> The training set becomes too small</li>
+        <li data-value="d"><span class="option-label">(d)</span> Data leakage: test set statistics influence the training process</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>Fitting the scaler on the full dataset means the mean and standard deviation incorporate test set information. This causes data leakage, giving an overly optimistic estimate of model performance. The correct approach is to fit the scaler only on the training set and then transform both train and test sets.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════════ STATISTICS (4 questions) ═══════════════ -->
+
+    <div class="question-block" data-correct="b">
+      <div class="q-header">
+        <span class="q-number">14.</span>
+        <span class="q-chapter">(Chapter IV &mdash; Statistics)</span>
+      </div>
+      <p class="q-text">What does a p-value represent in hypothesis testing?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> The probability that the null hypothesis is true</li>
+        <li data-value="b"><span class="option-label">(b)</span> The probability of observing data at least as extreme as the sample, assuming the null hypothesis is true</li>
+        <li data-value="c"><span class="option-label">(c)</span> The probability that the alternative hypothesis is true</li>
+        <li data-value="d"><span class="option-label">(d)</span> The probability of making a Type I error</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>A p-value is the probability of obtaining results at least as extreme as the observed data, given that the null hypothesis is true. It is not the probability that the null hypothesis itself is true or false.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="c">
+      <div class="q-header">
+        <span class="q-number">15.</span>
+        <span class="q-chapter">(Chapter IV &mdash; Statistics)</span>
+      </div>
+      <p class="q-text">A Type II error occurs when:</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> We reject the null hypothesis when it is true</li>
+        <li data-value="b"><span class="option-label">(b)</span> We reject the alternative hypothesis when it is true</li>
+        <li data-value="c"><span class="option-label">(c)</span> We fail to reject the null hypothesis when it is false</li>
+        <li data-value="d"><span class="option-label">(d)</span> We accept the null hypothesis when it is true</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>A Type II error (false negative) occurs when a real effect exists but the test fails to detect it. The probability of a Type II error is denoted &beta;, and statistical power is 1 &minus; &beta;.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="a">
+      <div class="q-header">
+        <span class="q-number">16.</span>
+        <span class="q-chapter">(Chapter IV &mdash; Statistics)</span>
+      </div>
+      <p class="q-text">The Central Limit Theorem states that:</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> The sampling distribution of the sample mean approaches a normal distribution as sample size increases, regardless of the population distribution</li>
+        <li data-value="b"><span class="option-label">(b)</span> All populations are normally distributed</li>
+        <li data-value="c"><span class="option-label">(c)</span> Larger samples always have smaller means</li>
+        <li data-value="d"><span class="option-label">(d)</span> The sample mean equals the population mean for any sample size</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>The CLT is one of the most important results in statistics. It tells us that for sufficiently large sample sizes, the distribution of the sample mean is approximately normal&mdash;even if the underlying population is not&mdash;provided the population has finite variance.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="d">
+      <div class="q-header">
+        <span class="q-number">17.</span>
+        <span class="q-chapter">(Chapter IV &mdash; Statistics)</span>
+      </div>
+      <p class="q-text">In A/B testing, "peeking" at results before the sample size is reached is problematic because:</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> It slows down the data collection process</li>
+        <li data-value="b"><span class="option-label">(b)</span> It changes the underlying distribution of the data</li>
+        <li data-value="c"><span class="option-label">(c)</span> It makes the test less powerful</li>
+        <li data-value="d"><span class="option-label">(d)</span> It inflates the false positive rate by performing multiple implicit comparisons</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>Each peek is effectively an additional hypothesis test. Without correction for multiple comparisons, repeatedly checking results dramatically inflates the Type I error rate&mdash;a test designed for &alpha; = 0.05 can have an effective false positive rate far exceeding 5%. Sequential testing methods or group sequential designs can mitigate this.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════════ PROBABILITY (4 questions) ═══════════════ -->
+
+    <div class="question-block" data-correct="b">
+      <div class="q-header">
+        <span class="q-number">18.</span>
+        <span class="q-chapter">(Chapter V &mdash; Probability)</span>
+      </div>
+      <p class="q-text">In the Monty Hall problem, after the host reveals a goat behind one of the other doors, what is the probability of winning the car if you switch?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> 1/3</li>
+        <li data-value="b"><span class="option-label">(b)</span> 2/3</li>
+        <li data-value="c"><span class="option-label">(c)</span> 1/2</li>
+        <li data-value="d"><span class="option-label">(d)</span> 1/4</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>When you initially pick a door, you have a 1/3 chance of being correct. The remaining 2/3 probability is concentrated on the other doors. Since the host always reveals a goat, switching gives you the full 2/3 probability. This is one of the most counter-intuitive results in probability.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="c">
+      <div class="q-header">
+        <span class="q-number">19.</span>
+        <span class="q-chapter">(Chapter V &mdash; Probability)</span>
+      </div>
+      <p class="q-text">A medical test has a sensitivity of 99% and a false positive rate of 5%. If the disease prevalence is 1%, what is the approximate probability that a person who tests positive actually has the disease?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> 99%</li>
+        <li data-value="b"><span class="option-label">(b)</span> 95%</li>
+        <li data-value="c"><span class="option-label">(c)</span> About 17%</li>
+        <li data-value="d"><span class="option-label">(d)</span> About 50%</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>By Bayes' theorem: P(Disease | Positive) = (0.99 &times; 0.01) / (0.99 &times; 0.01 + 0.05 &times; 0.99) = 0.0099 / 0.0594 &asymp; 16.7%. The low prevalence means most positive results are false positives, illustrating the base rate fallacy.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="a">
+      <div class="q-header">
+        <span class="q-number">20.</span>
+        <span class="q-chapter">(Chapter V &mdash; Probability)</span>
+      </div>
+      <p class="q-text">If events A and B are independent, then P(A &cap; B) equals:</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> P(A) &times; P(B)</li>
+        <li data-value="b"><span class="option-label">(b)</span> P(A) + P(B)</li>
+        <li data-value="c"><span class="option-label">(c)</span> P(A) + P(B) &minus; P(A) &times; P(B)</li>
+        <li data-value="d"><span class="option-label">(d)</span> P(A|B) &times; P(A)</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>Independence means that the occurrence of one event does not affect the probability of the other. Mathematically, this is defined as P(A &cap; B) = P(A) &times; P(B). Option (c) describes P(A &cup; B), the union, not the intersection.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="c">
+      <div class="q-header">
+        <span class="q-number">21.</span>
+        <span class="q-chapter">(Chapter V &mdash; Probability)</span>
+      </div>
+      <p class="q-text">In the birthday problem, approximately how many people are needed in a room for a &gt;50% chance that two share a birthday?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> 183</li>
+        <li data-value="b"><span class="option-label">(b)</span> 50</li>
+        <li data-value="c"><span class="option-label">(c)</span> 23</li>
+        <li data-value="d"><span class="option-label">(d)</span> 365</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>With just 23 people, the probability that at least two share a birthday exceeds 50%. This famously counter-intuitive result arises because the number of pairs grows quadratically: 23 people yield 23 &times; 22 / 2 = 253 possible pairs to check.</p>
+      </div>
+    </div>
+
+    <!-- ═══════════════ CASING (5 questions) ═══════════════ -->
+
+    <div class="question-block" data-correct="b">
+      <div class="q-header">
+        <span class="q-number">22.</span>
+        <span class="q-chapter">(Chapter VI &mdash; Case Studies)</span>
+      </div>
+      <p class="q-text">When defining a "North Star metric" for a product, the most important characteristic is that it:</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> Is easy to compute in real time</li>
+        <li data-value="b"><span class="option-label">(b)</span> Captures the core value the product delivers to users</li>
+        <li data-value="c"><span class="option-label">(c)</span> Correlates with revenue in the short term</li>
+        <li data-value="d"><span class="option-label">(d)</span> Can be A/B tested directly</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>A North Star metric should reflect the fundamental value your product provides. It aligns the entire organisation around long-term user value rather than short-term business metrics, serving as a compass for prioritisation and strategy.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="a">
+      <div class="q-header">
+        <span class="q-number">23.</span>
+        <span class="q-chapter">(Chapter VI &mdash; Case Studies)</span>
+      </div>
+      <p class="q-text">DAU (Daily Active Users) drops 10% overnight. What should be your first step?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> Check for data logging issues or pipeline failures before assuming a real product change</li>
+        <li data-value="b"><span class="option-label">(b)</span> Immediately roll back the most recent product change</li>
+        <li data-value="c"><span class="option-label">(c)</span> Run an A/B test to diagnose the cause</li>
+        <li data-value="d"><span class="option-label">(d)</span> Alert the marketing team to increase spend</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>Before investigating product causes, always verify the data is trustworthy. Logging bugs, pipeline failures, or tracking changes are common causes of apparent metric drops. Only after confirming data integrity should you segment users and investigate product or external factors.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="d">
+      <div class="q-header">
+        <span class="q-number">24.</span>
+        <span class="q-chapter">(Chapter VI &mdash; Case Studies)</span>
+      </div>
+      <p class="q-text">What is the purpose of a "guardrail metric" in an A/B test?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> To serve as the primary decision metric</li>
+        <li data-value="b"><span class="option-label">(b)</span> To measure the test's statistical power</li>
+        <li data-value="c"><span class="option-label">(c)</span> To track revenue during the experiment</li>
+        <li data-value="d"><span class="option-label">(d)</span> To ensure the experiment does not cause unacceptable harm to key metrics</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>Guardrail metrics are secondary metrics that must not degrade beyond a defined threshold. For example, while testing a change to improve engagement, you might use page load time or crash rate as guardrails to ensure the change does not harm user experience.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="c">
+      <div class="q-header">
+        <span class="q-number">25.</span>
+        <span class="q-chapter">(Chapter VI &mdash; Case Studies)</span>
+      </div>
+      <p class="q-text">Revenue per user is increasing while the number of rides (or transactions) is decreasing. The most likely explanation is:</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> A data logging error in the rides pipeline</li>
+        <li data-value="b"><span class="option-label">(b)</span> Users are becoming less engaged overall</li>
+        <li data-value="c"><span class="option-label">(c)</span> Users are shifting toward fewer but higher-value transactions (e.g., longer rides, premium tiers)</li>
+        <li data-value="d"><span class="option-label">(d)</span> The pricing model has a bug that undercharges</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>When revenue per user rises while transaction volume falls, the mix is shifting toward higher-value transactions. This could be caused by price increases, premium tier adoption, longer rides, or a change in user demographics. Investigating the revenue distribution per transaction confirms this pattern.</p>
+      </div>
+    </div>
+
+    <div class="question-block" data-correct="b">
+      <div class="q-header">
+        <span class="q-number">26.</span>
+        <span class="q-chapter">(Chapter VI &mdash; Case Studies)</span>
+      </div>
+      <p class="q-text">When designing a product metric for a two-sided marketplace, which consideration is most critical?</p>
+      <ul class="options-list">
+        <li data-value="a"><span class="option-label">(a)</span> Optimising solely for the supply side</li>
+        <li data-value="b"><span class="option-label">(b)</span> Balancing metrics for both supply and demand sides to avoid harming one at the expense of the other</li>
+        <li data-value="c"><span class="option-label">(c)</span> Focusing only on the metric that is easiest to measure</li>
+        <li data-value="d"><span class="option-label">(d)</span> Using a single metric that maximises short-term revenue</li>
+      </ul>
+      <div class="explanation">
+        <div class="explanation-title">Answer</div>
+        <p>Two-sided marketplaces must maintain health on both sides. Optimising aggressively for one side (e.g., rider discounts) can degrade the experience for the other side (e.g., driver earnings), leading to attrition and a collapse of the marketplace equilibrium.</p>
+      </div>
+    </div>
+
+  </div><!-- /questionsContainer -->
+
+  <div class="final-score" id="finalScore">
+    <h2>Examination Complete</h2>
+    <div class="score-number" id="finalScoreNumber">0 / 26</div>
+    <div class="score-pct" id="finalScorePct">0%</div>
+    <a href="index.html#toc">Return to Table of Contents</a>
+  </div>
+
+</main>
+
+<footer>
+  The Data Science Interview Companion &middot; v07 &middot; <a href="../index.html">Back to Gallery</a>
+</footer>
+
+<script>
+(function () {
+  const totalQuestions = 26;
+  let answered = 0;
+  let correct = 0;
+
+  const scoreCorrectEl = document.getElementById('scoreCorrect');
+  const scoreTotalEl = document.getElementById('scoreTotal');
+  const finalScoreEl = document.getElementById('finalScore');
+  const finalScoreNumberEl = document.getElementById('finalScoreNumber');
+  const finalScorePctEl = document.getElementById('finalScorePct');
+
+  function updateScore() {
+    scoreCorrectEl.textContent = correct;
+    scoreTotalEl.textContent = answered;
+    if (answered === totalQuestions) {
+      finalScoreEl.classList.add('visible');
+      finalScoreNumberEl.textContent = correct + ' / ' + totalQuestions;
+      finalScorePctEl.textContent = Math.round((correct / totalQuestions) * 100) + '%';
+    }
+  }
+
+  document.querySelectorAll('.question-block').forEach(function (block) {
+    const correctAnswer = block.getAttribute('data-correct');
+    const options = block.querySelectorAll('.options-list li');
+    const explanation = block.querySelector('.explanation');
+    let isAnswered = false;
+
+    options.forEach(function (option) {
+      option.addEventListener('click', function () {
+        if (isAnswered) return;
+        isAnswered = true;
+        answered++;
+
+        const selected = option.getAttribute('data-value');
+        const isCorrect = selected === correctAnswer;
+
+        if (isCorrect) {
+          correct++;
+          option.classList.add('correct-selected');
+        } else {
+          option.classList.add('incorrect-selected');
+          options.forEach(function (o) {
+            if (o.getAttribute('data-value') === correctAnswer) {
+              o.classList.add('correct-revealed');
+            }
+          });
+        }
+
+        options.forEach(function (o) {
+          o.classList.add('answered');
+        });
+
+        explanation.classList.add('visible');
+        updateScore();
+      });
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

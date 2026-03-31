@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter IV — Statistics | The DS Interview Companion</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;1,400;1,600&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #faf6f0;
+    --ink: #2c2416;
+    --burgundy: #7b2d3b;
+    --navy: #1a3a5c;
+    --forest: #2d5a3d;
+    --gold: #a8862a;
+    --burgundy-light: #f5eaed;
+    --navy-light: #e8eef4;
+    --forest-light: #eaf3ed;
+    --gold-light: #f7f0e0;
+    --column: 680px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Libre Baskerville', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Navigation ── */
+  nav {
+    border-bottom: 1px solid #d6cfc4;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.92rem;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  nav a {
+    color: var(--navy);
+    text-decoration: none;
+  }
+  nav a:hover { text-decoration: underline; }
+  .nav-title {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .nav-chapter {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .nav-chapter span {
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .nav-arrow {
+    font-size: 0.85rem;
+    padding: 0.25em 0.6em;
+    border: 1px solid #c5bdb2;
+    border-radius: 4px;
+    color: var(--ink);
+    transition: background 0.2s;
+  }
+  .nav-arrow:hover { background: #eee8de; }
+
+  /* ── Main Column ── */
+  main {
+    max-width: var(--column);
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  /* ── Chapter Header ── */
+  .chapter-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--burgundy);
+    margin-bottom: 0.4rem;
+  }
+  .chapter-title {
+    font-size: 2.1rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+  }
+  .chapter-rule {
+    width: 60px;
+    height: 3px;
+    background: var(--burgundy);
+    border: none;
+    margin: 1.5rem 0 2.5rem;
+  }
+
+  /* ── Section Headings ── */
+  h2 {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--burgundy);
+    margin: 3rem 0 0.4rem;
+    letter-spacing: 0.01em;
+  }
+  h2 .section-num {
+    color: var(--gold);
+    margin-right: 0.3em;
+  }
+  h3 {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 1.12rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 2rem 0 0.5rem;
+  }
+
+  /* ── Paragraphs & Inline ── */
+  p { margin-bottom: 1.15rem; }
+  strong { color: var(--ink); font-weight: 700; }
+  em { font-style: italic; }
+  code {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.9em;
+    background: #efe9df;
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+  }
+
+  /* ── Formula Block ── */
+  .formula-block {
+    background: var(--forest-light);
+    border-left: 4px solid var(--forest);
+    padding: 1.2rem 1.5rem;
+    margin: 1.5rem 0;
+    text-align: center;
+    border-radius: 0 6px 6px 0;
+  }
+  .formula-block code {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: var(--forest);
+    background: none;
+    padding: 0;
+  }
+  .formula-block .formula-label {
+    display: block;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.8rem;
+    color: #5a7d65;
+    margin-top: 0.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Example Box ── */
+  .example-box {
+    background: var(--navy-light);
+    border-left: 4px solid var(--navy);
+    padding: 1.3rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .example-box .example-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--navy);
+    margin-bottom: 0.5rem;
+  }
+  .example-box p { margin-bottom: 0.75rem; }
+  .example-box p:last-child { margin-bottom: 0; }
+
+  /* ── Key Insight Box ── */
+  .key-insight {
+    background: var(--gold-light);
+    border-left: 4px solid var(--gold);
+    padding: 1.3rem 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 6px 6px 0;
+  }
+  .key-insight .insight-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--gold);
+    margin-bottom: 0.5rem;
+  }
+  .key-insight p { margin-bottom: 0.75rem; }
+  .key-insight p:last-child { margin-bottom: 0; }
+
+  /* ── Ordered / Unordered Lists ── */
+  ol, ul {
+    margin: 0.75rem 0 1.25rem 1.4rem;
+  }
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  /* ── Decision Flowchart (text) ── */
+  .flowchart {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.95rem;
+    background: #f3efe8;
+    border: 1px solid #d6cfc4;
+    border-radius: 6px;
+    padding: 1.3rem 1.5rem;
+    margin: 1.5rem 0;
+    line-height: 1.7;
+  }
+  .flowchart .flow-title {
+    font-weight: 700;
+    color: var(--burgundy);
+    margin-bottom: 0.6rem;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .flowchart .flow-step {
+    padding-left: 1rem;
+    position: relative;
+    margin-bottom: 0.3rem;
+  }
+  .flowchart .flow-step::before {
+    content: "\2192";
+    position: absolute;
+    left: 0;
+    color: var(--burgundy);
+    font-weight: 600;
+  }
+  .flowchart .flow-indent {
+    padding-left: 2.2rem;
+  }
+
+  /* ── Footer ── */
+  footer {
+    max-width: var(--column);
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    border-top: 1px solid #d6cfc4;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 0.85rem;
+    color: #8a7f70;
+    text-align: center;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 740px) {
+    main { padding: 2rem 1rem 4rem; }
+    .chapter-title { font-size: 1.65rem; }
+    h2 { font-size: 1.25rem; }
+    body { font-size: 16px; }
+    nav { padding: 0.8rem 1rem; flex-wrap: wrap; gap: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Navigation ── -->
+<nav>
+  <a href="index.html" class="nav-title">The DS Interview Companion</a>
+  <div class="nav-chapter">
+    <a href="ch3-probability.html" class="nav-arrow">&#8592; Prev</a>
+    <span>Chapter IV</span>
+    <a href="ch5-ml-fundamentals.html" class="nav-arrow">Next &#8594;</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ── Chapter Header ── -->
+  <div class="chapter-label">Chapter IV</div>
+  <h1 class="chapter-title">Statistics &mdash; The Foundation of Inference</h1>
+  <hr class="chapter-rule">
+
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 4.1  Descriptive Statistics                -->
+  <!-- ══════════════════════════════════════════ -->
+  <h2><span class="section-num">4.1</span> Descriptive Statistics</h2>
+
+  <p>Before modeling, before hypothesis testing, before anything else, you must <em>describe</em> your data. Descriptive statistics compress a dataset into a handful of numbers that capture its shape and tendencies. Choosing the wrong summary can mislead you entirely.</p>
+
+  <h3>Measures of Central Tendency</h3>
+
+  <p>The <strong>mean</strong> (arithmetic average) sums every observation and divides by the count. It is sensitive to outliers: a single billionaire in a room of teachers will drag the mean salary far above what any teacher actually earns. Use the mean when your data is roughly symmetric&mdash;heights, exam scores, measurement errors.</p>
+
+  <p>The <strong>median</strong> is the middle value when data is sorted. It is robust to outliers and skew. Income distributions, home prices, and response times are all better summarized by the median. If someone asks "what does the typical household earn?" the median is almost always the right answer.</p>
+
+  <p>The <strong>mode</strong> is the most frequently occurring value. It is the only measure of central tendency that works for categorical data (the most common shirt size, the most popular browser). For continuous data, the mode is rarely used in practice.</p>
+
+  <h3>Measures of Spread</h3>
+
+  <p><strong>Variance</strong> measures how far observations are from the mean, on average. More precisely, it is the mean of squared deviations from the mean. Squaring serves two purposes: it makes all deviations positive, and it penalizes large deviations more heavily than small ones.</p>
+
+  <div class="formula-block">
+    <code>Var(X) = (1/n) &Sigma; (x&#8336; &minus; x&#772;)&sup2;</code>
+    <span class="formula-label">Population variance</span>
+  </div>
+
+  <p>The <strong>standard deviation</strong> is simply the square root of the variance. Its great virtue is that it lives in the same units as the original data. If heights are measured in centimeters, the standard deviation is also in centimeters. Intuitively, think of it as <em>the average distance of a data point from the mean</em>.</p>
+
+  <p>The <strong>interquartile range (IQR)</strong> is the distance between the 25th percentile (Q1) and the 75th percentile (Q3). It captures the spread of the middle 50% of the data and is unaffected by extreme values. The classic <strong>1.5&times;IQR rule</strong> flags any observation below Q1&nbsp;&minus;&nbsp;1.5&times;IQR or above Q3&nbsp;+&nbsp;1.5&times;IQR as a potential outlier.</p>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>Always ask <em>"is my data skewed?"</em> before choosing a summary statistic. If the answer is yes&mdash;or if you suspect outliers&mdash;prefer the median and IQR over the mean and standard deviation. Reporting the wrong summary statistic is one of the most common (and most quietly damaging) mistakes in data analysis.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 4.2  Hypothesis Testing                   -->
+  <!-- ══════════════════════════════════════════ -->
+  <h2><span class="section-num">4.2</span> Hypothesis Testing</h2>
+
+  <p>Hypothesis testing is a formal framework for deciding whether an observed pattern in data reflects a genuine effect or is merely the product of random variation. Mastering this framework is essential&mdash;it underpins A/B testing, clinical trials, and much of scientific reasoning.</p>
+
+  <h3>The Framework, Step by Step</h3>
+
+  <ol>
+    <li><strong>Formulate hypotheses.</strong> The <em>null hypothesis</em> (H<sub>0</sub>) represents the status quo&mdash;"nothing has changed," "no effect exists." The <em>alternative hypothesis</em> (H<sub>1</sub>) represents what you suspect might be true.</li>
+    <li><strong>Choose a significance level (&alpha;).</strong> This is the probability of rejecting H<sub>0</sub> when it is actually true. The conventional choice is &alpha;&nbsp;=&nbsp;0.05, but context matters&mdash;medical trials often use 0.01.</li>
+    <li><strong>Collect data.</strong> Gather your sample according to the experimental design.</li>
+    <li><strong>Compute the test statistic.</strong> This converts your data into a single number that measures how far the observed result is from what H<sub>0</sub> predicts.</li>
+    <li><strong>Compare to the critical value or compute the p-value.</strong> If the test statistic falls in the rejection region (or if the p-value is less than &alpha;), reject H<sub>0</sub>.</li>
+    <li><strong>Draw a conclusion.</strong> State clearly whether you reject or fail to reject H<sub>0</sub>, and what that means in context.</li>
+  </ol>
+
+  <h3>What the P-Value Actually Means</h3>
+
+  <p>The <strong>p-value</strong> is the probability of observing a result <em>at least as extreme</em> as the one you obtained, <em>assuming H<sub>0</sub> is true</em>. Read that sentence twice. It does <strong>not</strong> tell you the probability that H<sub>0</sub> is true. It does <strong>not</strong> tell you the probability that your result is due to chance. It is a statement about the data, conditional on the null hypothesis being correct.</p>
+
+  <p>A small p-value means: "data this extreme would be very unlikely if H<sub>0</sub> were true." It does <em>not</em> mean: "H<sub>0</sub> is very unlikely." The distinction is subtle but crucial, and confusing the two is the single most common misconception in applied statistics.</p>
+
+  <h3>Type I and Type II Errors</h3>
+
+  <p>Consider a courtroom analogy. The defendant is presumed innocent (H<sub>0</sub>: innocent). A <strong>Type I error</strong> is convicting an innocent person&mdash;rejecting a true null hypothesis. A <strong>Type II error</strong> is acquitting a guilty person&mdash;failing to reject a false null hypothesis.</p>
+
+  <p>The probability of a Type I error is &alpha; (the significance level you chose). The probability of a Type II error is denoted &beta;. <strong>Power</strong> is defined as 1&nbsp;&minus;&nbsp;&beta;&mdash;the probability of correctly rejecting a false H<sub>0</sub>. In practice, you want power of at least 0.80, meaning you have an 80% chance of detecting a real effect if one exists.</p>
+
+  <div class="example-box">
+    <div class="example-label">Example 4.1 &mdash; Testing a New Feature</div>
+    <p>Your product team ships a new onboarding flow and wants to know if it increased the conversion rate. The current baseline conversion is 12%.</p>
+    <p><strong>H<sub>0</sub>:</strong> The new flow has no effect; conversion rate = 12%.<br>
+    <strong>H<sub>1</sub>:</strong> The new flow increased the conversion rate; conversion rate &gt; 12%.</p>
+    <p>You collect data from 2,000 users exposed to the new flow and observe a conversion rate of 13.8%. Computing a one-proportion z-test yields z&nbsp;=&nbsp;2.48, giving p&nbsp;=&nbsp;0.0066. Since p&nbsp;&lt;&nbsp;0.05, you reject H<sub>0</sub> and conclude that the new onboarding flow significantly increased conversions.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 4.3  Common Statistical Tests              -->
+  <!-- ══════════════════════════════════════════ -->
+  <h2><span class="section-num">4.3</span> Common Statistical Tests</h2>
+
+  <p>Choosing the right test matters as much as running it correctly. Each test carries assumptions; violating them can produce meaningless results.</p>
+
+  <p>The <strong>z-test</strong> compares a sample mean to a population mean when the population standard deviation (&sigma;) is known and the sample size is large (typically n&nbsp;&ge;&nbsp;30). In practice, &sigma; is almost never known, so the z-test is more of a pedagogical tool than a practical one.</p>
+
+  <p>The <strong>t-test</strong> fills the gap: it is designed for situations where &sigma; is unknown and must be estimated from the sample. With small samples, the t-distribution has heavier tails than the normal, accounting for the extra uncertainty. As n grows, the t-distribution converges to the normal.</p>
+
+  <p>The <strong>paired t-test</strong> is used when measurements come in natural pairs&mdash;the same subjects measured before and after a treatment, or two measurements on the same item. By analyzing the <em>differences</em> within each pair, it removes subject-to-subject variability and increases power.</p>
+
+  <p>The <strong>chi-squared test</strong> assesses whether two categorical variables are independent. It compares observed frequencies to the frequencies you would expect under independence. Common use cases: does browser choice depend on operating system? Is there an association between treatment group and outcome?</p>
+
+  <p><strong>ANOVA</strong> (Analysis of Variance) extends the two-sample t-test to three or more groups. Rather than running multiple pairwise t-tests (which inflates Type I error), ANOVA asks a single question: are any of the group means significantly different? If ANOVA rejects H<sub>0</sub>, you follow up with post-hoc tests (e.g., Tukey's HSD) to identify which pairs differ.</p>
+
+  <p>The <strong>Mann-Whitney U test</strong> is the non-parametric alternative to the independent-samples t-test. It does not assume normality and works on ranks rather than raw values. Use it when your data is ordinal, heavily skewed, or has small samples where normality cannot be verified.</p>
+
+  <div class="flowchart">
+    <div class="flow-title">Decision Flowchart: Choosing a Test</div>
+    <div class="flow-step">Is your outcome variable continuous or categorical?</div>
+    <div class="flow-indent flow-step">If <strong>categorical</strong> &rarr; Chi-squared test</div>
+    <div class="flow-indent flow-step">If <strong>continuous</strong> &rarr; continue below</div>
+    <div class="flow-step">How many groups are you comparing?</div>
+    <div class="flow-indent flow-step">If <strong>one sample</strong> vs. a known value &rarr; one-sample t-test (or z-test if &sigma; known)</div>
+    <div class="flow-indent flow-step">If <strong>two groups</strong> &rarr; continue below</div>
+    <div class="flow-indent flow-step">If <strong>three or more groups</strong> &rarr; ANOVA</div>
+    <div class="flow-step">Are the two samples paired or independent?</div>
+    <div class="flow-indent flow-step">If <strong>paired</strong> &rarr; Paired t-test</div>
+    <div class="flow-indent flow-step">If <strong>independent</strong> &rarr; continue below</div>
+    <div class="flow-step">Can you assume normality?</div>
+    <div class="flow-indent flow-step">If <strong>yes</strong> &rarr; Independent-samples t-test</div>
+    <div class="flow-indent flow-step">If <strong>no</strong> &rarr; Mann-Whitney U test</div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 4.4  Confidence Intervals                  -->
+  <!-- ══════════════════════════════════════════ -->
+  <h2><span class="section-num">4.4</span> Confidence Intervals</h2>
+
+  <p>A confidence interval provides a <em>range</em> of plausible values for an unknown population parameter. Where a hypothesis test gives a binary answer (reject or don't reject), a confidence interval communicates both the estimate and its uncertainty.</p>
+
+  <div class="formula-block">
+    <code>CI = x&#772; &plusmn; z* &middot; (&sigma; / &radic;n)</code>
+    <span class="formula-label">Confidence interval for the population mean</span>
+  </div>
+
+  <p>Here x&#772; is the sample mean, z* is the critical value corresponding to your chosen confidence level (1.96 for 95%), &sigma; is the population standard deviation (or its estimate s), and n is the sample size.</p>
+
+  <h3>Interpreting Confidence Intervals Correctly</h3>
+
+  <p>A 95% confidence interval does <strong>not</strong> mean there is a 95% probability that the true parameter lies within this particular interval. The true parameter is fixed; it either is inside or it is not. The correct interpretation: <em>if we repeated this sampling procedure 100 times and constructed an interval each time, approximately 95 of those intervals would contain the true value.</em> The confidence is in the <em>procedure</em>, not in any single interval.</p>
+
+  <h3>What Affects the Width?</h3>
+
+  <p>Three factors control how wide a confidence interval is:</p>
+  <ul>
+    <li><strong>Sample size (n):</strong> Larger samples yield narrower intervals. The relationship is through &radic;n in the denominator, so quadrupling your sample size cuts the width in half.</li>
+    <li><strong>Variability (&sigma;):</strong> More variable data produces wider intervals. You cannot control this, but you can try to reduce noise through better measurement.</li>
+    <li><strong>Confidence level:</strong> Higher confidence requires wider intervals. A 99% interval is always wider than a 95% interval from the same data. You are trading precision for certainty.</li>
+  </ul>
+
+  <div class="example-box">
+    <div class="example-label">Example 4.2 &mdash; Average Session Duration</div>
+    <p>You sample 200 user sessions and find a mean duration of 4.2 minutes with a standard deviation of 1.8 minutes. Construct a 95% confidence interval.</p>
+    <p><strong>Step 1:</strong> Compute the standard error: SE = s/&radic;n = 1.8/&radic;200 = 1.8/14.14 &asymp; 0.127</p>
+    <p><strong>Step 2:</strong> Multiply by the critical value: margin = 1.96 &times; 0.127 &asymp; 0.249</p>
+    <p><strong>Step 3:</strong> Form the interval: CI = 4.2 &plusmn; 0.249 = <strong>(3.95, 4.45)</strong> minutes.</p>
+    <p>We are 95% confident that the true average session duration lies between 3.95 and 4.45 minutes.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 4.5  A/B Testing                           -->
+  <!-- ══════════════════════════════════════════ -->
+  <h2><span class="section-num">4.5</span> A/B Testing</h2>
+
+  <p>A/B testing is hypothesis testing applied to product decisions. It is the gold standard for measuring the causal impact of changes, and every data scientist working in industry will encounter it. The statistics are straightforward; the practical pitfalls are where careers are made.</p>
+
+  <h3>The Full Process</h3>
+
+  <ol>
+    <li><strong>Define the metric.</strong> Choose a primary metric (conversion rate, revenue per user, retention) <em>before</em> the experiment starts. Be specific: "7-day retention" is a metric; "engagement" is not.</li>
+    <li><strong>Conduct a power analysis.</strong> Determine the sample size needed to detect a meaningful effect. You must specify the minimum detectable effect (MDE), the significance level (&alpha;), and the desired power (1&nbsp;&minus;&nbsp;&beta;). Skipping this step is the root cause of most failed experiments.</li>
+    <li><strong>Randomize.</strong> Assign users randomly to control (A) and treatment (B). Ensure the randomization unit is consistent&mdash;typically user-level, not session-level.</li>
+    <li><strong>Run for a fixed duration.</strong> Decide the run time in advance (informed by the power analysis) and do not stop early. This point is critical, as explained below.</li>
+    <li><strong>Analyze.</strong> At the predetermined end date, compute the test statistic and p-value. Construct confidence intervals around the treatment effect.</li>
+  </ol>
+
+  <h3>Pitfall: The Peeking Problem</h3>
+
+  <p>If you check your experiment results daily and stop the moment the p-value drops below 0.05, you will dramatically inflate your false positive rate. Why? Every time you peek, you are effectively running another hypothesis test. With enough peeks, random fluctuations will eventually produce a "significant" result even when no true effect exists. Studies have shown that peeking daily can inflate the false positive rate from the intended 5% to as high as 30%.</p>
+
+  <p>The solution: decide your sample size and run time in advance, and analyze only at the end. If you must monitor results during the experiment, use sequential testing methods (such as group sequential designs or always-valid p-values) that are specifically designed to control the error rate under repeated looks.</p>
+
+  <h3>Pitfall: Multiple Comparisons</h3>
+
+  <p>Testing ten metrics simultaneously means that, even if there is no real effect on any of them, you have roughly a 40% chance of finding at least one "significant" result by chance. The <strong>Bonferroni correction</strong> addresses this by dividing the significance level by the number of tests: if you test 10 metrics at &alpha;&nbsp;=&nbsp;0.05, each individual test uses &alpha;&nbsp;=&nbsp;0.005. It is conservative but simple and widely accepted.</p>
+
+  <h3>Pitfall: Novelty Effect</h3>
+
+  <p>Users may engage more with a new feature simply because it is new, not because it is better. Early results can be inflated by novelty. To guard against this, run experiments long enough for the novelty to wear off, and examine time trends within the experiment to see if the treatment effect decays.</p>
+
+  <h3>Pitfall: Simpson's Paradox</h3>
+
+  <p>An overall positive result can mask negative results in every subgroup (or vice versa) when the subgroups have different sizes. For example, a new checkout flow might appear to increase conversion overall, but decrease it for both mobile <em>and</em> desktop users&mdash;if the experiment happened to route more traffic to the already-higher-converting platform. Always segment your results and look for this pattern.</p>
+
+  <div class="key-insight">
+    <div class="insight-label">Key Insight</div>
+    <p>The hardest part of A/B testing isn't the statistics&mdash;it's defining the right metric. A poorly chosen metric can lead you to optimize for something that doesn't actually move the business. Spend as much time debating the metric as you spend analyzing the results.</p>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════ -->
+  <!-- 4.6  The Central Limit Theorem             -->
+  <!-- ══════════════════════════════════════════ -->
+  <h2><span class="section-num">4.6</span> The Central Limit Theorem</h2>
+
+  <p>The Central Limit Theorem (CLT) is arguably the most important result in all of statistics. It is the reason that confidence intervals work, the reason hypothesis tests work, and the reason the normal distribution appears so often in practice.</p>
+
+  <h3>The Statement</h3>
+
+  <p>Take <em>any</em> population with a finite mean &mu; and finite standard deviation &sigma;. Draw random samples of size n. As n grows, the distribution of sample means approaches a normal distribution, regardless of the shape of the original population. The mean of this sampling distribution is &mu;, and its standard deviation&mdash;called the <strong>standard error</strong>&mdash;is:</p>
+
+  <div class="formula-block">
+    <code>SE = &sigma; / &radic;n</code>
+    <span class="formula-label">Standard error of the mean</span>
+  </div>
+
+  <h3>The Intuition</h3>
+
+  <p>Imagine rolling a single die. The outcomes are uniformly distributed&mdash;each face is equally likely, and the distribution looks flat, not bell-shaped at all. Now roll 30 dice and take the average. That average will tend to land near 3.5 (the population mean). Do this thousands of times, and the histogram of those averages will be a near-perfect bell curve. The individual rolls are uniform; the <em>averages</em> are normal. That is the CLT in action.</p>
+
+  <p>This works for skewed distributions, bimodal distributions, discrete distributions, and virtually anything else, provided the variance is finite. The more skewed the population, the larger n needs to be before the approximation kicks in&mdash;but it always kicks in eventually.</p>
+
+  <h3>Why It Matters</h3>
+
+  <p>The entire machinery of frequentist inference rests on the CLT. When you compute a confidence interval using x&#772;&nbsp;&plusmn;&nbsp;z*&middot;SE, you are relying on the fact that x&#772; is approximately normal. When you compute a p-value by comparing a z-statistic to the standard normal distribution, you are relying on the CLT. Without it, we would need to know the exact distribution of our data before we could draw any conclusions&mdash;an impossibly strong requirement in practice.</p>
+
+  <div class="example-box">
+    <div class="example-label">Example 4.3 &mdash; CLT with a Skewed Population</div>
+    <p>Consider user session durations, which typically follow a highly right-skewed distribution. Most sessions are short (under a minute), but a few power users have sessions lasting 30 minutes or more. The population distribution looks nothing like a bell curve.</p>
+    <p>Now draw random samples of n&nbsp;=&nbsp;50 sessions and compute the mean of each sample. By the CLT, these sample means will be approximately normally distributed around the true population mean, even though individual sessions are wildly skewed.</p>
+    <p>Repeat the sampling 1,000 times: the histogram of the 1,000 sample means forms a smooth, symmetric bell curve. This is why we can construct a confidence interval for "average session duration" using the normal distribution&mdash;even though the underlying data is heavily skewed&mdash;as long as our sample is reasonably large.</p>
+  </div>
+
+</main>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>The DS Interview Companion &mdash; Chapter IV: Statistics</p>
+</footer>
+
+</body>
+</html>
