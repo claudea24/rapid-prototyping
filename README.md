@@ -1,4 +1,4 @@
-# Claudea's DS Interview Prep — Rapid Prototyping
+# Data Science Interview Prep — Rapid Prototyping
 
 12 iterations of building a **Data Science Interview Prep Guide** from scratch. Each version (`v01`–`v12`) is a self-contained HTML/CSS/JS prototype that builds on the last.
 
