@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning — Deep Interactive | DS Prep v13</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0f0f13;--surface:#1a1a22;--surface2:#22222e;--border:#2a2a38;--text:#c8c8d4;--text-muted:#7a7a8e;--heading:#ededf5;--accent:#a78bfa;--accent-glow:rgba(167,139,250,0.12);--green:#34d399;--amber:#fbbf24;--rose:#f472b6;--code-bg:#16161e;--code-text:#cdd6f4}
+    body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(15,15,19,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:700;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#7c6cf0,#22d3ee)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:500}
+    nav .nav-links a:hover{background:var(--surface);color:var(--heading)}
+    nav .nav-links a.active{color:var(--heading);background:var(--surface2)}
+
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-glow)}
+    .page-header h1{font-size:1.8rem;font-weight:700;color:var(--heading)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:rgba(167,139,250,.08);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    .insight{background:rgba(251,191,36,.06);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid rgba(42,42,56,.5);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:rgba(255,255,255,.02)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:rgba(167,139,250,.08);padding:1px 5px;border-radius:3px}
+
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+    .kw{color:#f38ba8}.fn{color:#cba6f7}.str{color:#a6e3a1}.cm{color:#585b70;font-style:italic}.num{color:#89b4fa}
+
+    /* Interactive BV widget */
+    .bv-widget{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin:16px 0}
+    .bv-widget label{font-size:.78rem;color:var(--text-muted);font-weight:600;display:block;margin-bottom:8px}
+    .bv-widget input[type=range]{width:100%;accent-color:var(--accent);margin-bottom:12px}
+    .bv-values{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+    .bv-card{background:var(--surface2);border-radius:8px;padding:12px;text-align:center}
+    .bv-card .bv-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:4px}
+    .bv-card .bv-val{font-size:1.4rem;font-weight:700;font-family:'JetBrains Mono',monospace}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.page-header,.container{padding-left:16px;padding-right:16px}.bv-values{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v13</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a><a href="python.html">Python</a><a href="ml.html" class="active">ML</a>
+    <a href="stats.html">Stats</a><a href="probability.html">Probability</a><a href="casing.html">Casing</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top"><div class="icon">&#129302;</div><h1>Machine Learning &mdash; From Theory to Practice</h1></div>
+  <p class="intro">Machine learning is pattern recognition at scale. This chapter builds your mental model from algorithms and evaluation metrics to the bias-variance tradeoff and feature engineering &mdash; the concepts that separate practitioners from beginners.</p>
+</div>
+
+<div class="container">
+
+  <!-- 3.1 Supervised Algorithms -->
+  <div class="section">
+    <div class="section-head open" onclick="toggleSection(this)">
+      <div><span class="num">3.1</span><h2 style="display:inline">Supervised Algorithms</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body open">
+      <p class="explain">Supervised learning is the workhorse of applied ML: you have labeled data and you want to predict the label for new, unseen observations. The art is choosing the right algorithm for your data's characteristics &mdash; dimensionality, linearity, size, and interpretability requirements.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Algorithm</th><th>Strengths</th><th>Weaknesses</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td>Linear Regression</td><td>Fast, interpretable</td><td>Assumes linearity, outlier-sensitive</td><td>Baseline, continuous target</td></tr>
+          <tr><td>Logistic Regression</td><td>Probabilistic, regularizable</td><td>Linear boundary only</td><td>Binary classification</td></tr>
+          <tr><td>Decision Tree</td><td>Nonlinear, no scaling needed</td><td>High variance, overfitting</td><td>Interpretable models</td></tr>
+          <tr><td>Random Forest</td><td>Low variance, robust</td><td>Less interpretable</td><td>General-purpose classification</td></tr>
+          <tr><td>Gradient Boosting</td><td>State-of-the-art tabular</td><td>Overfitting risk, slow to tune</td><td>Competitions, production</td></tr>
+          <tr><td>SVM</td><td>High-dim, kernel flexibility</td><td>Slow, opaque</td><td>Small/medium datasets</td></tr>
+          <tr><td>KNN</td><td>No training, complex boundaries</td><td>Slow inference, curse of dimensionality</td><td>Quick prototyping</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3.2 Unsupervised Algorithms -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">3.2</span><h2 style="display:inline">Unsupervised Algorithms</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Unsupervised learning finds structure in data without labels. The two main flavors are <strong>clustering</strong> (grouping similar observations) and <strong>dimensionality reduction</strong> (compressing features while preserving structure). The right choice depends on whether you know how many groups to expect, the shape of your clusters, and whether you need interpretability or just visualization.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Algorithm</th><th>Type</th><th>Key Property</th><th>Use When</th></tr></thead>
+        <tbody>
+          <tr><td>K-Means</td><td>Clustering</td><td>Fast, spherical clusters</td><td>Known k, convex clusters</td></tr>
+          <tr><td>Hierarchical</td><td>Clustering</td><td>Dendrogram exploration</td><td>Unknown k, want hierarchy</td></tr>
+          <tr><td>DBSCAN</td><td>Clustering</td><td>Arbitrary shapes, finds outliers</td><td>No k needed, noise expected</td></tr>
+          <tr><td>PCA</td><td>Dim. reduction</td><td>Linear, fast</td><td>Feature reduction, visualization</td></tr>
+          <tr><td>t-SNE / UMAP</td><td>Dim. reduction</td><td>Nonlinear, preserves local structure</td><td>2D visualization only</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3.3 Evaluation Metrics -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">3.3</span><h2 style="display:inline">Evaluation Metrics</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">A model is only as good as the metric you evaluate it with. Choosing the wrong metric can lead you to optimize for the wrong thing &mdash; high accuracy on an imbalanced dataset is meaningless if your model never predicts the minority class.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Metric</th><th>Formula Idea</th><th>Fails When</th><th>Use When</th></tr></thead>
+        <tbody>
+          <tr><td>Accuracy</td><td>(TP+TN) / total</td><td>Imbalanced classes</td><td>Balanced datasets</td></tr>
+          <tr><td>Precision</td><td>TP / (TP+FP)</td><td>&mdash;</td><td>Cost of FP is high (spam filter)</td></tr>
+          <tr><td>Recall</td><td>TP / (TP+FN)</td><td>&mdash;</td><td>Cost of FN is high (disease detection)</td></tr>
+          <tr><td>F1</td><td>Harmonic mean P&amp;R</td><td>&mdash;</td><td>Need balance of P and R</td></tr>
+          <tr><td>AUC-ROC</td><td>Area under TPR vs FPR</td><td>&mdash;</td><td>Comparing models, threshold-independent</td></tr>
+          <tr><td>RMSE</td><td>&radic;(mean squared errors)</td><td>&mdash;</td><td>Penalize large errors (regression)</td></tr>
+          <tr><td>MAE</td><td>Mean absolute errors</td><td>&mdash;</td><td>Treat all errors equally (regression)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Before choosing metrics, ask: what is the cost of a false positive vs. a false negative? The answer drives everything. A cancer screening model that misses tumors (low recall) is far worse than one that flags a few healthy patients (low precision).</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.4 Bias-Variance Tradeoff -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">3.4</span><h2 style="display:inline">Bias-Variance Tradeoff</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain"><strong>The dartboard analogy:</strong> Imagine throwing darts at a target. <strong>High bias</strong> means your darts consistently land in the wrong area &mdash; your aim is off (systematic error). <strong>High variance</strong> means your darts are scattered all over &mdash; inconsistent (sensitivity to training data). The goal is low bias AND low variance: darts clustered tightly on the bullseye.</p>
+      <p class="explain">Total error = Bias&sup2; + Variance + Irreducible noise. As you increase model complexity, bias decreases (model can capture more patterns) but variance increases (model starts fitting noise). The sweet spot is where total error is minimized.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Scenario</th><th>Bias</th><th>Variance</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Underfitting</td><td>High</td><td>Low</td><td>Poor on train AND test</td><td>More features, complex model</td></tr>
+          <tr><td>Sweet spot</td><td>Low</td><td>Low</td><td>Good on both</td><td>Keep it</td></tr>
+          <tr><td>Overfitting</td><td>Low</td><td>High</td><td>Great train, poor test</td><td>Regularization, more data, simpler</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain" style="margin-top:20px"><strong>L1 vs L2 Regularization:</strong> Both add a penalty to the loss function to prevent overfitting, but they work differently.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Property</th><th>L1 (Lasso)</th><th>L2 (Ridge)</th></tr></thead>
+        <tbody>
+          <tr><td>Penalty</td><td>Sum of |weights|</td><td>Sum of weights&sup2;</td></tr>
+          <tr><td>Effect</td><td>Drives weights to exactly 0</td><td>Shrinks weights toward 0</td></tr>
+          <tr><td>Feature selection</td><td>Yes (sparse solutions)</td><td>No (keeps all features)</td></tr>
+          <tr><td>Best when</td><td>Many irrelevant features</td><td>Many small, useful features</td></tr>
+        </tbody>
+      </table>
+
+      <div class="bv-widget">
+        <label>Model Complexity: <span id="bv-complexity-val">5</span> / 10</label>
+        <input type="range" id="bv-slider" min="1" max="10" value="5" oninput="updateBV(this.value)">
+        <div class="bv-values">
+          <div class="bv-card">
+            <div class="bv-label">Bias&sup2;</div>
+            <div class="bv-val" id="bv-bias" style="color:#f38ba8">0.25</div>
+          </div>
+          <div class="bv-card">
+            <div class="bv-label">Variance</div>
+            <div class="bv-val" id="bv-variance" style="color:#89b4fa">0.25</div>
+          </div>
+          <div class="bv-card">
+            <div class="bv-label">Total Error</div>
+            <div class="bv-val" id="bv-total" style="color:var(--amber)">0.60</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.5 Feature Engineering & Cross-Validation -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">3.5</span><h2 style="display:inline">Feature Engineering &amp; Cross-Validation</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain"><strong>Feature engineering</strong> is the art of transforming raw data into features that better represent the underlying problem to the model. It's where domain knowledge meets data science &mdash; and often matters more than the model you choose.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Technique</th><th>When</th><th>Watch Out</th></tr></thead>
+        <tbody>
+          <tr><td>One-hot encoding</td><td>Nominal categories</td><td>High cardinality &rarr; many columns</td></tr>
+          <tr><td>Label encoding</td><td>Ordinal categories</td><td>Don't use for nominal</td></tr>
+          <tr><td>StandardScaler</td><td>KNN, SVM, logistic, PCA</td><td>Not needed for trees</td></tr>
+          <tr><td>Log transform</td><td>Right-skewed data</td><td>Remember to reverse: exp(y)-1</td></tr>
+          <tr><td>Target encoding</td><td>High-cardinality</td><td>Data leakage risk</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>Cross-validation</strong> is your defense against overfitting during model selection. Instead of a single train/test split (which is noisy), k-fold CV splits the data into k folds, trains on k-1 folds, and validates on the held-out fold &mdash; rotating k times. The average score is a more reliable estimate of generalization performance.</p>
+      <p class="explain">Common choices: <strong>5-fold</strong> or <strong>10-fold</strong> for general use. <strong>Stratified k-fold</strong> for imbalanced classification (preserves class ratios). <strong>Time-series split</strong> for temporal data (never train on the future). <strong>Leave-one-out</strong> for very small datasets (high variance, expensive).</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Feature engineering often matters more than model choice. Simple logistic regression on well-crafted features beats gradient boosting on raw features. Spend 80% of your time on data and features, 20% on models.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v13 &middot; <a href="index.html">Home</a></p>
+</footer>
+
+<script>
+function toggleSection(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// Bias-Variance interactive widget
+function updateBV(val) {
+  val = parseInt(val);
+  document.getElementById('bv-complexity-val').textContent = val;
+
+  // Bias decreases with complexity: bias^2 = 1 / complexity
+  const bias2 = parseFloat((1.0 / val).toFixed(2));
+
+  // Variance increases with complexity: variance = (complexity - 1) / 18
+  const variance = parseFloat(((val - 1) / 18).toFixed(2));
+
+  // Irreducible noise constant
+  const noise = 0.10;
+
+  const total = parseFloat((bias2 + variance + noise).toFixed(2));
+
+  document.getElementById('bv-bias').textContent = bias2.toFixed(2);
+  document.getElementById('bv-variance').textContent = variance.toFixed(2);
+  document.getElementById('bv-total').textContent = total.toFixed(2);
+}
+
+// Initialize
+updateBV(5);
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DS Interview Prep — Deep Interactive</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0f0f13;--surface:#1a1a22;--surface2:#22222e;--border:#2a2a38;--text:#c8c8d4;--text-muted:#7a7a8e;--heading:#ededf5;--accent:#7c6cf0;--accent-glow:rgba(124,108,240,0.15);--green:#34d399;--amber:#fbbf24;--rose:#f472b6;--cyan:#22d3ee;--sql:#60a5fa;--python:#fbbf24;--ml:#a78bfa;--stats:#34d399;--prob:#f472b6;--case:#22d3ee}
+    body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(15,15,19,0.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:700;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,var(--accent),var(--cyan))}
+    nav .back{text-decoration:none;color:var(--text-muted);font-size:.8rem;font-weight:500;padding:6px 12px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
+    nav .back:hover{border-color:var(--accent);color:var(--accent)}
+
+    .hero{padding:110px 32px 48px;text-align:center;max-width:720px;margin:0 auto}
+    .hero .badge{display:inline-flex;align-items:center;gap:6px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;padding:6px 16px;border-radius:20px;background:var(--accent-glow);color:var(--accent);border:1px solid rgba(124,108,240,0.25);margin-bottom:24px}
+    .hero h1{font-size:2.6rem;font-weight:700;color:var(--heading);letter-spacing:-1px;line-height:1.15;margin-bottom:14px}
+    .hero h1 span{background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .hero p{font-size:1.05rem;color:var(--text-muted);line-height:1.65;max-width:540px;margin:0 auto 40px}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;max-width:1100px;margin:0 auto;padding:0 32px 40px}
+    .topic-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;text-decoration:none;color:inherit;display:flex;gap:18px;align-items:flex-start;transition:all .25s;position:relative;overflow:hidden}
+    .topic-card:hover{border-color:#3a3a4e;transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.3)}
+    .topic-card .icon-wrap{width:48px;height:48px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+    .topic-card .content{flex:1;min-width:0}
+    .topic-card .content h2{font-size:1.05rem;font-weight:700;color:var(--heading);margin-bottom:4px}
+    .topic-card .content p{font-size:.82rem;color:var(--text-muted);line-height:1.55;margin-bottom:12px}
+    .topic-card .tags{display:flex;flex-wrap:wrap;gap:5px}
+    .topic-card .tag{font-size:.6rem;font-weight:600;padding:3px 8px;border-radius:10px;text-transform:uppercase;letter-spacing:.5px}
+
+    .ib{background:rgba(96,165,250,.1);color:var(--sql)}.ip{background:rgba(251,191,36,.1);color:var(--python)}
+    .im{background:rgba(167,139,250,.1);color:var(--ml)}.is{background:rgba(52,211,153,.1);color:var(--stats)}
+    .ir{background:rgba(244,114,182,.1);color:var(--prob)}.ic{background:rgba(34,211,238,.1);color:var(--case)}
+
+    .features{max-width:1100px;margin:0 auto;padding:20px 32px 56px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+    .feature{flex:1;min-width:220px;max-width:320px;padding:22px;background:var(--surface);border:1px solid var(--border);border-radius:14px;text-align:center}
+    .feature .fi{font-size:1.5rem;margin-bottom:8px}
+    .feature h3{font-size:.9rem;font-weight:700;color:var(--heading);margin-bottom:4px}
+    .feature p{font-size:.78rem;color:var(--text-muted);line-height:1.5}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){.hero h1{font-size:2rem}.grid{grid-template-columns:1fr;padding:0 16px 32px}.features{flex-direction:column;align-items:center;padding:0 16px 40px}nav{padding:0 16px}}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="brand"><div class="logo"></div> DS Prep v13</div>
+  <a href="../index.html" class="back">Gallery</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">v13 &middot; Deep Interactive</div>
+  <h1>Understand <span>Why</span>, Then <span>Try It</span></h1>
+  <p>Each topic combines textbook-depth explanations, method comparison tables, worked examples, and live interactive sandboxes — all in one place.</p>
+</div>
+
+<div class="grid">
+  <a href="sql.html" class="topic-card">
+    <div class="icon-wrap ib">&#128450;</div>
+    <div class="content">
+      <h2>SQL</h2>
+      <p>Execution order explained, JOIN types with comparison tables, window function breakdowns, and a live SQL editor to run queries instantly.</p>
+      <div class="tags"><span class="tag ib">deep explanations</span><span class="tag ib">live sandbox</span><span class="tag ib">comparison tables</span></div>
+    </div>
+  </a>
+  <a href="python.html" class="topic-card">
+    <div class="icon-wrap ip">&#128013;</div>
+    <div class="content">
+      <h2>Python</h2>
+      <p>Data structure complexity tables, Pandas split-apply-combine explained, NumPy vectorization, coding patterns with worked examples and live playground.</p>
+      <div class="tags"><span class="tag ip">complexity tables</span><span class="tag ip">live code</span><span class="tag ip">worked examples</span></div>
+    </div>
+  </a>
+  <a href="ml.html" class="topic-card">
+    <div class="icon-wrap im">&#129302;</div>
+    <div class="content">
+      <h2>Machine Learning</h2>
+      <p>Algorithm comparison tables, bias-variance dartboard analogy, metric formulas, feature engineering techniques, and interactive model explorer.</p>
+      <div class="tags"><span class="tag im">algorithm tables</span><span class="tag im">interactive metrics</span><span class="tag im">worked examples</span></div>
+    </div>
+  </a>
+  <a href="stats.html" class="topic-card">
+    <div class="icon-wrap is">&#128202;</div>
+    <div class="content">
+      <h2>Statistics</h2>
+      <p>Hypothesis testing step-by-step, test selection flowchart, A/B testing pitfalls explained, and live calculators for CIs, p-values, and sample sizes.</p>
+      <div class="tags"><span class="tag is">test flowchart</span><span class="tag is">live calculators</span><span class="tag is">deep theory</span></div>
+    </div>
+  </a>
+  <a href="probability.html" class="topic-card">
+    <div class="icon-wrap ir">&#127922;</div>
+    <div class="content">
+      <h2>Probability</h2>
+      <p>Distribution comparison table, Bayes worked through step-by-step, interview puzzles explained with reasoning, and interactive simulators.</p>
+      <div class="tags"><span class="tag ir">distribution table</span><span class="tag ir">Bayes walkthrough</span><span class="tag ir">simulators</span></div>
+    </div>
+  </a>
+  <a href="casing.html" class="topic-card">
+    <div class="icon-wrap ic">&#128161;</div>
+    <div class="content">
+      <h2>Case Studies</h2>
+      <p>AARRR framework deep-dive, 6-step case structure, metric decomposition trees, market sizing worked examples, and interactive A/B test designer.</p>
+      <div class="tags"><span class="tag ic">frameworks</span><span class="tag ic">worked cases</span><span class="tag ic">interactive tools</span></div>
+    </div>
+  </a>
+</div>
+
+<div class="features">
+  <div class="feature">
+    <div class="fi">&#128214;</div>
+    <h3>Textbook Depth</h3>
+    <p>Not just cheat sheets — full explanations of why each concept works, with analogies and worked examples</p>
+  </div>
+  <div class="feature">
+    <div class="fi">&#9997;&#65039;</div>
+    <h3>Live Sandboxes</h3>
+    <p>Editable code editors with instant execution — modify examples and see results change in real-time</p>
+  </div>
+  <div class="feature">
+    <div class="fi">&#128200;</div>
+    <h3>Comparison Tables</h3>
+    <p>Side-by-side method comparisons, algorithm trade-offs, and distribution summaries at a glance</p>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v13 &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+</body>
+</html>

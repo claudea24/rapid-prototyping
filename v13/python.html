@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python — Deep Interactive | DS Prep v13</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0f0f13;--surface:#1a1a22;--surface2:#22222e;--border:#2a2a38;--text:#c8c8d4;--text-muted:#7a7a8e;--heading:#ededf5;--accent:#fbbf24;--accent-glow:rgba(251,191,36,0.12);--green:#34d399;--amber:#fbbf24;--rose:#f472b6;--code-bg:#16161e;--code-text:#cdd6f4}
+    body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(15,15,19,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:700;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#7c6cf0,#22d3ee)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:500}
+    nav .nav-links a:hover{background:var(--surface);color:var(--heading)}
+    nav .nav-links a.active{color:var(--heading);background:var(--surface2)}
+
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-glow)}
+    .page-header h1{font-size:1.8rem;font-weight:700;color:var(--heading)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:rgba(251,191,36,.08);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    .insight{background:rgba(251,191,36,.06);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid rgba(42,42,56,.5);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:rgba(255,255,255,.02)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:rgba(251,191,36,.08);padding:1px 5px;border-radius:3px}
+
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+    .kw{color:#f38ba8}.fn{color:#cba6f7}.str{color:#a6e3a1}.cm{color:#585b70;font-style:italic}.num{color:#89b4fa}
+
+    .sandbox{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:16px 0}
+    .sandbox-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border)}
+    .sandbox-header .sandbox-label{font-size:.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:6px}
+    .sandbox-header .sandbox-label .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+    .run-btn{display:flex;align-items:center;gap:5px;padding:5px 14px;border:none;border-radius:6px;background:var(--green);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s}
+    .run-btn:hover{background:#059669}
+    .sandbox textarea{width:100%;min-height:80px;padding:14px 16px;border:none;resize:vertical;background:var(--code-bg);color:var(--code-text);font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;outline:none}
+    .result-area{border-top:1px solid var(--border)}
+    .result-bar{padding:6px 16px;background:var(--surface2);font-size:.65rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:flex;justify-content:space-between}
+    .result-bar .rc{color:var(--green)}
+    .output-text{padding:14px 16px;background:var(--code-bg);font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);white-space:pre-wrap;max-height:220px;overflow-y:auto}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.page-header,.container{padding-left:16px;padding-right:16px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v13</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a><a href="python.html" class="active">Python</a><a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a><a href="probability.html">Probability</a><a href="casing.html">Casing</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top"><div class="icon">&#128013;</div><h1>Python &mdash; The Analyst's Toolkit</h1></div>
+  <p class="intro">Python is the lingua franca of data science. This chapter covers not just syntax, but the reasoning behind choosing the right tool for each job &mdash; from data structures to Pandas patterns to common coding idioms.</p>
+</div>
+
+<div class="container">
+
+  <!-- 2.1 Data Structures & Complexity -->
+  <div class="section">
+    <div class="section-head open" onclick="toggleSection(this)">
+      <div><span class="num">2.1</span><h2 style="display:inline">Data Structures &amp; Complexity</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body open">
+      <p class="explain">Every data structure is a trade-off. A <code>list</code> gives you order and O(1) index access, but searching it is O(n). A <code>dict</code> gives you O(1) lookup by key, but consumes more memory. A <code>set</code> is a dict without values &mdash; perfect when you only care about membership. Understanding these trade-offs is the difference between code that works and code that scales.</p>
+      <p class="explain">The <strong>right mental model</strong>: before reaching for a data structure, ask yourself two questions. (1) What is my most frequent operation? (2) Does order matter? The answers will point you to the right container every time.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Structure</th><th>Lookup</th><th>Insert / Append</th><th>Delete</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td><code>list</code></td><td>O(1) index</td><td>O(1) end, O(n) mid</td><td>O(n)</td><td>Ordered sequences</td></tr>
+          <tr><td><code>dict</code></td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td><td>Key-value mapping</td></tr>
+          <tr><td><code>set</code></td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td><td>Membership testing</td></tr>
+          <tr><td><code>deque</code></td><td>O(n)</td><td>O(1) both ends</td><td>O(1) both ends</td><td>Queues, BFS</td></tr>
+          <tr><td><code>heapq</code></td><td>O(1) min</td><td>O(log n)</td><td>O(log n)</td><td>Priority queues</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Choosing the right container turns O(n&sup2;) into O(n). When a solution feels slow, ask: am I using the right data structure?</p>
+      </div>
+
+      <div class="sandbox">
+        <div class="sandbox-header">
+          <div class="sandbox-label"><span class="dot"></span> Python Playground</div>
+          <button class="run-btn" onclick="runPython(0)">&#9654; Run</button>
+        </div>
+        <textarea id="py-editor-0">data = [3, 1, 4, 1, 5, 9]
+print(sorted(data))
+print(set(data))
+print(len(data))</textarea>
+        <div class="result-area" id="py-result-0"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2.2 Pandas Essentials -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">2.2</span><h2 style="display:inline">Pandas Essentials</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">The core philosophy of Pandas is <strong>split-apply-combine</strong>: split your data into groups, apply a function to each group, and combine the results back into a single structure. Once you internalize this pattern, most Pandas operations become intuitive.</p>
+      <p class="explain">The <code>groupby</code> operation is the canonical example. <code>df.groupby('dept').agg({'salary': 'mean'})</code> splits the DataFrame by department, applies the mean function to each group's salary, and combines the results. Merge, pivot, and apply are all variations of this same idea.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Operation</th><th>Method</th><th>What It Does</th></tr></thead>
+        <tbody>
+          <tr><td>GroupBy</td><td><code>df.groupby('col').agg()</code></td><td>Split &rarr; apply function &rarr; combine</td></tr>
+          <tr><td>Merge</td><td><code>df.merge(df2, on='id')</code></td><td>SQL-style joins in Python</td></tr>
+          <tr><td>Pivot</td><td><code>df.pivot_table()</code></td><td>Reshape long &rarr; wide</td></tr>
+          <tr><td>fillna/dropna</td><td><code>df.fillna(0)</code></td><td>Handle missing values</td></tr>
+          <tr><td>apply</td><td><code>df.apply(fn)</code></td><td>Row/column-wise transformation</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>If you're writing a for-loop over DataFrame rows, you're almost certainly doing it wrong. Pandas is designed for vectorized operations &mdash; use <code>groupby</code>, <code>apply</code>, or broadcasting instead.</p>
+      </div>
+
+      <div class="sandbox">
+        <div class="sandbox-header">
+          <div class="sandbox-label"><span class="dot"></span> Python Playground</div>
+          <button class="run-btn" onclick="runPython(1)">&#9654; Run</button>
+        </div>
+        <textarea id="py-editor-1">import pandas as pd
+
+df = pd.DataFrame({
+    'dept': ['Eng','Eng','Sales','Sales','HR'],
+    'salary': [95000, 92000, 78000, 78000, 65000]
+})
+print(df.groupby('dept')['salary'].mean())</textarea>
+        <div class="result-area" id="py-result-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2.3 NumPy Patterns -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">2.3</span><h2 style="display:inline">NumPy Patterns</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain"><strong>Vectorization</strong> is the most important concept in NumPy. Instead of looping over elements one at a time (slow, Python-speed), you express operations on entire arrays at once (fast, C-speed). A simple example: <code>a * 2</code> multiplies every element in array <code>a</code> by 2, without any loop.</p>
+      <p class="explain">The rule of thumb: <strong>if you're writing a Python loop over array elements, you're leaving performance on the table</strong>. NumPy's broadcasting rules let you combine arrays of different shapes without explicit iteration. Master broadcasting and you'll write code that's both faster and more readable.</p>
+
+      <div class="code-block"><pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+<span class="cm"># Vectorized: fast (C-speed)</span>
+a = np.<span class="fn">array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>])
+result = a ** <span class="num">2</span> + <span class="num">2</span> * a + <span class="num">1</span>   <span class="cm"># [4, 9, 16, 25, 36]</span>
+
+<span class="cm"># Broadcasting: different shapes combine</span>
+matrix = np.<span class="fn">array</span>([[<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>], [<span class="num">4</span>,<span class="num">5</span>,<span class="num">6</span>]])  <span class="cm"># shape (2,3)</span>
+row    = np.<span class="fn">array</span>([<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>])            <span class="cm"># shape (3,)</span>
+result = matrix + row  <span class="cm"># broadcasts to (2,3)</span>
+
+<span class="cm"># Boolean indexing: filter without loops</span>
+mask = a > <span class="num">2</span>
+filtered = a[mask]  <span class="cm"># array([3, 4, 5])</span></pre></div>
+
+      <div class="sandbox">
+        <div class="sandbox-header">
+          <div class="sandbox-label"><span class="dot"></span> Python Playground</div>
+          <button class="run-btn" onclick="runPython(2)">&#9654; Run</button>
+        </div>
+        <textarea id="py-editor-2">import numpy as np
+
+a = np.array([1, 2, 3, 4, 5])
+print("Squared:", a ** 2)
+print("Mean:", np.mean(a))
+print("Filtered (>2):", a[a > 2])
+print("Cumsum:", np.cumsum(a))</textarea>
+        <div class="result-area" id="py-result-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2.4 Common Coding Patterns -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">2.4</span><h2 style="display:inline">Common Coding Patterns</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Most coding interview problems are variations of a small set of patterns. Recognizing which pattern applies is more than half the battle. The table below covers the five you'll encounter most often in data science interviews.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Pattern</th><th>When to Use</th><th>Complexity</th></tr></thead>
+        <tbody>
+          <tr><td>Two Pointers</td><td>Sorted array problems</td><td>O(n)</td></tr>
+          <tr><td>Sliding Window</td><td>Subarray / substring</td><td>O(n)</td></tr>
+          <tr><td>Hash Map</td><td>Counting, lookup, grouping</td><td>O(n)</td></tr>
+          <tr><td>Sort + Greedy</td><td>Optimization</td><td>O(n log n)</td></tr>
+          <tr><td>Counter / defaultdict</td><td>Frequency counts</td><td>O(n)</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>Worked example &mdash; Two Sum:</strong> Given an array and a target, find two numbers that add up to the target.</p>
+      <p class="explain">The <strong>brute force</strong> approach checks every pair: two nested loops, O(n&sup2;). The <strong>hash map</strong> approach stores each number's complement as you scan: one pass, O(n). For each number <code>x</code>, check if <code>target - x</code> is already in the map. If yes, return the pair. If not, store <code>x</code>.</p>
+
+      <div class="code-block"><pre><span class="cm"># Brute Force: O(n&sup2;)</span>
+<span class="kw">def</span> <span class="fn">two_sum_brute</span>(nums, target):
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(nums)):
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(i+<span class="num">1</span>, <span class="fn">len</span>(nums)):
+            <span class="kw">if</span> nums[i] + nums[j] == target:
+                <span class="kw">return</span> [i, j]
+
+<span class="cm"># Hash Map: O(n)</span>
+<span class="kw">def</span> <span class="fn">two_sum</span>(nums, target):
+    seen = {}
+    <span class="kw">for</span> i, x <span class="kw">in</span> <span class="fn">enumerate</span>(nums):
+        complement = target - x
+        <span class="kw">if</span> complement <span class="kw">in</span> seen:
+            <span class="kw">return</span> [seen[complement], i]
+        seen[x] = i</pre></div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The hash map pattern is the single most important tool. It turns "have I seen this before?" from an O(n) scan into an O(1) lookup. When you're stuck, ask: can I trade space for time with a hash map?</p>
+      </div>
+
+      <div class="sandbox">
+        <div class="sandbox-header">
+          <div class="sandbox-label"><span class="dot"></span> Python Playground</div>
+          <button class="run-btn" onclick="runPython(3)">&#9654; Run</button>
+        </div>
+        <textarea id="py-editor-3">nums = [2, 7, 11, 15]
+target = 9
+
+# Hash map approach
+seen = {}
+for i, x in enumerate(nums):
+    complement = target - x
+    if complement in seen:
+        print(f"Found: indices {seen[complement]} and {i}")
+        break
+    seen[x] = i</textarea>
+        <div class="result-area" id="py-result-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2.5 Python Gotchas -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">2.5</span><h2 style="display:inline">Python Gotchas</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Python's simplicity hides a few sharp edges that trip up even experienced developers. These gotchas come up frequently in interviews &mdash; not as trick questions, but as tests of whether you truly understand the language's semantics.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Gotcha</th><th>What Happens</th><th>The Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Mutable defaults</td><td><code>def f(x=[]):</code> shared list across calls</td><td>Use <code>None</code> sentinel</td></tr>
+          <tr><td>Shallow copy</td><td>Inner objects still shared</td><td>Use <code>copy.deepcopy()</code></td></tr>
+          <tr><td>Floor division</td><td><code>-7 // 2 = -4</code> (not -3)</td><td>Use <code>int(a/b)</code> for truncation</td></tr>
+          <tr><td><code>is</code> vs <code>==</code></td><td><code>is</code> checks identity, <code>==</code> checks value</td><td>Use <code>is</code> only for <code>None</code></td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block"><pre><span class="cm"># Gotcha: mutable default argument</span>
+<span class="kw">def</span> <span class="fn">append_to</span>(val, lst=[]):
+    lst.<span class="fn">append</span>(val)
+    <span class="kw">return</span> lst
+
+<span class="fn">print</span>(<span class="fn">append_to</span>(<span class="num">1</span>))  <span class="cm"># [1]</span>
+<span class="fn">print</span>(<span class="fn">append_to</span>(<span class="num">2</span>))  <span class="cm"># [1, 2] &mdash; surprise!</span>
+
+<span class="cm"># Fix: use None sentinel</span>
+<span class="kw">def</span> <span class="fn">append_to_fixed</span>(val, lst=<span class="kw">None</span>):
+    <span class="kw">if</span> lst <span class="kw">is</span> <span class="kw">None</span>:
+        lst = []
+    lst.<span class="fn">append</span>(val)
+    <span class="kw">return</span> lst</pre></div>
+
+      <div class="sandbox">
+        <div class="sandbox-header">
+          <div class="sandbox-label"><span class="dot"></span> Python Playground</div>
+          <button class="run-btn" onclick="runPython(4)">&#9654; Run</button>
+        </div>
+        <textarea id="py-editor-4"># Floor division gotcha
+print("-7 // 2 =", -7 // 2)
+print("int(-7/2) =", int(-7/2))
+
+# is vs ==
+a = [1, 2, 3]
+b = [1, 2, 3]
+print("a == b:", a == b)
+print("a is b:", a is b)</textarea>
+        <div class="result-area" id="py-result-4"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v13 &middot; <a href="index.html">Home</a></p>
+</footer>
+
+<script>
+function toggleSection(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// Simulated Python runner: pattern-match textarea content to pre-computed outputs
+function runPython(idx) {
+  const editor = document.getElementById('py-editor-' + idx);
+  const resultArea = document.getElementById('py-result-' + idx);
+  const code = editor.value.trim();
+  let output = '';
+
+  try {
+    output = simulatePython(code);
+  } catch (e) {
+    resultArea.innerHTML = '<div class="result-bar"><span>Output</span><span class="rc" style="color:var(--amber)">Error</span></div><div class="output-text" style="color:#f38ba8">' + e.message + '</div>';
+    return;
+  }
+
+  resultArea.innerHTML = '<div class="result-bar"><span>Output</span><span class="rc">OK</span></div><div class="output-text">' + escapeHtml(output) + '</div>';
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function simulatePython(code) {
+  // Pattern match common playground inputs and return pre-computed outputs
+
+  // Data structures playground
+  if (code.includes('sorted(data)') && code.includes('set(data)') && code.includes('len(data)')) {
+    const m = code.match(/data\s*=\s*\[([^\]]+)\]/);
+    if (m) {
+      const nums = m[1].split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+      const sorted = [...nums].sort((a, b) => a - b);
+      const unique = [...new Set(nums)].sort((a, b) => a - b);
+      return '[' + sorted.join(', ') + ']\n{' + unique.join(', ') + '}\n' + nums.length;
+    }
+  }
+
+  // Pandas groupby
+  if (code.includes('groupby') && code.includes('salary') && code.includes('mean')) {
+    return 'dept\nEng      93500.0\nHR       65000.0\nSales    78000.0\nName: salary, dtype: float64';
+  }
+
+  // NumPy operations
+  if (code.includes('np.array') && code.includes('** 2') && code.includes('np.mean') && code.includes('np.cumsum')) {
+    const m = code.match(/np\.array\(\[([^\]]+)\]\)/);
+    if (m) {
+      const nums = m[1].split(',').map(n => parseFloat(n.trim()));
+      const squared = nums.map(n => n * n);
+      const mean = nums.reduce((a, b) => a + b, 0) / nums.length;
+      const filtered = nums.filter(n => n > 2);
+      const cumsum = [];
+      let s = 0;
+      nums.forEach(n => { s += n; cumsum.push(s); });
+      return 'Squared: [' + squared.join('  ') + ']\nMean: ' + mean + '\nFiltered (>2): [' + filtered.join(' ') + ']\nCumsum: [ ' + cumsum.join('  ') + ']';
+    }
+  }
+
+  // Two Sum
+  if (code.includes('complement') && code.includes('enumerate') && code.includes('target')) {
+    const nm = code.match(/nums\s*=\s*\[([^\]]+)\]/);
+    const tm = code.match(/target\s*=\s*(\d+)/);
+    if (nm && tm) {
+      const nums = nm[1].split(',').map(n => parseFloat(n.trim()));
+      const target = parseFloat(tm[1]);
+      const seen = {};
+      for (let i = 0; i < nums.length; i++) {
+        const comp = target - nums[i];
+        if (seen[comp] !== undefined) {
+          return 'Found: indices ' + seen[comp] + ' and ' + i;
+        }
+        seen[nums[i]] = i;
+      }
+      return 'No pair found';
+    }
+  }
+
+  // Floor division / is vs ==
+  if (code.includes('-7 // 2') && code.includes('a is b')) {
+    return '-7 // 2 = -4\nint(-7/2) = -3\na == b: True\na is b: False';
+  }
+
+  // Generic print extraction
+  const prints = [];
+  const printRegex = /print\((.+)\)/g;
+  let match;
+  while ((match = printRegex.exec(code)) !== null) {
+    const arg = match[1].trim();
+    // Try to evaluate simple expressions
+    if (arg.startsWith('"') || arg.startsWith("'")) {
+      prints.push(arg.slice(1, -1));
+    } else {
+      prints.push(arg);
+    }
+  }
+  if (prints.length > 0) return prints.join('\n');
+
+  return '(No output)';
+}
+</script>
+</body>
+</html>

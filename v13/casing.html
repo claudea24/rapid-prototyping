@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies — Thinking Like a Data Scientist | DS Prep v13</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0f0f13;--surface:#1a1a22;--surface2:#22222e;--border:#2a2a38;--text:#c8c8d4;--text-muted:#7a7a8e;--heading:#ededf5;--accent:#22d3ee;--accent-glow:rgba(34,211,238,0.12);--green:#34d399;--amber:#fbbf24;--rose:#f472b6;--code-bg:#16161e;--code-text:#cdd6f4}
+    body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    /* Nav */
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(15,15,19,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:700;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#7c6cf0,#22d3ee)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:500}
+    nav .nav-links a:hover{background:var(--surface);color:var(--heading)}
+    nav .nav-links a.active{color:var(--heading);background:var(--surface2)}
+
+    /* Layout */
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-glow)}
+    .page-header h1{font-size:1.8rem;font-weight:700;color:var(--heading)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    /* Section */
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Explanation text */
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:rgba(34,211,238,.08);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    /* Key Insight box */
+    .insight{background:rgba(251,191,36,.06);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    /* Comparison table */
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid rgba(42,42,56,.5);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:rgba(255,255,255,.02)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:rgba(34,211,238,.08);padding:1px 5px;border-radius:3px}
+
+    /* Execution steps */
+    .exec-steps{display:flex;flex-direction:column;gap:6px;margin:16px 0}
+    .exec-step{display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border)}
+    .exec-step .step-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--bg);font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .exec-step .step-kw{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--accent);font-size:.82rem;width:100px;flex-shrink:0}
+    .exec-step .step-desc{font-size:.8rem;color:var(--text-muted)}
+
+    /* Code block */
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+
+    /* Worked example */
+    .worked{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin:16px 0}
+    .worked .worked-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px}
+    .worked p,.worked li{font-size:.84rem;color:var(--text);line-height:1.7}
+    .worked ul,.worked ol{margin:8px 0 8px 20px}
+    .worked code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:rgba(34,211,238,.08);padding:1px 5px;border-radius:3px}
+
+    /* Interactive sandbox */
+    .sandbox{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:16px 0}
+    .sandbox-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border)}
+    .sandbox-header .sandbox-label{font-size:.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:6px}
+    .sandbox-header .sandbox-label .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+    .run-btn{display:flex;align-items:center;gap:5px;padding:5px 14px;border:none;border-radius:6px;background:var(--accent);color:var(--bg);font-family:'Space Grotesk',sans-serif;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s}
+    .run-btn:hover{opacity:.85}
+    .sandbox-body{padding:16px}
+    .sandbox-body label{font-size:.75rem;color:var(--text-muted);font-weight:600;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+    .sandbox-body input[type="number"]{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--code-bg);color:var(--code-text);font-family:'JetBrains Mono',monospace;font-size:.8rem;outline:none;margin-bottom:12px}
+    .result-area{border-top:1px solid var(--border);padding:16px;background:var(--code-bg)}
+    .result-area .step{font-size:.8rem;color:var(--text);line-height:1.7;font-family:'JetBrains Mono',monospace}
+    .result-area .val{color:var(--accent);font-weight:600}
+    .result-area .final{font-size:1rem;font-weight:700;color:var(--heading);margin-top:8px}
+
+    /* Funnel viz */
+    .funnel{margin-top:12px}
+    .funnel-step{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+    .funnel-bar{height:28px;border-radius:6px;background:var(--accent);display:flex;align-items:center;padding:0 12px;font-size:.75rem;font-weight:600;color:var(--bg);min-width:40px;transition:width .3s}
+    .funnel-label{font-size:.75rem;color:var(--text-muted);min-width:80px}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.page-header,.container{padding-left:16px;padding-right:16px}.exec-step .step-kw{width:70px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v13</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a><a href="python.html">Python</a><a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a><a href="probability.html">Probability</a><a href="casing.html" class="active">Casing</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top"><div class="icon">&#128161;</div><h1>Case Studies — Thinking Like a Data Scientist</h1></div>
+  <p class="intro">Technical skills get you to the table; casing skills get you the offer. This chapter covers the frameworks, mental models, and communication patterns that separate strong candidates from great ones.</p>
+</div>
+
+<div class="container">
+
+  <!-- 6.1 Product Metrics -->
+  <div class="section">
+    <div class="section-head open" onclick="toggleSection(this)">
+      <div><span class="num">6.1</span><h2 style="display:inline">Product Metrics (AARRR)</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body open">
+      <p class="explain">The <strong>AARRR framework</strong> (also called Pirate Metrics) organises the user lifecycle into five stages. It gives you a structured vocabulary for discussing product health and ensures you don't optimise one stage at the expense of another.</p>
+
+      <table class="comp-table">
+        <tr><th>Stage</th><th>Definition</th><th>Example Metrics</th><th>Why It Matters</th></tr>
+        <tr><td><strong>Acquisition</strong></td><td>How users discover the product</td><td>Sign-ups, CPA, channel split</td><td>Can't grow without awareness</td></tr>
+        <tr><td><strong>Activation</strong></td><td>First core value experience</td><td>Onboarding %, time to first action</td><td>Multiplies acquisition value</td></tr>
+        <tr><td><strong>Retention</strong></td><td>Do users come back?</td><td>D1/D7/D30 retention, churn rate</td><td>Most important; compounds</td></tr>
+        <tr><td><strong>Revenue</strong></td><td>How product makes money</td><td>ARPU, LTV, conversion, MRR</td><td>Validates business model</td></tr>
+        <tr><td><strong>Referral</strong></td><td>Do users bring others?</td><td>NPS, viral coefficient</td><td>Free acquisition, pre-qualified</td></tr>
+      </table>
+
+      <p class="explain"><strong>North Star Metric:</strong> The single metric that best captures the core value your product delivers. Airbnb's is <strong>nights booked</strong> — it means a host earned money, a guest had a place to stay, and the platform facilitated real value. Spotify's is <strong>time spent listening</strong> — engaged listeners retain, subscribe, and discover more music. A good North Star is measurable, actionable, and aligns user value with business value.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>A good North Star aligns user value with business value. If it grows while users are unhappy, it's the wrong metric. For example, "total sessions" can increase while individual session quality drops — you'd be optimising engagement theatre, not real value.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.2 Structuring Your Approach -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">6.2</span><h2 style="display:inline">Structuring Your Approach</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Every case question benefits from a <strong>consistent 6-step framework</strong>. Interviewers care as much about your process as your answer. Signalling your structure early ("I'll approach this in six steps...") gives the interviewer confidence and gives you a scaffold to think clearly under pressure.</p>
+
+      <div class="exec-steps">
+        <div class="exec-step"><span class="step-num">1</span><span class="step-kw">Clarify</span><span class="step-desc">Ask questions to scope the problem — platform, time range, user segment, geography</span></div>
+        <div class="exec-step"><span class="step-num">2</span><span class="step-kw">Define Metrics</span><span class="step-desc">Choose primary metric and 2-3 supporting metrics; explain why each matters</span></div>
+        <div class="exec-step"><span class="step-num">3</span><span class="step-kw">Hypothesize</span><span class="step-desc">List 3-5 plausible explanations ranked by likelihood and impact</span></div>
+        <div class="exec-step"><span class="step-num">4</span><span class="step-kw">Analyze</span><span class="step-desc">Describe the data and methods you'd use to test each hypothesis</span></div>
+        <div class="exec-step"><span class="step-num">5</span><span class="step-kw">Recommend</span><span class="step-desc">Propose concrete actions with expected impact and trade-offs</span></div>
+        <div class="exec-step"><span class="step-num">6</span><span class="step-kw">Measure</span><span class="step-desc">Define how you'd track success — experiment design, guardrails, timeline</span></div>
+      </div>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example — "WAU dropped 15% last week"</div>
+        <p><strong>1. Clarify:</strong> "Is this across all platforms or specific to mobile/web? All regions? Is this week-over-week or vs. same week last year? Any recent deploys or holidays?"</p>
+        <p><strong>2. Define Metrics:</strong> Primary: WAU (weekly active users). Supporting: DAU trend across the week, new vs. returning user split, session count per user.</p>
+        <p><strong>3. Hypothesize:</strong></p>
+        <ul>
+          <li>Logging/tracking bug deployed mid-week (data issue, not real drop)</li>
+          <li>Seasonal effect — holiday week, school break, major external event</li>
+          <li>Product change — new release with friction, broken feature, removed popular feature</li>
+          <li>Marketing channel went dark — paid campaign ended, SEO penalty</li>
+          <li>Competitive pressure — rival launched a compelling alternative</li>
+        </ul>
+        <p><strong>4. Analyze:</strong> Check event logs for tracking gaps. Segment by platform, region, and new vs. returning. Compare acquisition channels week-over-week. Check if drop is uniform or concentrated in one segment. Look at session depth and feature usage to spot broken flows.</p>
+        <p><strong>5. Recommend:</strong> If tracking bug: fix immediately, backfill data, add monitoring alerts. If product change: roll back or A/B test the change. If acquisition: restart campaigns or investigate channel health.</p>
+        <p><strong>6. Measure:</strong> Monitor WAU recovery over next 2 weeks. Set up anomaly detection alerts for >5% week-over-week swings. If we ship a fix, run pre/post analysis.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.3 Diagnosing Metric Changes -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">6.3</span><h2 style="display:inline">Diagnosing Metric Changes</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">When a metric moves unexpectedly, resist the urge to jump to conclusions. Follow a systematic investigation that rules out the mundane before reaching for the exciting.</p>
+
+      <div class="exec-steps">
+        <div class="exec-step"><span class="step-num">1</span><span class="step-kw">Data Issue?</span><span class="step-desc">Logging bug, pipeline delay, definition change, duplicate events</span></div>
+        <div class="exec-step"><span class="step-num">2</span><span class="step-kw">External?</span><span class="step-desc">Holiday, competitor launch, press coverage, regulatory change</span></div>
+        <div class="exec-step"><span class="step-num">3</span><span class="step-kw">Internal?</span><span class="step-desc">Product release, pricing change, marketing campaign, outage</span></div>
+        <div class="exec-step"><span class="step-num">4</span><span class="step-kw">Segment?</span><span class="step-desc">Is the change uniform or concentrated in one platform/region/cohort?</span></div>
+        <div class="exec-step"><span class="step-num">5</span><span class="step-kw">Quantify</span><span class="step-desc">Decompose the metric to isolate which component drove the change</span></div>
+      </div>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example — "Revenue up 20% but rides down 5%"</div>
+        <p><strong>Decomposition:</strong> Revenue = Rides &times; Revenue per Ride</p>
+        <div class="code-block"><pre>1.20 = 0.95 &times; X
+X = 1.20 / 0.95 &asymp; 1.263</pre></div>
+        <p>Revenue per ride increased by approximately <strong>26.3%</strong> while ride volume declined 5%. This is a significant per-unit price increase.</p>
+        <p><strong>Hypotheses (ranked by likelihood):</strong></p>
+        <ul>
+          <li><strong>Price increase:</strong> Did we raise base fares or fees? Check pricing changelog.</li>
+          <li><strong>Mix shift to premium:</strong> If the share of premium rides (XL, Black) increased, average revenue per ride rises even at constant prices. Segment by ride type.</li>
+          <li><strong>Surge pricing:</strong> Higher demand-supply imbalance could drive surge multipliers up, raising revenue per ride while deterring some price-sensitive riders (explaining the volume drop).</li>
+          <li><strong>Geographic mix:</strong> More rides in expensive cities (SF, NYC) vs. cheaper markets.</li>
+        </ul>
+        <p><strong>Next step:</strong> Pull revenue per ride segmented by ride type, city, and week. If premium mix increased, check whether it's organic preference shift or if standard supply decreased. If surge drove it, monitor rider satisfaction — sustained high surge erodes long-term retention.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.4 Market Sizing -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">6.4</span><h2 style="display:inline">Market Sizing</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Market sizing (Fermi estimation) tests your ability to break an unknowable number into estimable components. Precision doesn't matter — what matters is a <strong>logical structure</strong>, <strong>reasonable assumptions</strong>, and the ability to sanity-check your answer.</p>
+
+      <table class="comp-table">
+        <tr><th>Approach</th><th>Start With</th><th>Structure</th><th>Strength</th></tr>
+        <tr><td><strong>Top-Down</strong></td><td>Large known number</td><td>TAM &rarr; filter &rarr; target</td><td>Fast, macro-level</td></tr>
+        <tr><td><strong>Bottom-Up</strong></td><td>Single unit</td><td>Unit economics &rarr; scale</td><td>More grounded</td></tr>
+      </table>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example — Piano Tuners in Chicago</div>
+        <p><strong>Demand side (how many tunings per year?):</strong></p>
+        <ul>
+          <li>Chicago metro population: ~9.5 million</li>
+          <li>Average household size: ~2.7 &rarr; ~3.5 million households</li>
+          <li>Households with a piano: ~5% &rarr; 175,000 pianos</li>
+          <li>Institutions (schools, churches, concert halls): ~10,000 pianos</li>
+          <li>Total pianos: ~185,000</li>
+          <li>Average tunings per piano per year: 1</li>
+          <li><strong>Total demand: 185,000 tunings/year</strong></li>
+        </ul>
+        <p><strong>Supply side (how many tunings per tuner?):</strong></p>
+        <ul>
+          <li>Each tuning takes ~2 hours (including travel)</li>
+          <li>Work year: ~2,000 hours</li>
+          <li>Tunings per tuner per year: ~1,000</li>
+        </ul>
+        <p><strong>Answer: 185,000 / 1,000 &asymp; 185 piano tuners</strong></p>
+        <p style="font-size:.8rem;color:var(--text-muted);margin-top:8px">Actual estimates range from 100-300, so our estimate is squarely in range. The structure matters more than the exact number.</p>
+      </div>
+
+      <div class="sandbox">
+        <div class="sandbox-header">
+          <span class="sandbox-label"><span class="dot"></span> Market Sizing Calculator</span>
+          <button class="run-btn" onclick="calcMarket()">Calculate</button>
+        </div>
+        <div class="sandbox-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div>
+              <label>Population</label>
+              <input type="number" id="mktPop" value="1000000" min="0" step="1000">
+            </div>
+            <div>
+              <label>Filter 1 (%)</label>
+              <input type="number" id="mktF1" value="30" min="0" max="100" step="1">
+            </div>
+            <div>
+              <label>Filter 2 (%)</label>
+              <input type="number" id="mktF2" value="10" min="0" max="100" step="1">
+            </div>
+            <div>
+              <label>ARPU ($)</label>
+              <input type="number" id="mktArpu" value="50" min="0" step="1">
+            </div>
+          </div>
+        </div>
+        <div class="result-area" id="mktResult" style="display:none"></div>
+      </div>
+
+      <div class="insight">
+        <div class="label">Tip</div>
+        <p>Always state your assumptions explicitly. Interviewers want to see your reasoning chain, not a magic number. And always sanity-check: "Does 185 piano tuners for a city of 9.5 million feel reasonable?" That gut check catches order-of-magnitude errors.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.5 Experiment Design -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">6.5</span><h2 style="display:inline">Experiment Design</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">A/B testing is how data-driven companies make decisions. Knowing how to design a sound experiment — choosing the right unit, duration, metrics, and sample size — is a core interview skill.</p>
+
+      <table class="comp-table">
+        <tr><th>Decision</th><th>Options</th><th>Default</th><th>Watch Out</th></tr>
+        <tr><td><strong>Randomization unit</strong></td><td>User, session, page</td><td>User-level</td><td>Network effects &rarr; cluster</td></tr>
+        <tr><td><strong>Duration</strong></td><td>Days to weeks</td><td>&ge;1 full week cycle</td><td>Day-of-week effects</td></tr>
+        <tr><td><strong>Guardrail metrics</strong></td><td>AOV, support tickets, returns</td><td>Always include</td><td>Prevent unintended harm</td></tr>
+        <tr><td><strong>Network effects</strong></td><td>Standard vs cluster</td><td>Standard if independent</td><td>Social/marketplace &rarr; cluster</td></tr>
+        <tr><td><strong>Novelty/primacy</strong></td><td>Wait vs short test</td><td>Run 2-4 weeks</td><td>Lift may fade or grow</td></tr>
+      </table>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example — Testing New Checkout (4 steps &rarr; 2 steps)</div>
+        <p><strong>Hypothesis:</strong> Reducing checkout from 4 steps to 2 will increase completion rate without harming order value or increasing returns.</p>
+        <p><strong>Primary metric:</strong> Checkout completion rate (users who start checkout &rarr; successful order)</p>
+        <p><strong>Guardrail metrics:</strong></p>
+        <ul>
+          <li><strong>AOV (average order value):</strong> Ensure simplified flow doesn't reduce order size</li>
+          <li><strong>Return rate:</strong> Faster checkout might mean less deliberation &rarr; more returns</li>
+          <li><strong>Support contacts within 24h:</strong> Catches confusion or missing info</li>
+        </ul>
+        <p><strong>Design:</strong></p>
+        <ul>
+          <li><strong>Unit:</strong> User-level (consistent experience across sessions)</li>
+          <li><strong>Split:</strong> 50/50 random assignment</li>
+          <li><strong>Sample size:</strong> Baseline completion 15%, MDE 2pp &rarr; ~4,400 users per arm (alpha=0.05, power=0.80)</li>
+          <li><strong>Duration:</strong> 14 days minimum (captures two full weekly cycles, accounts for weekday vs. weekend shopping patterns)</li>
+        </ul>
+        <p><strong>Analysis plan:</strong> Two-proportion z-test on completion rate. Check guardrails for significance. Segment by device (mobile vs. desktop) as the step reduction may matter more on mobile. If primary metric significant and guardrails hold, recommend full rollout.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.6 Communicating Your Analysis -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">6.6</span><h2 style="display:inline">Communicating Your Analysis</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain"><strong>Lead with the answer (pyramid principle).</strong> Start with your recommendation or conclusion, then support it with evidence. Executives and interviewers alike tune out when you narrate your entire journey before revealing the destination. Say "I recommend we switch to the 2-step checkout — it increased completion by 3.2pp with no impact on AOV" before explaining how you got there.</p>
+
+      <p class="explain"><strong>Signal your structure.</strong> Before diving into analysis, say "I'll walk through this in three parts: the data, the key finding, and my recommendation." This sets expectations and shows you think in organised frameworks.</p>
+
+      <p class="explain"><strong>Quantify everything.</strong> "Revenue increased" is weak. "Revenue increased 12% ($2.4M) quarter-over-quarter, driven primarily by a 20% lift in premium subscriptions" is strong. Numbers create credibility and precision.</p>
+
+      <p class="explain"><strong>Acknowledge trade-offs.</strong> Every recommendation has downsides. Showing you've considered them demonstrates maturity. "This will increase completion rate but may slightly increase return rate — I recommend monitoring returns for 30 days post-launch."</p>
+
+      <p class="explain"><strong>Ask clarifying questions.</strong> In an interview, asking smart questions is as impressive as answering them. It shows you know what information matters and that you don't make assumptions. "Before I dig in — is this metric change across all platforms, or specific to mobile?"</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The best technical answer poorly communicated loses to a decent answer well communicated. Analysis only creates value if someone acts on it. Practice explaining your work to non-technical people — if they understand, your interviewer will too.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Data Science Interview Prep &middot; v13 &middot; <a href="index.html">Back to Topics</a></footer>
+
+<script>
+function toggleSection(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+
+function calcMarket(){
+  var pop=parseFloat(document.getElementById('mktPop').value)||0;
+  var f1=parseFloat(document.getElementById('mktF1').value)||0;
+  var f2=parseFloat(document.getElementById('mktF2').value)||0;
+  var arpu=parseFloat(document.getElementById('mktArpu').value)||0;
+  var after1=Math.round(pop*(f1/100));
+  var after2=Math.round(after1*(f2/100));
+  var tam=after2*arpu;
+  var maxW=100;
+  var r=document.getElementById('mktResult');
+  r.style.display='block';
+  var pctOf1=(pop>0)?100:0;
+  var pctOf2=(pop>0)?(after1/pop*100):0;
+  var pctOf3=(pop>0)?(after2/pop*100):0;
+  r.innerHTML='<div class="funnel">'+
+    '<div class="funnel-step"><span class="funnel-label">Population</span><div class="funnel-bar" style="width:'+maxW+'%">'+pop.toLocaleString()+'</div></div>'+
+    '<div class="funnel-step"><span class="funnel-label">Filter 1 ('+f1+'%)</span><div class="funnel-bar" style="width:'+Math.max(5,pctOf2)+'%">'+after1.toLocaleString()+'</div></div>'+
+    '<div class="funnel-step"><span class="funnel-label">Filter 2 ('+f2+'%)</span><div class="funnel-bar" style="width:'+Math.max(5,pctOf3)+'%">'+after2.toLocaleString()+'</div></div>'+
+    '</div>'+
+    '<div class="final" style="margin-top:16px">TAM = '+after2.toLocaleString()+' users &times; $'+arpu.toLocaleString()+' = <span class="val">$'+tam.toLocaleString()+'</span></div>';
+}
+</script>
+</body>
+</html>

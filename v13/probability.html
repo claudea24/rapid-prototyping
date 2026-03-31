@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probability — Reasoning Under Uncertainty | DS Prep v13</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0f0f13;--surface:#1a1a22;--surface2:#22222e;--border:#2a2a38;--text:#c8c8d4;--text-muted:#7a7a8e;--heading:#ededf5;--accent:#f472b6;--accent-glow:rgba(244,114,182,0.12);--green:#34d399;--amber:#fbbf24;--rose:#f472b6;--code-bg:#16161e;--code-text:#cdd6f4}
+    body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    /* Nav */
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(15,15,19,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:700;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#7c6cf0,#22d3ee)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:500}
+    nav .nav-links a:hover{background:var(--surface);color:var(--heading)}
+    nav .nav-links a.active{color:var(--heading);background:var(--surface2)}
+
+    /* Layout */
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-glow)}
+    .page-header h1{font-size:1.8rem;font-weight:700;color:var(--heading)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    /* Section */
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Explanation text */
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:rgba(244,114,182,.08);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    /* Key Insight box */
+    .insight{background:rgba(251,191,36,.06);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    /* Comparison table */
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid rgba(42,42,56,.5);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:rgba(255,255,255,.02)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:rgba(244,114,182,.08);padding:1px 5px;border-radius:3px}
+
+    /* Code block */
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+
+    /* Interactive sandbox */
+    .sandbox{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:16px 0}
+    .sandbox-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border)}
+    .sandbox-header .sandbox-label{font-size:.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:6px}
+    .sandbox-header .sandbox-label .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+    .run-btn{display:flex;align-items:center;gap:5px;padding:5px 14px;border:none;border-radius:6px;background:var(--accent);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s}
+    .run-btn:hover{opacity:.85}
+    .sandbox-body{padding:16px}
+    .sandbox-body label{font-size:.75rem;color:var(--text-muted);font-weight:600;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+    .sandbox-body input[type="number"],.sandbox-body input[type="range"]{width:100%;padding:8px 12px;border:1px solid var(--border);border-radius:6px;background:var(--code-bg);color:var(--code-text);font-family:'JetBrains Mono',monospace;font-size:.8rem;outline:none;margin-bottom:12px}
+    .sandbox-body input[type="range"]{padding:4px 0}
+    .result-area{border-top:1px solid var(--border);padding:16px;background:var(--code-bg)}
+    .result-area .step{font-size:.8rem;color:var(--text);line-height:1.7;font-family:'JetBrains Mono',monospace}
+    .result-area .step .val{color:var(--accent);font-weight:600}
+    .result-area .final{font-size:1rem;font-weight:700;color:var(--heading);margin-top:8px}
+
+    /* Worked example */
+    .worked{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 20px;margin:16px 0}
+    .worked .worked-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px}
+    .worked p,.worked li{font-size:.84rem;color:var(--text);line-height:1.7}
+    .worked ul{margin:8px 0 8px 20px}
+    .worked code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:rgba(244,114,182,.08);padding:1px 5px;border-radius:3px}
+
+    /* Coin sim */
+    .sim-display{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:12px}
+    .sim-stat{text-align:center}
+    .sim-stat .big{font-size:1.6rem;font-weight:700;color:var(--heading)}
+    .sim-stat .lbl{font-size:.65rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px}
+    .sim-bar{flex:1;min-width:200px;height:24px;background:var(--surface2);border-radius:12px;overflow:hidden;position:relative}
+    .sim-bar .fill{height:100%;background:var(--accent);border-radius:12px;transition:width .3s}
+    .sim-bar .mark{position:absolute;left:50%;top:0;bottom:0;width:2px;background:var(--amber);z-index:1}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.page-header,.container{padding-left:16px;padding-right:16px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v13</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a><a href="python.html">Python</a><a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a><a href="probability.html" class="active">Probability</a><a href="casing.html">Casing</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top"><div class="icon">&#127922;</div><h1>Probability — Reasoning Under Uncertainty</h1></div>
+  <p class="intro">Probability is the mathematical language for quantifying uncertainty. Mastering it means you can reason precisely about randomness, risk, and evidence — skills tested in every data science interview.</p>
+</div>
+
+<div class="container">
+
+  <!-- 5.1 Fundamentals -->
+  <div class="section">
+    <div class="section-head open" onclick="toggleSection(this)">
+      <div><span class="num">5.1</span><h2 style="display:inline">Fundamentals</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body open">
+      <p class="explain">Probability assigns a number between 0 and 1 to events. These core rules let you combine, decompose, and count probabilities for any situation you encounter. Every complex problem reduces to applying these building blocks.</p>
+
+      <p class="explain"><strong>Addition Rule:</strong> When you want the probability that <em>either</em> event A or event B occurs, you add their individual probabilities and subtract the overlap — because the intersection gets counted in both P(A) and P(B).</p>
+      <p class="explain"><strong>Multiplication Rule:</strong> When you want the probability that <em>both</em> A and B occur, multiply by the conditional. This chains naturally: P(A&cap;B&cap;C) = P(A)&middot;P(B|A)&middot;P(C|A&cap;B).</p>
+      <p class="explain"><strong>Independence:</strong> Two events are independent if learning one occurred tells you nothing about the other. The multiplication rule simplifies because P(B|A) = P(B).</p>
+      <p class="explain"><strong>Complement:</strong> Sometimes it is far easier to count what <em>doesn't</em> happen. P(at least one) = 1 &minus; P(none).</p>
+      <p class="explain"><strong>Counting:</strong> Permutations count ordered arrangements; combinations count unordered selections. Knowing which to use is half the battle in discrete probability.</p>
+
+      <table class="comp-table">
+        <tr><th>Rule</th><th>Formula</th><th>Key Point</th></tr>
+        <tr><td>Addition</td><td><code>P(A&cup;B) = P(A)+P(B)&minus;P(A&cap;B)</code></td><td>Subtract intersection (counted twice)</td></tr>
+        <tr><td>Multiplication</td><td><code>P(A&cap;B) = P(A)&middot;P(B|A)</code></td><td>Chain conditional probabilities</td></tr>
+        <tr><td>Independence</td><td><code>P(A&cap;B) = P(A)&middot;P(B)</code></td><td>Learning A doesn't change P(B)</td></tr>
+        <tr><td>Complement</td><td><code>P(A) = 1 &minus; P(A&#7580;)</code></td><td>Often easier to count what doesn't happen</td></tr>
+        <tr><td>Permutations</td><td><code>n!/(n&minus;k)!</code></td><td>Order matters</td></tr>
+        <tr><td>Combinations</td><td><code>n!/(k!(n&minus;k)!)</code></td><td>Order doesn't matter</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>"At least one..." problems &rarr; solve as 1 &minus; P(nobody does). Complementary counting appears everywhere in probability interviews and simplifies seemingly complex problems into one clean calculation.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.2 Bayes' Theorem -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">5.2</span><h2 style="display:inline">Bayes' Theorem</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <div class="code-block"><pre>P(A|B) = P(B|A) &middot; P(A) / P(B)</pre></div>
+
+      <p class="explain">Read it as: <strong>Prior &times; Likelihood / Evidence = Posterior</strong>. Bayes' theorem tells you how to update your beliefs when you observe new evidence. The prior is what you believed before; the likelihood is how probable the evidence is under your hypothesis; the evidence is the total probability of seeing what you saw; the posterior is your updated belief.</p>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example — Medical Test</div>
+        <p>A disease affects 1% of the population. A test is 99% accurate (detects the disease when present, and correctly clears healthy people). You test positive. What is the probability you actually have the disease?</p>
+        <ul>
+          <li><code>P(D) = 0.01</code> — prior probability of disease</li>
+          <li><code>P(+|D) = 0.99</code> — true positive rate (sensitivity)</li>
+          <li><code>P(+|D') = 0.01</code> — false positive rate</li>
+        </ul>
+        <p><strong>Step 1:</strong> Total probability of testing positive:</p>
+        <p><code>P(+) = P(+|D)&middot;P(D) + P(+|D')&middot;P(D') = 0.99&times;0.01 + 0.01&times;0.99 = 0.0198</code></p>
+        <p><strong>Step 2:</strong> Apply Bayes:</p>
+        <p><code>P(D|+) = 0.0099 / 0.0198 = 50%</code></p>
+        <p><strong>Why only 50%?</strong> Think in natural frequencies. Out of 10,000 people: 100 have the disease, 99 of them test positive. Of the 9,900 healthy people, 99 also test positive (false positives). So 99 true positives vs 99 false positives — exactly half. The low base rate (1%) dramatically dilutes the test's accuracy.</p>
+      </div>
+
+      <div class="sandbox">
+        <div class="sandbox-header">
+          <span class="sandbox-label"><span class="dot"></span> Bayes Calculator</span>
+          <button class="run-btn" onclick="calcBayes()">Calculate</button>
+        </div>
+        <div class="sandbox-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+            <div>
+              <label>Prior P(A)</label>
+              <input type="number" id="bayesPrior" value="0.01" min="0" max="1" step="0.01">
+            </div>
+            <div>
+              <label>Likelihood P(B|A)</label>
+              <input type="number" id="bayesLikelihood" value="0.99" min="0" max="1" step="0.01">
+            </div>
+            <div>
+              <label>False Positive P(B|A')</label>
+              <input type="number" id="bayesFP" value="0.01" min="0" max="1" step="0.01">
+            </div>
+          </div>
+        </div>
+        <div class="result-area" id="bayesResult" style="display:none"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.3 Key Distributions -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">5.3</span><h2 style="display:inline">Key Distributions</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">A probability distribution describes all possible values a random variable can take and how likely each value is. These six distributions cover the vast majority of interview questions and real-world modelling scenarios.</p>
+
+      <table class="comp-table">
+        <tr><th>Distribution</th><th>Type</th><th>Parameters</th><th>Mean</th><th>Variance</th><th>Models</th></tr>
+        <tr><td>Bernoulli</td><td>Discrete</td><td><code>p</code></td><td><code>p</code></td><td><code>p(1&minus;p)</code></td><td>Single yes/no trial</td></tr>
+        <tr><td>Binomial</td><td>Discrete</td><td><code>n, p</code></td><td><code>np</code></td><td><code>np(1&minus;p)</code></td><td>Successes in n trials</td></tr>
+        <tr><td>Poisson</td><td>Discrete</td><td><code>&lambda;</code></td><td><code>&lambda;</code></td><td><code>&lambda;</code></td><td>Events in fixed interval</td></tr>
+        <tr><td>Geometric</td><td>Discrete</td><td><code>p</code></td><td><code>1/p</code></td><td><code>(1&minus;p)/p&sup2;</code></td><td>Trials until first success</td></tr>
+        <tr><td>Normal</td><td>Continuous</td><td><code>&mu;, &sigma;</code></td><td><code>&mu;</code></td><td><code>&sigma;&sup2;</code></td><td>Bell curve, everything</td></tr>
+        <tr><td>Exponential</td><td>Continuous</td><td><code>&lambda;</code></td><td><code>1/&lambda;</code></td><td><code>1/&lambda;&sup2;</code></td><td>Time between events</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Tip</div>
+        <p>Poisson and Exponential are two sides of the same coin. If events arrive at rate &lambda; per unit time (Poisson count), then the <em>time between</em> consecutive events follows Exponential(&lambda;). Interviewers love asking you to connect the two.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.4 Expected Value & Variance -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">5.4</span><h2 style="display:inline">Expected Value &amp; Variance</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain"><strong>Expected value</strong> is the long-run average outcome. <strong>Variance</strong> measures how spread out the outcomes are around that average. Together they summarise a distribution's centre and width.</p>
+
+      <div class="code-block"><pre>E[X] = &Sigma; x &middot; P(x)
+
+Var(X) = E[X&sup2;] &minus; (E[X])&sup2;</pre></div>
+
+      <p class="explain"><strong>Linearity of expectation:</strong> <code>E[aX + bY] = a&middot;E[X] + b&middot;E[Y]</code>. This works <em>even when X and Y are dependent</em>, which makes it incredibly powerful. You can break a complex random variable into simple indicator variables and sum their expectations without worrying about correlations.</p>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example — Dice Game</div>
+        <p>You pay $5 to roll a fair die. Roll a 6 &rarr; win $20. Roll a 4 or 5 &rarr; win $10. Otherwise &rarr; win $0.</p>
+        <p><strong>Expected net gain:</strong></p>
+        <p><code>E = (1/6)&middot;$20 + (2/6)&middot;$10 + (3/6)&middot;$0 &minus; $5</code></p>
+        <p><code>E = $3.33 + $3.33 + $0 &minus; $5 = $1.67</code></p>
+        <p>Positive expected value &mdash; you should play this game. Over many rounds, you gain about $1.67 per play on average.</p>
+      </div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Linearity of expectation is arguably the most useful tool in discrete probability. The expected number of fixed points in a random permutation? Just sum n indicators each with E = 1/n, giving E = 1. No inclusion-exclusion needed.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.5 Law of Large Numbers -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">5.5</span><h2 style="display:inline">Law of Large Numbers</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">The <strong>Law of Large Numbers</strong> says that as you collect more observations, the sample average converges to the true expected value. This is <em>why</em> A/B tests work: with enough users, the observed conversion rates stabilise around the true rates, and you can detect real differences from noise.</p>
+      <p class="explain">It does <strong>not</strong> mean that short-term deviations are "corrected" — the gambler's fallacy. A coin that flipped 10 heads in a row is not "due" for tails. Instead, future flips dilute the early streak, making the overall proportion drift toward 0.5.</p>
+
+      <div class="sandbox">
+        <div class="sandbox-header">
+          <span class="sandbox-label"><span class="dot"></span> Coin Flip Simulator</span>
+          <button class="run-btn" onclick="flipCoins()">Flip</button>
+        </div>
+        <div class="sandbox-body">
+          <label>Number of Flips</label>
+          <input type="number" id="flipCount" value="100" min="1" max="100000" step="1">
+          <div class="sim-display" id="flipResult" style="display:none">
+            <div class="sim-stat"><div class="big" id="flipHeads">0</div><div class="lbl">Heads</div></div>
+            <div class="sim-stat"><div class="big" id="flipTotal">0</div><div class="lbl">Total</div></div>
+            <div class="sim-stat"><div class="big" id="flipProp">0</div><div class="lbl">Proportion</div></div>
+            <div style="flex:1;min-width:200px">
+              <div class="sim-bar"><div class="fill" id="flipBar" style="width:50%"></div><div class="mark"></div></div>
+              <div style="display:flex;justify-content:space-between;font-size:.6rem;color:var(--text-muted);margin-top:4px"><span>0%</span><span>50%</span><span>100%</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight">
+        <div class="label">Tip</div>
+        <p>Try flipping 10 coins, then 1,000, then 100,000. Watch how the proportion of heads hugs 0.50 more tightly as n grows. This convergence rate is proportional to 1/&radic;n — quadrupling sample size halves the error.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.6 Classic Interview Puzzles -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">5.6</span><h2 style="display:inline">Classic Interview Puzzles</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+
+      <p class="explain"><strong>The Birthday Problem:</strong> How many people do you need in a room before there's a &gt;50% chance two share a birthday? The answer is just <strong>23</strong>. It feels impossibly low because we focus on one person, but there are C(23,2) = 253 pairs, each with a 1/365 chance of matching. Using complementary counting: P(no match among n) = (365/365)&middot;(364/365)&middot;...&middot;((365&minus;n+1)/365). At n = 23, this drops below 0.5.</p>
+
+      <p class="explain"><strong>The Monty Hall Problem:</strong> You pick door 1 of 3. The host (who knows what's behind each door) opens door 3 to reveal a goat. Should you switch to door 2? <strong>Yes — switching wins 2/3 of the time.</strong> Your initial pick had a 1/3 chance. The remaining 2/3 probability collapsed onto the one unopened door. The host's action doesn't change your original odds; it just concentrates the "other" probability.</p>
+
+      <p class="explain"><strong>Coupon Collector:</strong> If there are n distinct coupons and you collect one uniformly at random each day, the expected number of days to collect all n is <code>E[T] = n &middot; H(n)</code> where H(n) is the n-th harmonic number. For n = 50: E[T] &asymp; 50 &times; 4.499 &asymp; 225 days. Each new coupon gets harder — the last one takes an expected n days alone.</p>
+
+      <div class="sandbox">
+        <div class="sandbox-header">
+          <span class="sandbox-label"><span class="dot"></span> Birthday Problem Explorer</span>
+        </div>
+        <div class="sandbox-body">
+          <label>People in Room: <span id="bdayVal">23</span></label>
+          <input type="range" id="bdaySlider" min="2" max="60" value="23" oninput="updateBday()">
+          <div style="text-align:center;margin-top:8px">
+            <div class="big" style="font-size:2rem;font-weight:700;color:var(--accent)" id="bdayProb">50.73%</div>
+            <div style="font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px">Probability of a shared birthday</div>
+            <div style="margin-top:8px;font-size:.8rem;color:var(--text)" id="bdayPairs"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Interviewers test careful reasoning, not memorisation. Decompose the problem, use conditional probability, check if your answer passes the smell test. If you get P = 97% for something that should be rare, re-examine your assumptions.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>Data Science Interview Prep &middot; v13 &middot; <a href="index.html">Back to Topics</a></footer>
+
+<script>
+function toggleSection(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+
+function calcBayes(){
+  var prior=parseFloat(document.getElementById('bayesPrior').value);
+  var likelihood=parseFloat(document.getElementById('bayesLikelihood').value);
+  var fp=parseFloat(document.getElementById('bayesFP').value);
+  if(isNaN(prior)||isNaN(likelihood)||isNaN(fp)){return}
+  var pB=likelihood*prior+fp*(1-prior);
+  var posterior=(likelihood*prior)/pB;
+  var r=document.getElementById('bayesResult');
+  r.style.display='block';
+  r.innerHTML='<div class="step"><strong>Step 1:</strong> P(B) = P(B|A)&middot;P(A) + P(B|A\')&middot;P(A\')</div>'+
+    '<div class="step">P(B) = '+likelihood.toFixed(4)+' &times; '+prior.toFixed(4)+' + '+fp.toFixed(4)+' &times; '+(1-prior).toFixed(4)+' = <span class="val">'+pB.toFixed(6)+'</span></div>'+
+    '<div class="step" style="margin-top:8px"><strong>Step 2:</strong> P(A|B) = P(B|A)&middot;P(A) / P(B)</div>'+
+    '<div class="step">P(A|B) = '+(likelihood*prior).toFixed(6)+' / '+pB.toFixed(6)+' = <span class="val">'+posterior.toFixed(6)+'</span></div>'+
+    '<div class="final">Posterior P(A|B) = '+(posterior*100).toFixed(2)+'%</div>';
+}
+
+function flipCoins(){
+  var n=parseInt(document.getElementById('flipCount').value);
+  if(isNaN(n)||n<1)n=1;if(n>100000)n=100000;
+  var heads=0;
+  for(var i=0;i<n;i++){if(Math.random()<0.5)heads++}
+  var prop=heads/n;
+  document.getElementById('flipResult').style.display='flex';
+  document.getElementById('flipHeads').textContent=heads;
+  document.getElementById('flipTotal').textContent=n;
+  document.getElementById('flipProp').textContent=prop.toFixed(4);
+  document.getElementById('flipBar').style.width=(prop*100)+'%';
+}
+
+function updateBday(){
+  var n=parseInt(document.getElementById('bdaySlider').value);
+  document.getElementById('bdayVal').textContent=n;
+  var prob=1;
+  for(var i=0;i<n;i++){prob*=(365-i)/365}
+  prob=1-prob;
+  document.getElementById('bdayProb').textContent=(prob*100).toFixed(2)+'%';
+  var pairs=n*(n-1)/2;
+  document.getElementById('bdayPairs').textContent=pairs+' unique pairs among '+n+' people';
+}
+updateBday();
+</script>
+</body>
+</html>

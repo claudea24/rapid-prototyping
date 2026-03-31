@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL — Deep Interactive | DS Prep v13</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#0f0f13;--surface:#1a1a22;--surface2:#22222e;--border:#2a2a38;--text:#c8c8d4;--text-muted:#7a7a8e;--heading:#ededf5;--accent:#60a5fa;--accent-glow:rgba(96,165,250,0.12);--green:#34d399;--amber:#fbbf24;--rose:#f472b6;--code-bg:#16161e;--code-text:#cdd6f4}
+    body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    /* Nav */
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(15,15,19,0.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:700;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#7c6cf0,#22d3ee)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:500}
+    nav .nav-links a:hover{background:var(--surface);color:var(--heading)}
+    nav .nav-links a.active{color:var(--heading);background:var(--surface2)}
+
+    /* Layout */
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-glow)}
+    .page-header h1{font-size:1.8rem;font-weight:700;color:var(--heading)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    /* Section */
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    /* Explanation text */
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:rgba(96,165,250,.08);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    /* Key Insight box */
+    .insight{background:rgba(251,191,36,.06);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    /* Comparison table */
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid rgba(42,42,56,.5);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:rgba(255,255,255,.02)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:rgba(96,165,250,.08);padding:1px 5px;border-radius:3px}
+    .comp-table .null{color:var(--text-muted);font-style:italic}
+
+    /* Execution order */
+    .exec-steps{display:flex;flex-direction:column;gap:6px;margin:16px 0}
+    .exec-step{display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border)}
+    .exec-step .step-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:var(--bg);font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .exec-step .step-kw{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--accent);font-size:.82rem;width:90px;flex-shrink:0}
+    .exec-step .step-desc{font-size:.8rem;color:var(--text-muted)}
+
+    /* Code block */
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+    .kw{color:#f38ba8}.fn{color:#cba6f7}.str{color:#a6e3a1}.cm{color:#585b70;font-style:italic}.num{color:#89b4fa}
+
+    /* Live sandbox */
+    .sandbox{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:16px 0}
+    .sandbox-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface2);border-bottom:1px solid var(--border)}
+    .sandbox-header .sandbox-label{font-size:.7rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;gap:6px}
+    .sandbox-header .sandbox-label .dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+    .run-btn{display:flex;align-items:center;gap:5px;padding:5px 14px;border:none;border-radius:6px;background:var(--green);color:#fff;font-family:'Space Grotesk',sans-serif;font-size:.76rem;font-weight:600;cursor:pointer;transition:all .2s}
+    .run-btn:hover{background:#059669}
+    .sandbox textarea{width:100%;min-height:80px;padding:14px 16px;border:none;resize:vertical;background:var(--code-bg);color:var(--code-text);font-family:'JetBrains Mono',monospace;font-size:.8rem;line-height:1.7;outline:none}
+    .result-area{border-top:1px solid var(--border)}
+    .result-bar{padding:6px 16px;background:var(--surface2);font-size:.65rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;display:flex;justify-content:space-between}
+    .result-bar .rc{color:var(--green)}
+    .result-wrap{overflow-x:auto;background:var(--code-bg);max-height:220px;overflow-y:auto}
+    .result-tbl{width:100%;border-collapse:collapse;font-family:'JetBrains Mono',monospace;font-size:.74rem}
+    .result-tbl th{background:var(--surface2);color:#8888aa;padding:7px 12px;text-align:left;font-weight:600;position:sticky;top:0;border-bottom:1px solid var(--border)}
+    .result-tbl td{padding:5px 12px;color:var(--code-text);border-bottom:1px solid rgba(42,42,56,.4)}
+    .result-tbl .null{color:#585b70;font-style:italic}
+    .result-error{padding:12px 16px;background:rgba(243,139,168,.06);color:#f38ba8;font-size:.8rem;font-family:'JetBrains Mono',monospace}
+
+    /* Sample tables ref */
+    .ref-tables{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+    .ref-table{font-size:.7rem;width:100%;border-collapse:collapse;background:var(--surface);border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+    .ref-table caption{text-align:left;font-weight:700;font-size:.7rem;color:var(--heading);padding:6px 10px;background:var(--surface2)}
+    .ref-table th{background:var(--surface2);font-weight:600;color:var(--text-muted);padding:4px 8px;text-align:left;font-size:.65rem;border-bottom:1px solid var(--border)}
+    .ref-table td{padding:3px 8px;border-bottom:1px solid rgba(42,42,56,.3);color:var(--text)}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.page-header,.container{padding-left:16px;padding-right:16px}.ref-tables{grid-template-columns:1fr}.exec-step .step-kw{width:70px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v13</a>
+  <div class="nav-links">
+    <a href="sql.html" class="active">SQL</a><a href="python.html">Python</a><a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a><a href="probability.html">Probability</a><a href="casing.html">Casing</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top"><div class="icon">&#128450;</div><h1>SQL — The Language of Data</h1></div>
+  <p class="intro">Fluency in SQL is non-negotiable for data roles. This chapter treats SQL not as syntax to memorise, but as a way of thinking — a declarative logic for asking precise questions of structured data.</p>
+</div>
+
+<div class="container">
+
+  <!-- Sample Tables Reference -->
+  <div style="margin-bottom:24px">
+    <p class="explain" style="margin-bottom:8px"><strong>Sample tables</strong> used throughout — edit any query below and hit Run:</p>
+    <div class="ref-tables">
+      <table class="ref-table"><caption>employees</caption><tr><th>id</th><th>name</th><th>dept</th><th>salary</th></tr><tr><td>1</td><td>Alice</td><td>Eng</td><td>95000</td></tr><tr><td>2</td><td>Bob</td><td>Eng</td><td>92000</td></tr><tr><td>3</td><td>Carol</td><td>Sales</td><td>78000</td></tr><tr><td>4</td><td>Dave</td><td>Sales</td><td>78000</td></tr><tr><td>5</td><td>Eve</td><td>HR</td><td>65000</td></tr></table>
+      <table class="ref-table"><caption>orders</caption><tr><th>id</th><th>emp_id</th><th>amount</th><th>dt</th></tr><tr><td>1</td><td>1</td><td>1200</td><td>2024-01</td></tr><tr><td>2</td><td>1</td><td>800</td><td>2024-02</td></tr><tr><td>3</td><td>2</td><td>2400</td><td>2024-01</td></tr><tr><td>4</td><td>3</td><td>500</td><td>2024-02</td></tr><tr><td>5</td><td>6</td><td>300</td><td>2024-01</td></tr></table>
+    </div>
+  </div>
+
+  <!-- Section 1: Execution Order -->
+  <div class="section">
+    <div class="section-head open" onclick="toggleSection(this)">
+      <div><span class="num">1.1</span><h2 style="display:inline">Query Execution Order</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body open">
+      <p class="explain">When you write a SQL query, you begin with <code>SELECT</code>, follow it with <code>FROM</code>, perhaps a <code>WHERE</code> clause. But <strong>the database does not read your query top to bottom</strong>. It follows its own logical execution order, and understanding that order is the single most important step toward writing correct SQL.</p>
+      <p class="explain">A common frustration: you create an alias in <code>SELECT</code> — say, <code>revenue - cost AS profit</code> — then filter on it in <code>WHERE</code>. The query fails. Why? Because <strong>WHERE is evaluated before SELECT</strong>. The alias doesn't exist yet.</p>
+
+      <div class="exec-steps">
+        <div class="exec-step"><span class="step-num">1</span><span class="step-kw">FROM</span><span class="step-desc">Identify source tables and perform joins</span></div>
+        <div class="exec-step"><span class="step-num">2</span><span class="step-kw">WHERE</span><span class="step-desc">Filter individual rows before grouping</span></div>
+        <div class="exec-step"><span class="step-num">3</span><span class="step-kw">GROUP BY</span><span class="step-desc">Collapse rows into groups</span></div>
+        <div class="exec-step"><span class="step-num">4</span><span class="step-kw">HAVING</span><span class="step-desc">Filter groups after aggregation</span></div>
+        <div class="exec-step"><span class="step-num">5</span><span class="step-kw">SELECT</span><span class="step-desc">Evaluate expressions and aliases</span></div>
+        <div class="exec-step"><span class="step-num">6</span><span class="step-kw">ORDER BY</span><span class="step-desc">Sort the result set</span></div>
+        <div class="exec-step"><span class="step-num">7</span><span class="step-kw">LIMIT</span><span class="step-desc">Restrict the number of returned rows</span></div>
+      </div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p><code>HAVING</code> must use <code>SUM(amount)</code> rather than the alias <code>total_spent</code>, because the alias is not created until <code>SELECT</code> runs in step 5. Some databases relax this rule, but standard SQL does not. Always write with the standard in mind.</p>
+      </div>
+
+      <div class="sandbox" id="sandbox-0">
+        <div class="sandbox-header">
+          <span class="sandbox-label"><span class="dot"></span> Try it — filter and select</span>
+          <button class="run-btn" onclick="execQuery(0)">&#9654; Run</button>
+        </div>
+        <textarea id="editor-0">SELECT name, dept, salary
+FROM employees
+WHERE salary > 80000
+ORDER BY salary DESC</textarea>
+        <div class="result-area" id="result-0"><div class="result-bar"><span>Output</span><span class="rc">Press Run</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2: JOINs -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">1.2</span><h2 style="display:inline">Joining Tables</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Real-world data rarely lives in a single table. <strong>Joins reunite related pieces of information</strong> from separate tables. Think of two class rosters: an INNER JOIN returns only students in both classes; a LEFT JOIN keeps everyone from the first roster, filling NULLs for those not in the second.</p>
+
+      <table class="comp-table">
+        <tr><th>Join Type</th><th>Keeps</th><th>Non-Matches</th><th>Use When</th></tr>
+        <tr><td><code>INNER JOIN</code></td><td>Only matched rows</td><td>Dropped from both sides</td><td>You only want records that exist in both tables</td></tr>
+        <tr><td><code>LEFT JOIN</code></td><td>All left + matched right</td><td>Right fills with NULL</td><td>You need a complete roster from the left table</td></tr>
+        <tr><td><code>RIGHT JOIN</code></td><td>All right + matched left</td><td>Left fills with NULL</td><td>Mirror of LEFT — swap table order instead</td></tr>
+        <tr><td><code>FULL OUTER</code></td><td>All rows from both</td><td>NULLs on both sides</td><td>Reconciliation — find records missing from either side</td></tr>
+        <tr><td><code>CROSS JOIN</code></td><td>Every row × every row</td><td>N/A (Cartesian product)</td><td>Generate combinations (e.g., date spines)</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Interview Tip</div>
+        <p>A common pattern: find rows with <strong>no match</strong>. Use <code>LEFT JOIN</code> then filter with <code>WHERE right.id IS NULL</code>. This is often more readable than <code>NOT EXISTS</code>.</p>
+      </div>
+
+      <p class="explain">Try both JOINs below — notice Eve appears in LEFT JOIN with NULL amount (no orders), and order #5 (emp_id=6) is dropped from both since that employee doesn't exist:</p>
+
+      <div class="sandbox" id="sandbox-1">
+        <div class="sandbox-header">
+          <span class="sandbox-label"><span class="dot"></span> Try it — change INNER to LEFT</span>
+          <button class="run-btn" onclick="execQuery(1)">&#9654; Run</button>
+        </div>
+        <textarea id="editor-1">SELECT e.name, e.dept, o.amount, o.dt
+FROM employees e
+LEFT JOIN orders o ON e.id = o.emp_id</textarea>
+        <div class="result-area" id="result-1"><div class="result-bar"><span>Output</span><span class="rc">Press Run</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3: Window Functions -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">1.3</span><h2 style="display:inline">Window Functions</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Aggregate functions like <code>SUM</code> collapse rows. But what if you need a computation across related rows <strong>while keeping every row intact</strong>? Window functions perform calculations over a "window" of rows defined by <code>OVER()</code>, without collapsing anything.</p>
+      <p class="explain">Three ranking functions appear constantly in interviews:</p>
+
+      <table class="comp-table">
+        <tr><th>Function</th><th>Ties</th><th>Gaps After Ties</th><th>Example (95k, 95k, 88k)</th><th>Use Case</th></tr>
+        <tr><td><code>ROW_NUMBER()</code></td><td>Broken arbitrarily</td><td>N/A — always unique</td><td>1, 2, 3</td><td>Deduplication, top-N per group</td></tr>
+        <tr><td><code>RANK()</code></td><td>Same rank</td><td>Yes — skips next</td><td>1, 1, 3</td><td>Competitive standing (Olympics)</td></tr>
+        <tr><td><code>DENSE_RANK()</code></td><td>Same rank</td><td>No — consecutive</td><td>1, 1, 2</td><td>Consecutive labels regardless of ties</td></tr>
+      </table>
+
+      <p class="explain"><strong>Choosing:</strong> Need exactly one winner per partition (dedup)? Use <code>ROW_NUMBER</code>. Need competitive standing with gaps (gold, gold, bronze)? <code>RANK</code>. Need consecutive labels? <code>DENSE_RANK</code>.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Beyond ranking, window functions support running totals (<code>SUM() OVER</code>), moving averages (<code>AVG() OVER (ROWS BETWEEN ...)</code>), and access to other rows via <code>LAG()</code> and <code>LEAD()</code>.</p>
+      </div>
+
+      <p class="explain">Try it — change <code>RANK</code> to <code>DENSE_RANK</code> or <code>ROW_NUMBER</code> and compare Carol's rank:</p>
+
+      <div class="sandbox" id="sandbox-2">
+        <div class="sandbox-header">
+          <span class="sandbox-label"><span class="dot"></span> Try it — compare ranking functions</span>
+          <button class="run-btn" onclick="execQuery(2)">&#9654; Run</button>
+        </div>
+        <textarea id="editor-2">SELECT name, dept, salary,
+  RANK() OVER(PARTITION BY dept ORDER BY salary DESC) AS rnk
+FROM employees</textarea>
+        <div class="result-area" id="result-2"><div class="result-bar"><span>Output</span><span class="rc">Press Run</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 4: Aggregation -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">1.4</span><h2 style="display:inline">Aggregation &amp; Grouping</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain"><code>GROUP BY</code> collapses rows sharing the same values into a single output row. The question that surfaces repeatedly is: <strong>what's the difference between WHERE and HAVING?</strong> The answer follows from the execution order: <code>WHERE</code> filters rows <em>before</em> grouping (can't use aggregates), <code>HAVING</code> filters <em>after</em> grouping (can use aggregates).</p>
+
+      <table class="comp-table">
+        <tr><th>Function</th><th>Counts NULLs?</th><th>Returns</th></tr>
+        <tr><td><code>COUNT(*)</code></td><td>Yes — counts all rows</td><td>Total number of rows in group</td></tr>
+        <tr><td><code>COUNT(col)</code></td><td>No — skips NULLs</td><td>Number of non-NULL values</td></tr>
+        <tr><td><code>SUM(col)</code></td><td>Skips NULLs</td><td>Sum of non-NULL values</td></tr>
+        <tr><td><code>AVG(col)</code></td><td>Skips NULLs</td><td>Average of non-NULL values</td></tr>
+        <tr><td><code>MIN(col)</code> / <code>MAX(col)</code></td><td>Skips NULLs</td><td>Minimum / maximum value</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Every column in <code>SELECT</code> must either appear in <code>GROUP BY</code> or be wrapped in an aggregate function. If you select <code>dept</code> and <code>name</code> but only group by <code>dept</code>, the database doesn't know which <code>name</code> to display. Most databases raise an error; MySQL may silently pick an arbitrary value — almost always a bug.</p>
+      </div>
+
+      <p class="explain">Try changing <code>AVG</code> to <code>SUM</code> or <code>MAX</code>:</p>
+
+      <div class="sandbox" id="sandbox-3">
+        <div class="sandbox-header">
+          <span class="sandbox-label"><span class="dot"></span> Try it — aggregate functions</span>
+          <button class="run-btn" onclick="execQuery(3)">&#9654; Run</button>
+        </div>
+        <textarea id="editor-3">SELECT dept, COUNT(*) AS headcount, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY dept</textarea>
+        <div class="result-area" id="result-3"><div class="result-bar"><span>Output</span><span class="rc">Press Run</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 5: CTEs -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">1.5</span><h2 style="display:inline">Common Table Expressions (CTEs)</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">A CTE is a <strong>named, temporary result set</strong> that exists only for the duration of a single query. Introduced with <code>WITH</code>, CTEs let you break complex queries into digestible, named steps — much like assigning intermediate results to variables in a programming language.</p>
+      <p class="explain">Without CTEs, you'd nest derived tables inside each other, quickly becoming unreadable. With CTEs, each logical step gets a clear name and can be verified independently:</p>
+
+      <div class="code-block"><pre><span class="kw">WITH</span> monthly_revenue <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> <span class="fn">DATE_TRUNC</span>(<span class="str">'month'</span>, order_date) <span class="kw">AS</span> month,
+         <span class="fn">SUM</span>(amount) <span class="kw">AS</span> revenue
+  <span class="kw">FROM</span>   orders
+  <span class="kw">GROUP BY</span> <span class="num">1</span>
+),
+with_prior <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> month, revenue,
+         <span class="fn">LAG</span>(revenue) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> month) <span class="kw">AS</span> prev
+  <span class="kw">FROM</span>   monthly_revenue
+)
+<span class="kw">SELECT</span> month, revenue, prev,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span> * (revenue - prev) / prev, <span class="num">1</span>) <span class="kw">AS</span> pct_change
+<span class="kw">FROM</span>   with_prior;</pre></div>
+
+      <p class="explain">The first CTE computes the aggregate. The second uses <code>LAG</code> to fetch the prior month. The final <code>SELECT</code> calculates percentage change. Each step is self-contained.</p>
+
+      <div class="insight">
+        <div class="label">Tip</div>
+        <p>In most databases, CTEs are optimised the same way as subqueries — the planner inlines them. Focus on mastering the non-recursive form: chaining two or three CTEs to build up a result step by step.</p>
+      </div>
+
+      <div class="sandbox" id="sandbox-4">
+        <div class="sandbox-header">
+          <span class="sandbox-label"><span class="dot"></span> Try it — CTE with GROUP BY</span>
+          <button class="run-btn" onclick="execQuery(4)">&#9654; Run</button>
+        </div>
+        <textarea id="editor-4">WITH dept_totals AS (
+  SELECT dept, SUM(salary) AS total_sal
+  FROM employees
+  GROUP BY dept
+)
+SELECT * FROM dept_totals</textarea>
+        <div class="result-area" id="result-4"><div class="result-bar"><span>Output</span><span class="rc">Press Run</span></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6: Optimization -->
+  <div class="section">
+    <div class="section-head" onclick="toggleSection(this)">
+      <div><span class="num">1.6</span><h2 style="display:inline">Query Optimisation</h2></div>
+      <span class="toggle">&#9660;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Writing correct SQL is necessary but not sufficient. In production, queries run against millions or billions of rows. A few principles go a long way:</p>
+
+      <table class="comp-table">
+        <tr><th>Principle</th><th>Why</th><th>Impact</th></tr>
+        <tr><td><strong>Use EXPLAIN</strong></td><td>Shows the query plan — which indexes, sequential scans, row estimates</td><td>Primary diagnostic tool</td></tr>
+        <tr><td><strong>Index filter/join columns</strong></td><td>Turns full table scan O(n) into index lookup O(log n)</td><td>Orders of magnitude faster</td></tr>
+        <tr><td><strong>Avoid SELECT *</strong></td><td>Forces reading all columns; especially costly in columnar storage</td><td>Less I/O, faster queries</td></tr>
+        <tr><td><strong>Filter early</strong></td><td>Push WHERE before JOIN to reduce rows entering the join</td><td>Dramatically reduces join size</td></tr>
+        <tr><td><strong>EXISTS over IN</strong></td><td>EXISTS short-circuits on first match; IN evaluates entire subquery</td><td>Faster for large subqueries</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Optimisation is about <strong>reducing the amount of data the engine must read</strong> at each step. Indexing, projection, early filtering — they all serve that single goal. When a query is slow, ask: "Where is the engine reading more data than it needs to?"</p>
+      </div>
+
+      <div class="sandbox" id="sandbox-5">
+        <div class="sandbox-header">
+          <span class="sandbox-label"><span class="dot"></span> Try it — filter before join</span>
+          <button class="run-btn" onclick="execQuery(5)">&#9654; Run</button>
+        </div>
+        <textarea id="editor-5">SELECT e.name, e.salary
+FROM employees e
+WHERE salary > 75000
+ORDER BY salary DESC
+LIMIT 3</textarea>
+        <div class="result-area" id="result-5"><div class="result-bar"><span>Output</span><span class="rc">Press Run</span></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v13 &middot; <a href="index.html">Back to Topics</a></p>
+</footer>
+
+<script>
+// Toggle sections
+function toggleSection(el) {
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('open');
+}
+
+// SQL Engine (same as v12)
+const DB = {
+  employees: [
+    {id:1,name:'Alice',dept:'Eng',salary:95000},{id:2,name:'Bob',dept:'Eng',salary:92000},
+    {id:3,name:'Carol',dept:'Sales',salary:78000},{id:4,name:'Dave',dept:'Sales',salary:78000},
+    {id:5,name:'Eve',dept:'HR',salary:65000}
+  ],
+  orders: [
+    {id:1,emp_id:1,amount:1200,dt:'2024-01'},{id:2,emp_id:1,amount:800,dt:'2024-02'},
+    {id:3,emp_id:2,amount:2400,dt:'2024-01'},{id:4,emp_id:3,amount:500,dt:'2024-02'},
+    {id:5,emp_id:6,amount:300,dt:'2024-01'}
+  ]
+};
+function runSQL(query){const q=query.trim().replace(/;\s*$/,'').toLowerCase().replace(/\n/g,' ').replace(/\s+/g,' ');try{if(q.startsWith('with '))return doCTE(q);if(q.includes('over('))return doWindow(q);if(q.includes('over ('))return doWindow(q);if(q.includes('group by'))return doGroupBy(q);if(q.includes('cross join'))return doCrossJoin(q);if(q.includes('left join'))return doJoin(q,'left');if(q.includes('join'))return doJoin(q,'inner');const m=q.match(/^select\s+(.+?)\s+from\s+(\w+)(?:\s+where\s+(.+?))?(?:\s+order\s+by\s+(.+?))?(?:\s+limit\s+(\d+))?$/);if(!m)throw new Error('Query not supported. Try the pre-loaded examples!');const[,cp,tbl,wp,op,lp]=m;if(!DB[tbl])throw new Error(`Table "${tbl}" not found`);let rows=[...DB[tbl]];if(wp)rows=applyWhere(rows,wp);if(cp.trim()!=='*'){const cols=cp.split(',').map(c=>c.trim().split(/\s+as\s+/));rows=rows.map(r=>{const nr={};cols.forEach(([s,a])=>{const k=s.trim();if(r[k]!==undefined)nr[a?a.trim():k]=r[k]});return nr})}if(op)rows=applyOrder(rows,op);if(lp)rows=rows.slice(0,parseInt(lp));return{rows,cols:rows.length?Object.keys(rows[0]):[]};}catch(e){return{error:e.message}}}
+function applyWhere(rows,w){const m=w.match(/(\w+)\s*(=|>|<|>=|<=|!=|<>)\s*'?([^']*?)'?\s*$/);if(!m)return rows;const[,col,op,val]=m;return rows.filter(r=>{const v=r[col],cv=isNaN(val)?val:Number(val);if(op==='='||op==='==')return v==cv;if(op==='>')return v>cv;if(op==='<')return v<cv;if(op==='>='||op==='>= ')return v>=cv;if(op==='<='||op==='<= ')return v<=cv;if(op==='!='||op==='<>')return v!=cv;return true})}
+function applyOrder(rows,o){const desc=o.toLowerCase().includes('desc');const col=o.replace(/\s+(asc|desc)/i,'').trim();return rows.sort((a,b)=>{if(a[col]<b[col])return desc?1:-1;if(a[col]>b[col])return desc?-1:1;return 0})}
+function doJoin(q,type){const jm=q.match(/from\s+(\w+)\s+(\w+)\s+(?:inner\s+)?(?:left\s+)?join\s+(\w+)\s+(\w+)\s+on\s+(\w+)\.(\w+)\s*=\s*(\w+)\.(\w+)/);if(!jm)throw new Error('JOIN: FROM t1 a JOIN t2 b ON a.col = b.col');const[,t1,a1,t2,a2,,jca,,jcb]=jm;if(!DB[t1]||!DB[t2])throw new Error('Table not found');const rows=[];DB[t1].forEach(r1=>{let matched=false;DB[t2].forEach(r2=>{const v1=r1[jca]!==undefined?r1[jca]:r1[jcb];const v2=r2[jcb]!==undefined?r2[jcb]:r2[jca];if(v1===v2){const row={};Object.keys(r1).forEach(k=>row[`${a1}.${k}`]=r1[k]);Object.keys(r2).forEach(k=>row[`${a2}.${k}`]=r2[k]);rows.push(row);matched=true}});if(!matched&&type==='left'){const row={};Object.keys(r1).forEach(k=>row[`${a1}.${k}`]=r1[k]);Object.keys(DB[t2][0]).forEach(k=>row[`${a2}.${k}`]=null);rows.push(row)}});return{rows,cols:rows.length?Object.keys(rows[0]):[]}}
+function doCrossJoin(q){const m=q.match(/from\s+(\w+)\s*cross\s+join\s+(\w+)/);if(!m)throw new Error('CROSS JOIN error');const[,t1,t2]=m;if(!DB[t1]||!DB[t2])throw new Error('Table not found');const rows=[];DB[t1].forEach(r1=>{DB[t2].forEach(r2=>{const row={};Object.keys(r1).forEach(k=>row[`${t1}.${k}`]=r1[k]);Object.keys(r2).forEach(k=>row[`${t2}.${k}`]=r2[k]);rows.push(row)})});return{rows,cols:rows.length?Object.keys(rows[0]):[]} }
+function doGroupBy(q){const m=q.match(/select\s+(.+?)\s+from\s+(\w+)(?:\s+where\s+(.+?))?\s+group\s+by\s+(.+?)(?:\s+having\s+(.+?))?(?:\s+order\s+by\s+(.+?))?$/);if(!m)throw new Error('GROUP BY parse error');const[,selPart,table,wp,gc]=m;if(!DB[table])throw new Error(`Table "${table}" not found`);let rows=[...DB[table]];if(wp)rows=applyWhere(rows,wp);const groups={};rows.forEach(r=>{const key=r[gc.trim()];if(!groups[key])groups[key]=[];groups[key].push(r)});const result=[];Object.entries(groups).forEach(([key,gRows])=>{const row={};selPart.split(',').map(c=>c.trim()).forEach(col=>{const aggM=col.match(/(count|sum|avg|min|max)\s*\(\s*(\*|\w+)\s*\)(?:\s+as\s+(\w+))?/i);if(aggM){const[,fn,field,alias]=aggM;const name=alias||`${fn}(${field})`;if(fn==='count')row[name]=gRows.length;else if(fn==='sum')row[name]=gRows.reduce((s,r)=>s+(r[field]||0),0);else if(fn==='avg')row[name]=Math.round(gRows.reduce((s,r)=>s+(r[field]||0),0)/gRows.length);else if(fn==='min')row[name]=Math.min(...gRows.map(r=>r[field]));else if(fn==='max')row[name]=Math.max(...gRows.map(r=>r[field]))}else{const parts=col.split(/\s+as\s+/);row[parts[1]?parts[1].trim():parts[0].trim()]=gRows[0][parts[0].trim()]}});result.push(row)});return{rows:result,cols:result.length?Object.keys(result[0]):[]} }
+function doWindow(q){const m=q.match(/select\s+(.+?)\s+from\s+(\w+)/);if(!m)throw new Error('Window parse error');const[,selPart,table]=m;if(!DB[table])throw new Error(`Table "${table}" not found`);let rows=[...DB[table]];const winM=selPart.match(/(row_number|rank|dense_rank|sum|avg)\s*\(\s*(\w*)\s*\)\s*over\s*\(\s*(?:partition\s+by\s+(\w+))?\s*order\s+by\s+(\w+)(?:\s+(desc))?\s*\)(?:\s+as\s+(\w+))?/i);if(!winM)throw new Error('Window: FN() OVER(PARTITION BY col ORDER BY col) AS alias');const[,fn,fnArg,partCol,orderCol,descFlag,alias]=winM;const resName=alias||fn;const isDesc=!!descFlag;const baseCols=selPart.split(',').map(c=>c.trim()).filter(c=>!c.toLowerCase().includes('over(')&&!c.toLowerCase().includes('over ('));const partitions={};rows.forEach(r=>{const key=partCol?r[partCol]:'_';if(!partitions[key])partitions[key]=[];partitions[key].push(r)});const result=[];Object.values(partitions).forEach(pRows=>{pRows.sort((a,b)=>isDesc?b[orderCol]-a[orderCol]:a[orderCol]-b[orderCol]);let rank=0,prevVal=null;pRows.forEach((r,i)=>{const row={};baseCols.forEach(c=>{const clean=c.trim();if(r[clean]!==undefined)row[clean]=r[clean]});if(fn==='row_number')row[resName]=i+1;else if(fn==='rank'){if(r[orderCol]!==prevVal)rank=i+1;row[resName]=rank;prevVal=r[orderCol]}else if(fn==='dense_rank'){if(r[orderCol]!==prevVal)rank++;row[resName]=rank;prevVal=r[orderCol]}else if(fn==='sum')row[resName]=pRows.reduce((s,x)=>s+(x[fnArg]||0),0);else if(fn==='avg')row[resName]=Math.round(pRows.reduce((s,x)=>s+(x[fnArg]||0),0)/pRows.length);result.push(row)})});return{rows:result,cols:result.length?Object.keys(result[0]):[]} }
+function doCTE(q){const cm=q.match(/with\s+(\w+)\s+as\s*\((.+?)\)\s*(select.+)$/s);if(!cm)throw new Error('CTE: WITH name AS (subquery) SELECT ... FROM name');const[,cteName,subQ,mainQ]=cm;const subResult=runSQL(subQ);if(subResult.error)throw new Error(subResult.error);DB[cteName]=subResult.rows;const result=runSQL(mainQ);delete DB[cteName];return result}
+
+function execQuery(idx){
+  const editor=document.getElementById(`editor-${idx}`);
+  const area=document.getElementById(`result-${idx}`);
+  const result=runSQL(editor.value);
+  if(result.error){area.innerHTML=`<div class="result-bar"><span>Output</span><span class="rc" style="color:var(--amber)">Error</span></div><div class="result-error">${result.error}</div>`;return}
+  const{rows,cols}=result;
+  if(!rows.length){area.innerHTML=`<div class="result-bar"><span>Output</span><span class="rc">0 rows</span></div><div style="padding:14px;color:var(--code-text);background:var(--code-bg);font-size:.8rem">No rows returned.</div>`;return}
+  area.innerHTML=`<div class="result-bar"><span>Output</span><span class="rc">${rows.length} row${rows.length!==1?'s':''}</span></div><div class="result-wrap"><table class="result-tbl"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${r[c]===null?'<span class="null">NULL</span>':r[c]}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+</script>
+</body>
+</html>
