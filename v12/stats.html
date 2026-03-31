@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stats Simulator — Interactive DS Prep v12</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#f5f5f0;--surface:#fff;--border:#e2e2da;--text:#2d2d2d;--text-muted:#6b6b6b;--heading:#1a1a1a;--green:#16a34a;--blue:#2563eb;--amber:#d97706;--rose:#e11d48;--code-bg:#1e1e2e;--code-text:#cdd6f4}
+    body{font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(245,245,240,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:700;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .dot{width:8px;height:8px;border-radius:3px;background:var(--green)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:500}
+    nav .nav-links a:hover{background:rgba(0,0,0,.04);color:var(--heading)}
+    nav .nav-links a.active{color:var(--heading);background:rgba(0,0,0,.06);font-weight:600}
+    .page-header{padding:32px 32px 20px;max-width:1100px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:rgba(22,163,74,.08)}
+    .page-header h1{font-size:1.8rem;font-weight:700;color:var(--heading)}
+    .page-header p{font-size:.88rem;color:var(--text-muted);margin-left:58px}
+    .layout{max-width:1100px;margin:0 auto;padding:0 32px 64px;display:grid;grid-template-columns:220px 1fr;gap:24px}
+    .sidebar{position:sticky;top:72px;height:fit-content}
+    .sidebar h3{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);margin-bottom:10px}
+    .topic-list{display:flex;flex-direction:column;gap:4px}
+    .topic-btn{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:10px;background:var(--surface);cursor:pointer;transition:all .2s;text-align:left;font-family:'IBM Plex Sans',sans-serif;font-size:.82rem;color:var(--text)}
+    .topic-btn:hover{border-color:#ccc;background:#fafaf6}
+    .topic-btn.active{border-color:var(--green);background:rgba(22,163,74,.04);color:var(--green);font-weight:600}
+    .main{min-width:0}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:20px}
+    .card h2{font-size:1.1rem;font-weight:700;color:var(--heading);margin-bottom:6px}
+    .card .sub{font-size:.84rem;color:var(--text-muted);margin-bottom:18px;line-height:1.5}
+    label{font-size:.8rem;font-weight:600;color:var(--heading);display:block;margin-bottom:4px}
+    input[type=text],input[type=number],select{font-family:'IBM Plex Mono',monospace;font-size:.82rem;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);width:100%;outline:none;transition:border .2s}
+    input:focus,select:focus{border-color:var(--green)}
+    .row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+    .row>div{flex:1;min-width:120px}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 20px;border:none;border-radius:8px;background:var(--green);color:#fff;font-family:'IBM Plex Sans',sans-serif;font-size:.82rem;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px}
+    .btn:hover{background:#15803d}
+    .result-box{margin-top:16px;background:var(--code-bg);border-radius:10px;padding:18px 20px;color:var(--code-text);font-family:'IBM Plex Mono',monospace;font-size:.8rem;line-height:1.7}
+    .result-box .val{color:#a6e3a1;font-weight:600}
+    .result-box .label-r{color:#7a7a9e}
+    .result-box .warn{color:#fab387}
+    .result-box .good{color:#a6e3a1}
+    .result-box .bad{color:#f38ba8}
+    .ci-bar{height:28px;border-radius:6px;background:rgba(255,255,255,.06);position:relative;margin-top:12px;overflow:hidden}
+    .ci-bar .fill{position:absolute;top:0;height:100%;border-radius:6px;background:rgba(22,163,74,.3);border:1px solid rgba(22,163,74,.5);transition:all .4s}
+    .ci-bar .center{position:absolute;top:0;height:100%;width:2px;background:var(--green)}
+    .ci-bar .lbl{position:absolute;top:30px;font-size:.65rem;color:#7a7a9e;white-space:nowrap}
+    .hist-wrap{margin-top:14px}
+    .hist-row{display:flex;align-items:flex-end;gap:2px;height:120px;padding-bottom:4px}
+    .hist-bar{flex:1;background:rgba(22,163,74,.4);border-radius:2px 2px 0 0;transition:height .3s}
+    footer{text-align:center;padding:32px;font-size:.82rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--green);text-decoration:none}
+    @media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{position:static}nav{padding:0 16px}.page-header{padding:24px 16px 16px}.layout{padding:0 16px 48px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><span class="dot"></span> DS Prep v12</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a><a href="python.html">Python</a><a href="ml.html">ML</a>
+    <a href="stats.html" class="active">Stats</a><a href="probability.html">Probability</a><a href="casing.html">Casing</a>
+  </div>
+</nav>
+<div class="page-header">
+  <div class="top"><div class="icon">&#128202;</div><h1>Stats Simulator</h1></div>
+  <p>Interactive tools for descriptive stats, hypothesis testing, A/B tests, and more.</p>
+</div>
+<div class="layout">
+  <div class="sidebar">
+    <h3>Tools</h3>
+    <div class="topic-list">
+      <button class="topic-btn active" onclick="show(0)">Descriptive Stats</button>
+      <button class="topic-btn" onclick="show(1)">Hypothesis Test</button>
+      <button class="topic-btn" onclick="show(2)">A/B Sample Size</button>
+      <button class="topic-btn" onclick="show(3)">Confidence Intervals</button>
+      <button class="topic-btn" onclick="show(4)">CLT Demo</button>
+    </div>
+  </div>
+  <div class="main">
+    <!-- Descriptive Stats -->
+    <div class="card section" id="s0">
+      <h2>Descriptive Stats Calculator</h2>
+      <p class="sub">Enter comma-separated numbers to compute summary statistics instantly.</p>
+      <label>Data</label>
+      <input type="text" id="ds-data" value="12, 15, 18, 22, 22, 25, 28, 30, 35, 42" placeholder="e.g. 1, 2, 3, 4, 5">
+      <button class="btn" onclick="calcDesc()">Calculate</button>
+      <div class="result-box" id="ds-result"></div>
+    </div>
+
+    <!-- Hypothesis Test -->
+    <div class="card section" id="s1" style="display:none">
+      <h2>Two-Sample Hypothesis Test</h2>
+      <p class="sub">Compare two groups. Enter sample statistics to see if the difference is significant.</p>
+      <div class="row">
+        <div><label>Control Mean</label><input type="number" id="ht-m1" value="4.2"></div>
+        <div><label>Treatment Mean</label><input type="number" id="ht-m2" value="4.8"></div>
+      </div>
+      <div class="row">
+        <div><label>Control Std Dev</label><input type="number" id="ht-s1" value="1.5"></div>
+        <div><label>Treatment Std Dev</label><input type="number" id="ht-s2" value="1.6"></div>
+      </div>
+      <div class="row">
+        <div><label>Control n</label><input type="number" id="ht-n1" value="200"></div>
+        <div><label>Treatment n</label><input type="number" id="ht-n2" value="200"></div>
+      </div>
+      <div class="row">
+        <div><label>Significance Level (α)</label>
+          <select id="ht-alpha"><option value="0.01">0.01</option><option value="0.05" selected>0.05</option><option value="0.10">0.10</option></select>
+        </div>
+      </div>
+      <button class="btn" onclick="calcHT()">Run Test</button>
+      <div class="result-box" id="ht-result"></div>
+    </div>
+
+    <!-- A/B Sample Size -->
+    <div class="card section" id="s2" style="display:none">
+      <h2>A/B Test Sample Size Calculator</h2>
+      <p class="sub">How many users per group do you need to detect a given effect?</p>
+      <div class="row">
+        <div><label>Baseline Conversion (%)</label><input type="number" id="ss-base" value="5"></div>
+        <div><label>Min Detectable Effect (%)</label><input type="number" id="ss-mde" value="1"></div>
+      </div>
+      <div class="row">
+        <div><label>Significance (α)</label>
+          <select id="ss-alpha"><option value="0.01">0.01</option><option value="0.05" selected>0.05</option><option value="0.10">0.10</option></select>
+        </div>
+        <div><label>Power (1-β)</label>
+          <select id="ss-power"><option value="0.80" selected>80%</option><option value="0.90">90%</option><option value="0.95">95%</option></select>
+        </div>
+      </div>
+      <button class="btn" onclick="calcSS()">Calculate</button>
+      <div class="result-box" id="ss-result"></div>
+    </div>
+
+    <!-- Confidence Intervals -->
+    <div class="card section" id="s3" style="display:none">
+      <h2>Confidence Interval Visualizer</h2>
+      <p class="sub">See how sample size and confidence level affect interval width.</p>
+      <div class="row">
+        <div><label>Sample Mean (x̄)</label><input type="number" id="ci-mean" value="52.3"></div>
+        <div><label>Std Dev (σ)</label><input type="number" id="ci-std" value="8.5"></div>
+      </div>
+      <div class="row">
+        <div><label>Sample Size (n)</label><input type="number" id="ci-n" value="100"></div>
+        <div><label>Confidence Level</label>
+          <select id="ci-level"><option value="1.645">90%</option><option value="1.96" selected>95%</option><option value="2.576">99%</option></select>
+        </div>
+      </div>
+      <button class="btn" onclick="calcCI()">Calculate</button>
+      <div class="result-box" id="ci-result"></div>
+    </div>
+
+    <!-- CLT Demo -->
+    <div class="card section" id="s4" style="display:none">
+      <h2>Central Limit Theorem Demo</h2>
+      <p class="sub">Draw random samples from a skewed population. Watch the sample means form a normal distribution.</p>
+      <div class="row">
+        <div><label>Sample Size (n)</label><input type="number" id="clt-n" value="30" min="2" max="200"></div>
+        <div><label>Samples per Click</label><input type="number" id="clt-k" value="100" min="10" max="500"></div>
+      </div>
+      <button class="btn" onclick="drawCLT()">Draw Samples</button>
+      <button class="btn" style="background:var(--amber)" onclick="resetCLT()">Reset</button>
+      <div class="result-box" id="clt-result">
+        <div><span class="label-r">Total samples drawn:</span> <span class="val">0</span></div>
+        <div class="hist-wrap"><div class="hist-row" id="clt-hist"></div></div>
+        <div style="margin-top:8px"><span class="label-r">Mean of sample means:</span> <span class="val" id="clt-mean">—</span></div>
+        <div><span class="label-r">Std of sample means (SE):</span> <span class="val" id="clt-se">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<footer><p>Claudea's DS Interview Prep &middot; v12 &middot; <a href="index.html">Back to Topics</a></p></footer>
+
+<script>
+function show(idx) {
+  document.querySelectorAll('.section').forEach((s, i) => s.style.display = i === idx ? '' : 'none');
+  document.querySelectorAll('.topic-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+}
+
+function calcDesc() {
+  const nums = document.getElementById('ds-data').value.split(',').map(s => parseFloat(s.trim())).filter(n => !isNaN(n));
+  if (nums.length < 2) { document.getElementById('ds-result').innerHTML = '<span class="warn">Enter at least 2 numbers</span>'; return; }
+  const sorted = [...nums].sort((a, b) => a - b);
+  const n = nums.length;
+  const mean = nums.reduce((a, b) => a + b, 0) / n;
+  const median = n % 2 ? sorted[Math.floor(n / 2)] : (sorted[n / 2 - 1] + sorted[n / 2]) / 2;
+  const freq = {}; nums.forEach(x => freq[x] = (freq[x] || 0) + 1);
+  const maxFreq = Math.max(...Object.values(freq));
+  const mode = Object.entries(freq).filter(([, v]) => v === maxFreq).map(([k]) => +k);
+  const variance = nums.reduce((s, x) => s + (x - mean) ** 2, 0) / (n - 1);
+  const stdDev = Math.sqrt(variance);
+  const q1 = sorted[Math.floor(n * 0.25)], q3 = sorted[Math.floor(n * 0.75)];
+  const iqr = q3 - q1;
+  document.getElementById('ds-result').innerHTML = `
+    <div><span class="label-r">n =</span> <span class="val">${n}</span></div>
+    <div><span class="label-r">Mean =</span> <span class="val">${mean.toFixed(2)}</span></div>
+    <div><span class="label-r">Median =</span> <span class="val">${median.toFixed(2)}</span></div>
+    <div><span class="label-r">Mode =</span> <span class="val">${mode.join(', ')}</span> <span class="label-r">(freq: ${maxFreq})</span></div>
+    <div><span class="label-r">Variance =</span> <span class="val">${variance.toFixed(2)}</span></div>
+    <div><span class="label-r">Std Dev =</span> <span class="val">${stdDev.toFixed(2)}</span></div>
+    <div><span class="label-r">IQR =</span> <span class="val">${iqr.toFixed(2)}</span> <span class="label-r">(Q1=${q1}, Q3=${q3})</span></div>
+    <div><span class="label-r">Range =</span> <span class="val">${sorted[0]} — ${sorted[n - 1]}</span></div>`;
+}
+
+function calcHT() {
+  const m1 = +document.getElementById('ht-m1').value, m2 = +document.getElementById('ht-m2').value;
+  const s1 = +document.getElementById('ht-s1').value, s2 = +document.getElementById('ht-s2').value;
+  const n1 = +document.getElementById('ht-n1').value, n2 = +document.getElementById('ht-n2').value;
+  const alpha = +document.getElementById('ht-alpha').value;
+  const se = Math.sqrt((s1 * s1) / n1 + (s2 * s2) / n2);
+  const t = (m2 - m1) / se;
+  const df = Math.min(n1, n2) - 1;
+  // Approximate p-value using normal (good for large n)
+  const z = Math.abs(t);
+  const p = 2 * (1 - normalCDF(z));
+  const reject = p < alpha;
+  document.getElementById('ht-result').innerHTML = `
+    <div><span class="label-r">Difference =</span> <span class="val">${(m2 - m1).toFixed(3)}</span></div>
+    <div><span class="label-r">Standard Error =</span> <span class="val">${se.toFixed(4)}</span></div>
+    <div><span class="label-r">t-statistic =</span> <span class="val">${t.toFixed(3)}</span></div>
+    <div><span class="label-r">p-value ≈</span> <span class="${p < alpha ? 'good' : 'warn'}">${p.toFixed(4)}</span></div>
+    <div style="margin-top:8px;font-weight:600;color:${reject ? '#a6e3a1' : '#fab387'}">
+      ${reject ? '✓ Reject H₀ — statistically significant at α=' + alpha : '✗ Fail to reject H₀ — not significant at α=' + alpha}
+    </div>`;
+}
+
+function normalCDF(x) {
+  const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+  const sign = x < 0 ? -1 : 1; x = Math.abs(x) / Math.sqrt(2);
+  const t = 1 / (1 + p * x);
+  const y = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+  return 0.5 * (1 + sign * y);
+}
+
+function calcSS() {
+  const p1 = +document.getElementById('ss-base').value / 100;
+  const mde = +document.getElementById('ss-mde').value / 100;
+  const alpha = +document.getElementById('ss-alpha').value;
+  const power = +document.getElementById('ss-power').value;
+  const p2 = p1 + mde;
+  const zAlpha = { '0.01': 2.576, '0.05': 1.96, '0.10': 1.645 }[alpha] || 1.96;
+  const zBeta = { '0.80': 0.842, '0.90': 1.282, '0.95': 1.645 }[power] || 0.842;
+  const pBar = (p1 + p2) / 2;
+  const n = Math.ceil(((zAlpha * Math.sqrt(2 * pBar * (1 - pBar)) + zBeta * Math.sqrt(p1 * (1 - p1) + p2 * (1 - p2))) ** 2) / (mde ** 2));
+  const totalDays = Math.ceil(n * 2 / 1000); // assume 1000 users/day
+  document.getElementById('ss-result').innerHTML = `
+    <div><span class="label-r">Baseline conversion:</span> <span class="val">${(p1 * 100).toFixed(1)}%</span></div>
+    <div><span class="label-r">Target conversion:</span> <span class="val">${(p2 * 100).toFixed(1)}%</span> <span class="label-r">(+${(mde * 100).toFixed(1)}pp)</span></div>
+    <div style="margin-top:8px"><span class="label-r">Required per group:</span> <span class="val" style="font-size:1.1rem">${n.toLocaleString()}</span></div>
+    <div><span class="label-r">Total participants:</span> <span class="val">${(n * 2).toLocaleString()}</span></div>
+    <div><span class="label-r">Est. duration (1k/day):</span> <span class="val">${totalDays} days</span></div>`;
+}
+
+function calcCI() {
+  const mean = +document.getElementById('ci-mean').value;
+  const std = +document.getElementById('ci-std').value;
+  const n = +document.getElementById('ci-n').value;
+  const z = +document.getElementById('ci-level').value;
+  const se = std / Math.sqrt(n);
+  const margin = z * se;
+  const lo = mean - margin, hi = mean + margin;
+  const width = hi - lo;
+  const confLabel = { '1.645': '90%', '1.96': '95%', '2.576': '99%' }[z] || '95%';
+  // Visual bar
+  const barMin = mean - margin * 2, barMax = mean + margin * 2;
+  const range = barMax - barMin;
+  const leftPct = ((lo - barMin) / range) * 100;
+  const widthPct = (width / range) * 100;
+  const centerPct = 50;
+  document.getElementById('ci-result').innerHTML = `
+    <div><span class="label-r">SE =</span> <span class="val">${se.toFixed(4)}</span></div>
+    <div><span class="label-r">Margin of Error =</span> <span class="val">±${margin.toFixed(3)}</span></div>
+    <div><span class="label-r">${confLabel} CI =</span> <span class="val">[${lo.toFixed(2)}, ${hi.toFixed(2)}]</span></div>
+    <div class="ci-bar">
+      <div class="fill" style="left:${leftPct}%;width:${widthPct}%"></div>
+      <div class="center" style="left:${centerPct}%"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:.65rem;color:#7a7a9e">
+      <span>${lo.toFixed(1)}</span><span>x̄ = ${mean}</span><span>${hi.toFixed(1)}</span>
+    </div>
+    <div style="margin-top:10px;font-size:.78rem;color:#7a7a9e;font-style:italic">
+      If we repeated this sampling, ${confLabel} of intervals would contain the true population parameter.
+    </div>`;
+}
+
+let cltMeans = [];
+function drawCLT() {
+  const n = +document.getElementById('clt-n').value;
+  const k = +document.getElementById('clt-k').value;
+  // Exponential population (skewed) with mean ~5
+  for (let i = 0; i < k; i++) {
+    let sum = 0;
+    for (let j = 0; j < n; j++) sum += -5 * Math.log(1 - Math.random());
+    cltMeans.push(sum / n);
+  }
+  renderCLT();
+}
+function resetCLT() { cltMeans = []; renderCLT(); }
+function renderCLT() {
+  const hist = document.getElementById('clt-hist');
+  const total = cltMeans.length;
+  document.querySelector('#clt-result .val').textContent = total;
+  if (total === 0) {
+    hist.innerHTML = '<div style="color:#7a7a9e;font-size:.75rem;padding:40px 0;text-align:center;width:100%">Click "Draw Samples" to begin</div>';
+    document.getElementById('clt-mean').textContent = '—';
+    document.getElementById('clt-se').textContent = '—';
+    return;
+  }
+  const mean = cltMeans.reduce((a, b) => a + b, 0) / total;
+  const se = Math.sqrt(cltMeans.reduce((s, x) => s + (x - mean) ** 2, 0) / (total - 1));
+  document.getElementById('clt-mean').textContent = mean.toFixed(3);
+  document.getElementById('clt-se').textContent = se.toFixed(3);
+  // Histogram
+  const bins = 25;
+  const min = Math.min(...cltMeans), max = Math.max(...cltMeans);
+  const binW = (max - min) / bins || 1;
+  const counts = new Array(bins).fill(0);
+  cltMeans.forEach(v => { const idx = Math.min(Math.floor((v - min) / binW), bins - 1); counts[idx]++; });
+  const maxC = Math.max(...counts);
+  hist.innerHTML = counts.map(c => `<div class="hist-bar" style="height:${maxC ? (c / maxC) * 100 : 0}%"></div>`).join('');
+}
+
+// Init
+calcDesc();
+renderCLT();
+</script>
+</body>
+</html>

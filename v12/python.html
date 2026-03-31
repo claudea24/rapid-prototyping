@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Playground — Interactive DS Prep v12</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f5f5f0; --surface: #ffffff; --border: #e2e2da;
+      --text: #2d2d2d; --text-muted: #6b6b6b; --heading: #1a1a1a;
+      --blue: #2563eb; --green: #16a34a; --amber: #d97706;
+      --code-bg: #1e1e2e; --code-text: #cdd6f4;
+    }
+    body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    nav {
+      position: sticky; top: 0; z-index: 200; display: flex; justify-content: space-between;
+      align-items: center; padding: 0 32px; height: 56px;
+      background: rgba(245,245,240,0.95); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand { font-weight: 700; font-size: 1rem; color: var(--heading); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    nav .brand .dot { width: 8px; height: 8px; border-radius: 3px; background: var(--blue); }
+    nav .nav-links { display: flex; gap: 2px; }
+    nav .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.78rem; padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500; }
+    nav .nav-links a:hover { background: rgba(0,0,0,0.04); color: var(--heading); }
+    nav .nav-links a.active { color: var(--heading); background: rgba(0,0,0,0.06); font-weight: 600; }
+
+    .page-header { padding: 32px 32px 20px; max-width: 1100px; margin: 0 auto; }
+    .page-header .top { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+    .page-header .icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: rgba(217,119,6,0.08); }
+    .page-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--heading); }
+    .page-header p { font-size: 0.88rem; color: var(--text-muted); margin-left: 58px; }
+
+    .layout { max-width: 1100px; margin: 0 auto; padding: 0 32px 64px; display: grid; grid-template-columns: 260px 1fr; gap: 24px; }
+
+    .sidebar { position: sticky; top: 72px; height: fit-content; }
+    .sidebar h3 { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 10px; }
+    .topic-list { display: flex; flex-direction: column; gap: 4px; }
+    .topic-btn {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+      cursor: pointer; transition: all 0.2s; text-align: left;
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 0.82rem; color: var(--text);
+    }
+    .topic-btn:hover { border-color: #ccc; background: #fafaf6; }
+    .topic-btn.active { border-color: var(--amber); background: rgba(217,119,6,0.04); color: var(--amber); font-weight: 600; }
+    .topic-btn .num { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); width: 20px; text-align: center; flex-shrink: 0; }
+    .topic-btn.active .num { color: var(--amber); }
+
+    .quick-ref { margin-top: 20px; }
+    .quick-ref h3 { margin-bottom: 8px; }
+    .ref-section { font-size: 0.72rem; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+    .ref-section .ref-title { font-weight: 700; color: var(--heading); margin-bottom: 4px; }
+    .ref-section code { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; background: rgba(0,0,0,0.05); padding: 1px 4px; border-radius: 3px; color: var(--heading); }
+    .ref-section .ref-row { display: flex; justify-content: space-between; padding: 2px 0; color: var(--text-muted); }
+    .ref-section .ref-row span:first-child { color: var(--text); }
+
+    .main { min-width: 0; }
+
+    .lesson-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      margin-bottom: 20px; overflow: hidden;
+    }
+    .lesson-card .lesson-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .lesson-card .lesson-header h2 { font-size: 1.05rem; font-weight: 700; color: var(--heading); }
+    .lesson-card .lesson-header .diff {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      padding: 3px 10px; border-radius: 12px;
+    }
+    .diff-basic { background: rgba(22,163,74,0.08); color: var(--green); }
+    .diff-inter { background: rgba(217,119,6,0.08); color: var(--amber); }
+    .diff-adv { background: rgba(37,99,235,0.08); color: var(--blue); }
+
+    .lesson-card .lesson-desc { padding: 16px 24px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; border-bottom: 1px solid var(--border); }
+    .lesson-card .lesson-desc code { font-family: 'IBM Plex Mono', monospace; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px; font-size: 0.8rem; color: var(--heading); }
+
+    .editor-wrap { padding: 0; }
+    .editor-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; background: #1a1a2a; border-bottom: 1px solid #2a2a3e;
+    }
+    .editor-toolbar .file-label { font-size: 0.7rem; color: #7a7a9e; font-family: 'IBM Plex Mono', monospace; }
+    .run-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 16px; border: none; border-radius: 6px;
+      background: var(--green); color: #fff; font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .run-btn:hover { background: #15803d; }
+    .run-btn .play { font-size: 0.7rem; }
+
+    .code-editor {
+      width: 100%; min-height: 140px; padding: 16px; border: none; resize: vertical;
+      background: var(--code-bg); color: var(--code-text);
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; line-height: 1.7;
+      outline: none;
+    }
+
+    .result-area { border-top: 1px solid #2a2a3e; }
+    .result-header {
+      padding: 8px 16px; background: #1a1a2a; font-size: 0.68rem; font-weight: 600;
+      color: #7a7a9e; text-transform: uppercase; letter-spacing: 1px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .result-header .row-count { color: var(--green); }
+    .result-output {
+      background: var(--code-bg); padding: 14px 16px; font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem; color: var(--code-text); line-height: 1.7; white-space: pre-wrap;
+      max-height: 380px; overflow-y: auto;
+    }
+    .result-output .out-prompt { color: #a6e3a1; }
+    .result-output .out-comment { color: #6c7086; }
+    .result-output .out-error { color: #f38ba8; }
+    .result-output .out-warn { color: #fab387; }
+    .result-output .out-value { color: #89b4fa; }
+
+    footer { text-align: center; padding: 32px; font-size: 0.82rem; color: var(--text-muted); border-top: 1px solid var(--border); }
+    footer a { color: var(--blue); text-decoration: none; }
+
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      nav { padding: 0 16px; }
+      .page-header { padding: 24px 16px 16px; }
+      .layout { padding: 0 16px 48px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="brand"><span class="dot"></span> DS Prep v12</a>
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html" class="active">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Probability</a>
+      <a href="casing.html">Casing</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="top">
+      <div class="icon">&#128013;</div>
+      <h1>Python Playground</h1>
+    </div>
+    <p>Pick a topic, edit the code, and hit Run to see simulated Python output.</p>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <h3>Topics</h3>
+      <div class="topic-list" id="topic-list"></div>
+
+      <div class="quick-ref">
+        <h3>Quick Reference</h3>
+        <div class="ref-section">
+          <div class="ref-title">List Methods</div>
+          <div class="ref-row"><span><code>.append(x)</code></span><span>Add to end</span></div>
+          <div class="ref-row"><span><code>.extend(lst)</code></span><span>Add all items</span></div>
+          <div class="ref-row"><span><code>.pop(i)</code></span><span>Remove at index</span></div>
+          <div class="ref-row"><span><code>.sort(key=)</code></span><span>Sort in place</span></div>
+        </div>
+        <div class="ref-section">
+          <div class="ref-title">Dict Methods</div>
+          <div class="ref-row"><span><code>.get(k, d)</code></span><span>Safe access</span></div>
+          <div class="ref-row"><span><code>.items()</code></span><span>Key-value pairs</span></div>
+          <div class="ref-row"><span><code>.values()</code></span><span>All values</span></div>
+          <div class="ref-row"><span><code>.update(d)</code></span><span>Merge dicts</span></div>
+        </div>
+        <div class="ref-section">
+          <div class="ref-title">Comprehensions</div>
+          <div class="ref-row"><span><code>[x for x in ls]</code></span></div>
+          <div class="ref-row"><span><code>{k:v for k,v in d}</code></span></div>
+          <div class="ref-row"><span><code>{x for x in ls}</code></span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="main" id="main"></div>
+  </div>
+
+  <footer>
+    <p>Claudea's DS Interview Prep &middot; v12 &middot; <a href="index.html">Back to Topics</a></p>
+  </footer>
+
+<script>
+// ── Python Simulator Engine ──
+
+function simulatePython(code) {
+  const full = code.replace(/\n/g, ' ');
+  try {
+    if (full.includes('timeit') || (full.includes('list') && full.includes('dict') && full.includes('set') && full.includes(' in ')))
+      return runDataStructures(code);
+    if ((full.includes('[') && full.includes(' for ') && full.includes(' in ')) && (full.includes('squares') || full.includes('even') || full.includes('flat') || full.includes('lengths')))
+      return runListComprehensions(code);
+    if (full.includes('groupby') || full.includes('GroupBy'))
+      return runPandasGroupBy(code);
+    if (full.includes('merge') || full.includes('pd.merge'))
+      return runPandasMerge(code);
+    if (full.includes('numpy') || full.includes('np.') || full.includes('arange') || full.includes('linspace'))
+      return runNumPy(code);
+    if (full.includes('Counter') || full.includes('defaultdict'))
+      return runCounterDefaultdict(code);
+    if (full.includes('sorted') || full.includes('.sort(') || full.includes('lambda'))
+      return runSortingLambda(code);
+    if (full.includes('append_to') || full.includes('is ') || full.includes('//') || full.includes('funcs'))
+      return runGotchas(code);
+    return runGeneric(code);
+  } catch (e) {
+    return [{ type: 'error', text: 'Error: ' + e.message }];
+  }
+}
+
+function runDataStructures() {
+  return [
+    { type:'comment', text:'# ── List Operations ──' },
+    { type:'normal', text:'fruits = ["apple", "banana", "cherry", "date"]' },
+    { type:'normal', text:'fruits.append("elderberry")' },
+    { type:'prompt', text:'>>> print(fruits)' },
+    { type:'value', text:"['apple', 'banana', 'cherry', 'date', 'elderberry']" },
+    { type:'prompt', text:'>>> print(fruits[1:3])' },
+    { type:'value', text:"['banana', 'cherry']" },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Dict Operations ──' },
+    { type:'normal', text:'scores = {"alice": 95, "bob": 87, "carol": 92}' },
+    { type:'prompt', text:'>>> print(scores.get("dave", "N/A"))' },
+    { type:'value', text:'N/A' },
+    { type:'prompt', text:'>>> print(list(scores.keys()))' },
+    { type:'value', text:"['alice', 'bob', 'carol']" },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Set Operations ──' },
+    { type:'normal', text:'a = {1, 2, 3, 4}' },
+    { type:'normal', text:'b = {3, 4, 5, 6}' },
+    { type:'prompt', text:'>>> print(a & b)      # intersection' },
+    { type:'value', text:'{3, 4}' },
+    { type:'prompt', text:'>>> print(a | b)      # union' },
+    { type:'value', text:'{1, 2, 3, 4, 5, 6}' },
+    { type:'prompt', text:'>>> print(a - b)      # difference' },
+    { type:'value', text:'{1, 2}' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Membership Test Timing ──' },
+    { type:'normal', text:'big_list = list(range(1_000_000))' },
+    { type:'normal', text:'big_set  = set(range(1_000_000))' },
+    { type:'prompt', text:'>>> 999_999 in big_list   # O(n) scan' },
+    { type:'value', text:'True  (took 12.4 ms)' },
+    { type:'prompt', text:'>>> 999_999 in big_set    # O(1) hash lookup' },
+    { type:'value', text:'True  (took 0.0001 ms)' },
+    { type:'warn', text:'# Takeaway: Use sets for fast membership tests!' },
+  ];
+}
+
+function runListComprehensions() {
+  return [
+    { type:'comment', text:'# ── Basic List Comprehension ──' },
+    { type:'prompt', text:'>>> squares = [x**2 for x in range(10)]' },
+    { type:'prompt', text:'>>> print(squares)' },
+    { type:'value', text:'[0, 1, 4, 9, 16, 25, 36, 49, 64, 81]' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Filtered Comprehension ──' },
+    { type:'prompt', text:'>>> evens = [x for x in range(20) if x % 2 == 0]' },
+    { type:'prompt', text:'>>> print(evens)' },
+    { type:'value', text:'[0, 2, 4, 6, 8, 10, 12, 14, 16, 18]' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Nested Comprehension (flatten) ──' },
+    { type:'normal', text:'matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]' },
+    { type:'prompt', text:'>>> flat = [x for row in matrix for x in row]' },
+    { type:'prompt', text:'>>> print(flat)' },
+    { type:'value', text:'[1, 2, 3, 4, 5, 6, 7, 8, 9]' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Dict Comprehension ──' },
+    { type:'normal', text:'words = ["hello", "world", "python", "data"]' },
+    { type:'prompt', text:'>>> lengths = {w: len(w) for w in words}' },
+    { type:'prompt', text:'>>> print(lengths)' },
+    { type:'value', text:"{'hello': 5, 'world': 5, 'python': 6, 'data': 4}" },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Set Comprehension ──' },
+    { type:'prompt', text:'>>> unique_lengths = {len(w) for w in words}' },
+    { type:'prompt', text:'>>> print(unique_lengths)' },
+    { type:'value', text:'{4, 5, 6}' },
+  ];
+}
+
+function runPandasGroupBy() {
+  return [
+    { type:'comment', text:'# ── Creating DataFrame ──' },
+    { type:'normal', text:'import pandas as pd' },
+    { type:'normal', text:'' },
+    { type:'normal', text:'df = pd.DataFrame({' },
+    { type:'normal', text:'    "dept":   ["Eng","Eng","Sales","Sales","HR"],' },
+    { type:'normal', text:'    "name":   ["Alice","Bob","Carol","Dave","Eve"],' },
+    { type:'normal', text:'    "salary": [95000, 92000, 78000, 78000, 65000]' },
+    { type:'normal', text:'})' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── GroupBy with Multiple Aggregations ──' },
+    { type:'prompt', text:'>>> result = df.groupby("dept").agg(...)' },
+    { type:'prompt', text:'>>> print(result)' },
+    { type:'normal', text:'' },
+    { type:'value', text:'       headcount  avg_salary  max_salary' },
+    { type:'value', text:'dept                                    ' },
+    { type:'value', text:'Eng           2     93500.0       95000' },
+    { type:'value', text:'HR            1     65000.0       65000' },
+    { type:'value', text:'Sales         2     78000.0       78000' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── GroupBy Transform (broadcast back) ──' },
+    { type:'prompt', text:'>>> df["dept_avg"] = df.groupby("dept")["salary"].transform("mean")' },
+    { type:'prompt', text:'>>> df["vs_avg"] = df["salary"] - df["dept_avg"]' },
+    { type:'prompt', text:'>>> print(df)' },
+    { type:'normal', text:'' },
+    { type:'value', text:'    dept   name  salary  dept_avg  vs_avg' },
+    { type:'value', text:'0    Eng  Alice   95000   93500.0  1500.0' },
+    { type:'value', text:'1    Eng    Bob   92000   93500.0 -1500.0' },
+    { type:'value', text:'2  Sales  Carol   78000   78000.0     0.0' },
+    { type:'value', text:'3  Sales   Dave   78000   78000.0     0.0' },
+    { type:'value', text:'4     HR    Eve   65000   65000.0     0.0' },
+  ];
+}
+
+function runPandasMerge() {
+  return [
+    { type:'comment', text:'# ── Setup Two DataFrames ──' },
+    { type:'normal', text:'import pandas as pd' },
+    { type:'normal', text:'' },
+    { type:'normal', text:'employees = pd.DataFrame({' },
+    { type:'normal', text:'    "emp_id": [1, 2, 3, 4, 5],' },
+    { type:'normal', text:'    "name":   ["Alice","Bob","Carol","Dave","Eve"]' },
+    { type:'normal', text:'})' },
+    { type:'normal', text:'orders = pd.DataFrame({' },
+    { type:'normal', text:'    "order_id": [101, 102, 103, 104],' },
+    { type:'normal', text:'    "emp_id":   [1, 1, 2, 6],' },
+    { type:'normal', text:'    "amount":   [1200, 800, 2400, 300]' },
+    { type:'normal', text:'})' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Inner Merge (only matching rows) ──' },
+    { type:'prompt', text:'>>> inner = pd.merge(employees, orders, on="emp_id", how="inner")' },
+    { type:'prompt', text:'>>> print(inner)' },
+    { type:'normal', text:'' },
+    { type:'value', text:'   emp_id   name  order_id  amount' },
+    { type:'value', text:'0       1  Alice       101    1200' },
+    { type:'value', text:'1       1  Alice       102     800' },
+    { type:'value', text:'2       2    Bob       103    2400' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Left Merge (keep all employees) ──' },
+    { type:'prompt', text:'>>> left = pd.merge(employees, orders, on="emp_id", how="left")' },
+    { type:'prompt', text:'>>> print(left)' },
+    { type:'normal', text:'' },
+    { type:'value', text:'   emp_id   name  order_id  amount' },
+    { type:'value', text:'0       1  Alice     101.0  1200.0' },
+    { type:'value', text:'1       1  Alice     102.0   800.0' },
+    { type:'value', text:'2       2    Bob     103.0  2400.0' },
+    { type:'value', text:'3       3  Carol       NaN     NaN' },
+    { type:'value', text:'4       4   Dave       NaN     NaN' },
+    { type:'value', text:'5       5    Eve       NaN     NaN' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Outer Merge (keep everything) ──' },
+    { type:'prompt', text:'>>> outer = pd.merge(employees, orders, on="emp_id", how="outer")' },
+    { type:'prompt', text:'>>> print(outer)' },
+    { type:'normal', text:'' },
+    { type:'value', text:'   emp_id   name  order_id  amount' },
+    { type:'value', text:'0       1  Alice     101.0  1200.0' },
+    { type:'value', text:'1       1  Alice     102.0   800.0' },
+    { type:'value', text:'2       2    Bob     103.0  2400.0' },
+    { type:'value', text:'3       3  Carol       NaN     NaN' },
+    { type:'value', text:'4       4   Dave       NaN     NaN' },
+    { type:'value', text:'5       5    Eve       NaN     NaN' },
+    { type:'value', text:'6       6    NaN     104.0   300.0' },
+  ];
+}
+
+function runNumPy() {
+  return [
+    { type:'comment', text:'# ── Array Creation & Vectorized Ops ──' },
+    { type:'normal', text:'import numpy as np' },
+    { type:'normal', text:'' },
+    { type:'prompt', text:'>>> a = np.array([1, 2, 3, 4, 5])' },
+    { type:'prompt', text:'>>> print(a * 2)' },
+    { type:'value', text:'[ 2  4  6  8 10]' },
+    { type:'normal', text:'' },
+    { type:'prompt', text:'>>> print(a ** 2)' },
+    { type:'value', text:'[ 1  4  9 16 25]' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Reshape & Axis Operations ──' },
+    { type:'prompt', text:'>>> m = np.arange(12).reshape(3, 4)' },
+    { type:'prompt', text:'>>> print(m)' },
+    { type:'value', text:'[[ 0  1  2  3]' },
+    { type:'value', text:' [ 4  5  6  7]' },
+    { type:'value', text:' [ 8  9 10 11]]' },
+    { type:'normal', text:'' },
+    { type:'prompt', text:'>>> print(m.sum(axis=0))    # column sums' },
+    { type:'value', text:'[12 15 18 21]' },
+    { type:'prompt', text:'>>> print(m.sum(axis=1))    # row sums' },
+    { type:'value', text:'[ 6 22 38]' },
+    { type:'prompt', text:'>>> print(m.mean())         # overall mean' },
+    { type:'value', text:'5.5' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Boolean Indexing ──' },
+    { type:'normal', text:'data = np.array([12, 45, 7, 89, 23, 56, 3, 67])' },
+    { type:'prompt', text:'>>> print(data[data > 30])' },
+    { type:'value', text:'[45 89 56 67]' },
+    { type:'prompt', text:'>>> print(np.where(data > 30, "high", "low"))' },
+    { type:'value', text:"['low' 'high' 'low' 'high' 'low' 'high' 'low' 'high']" },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Statistical Functions ──' },
+    { type:'prompt', text:'>>> print(f"mean={data.mean():.1f}, std={data.std():.1f}, median={np.median(data):.1f}")' },
+    { type:'value', text:'mean=37.8, std=28.6, median=34.0' },
+  ];
+}
+
+function runCounterDefaultdict() {
+  return [
+    { type:'comment', text:'# ── Counter: Frequency Counting ──' },
+    { type:'normal', text:'from collections import Counter, defaultdict' },
+    { type:'normal', text:'' },
+    { type:'normal', text:'words = "the cat sat on the mat the cat".split()' },
+    { type:'prompt', text:'>>> counts = Counter(words)' },
+    { type:'prompt', text:'>>> print(counts)' },
+    { type:'value', text:"Counter({'the': 3, 'cat': 2, 'sat': 1, 'on': 1, 'mat': 1})" },
+    { type:'normal', text:'' },
+    { type:'prompt', text:'>>> print(counts.most_common(2))' },
+    { type:'value', text:"[('the', 3), ('cat', 2)]" },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Counter Arithmetic ──' },
+    { type:'normal', text:'a = Counter("aabbc")' },
+    { type:'normal', text:'b = Counter("abcdd")' },
+    { type:'prompt', text:'>>> print(a + b)' },
+    { type:'value', text:"Counter({'a': 3, 'b': 3, 'c': 2, 'd': 2})" },
+    { type:'prompt', text:'>>> print(a & b)  # min of each' },
+    { type:'value', text:"Counter({'a': 1, 'b': 1, 'c': 1})" },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── defaultdict(list): Group Items ──' },
+    { type:'normal', text:'groups = defaultdict(list)' },
+    { type:'normal', text:'data = [("Eng", "Alice"), ("Sales", "Bob"), ("Eng", "Carol"), ("HR", "Dave")]' },
+    { type:'normal', text:'for dept, name in data:' },
+    { type:'normal', text:'    groups[dept].append(name)' },
+    { type:'normal', text:'' },
+    { type:'prompt', text:'>>> print(dict(groups))' },
+    { type:'value', text:"{'Eng': ['Alice', 'Carol'], 'Sales': ['Bob'], 'HR': ['Dave']}" },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── defaultdict(int): Counting ──' },
+    { type:'normal', text:'freq = defaultdict(int)' },
+    { type:'normal', text:'for w in "the cat sat on the mat".split():' },
+    { type:'normal', text:'    freq[w] += 1' },
+    { type:'prompt', text:'>>> print(dict(freq))' },
+    { type:'value', text:"{'the': 2, 'cat': 1, 'sat': 1, 'on': 1, 'mat': 1}" },
+  ];
+}
+
+function runSortingLambda() {
+  return [
+    { type:'comment', text:'# ── Basic Sorting ──' },
+    { type:'normal', text:'nums = [3, 1, 4, 1, 5, 9, 2, 6]' },
+    { type:'prompt', text:'>>> print(sorted(nums))' },
+    { type:'value', text:'[1, 1, 2, 3, 4, 5, 6, 9]' },
+    { type:'prompt', text:'>>> print(sorted(nums, reverse=True))' },
+    { type:'value', text:'[9, 6, 5, 4, 3, 2, 1, 1]' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Sort with Lambda Key ──' },
+    { type:'normal', text:'people = [("Alice", 30), ("Bob", 25), ("Carol", 35), ("Dave", 28)]' },
+    { type:'prompt', text:'>>> by_age = sorted(people, key=lambda p: p[1])' },
+    { type:'prompt', text:'>>> print(by_age)' },
+    { type:'value', text:"[('Bob', 25), ('Dave', 28), ('Alice', 30), ('Carol', 35)]" },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Sort Dicts by Value ──' },
+    { type:'normal', text:'scores = {"alice": 95, "bob": 87, "carol": 92, "dave": 78}' },
+    { type:'prompt', text:'>>> top = sorted(scores.items(), key=lambda x: x[1], reverse=True)' },
+    { type:'prompt', text:'>>> print(top)' },
+    { type:'value', text:"[('alice', 95), ('carol', 92), ('bob', 87), ('dave', 78)]" },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Multi-key Sort ──' },
+    { type:'normal', text:'students = [("A", 90), ("B", 85), ("C", 90), ("D", 85)]' },
+    { type:'prompt', text:'>>> # Sort by score DESC, then name ASC' },
+    { type:'prompt', text:'>>> result = sorted(students, key=lambda s: (-s[1], s[0]))' },
+    { type:'prompt', text:'>>> print(result)' },
+    { type:'value', text:"[('A', 90), ('C', 90), ('B', 85), ('D', 85)]" },
+    { type:'normal', text:'' },
+    { type:'warn', text:"# Python's sort is stable: equal elements keep their original order." },
+    { type:'warn', text:'# Timsort: O(n log n) worst case, O(n) for nearly-sorted data.' },
+  ];
+}
+
+function runGotchas() {
+  return [
+    { type:'comment', text:'# ── Gotcha 1: Mutable Default Arguments ──' },
+    { type:'normal', text:'def append_to(item, lst=[]):  # BUG: shared mutable default!' },
+    { type:'normal', text:'    lst.append(item)' },
+    { type:'normal', text:'    return lst' },
+    { type:'normal', text:'' },
+    { type:'prompt', text:'>>> print(append_to(1))' },
+    { type:'value', text:'[1]' },
+    { type:'prompt', text:'>>> print(append_to(2))    # Expected [2], got...' },
+    { type:'error', text:'[1, 2]    # The same list object is reused!' },
+    { type:'normal', text:'' },
+    { type:'warn', text:'# Fix: def append_to(item, lst=None):' },
+    { type:'warn', text:'#          if lst is None: lst = []' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Gotcha 2: `is` vs `==` ──' },
+    { type:'prompt', text:'>>> a = [1, 2, 3]' },
+    { type:'prompt', text:'>>> b = [1, 2, 3]' },
+    { type:'prompt', text:'>>> print(a == b)   # Value equality' },
+    { type:'value', text:'True' },
+    { type:'prompt', text:'>>> print(a is b)   # Identity (same object?)' },
+    { type:'error', text:'False' },
+    { type:'normal', text:'' },
+    { type:'prompt', text:'>>> x = 256' },
+    { type:'prompt', text:'>>> y = 256' },
+    { type:'prompt', text:'>>> print(x is y)   # Small int caching (-5 to 256)' },
+    { type:'value', text:'True' },
+    { type:'prompt', text:'>>> x = 257' },
+    { type:'prompt', text:'>>> y = 257' },
+    { type:'prompt', text:'>>> print(x is y)   # Outside cache range' },
+    { type:'error', text:'False   # Surprising! Use == for value comparison.' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Gotcha 3: Integer Division ──' },
+    { type:'prompt', text:'>>> print(7 / 2)    # True division' },
+    { type:'value', text:'3.5' },
+    { type:'prompt', text:'>>> print(7 // 2)   # Floor division' },
+    { type:'value', text:'3' },
+    { type:'prompt', text:'>>> print(-7 // 2)  # Floors toward negative infinity!' },
+    { type:'error', text:'-4    # Not -3! Python floors toward -inf.' },
+    { type:'normal', text:'' },
+    { type:'comment', text:'# ── Gotcha 4: Late Binding Closures ──' },
+    { type:'normal', text:'funcs = [lambda x: x + i for i in range(4)]' },
+    { type:'prompt', text:'>>> print([f(0) for f in funcs])' },
+    { type:'error', text:'[3, 3, 3, 3]    # All use i=3 (last value)!' },
+    { type:'warn', text:'# Fix: lambda x, i=i: x + i  (capture i at creation)' },
+  ];
+}
+
+function runGeneric(code) {
+  const out = [];
+  out.push({ type:'comment', text:'# Running code...' });
+  const prints = code.match(/print\(.+\)/g);
+  if (prints) {
+    prints.forEach(p => {
+      out.push({ type:'prompt', text:'>>> ' + p });
+      const inner = p.match(/print\((.+)\)/);
+      if (inner) {
+        try {
+          const expr = inner[1].trim();
+          if (expr.match(/^[\d\s+\-*\/().]+$/)) {
+            out.push({ type:'value', text: String(eval(expr)) });
+          } else if (expr.match(/^["'].+["']$/)) {
+            out.push({ type:'value', text: expr.replace(/^["']|["']$/g, '') });
+          } else {
+            out.push({ type:'value', text:'<output>' });
+          }
+        } catch { out.push({ type:'value', text:'<output>' }); }
+      }
+    });
+  } else {
+    out.push({ type:'warn', text:'# No print() statements found. Add print() to see output.' });
+  }
+  return out;
+}
+
+// ── Lessons ──
+const lessons = [
+  { id:'data-structures', title:'Data Structures', diff:'basic',
+    desc:'Lists, dicts, and sets are Python\'s core data structures. Each has different performance characteristics \u2014 <code>set</code> lookups are O(1) vs O(n) for lists.',
+    code:'# ── Data Structures: list, dict, set ──\n\n# Lists: ordered, mutable, allows duplicates\nfruits = ["apple", "banana", "cherry", "date"]\nfruits.append("elderberry")\nprint(fruits)\nprint(fruits[1:3])   # slicing\n\n# Dicts: key-value pairs, O(1) lookup\nscores = {"alice": 95, "bob": 87, "carol": 92}\nprint(scores.get("dave", "N/A"))\nprint(list(scores.keys()))\n\n# Sets: unique elements, O(1) membership\na = {1, 2, 3, 4}\nb = {3, 4, 5, 6}\nprint(a & b)   # intersection\nprint(a | b)   # union\nprint(a - b)   # difference\n\n# Timing: list vs set membership test\nimport timeit\nbig_list = list(range(1_000_000))\nbig_set  = set(range(1_000_000))\nprint(999_999 in big_list)\nprint(999_999 in big_set)' },
+
+  { id:'list-comp', title:'List Comprehensions', diff:'basic',
+    desc:'Comprehensions are concise ways to create lists, dicts, and sets. They replace <code>for</code> loops + <code>append</code> with a single expression.',
+    code:'# ── List Comprehensions ──\n\n# Basic: squares\nsquares = [x**2 for x in range(10)]\nprint(squares)\n\n# Filtered: even numbers only\nevens = [x for x in range(20) if x % 2 == 0]\nprint(evens)\n\n# Nested: flatten a matrix\nmatrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\nflat = [x for row in matrix for x in row]\nprint(flat)\n\n# Dict comprehension\nwords = ["hello", "world", "python", "data"]\nlengths = {w: len(w) for w in words}\nprint(lengths)\n\n# Set comprehension\nunique_lengths = {len(w) for w in words}\nprint(unique_lengths)' },
+
+  { id:'pandas-groupby', title:'Pandas: GroupBy', diff:'inter',
+    desc:'<code>groupby()</code> splits data into groups, applies a function, and combines results. Use <code>.agg()</code> for multiple aggregations and <code>.transform()</code> to broadcast back.',
+    code:'# ── Pandas GroupBy ──\nimport pandas as pd\n\ndf = pd.DataFrame({\n    "dept":   ["Eng","Eng","Sales","Sales","HR"],\n    "name":   ["Alice","Bob","Carol","Dave","Eve"],\n    "salary": [95000, 92000, 78000, 78000, 65000]\n})\n\n# Multiple aggregations\nresult = df.groupby("dept").agg(\n    headcount=("name", "count"),\n    avg_salary=("salary", "mean"),\n    max_salary=("salary", "max")\n)\nprint(result)\n\n# Transform: broadcast group stats back\ndf["dept_avg"] = df.groupby("dept")["salary"].transform("mean")\ndf["vs_avg"] = df["salary"] - df["dept_avg"]\nprint(df)' },
+
+  { id:'pandas-merge', title:'Pandas: Merge', diff:'inter',
+    desc:'<code>pd.merge()</code> joins DataFrames like SQL JOINs. Inner keeps matches only, left keeps all from left table, outer keeps everything.',
+    code:'# ── Pandas Merge ──\nimport pandas as pd\n\nemployees = pd.DataFrame({\n    "emp_id": [1, 2, 3, 4, 5],\n    "name":   ["Alice","Bob","Carol","Dave","Eve"]\n})\norders = pd.DataFrame({\n    "order_id": [101, 102, 103, 104],\n    "emp_id":   [1, 1, 2, 6],\n    "amount":   [1200, 800, 2400, 300]\n})\n\n# Inner merge\ninner = pd.merge(employees, orders, on="emp_id", how="inner")\nprint(inner)\n\n# Left merge\nleft = pd.merge(employees, orders, on="emp_id", how="left")\nprint(left)\n\n# Outer merge\nouter = pd.merge(employees, orders, on="emp_id", how="outer")\nprint(outer)' },
+
+  { id:'numpy', title:'NumPy Basics', diff:'inter',
+    desc:'NumPy arrays enable fast vectorized operations. Element-wise math, reshaping, aggregation along axes, and boolean indexing are core patterns.',
+    code:'# ── NumPy Basics ──\nimport numpy as np\n\n# Vectorized operations\na = np.array([1, 2, 3, 4, 5])\nprint(a * 2)\nprint(a ** 2)\n\n# Reshape & axis operations\nm = np.arange(12).reshape(3, 4)\nprint(m)\nprint(m.sum(axis=0))    # column sums\nprint(m.sum(axis=1))    # row sums\nprint(m.mean())         # overall mean\n\n# Boolean indexing\ndata = np.array([12, 45, 7, 89, 23, 56, 3, 67])\nprint(data[data > 30])\nprint(np.where(data > 30, "high", "low"))\nprint(f"mean={data.mean():.1f}, std={data.std():.1f}, median={np.median(data):.1f}")' },
+
+  { id:'counter-defaultdict', title:'Counter & defaultdict', diff:'inter',
+    desc:'<code>Counter</code> counts hashable objects. <code>defaultdict</code> auto-initializes missing keys with a factory function. Both are from the <code>collections</code> module.',
+    code:'# ── Counter & defaultdict ──\nfrom collections import Counter, defaultdict\n\n# Counter: frequency counting\nwords = "the cat sat on the mat the cat".split()\ncounts = Counter(words)\nprint(counts)\nprint(counts.most_common(2))\n\n# Counter arithmetic\na = Counter("aabbc")\nb = Counter("abcdd")\nprint(a + b)\nprint(a & b)  # min of each\n\n# defaultdict(list): group items\ngroups = defaultdict(list)\ndata = [("Eng", "Alice"), ("Sales", "Bob"), ("Eng", "Carol"), ("HR", "Dave")]\nfor dept, name in data:\n    groups[dept].append(name)\nprint(dict(groups))\n\n# defaultdict(int): counting\nfreq = defaultdict(int)\nfor w in "the cat sat on the mat".split():\n    freq[w] += 1\nprint(dict(freq))' },
+
+  { id:'sorting-lambda', title:'Sorting & Lambda', diff:'basic',
+    desc:'Python\'s <code>sorted()</code> returns a new list; <code>.sort()</code> sorts in place. The <code>key</code> parameter with <code>lambda</code> enables custom sort orders.',
+    code:'# ── Sorting & Lambda ──\n\n# Basic sorting\nnums = [3, 1, 4, 1, 5, 9, 2, 6]\nprint(sorted(nums))\nprint(sorted(nums, reverse=True))\n\n# Sort with lambda key\npeople = [("Alice", 30), ("Bob", 25), ("Carol", 35), ("Dave", 28)]\nby_age = sorted(people, key=lambda p: p[1])\nprint(by_age)\n\n# Sort dicts by value\nscores = {"alice": 95, "bob": 87, "carol": 92, "dave": 78}\ntop = sorted(scores.items(), key=lambda x: x[1], reverse=True)\nprint(top)\n\n# Multi-key sort\nstudents = [("A", 90), ("B", 85), ("C", 90), ("D", 85)]\nresult = sorted(students, key=lambda s: (-s[1], s[0]))\nprint(result)' },
+
+  { id:'gotchas', title:'Common Gotchas', diff:'adv',
+    desc:'Python has several surprising behaviors: mutable default arguments, <code>is</code> vs <code>==</code>, floor division toward negative infinity, and late-binding closures.',
+    code:'# ── Common Gotchas ──\n\n# Gotcha 1: Mutable default arguments\ndef append_to(item, lst=[]):\n    lst.append(item)\n    return lst\n\nprint(append_to(1))   # [1]\nprint(append_to(2))   # [1, 2] -- surprise!\n\n# Gotcha 2: is vs ==\na = [1, 2, 3]\nb = [1, 2, 3]\nprint(a == b)  # True (value equality)\nprint(a is b)  # False (identity)\n\nx = 256; y = 256\nprint(x is y)  # True (int cache: -5 to 256)\nx = 257; y = 257\nprint(x is y)  # False (outside cache)\n\n# Gotcha 3: Floor division\nprint(7 / 2)    # 3.5\nprint(7 // 2)   # 3\nprint(-7 // 2)  # -4 (floors toward -inf!)\n\n# Gotcha 4: Late binding closures\nfuncs = [lambda x: x + i for i in range(4)]\nprint([f(0) for f in funcs])  # [3,3,3,3]' },
+];
+
+function renderSidebar() {
+  const list = document.getElementById('topic-list');
+  lessons.forEach((l, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'topic-btn' + (i === 0 ? ' active' : '');
+    btn.innerHTML = '<span class="num">' + (i + 1) + '</span> ' + l.title;
+    btn.onclick = () => selectLesson(i);
+    list.appendChild(btn);
+  });
+}
+
+function selectLesson(idx) {
+  document.querySelectorAll('.topic-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  renderLesson(idx);
+}
+
+function renderLesson(idx) {
+  const l = lessons[idx];
+  document.getElementById('main').innerHTML =
+    '<div class="lesson-card">' +
+      '<div class="lesson-header">' +
+        '<h2>' + l.title + '</h2>' +
+        '<span class="diff diff-' + l.diff + '">' + (l.diff === 'inter' ? 'Intermediate' : l.diff === 'adv' ? 'Advanced' : 'Basic') + '</span>' +
+      '</div>' +
+      '<div class="lesson-desc">' + l.desc + '</div>' +
+      '<div class="editor-wrap">' +
+        '<div class="editor-toolbar">' +
+          '<span class="file-label">script.py</span>' +
+          '<button class="run-btn" onclick="execCode(' + idx + ')"><span class="play">&#9654;</span> Run</button>' +
+        '</div>' +
+        '<textarea class="code-editor" id="editor-' + idx + '" spellcheck="false">' + l.code + '</textarea>' +
+        '<div class="result-area" id="result-' + idx + '">' +
+          '<div class="result-header"><span>Output</span><span class="row-count">Press Run to execute</span></div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+}
+
+function execCode(idx) {
+  const editor = document.getElementById('editor-' + idx);
+  const area = document.getElementById('result-' + idx);
+  const output = simulatePython(editor.value);
+
+  if (!output.length) {
+    area.innerHTML = '<div class="result-header"><span>Output</span><span class="row-count">No output</span></div>' +
+      '<div class="result-output"><span class="out-comment"># No output produced. Add print() statements.</span></div>';
+    return;
+  }
+
+  const lines = output.map(function(o) {
+    if (o.type === 'prompt') return '<span class="out-prompt">' + esc(o.text) + '</span>';
+    if (o.type === 'comment') return '<span class="out-comment">' + esc(o.text) + '</span>';
+    if (o.type === 'error') return '<span class="out-error">' + esc(o.text) + '</span>';
+    if (o.type === 'warn') return '<span class="out-warn">' + esc(o.text) + '</span>';
+    if (o.type === 'value') return '<span class="out-value">' + esc(o.text) + '</span>';
+    return esc(o.text);
+  }).join('\n');
+
+  var lineCount = output.filter(function(o) { return o.type === 'value' || o.type === 'error'; }).length;
+  area.innerHTML =
+    '<div class="result-header"><span>Output</span><span class="row-count">' + lineCount + ' result' + (lineCount !== 1 ? 's' : '') + '</span></div>' +
+    '<div class="result-output">' + lines + '</div>';
+}
+
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+renderSidebar();
+renderLesson(0);
+</script>
+</body>
+</html>

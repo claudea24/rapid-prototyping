@@ -4,417 +4,303 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quick Quiz · DS Interview Prep</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0d1117;
-            --surface: #161b22;
-            --border: #21262d;
-            --text: #c9d1d9;
-            --text-muted: #8b949e;
-            --white: #e6edf3;
-            --green: #4ade80;
-            --yellow: #fbbf24;
-            --red: #f87171;
-            --accent: #60a5fa;
+            --bg: #faf6f1; --surface: #ffffff; --border: #e8e0d6;
+            --text: #3d3529; --text-muted: #8a7e6f; --text-dim: #b5a998;
+            --heading: #2a1f14; --terracotta: #c4654a; --sage: #6b8f71;
+            --navy: #2c3e6b; --amber: #d4953a; --plum: #7b5ea7; --teal: #3a8a8a;
+            --correct: #4a8a5e; --wrong: #c4654a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
+            font-family: 'Source Sans 3', sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; display: flex; flex-direction: column;
         }
 
-        /* Nav */
         nav {
             position: sticky; top: 0; z-index: 200;
             display: flex; justify-content: space-between; align-items: center;
-            padding: 0 32px; height: 56px;
-            background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
+            padding: 0 32px; height: 60px;
+            background: rgba(250,246,241,0.95); backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
         }
-        nav .brand { font-weight: 800; font-size: 1rem; color: var(--white); display: flex; align-items: center; gap: 8px; text-decoration: none; }
-        nav .brand span { color: #4ade80; }
-        nav .nav-links { display: flex; gap: 4px; }
+        nav .brand {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700; font-size: 1.1rem; color: var(--heading);
+            display: flex; align-items: center; gap: 10px; text-decoration: none;
+        }
+        nav .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--terracotta); }
+        nav .nav-links { display: flex; gap: 2px; }
         nav .nav-links a {
-            text-decoration: none; color: var(--text-muted); font-size: 0.78rem;
-            padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+            text-decoration: none; color: var(--text-muted); font-size: 0.8rem;
+            padding: 6px 14px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
         }
-        nav .nav-links a:hover { background: var(--surface); color: var(--white); }
-        nav .nav-links a.active { color: var(--white); background: var(--surface); }
-        nav .nav-links a.quiz-link { color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
-        nav .nav-links a.quiz-link:hover { background: rgba(74,222,128,0.1); }
+        nav .nav-links a:hover { background: rgba(0,0,0,0.04); color: var(--heading); }
+        nav .nav-links a.active { color: var(--heading); background: rgba(0,0,0,0.05); font-weight: 600; }
+        nav .nav-links a.quiz-link { color: var(--terracotta); border: 1px solid rgba(196,101,74,0.3); font-weight: 600; }
 
-        /* Header */
-        .header {
-            text-align: center;
-            padding: 48px 24px 32px;
-        }
+        .container { max-width: 720px; margin: 0 auto; padding: 40px 32px 64px; flex: 1; }
 
-        .header h1 {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--white);
-            margin-bottom: 8px;
+        .quiz-header { text-align: center; margin-bottom: 32px; }
+        .quiz-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem; font-weight: 800; color: var(--heading); margin-bottom: 8px;
         }
-
-        .header p {
-            font-size: 16px;
-            color: var(--text-muted);
-        }
-
-        /* Filters & Score */
-        .controls {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 24px 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
+        .quiz-header p { font-size: 0.95rem; color: var(--text-muted); }
 
         .filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            justify-content: center;
+            display: flex; flex-wrap: wrap; gap: 6px;
+            justify-content: center; margin-bottom: 28px;
+        }
+        .filters button {
+            font-family: 'Source Sans 3', sans-serif;
+            font-size: 0.78rem; font-weight: 600; padding: 6px 16px;
+            border-radius: 20px; border: 1px solid var(--border);
+            background: var(--surface); color: var(--text-muted);
+            cursor: pointer; transition: all 0.2s;
+        }
+        .filters button:hover { border-color: #c0b5a6; color: var(--heading); }
+        .filters button.active {
+            background: var(--heading); color: var(--bg); border-color: var(--heading);
         }
 
-        .filter-btn {
-            padding: 8px 18px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text-muted);
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
+        .score-bar {
+            display: flex; justify-content: center; gap: 24px;
+            margin-bottom: 28px; font-size: 0.85rem; color: var(--text-muted);
         }
-
-        .filter-btn:hover {
-            border-color: var(--text-muted);
-            color: var(--text);
-        }
-
-        .filter-btn.active {
-            background: var(--white);
-            color: var(--bg);
-            border-color: var(--white);
-        }
-
-        .score {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--text-muted);
-        }
-
-        .score span {
-            color: var(--green);
-        }
-
-        /* Quiz Cards */
-        .quiz-container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 24px 48px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 100%;
-        }
+        .score-bar span { font-weight: 600; }
+        .score-bar .correct-count { color: var(--correct); }
+        .score-bar .wrong-count { color: var(--wrong); }
 
         .quiz-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 14px; padding: 32px; margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+            transition: all 0.25s;
         }
 
-        .quiz-card.hidden { display: none; }
+        .quiz-card .topic-tag {
+            font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1.5px; padding: 3px 9px; border-radius: 6px;
+            display: inline-block; margin-bottom: 12px;
+        }
+        .tag-sql { background: rgba(44,62,107,0.1); color: var(--navy); }
+        .tag-python { background: rgba(212,149,58,0.12); color: var(--amber); }
+        .tag-ml { background: rgba(123,94,167,0.1); color: var(--plum); }
+        .tag-stats { background: rgba(58,138,138,0.1); color: var(--teal); }
+        .tag-probability { background: rgba(196,101,74,0.1); color: var(--terracotta); }
+        .tag-casing { background: rgba(107,143,113,0.12); color: var(--sage); }
 
-        .card-tags {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
+        .quiz-card .question {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.05rem; font-weight: 600; color: var(--heading);
+            margin-bottom: 18px; line-height: 1.5;
         }
 
-        .tag {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .quiz-card .options { display: flex; flex-direction: column; gap: 8px; }
+        .quiz-card .option {
+            padding: 12px 16px; border: 1px solid var(--border);
+            border-radius: 10px; cursor: pointer; transition: all 0.2s;
+            font-size: 0.87rem; line-height: 1.5; background: var(--bg);
         }
-
-        .tag-sql { background: rgba(96,165,250,0.15); color: #60a5fa; }
-        .tag-python { background: rgba(251,191,36,0.15); color: #fbbf24; }
-        .tag-ml { background: rgba(192,132,252,0.15); color: #c084fc; }
-        .tag-statistics { background: rgba(45,212,191,0.15); color: #2dd4bf; }
-        .tag-probability { background: rgba(251,146,60,0.15); color: #fb923c; }
-        .tag-casing { background: rgba(74,222,128,0.15); color: #4ade80; }
-
-        .tag-easy { background: rgba(74,222,128,0.15); color: var(--green); }
-        .tag-medium { background: rgba(251,191,36,0.15); color: var(--yellow); }
-        .tag-hard { background: rgba(248,113,113,0.15); color: var(--red); }
-
-        .question-text {
-            font-size: 17px;
-            font-weight: 600;
-            color: var(--white);
-            margin-bottom: 20px;
-            line-height: 1.5;
+        .quiz-card .option:hover:not(.disabled) {
+            border-color: #c0b5a6; background: #f5f0ea;
         }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .quiz-card .option.selected-correct {
+            border-color: var(--correct); background: rgba(74,138,94,0.08);
+            color: var(--correct); font-weight: 600;
         }
-
-        .option-btn {
-            display: block;
-            width: 100%;
-            padding: 14px 18px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: transparent;
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            font-weight: 500;
-            text-align: left;
-            cursor: pointer;
-            transition: all 0.2s;
-            line-height: 1.4;
+        .quiz-card .option.selected-wrong {
+            border-color: var(--wrong); background: rgba(196,101,74,0.08);
+            color: var(--wrong);
         }
-
-        .option-btn:hover:not(:disabled) {
-            border-color: var(--accent);
-            color: var(--white);
+        .quiz-card .option.reveal-correct {
+            border-color: var(--correct); background: rgba(74,138,94,0.06);
         }
+        .quiz-card .option.disabled { cursor: default; }
 
-        .option-btn:disabled {
-            cursor: default;
-        }
-
-        .option-btn.correct {
-            border-color: var(--green);
-            background: rgba(74,222,128,0.12);
-            color: var(--green);
-        }
-
-        .option-btn.wrong {
-            border-color: var(--red);
-            background: rgba(248,113,113,0.12);
-            color: var(--red);
-        }
-
-        .explanation {
+        .quiz-card .explanation {
+            margin-top: 16px; padding: 14px 18px;
+            background: rgba(42,31,20,0.04); border-radius: 10px;
+            font-size: 0.84rem; color: var(--text-muted); line-height: 1.6;
             display: none;
-            margin-top: 16px;
-            padding: 14px 18px;
-            background: rgba(96,165,250,0.08);
-            border-left: 3px solid var(--accent);
-            border-radius: 0 8px 8px 0;
-            font-size: 14px;
-            color: var(--text);
-            line-height: 1.6;
         }
+        .quiz-card .explanation.show { display: block; }
 
-        .explanation.show { display: block; }
-
-        .explanation strong {
-            color: var(--accent);
-        }
-
-        /* Footer */
         footer {
-            margin-top: auto;
-            padding: 24px;
-            text-align: center;
-            border-top: 1px solid var(--border);
-            color: var(--text-muted);
-            font-size: 14px;
+            text-align: center; padding: 36px; font-size: 0.82rem;
+            color: var(--text-dim); border-top: 1px solid var(--border);
         }
-
-        footer a {
-            color: var(--accent);
-            text-decoration: none;
-        }
-
-        footer a:hover { color: var(--white); }
+        footer a { color: var(--text-muted); text-decoration: none; }
+        footer a:hover { color: var(--heading); }
 
         @media (max-width: 600px) {
-            .header h1 { font-size: 24px; }
-            .quiz-card { padding: 18px; }
-            .question-text { font-size: 15px; }
-            .option-btn { font-size: 14px; padding: 12px 14px; }
+            nav { padding: 0 16px; }
+            nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
+            .container { padding: 24px 16px 48px; }
+            .quiz-header h1 { font-size: 1.6rem; }
         }
     </style>
 </head>
 <body>
 
-    <nav>
-        <a href="index.html" class="brand"><span>&#9670;</span> Claudea's DS Prep</a>
-        <div class="nav-links">
-            <a href="sql.html">SQL</a>
-            <a href="python.html">Python</a>
-            <a href="ml.html">ML</a>
-            <a href="stats.html">Stats</a>
-            <a href="probability.html">Probability</a>
-            <a href="casing.html">Casing</a>
-            <a href="quiz.html" class="quiz-link active">Quiz</a>
-        </div>
-    </nav>
+<nav>
+    <a href="index.html" class="brand"><span class="dot"></span> Claudea's DS Prep</a>
+    <div class="nav-links">
+        <a href="sql.html">SQL</a>
+        <a href="python.html">Python</a>
+        <a href="ml.html">ML</a>
+        <a href="stats.html">Stats</a>
+        <a href="probability.html">Probability</a>
+        <a href="casing.html">Casing</a>
+        <a href="quiz.html" class="quiz-link active">Quiz</a>
+    </div>
+</nav>
 
-    <div class="header">
+<div class="container">
+    <div class="quiz-header">
         <h1>Quick Quiz</h1>
-        <p>Test your knowledge across all six topics.</p>
+        <p>26 questions across all topics. Select an answer to reveal the explanation.</p>
     </div>
 
-    <div class="controls">
-        <div class="filters" id="filters">
-            <button class="filter-btn active" data-cat="all">All</button>
-            <button class="filter-btn" data-cat="sql">SQL</button>
-            <button class="filter-btn" data-cat="python">Python</button>
-            <button class="filter-btn" data-cat="ml">ML</button>
-            <button class="filter-btn" data-cat="statistics">Stats</button>
-            <button class="filter-btn" data-cat="probability">Probability</button>
-            <button class="filter-btn" data-cat="casing">Casing</button>
-        </div>
-        <div class="score">Score: <span id="correct">0</span> / <span id="total">0</span></div>
+    <div class="filters">
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="sql">SQL</button>
+        <button data-filter="python">Python</button>
+        <button data-filter="ml">ML</button>
+        <button data-filter="stats">Stats</button>
+        <button data-filter="probability">Probability</button>
+        <button data-filter="casing">Casing</button>
     </div>
 
-    <div class="quiz-container" id="quiz-container"></div>
+    <div class="score-bar">
+        <div>Score: <span class="correct-count">0</span> / <span class="total-answered">0</span></div>
+    </div>
 
-    <footer>
-        Claudea's DS Interview Prep &middot; v02 &middot; <a href="index.html">Back to All Topics</a>
-    </footer>
+    <div id="quiz-container"></div>
+</div>
 
-    <script>
-        const questions = [
-            { cat:"sql", diff:"easy", q:"What does COUNT(*) count?", opts:["Only non-NULL values","All rows including NULLs","Distinct values only","Only NULL values"], ans:1, explain:"COUNT(*) counts all rows regardless of NULL values. COUNT(column) skips NULLs." },
-            { cat:"sql", diff:"easy", q:"Which clause filters rows BEFORE grouping?", opts:["HAVING","ORDER BY","WHERE","GROUP BY"], ans:2, explain:"WHERE filters individual rows before any grouping. HAVING filters groups after aggregation." },
-            { cat:"sql", diff:"medium", q:"What's the difference between RANK() and DENSE_RANK()?", opts:["RANK() starts at 0, DENSE_RANK() starts at 1","RANK() skips numbers after ties, DENSE_RANK() doesn't","They are identical","DENSE_RANK() only works with PARTITION BY"], ans:1, explain:"With values 100, 90, 90, 80: RANK gives 1,2,2,4 (skips 3). DENSE_RANK gives 1,2,2,3 (no gaps)." },
-            { cat:"sql", diff:"medium", q:"Can you use a SELECT alias in the WHERE clause?", opts:["Yes, always","Only in MySQL","No, because WHERE executes before SELECT","Only with subqueries"], ans:2, explain:"SQL execution order: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY. WHERE runs before SELECT, so aliases aren't available yet." },
-            { cat:"sql", diff:"hard", q:"Which is generally more efficient for checking existence in a large table?", opts:["IN with subquery","EXISTS with correlated subquery","CROSS JOIN","LEFT JOIN with IS NOT NULL"], ans:1, explain:"EXISTS can short-circuit — it stops once it finds one matching row. IN must evaluate the entire subquery result set." },
-            { cat:"python", diff:"easy", q:"What is the time complexity of looking up a key in a Python dict?", opts:["O(n)","O(log n)","O(1) average","O(n log n)"], ans:2, explain:"Python dicts use hash tables. Average-case lookup, insertion, and deletion are all O(1)." },
-            { cat:"python", diff:"easy", q:"What does df.groupby('col')['val'].transform('mean') return?", opts:["A single scalar value","A DataFrame with group means","A Series the same length as df with group means","An error"], ans:2, explain:"transform() returns a Series aligned with the original DataFrame, broadcasting the group-level result back to each row." },
-            { cat:"python", diff:"medium", q:"Why is def f(x=[]) considered dangerous?", opts:["Lists can't be function arguments","The default list is shared across all calls","It causes a TypeError","Python doesn't support default arguments"], ans:1, explain:"Mutable default arguments are created once when the function is defined. Every call shares the same list object." },
-            { cat:"python", diff:"medium", q:"What's the output of: [-1 // 2]?", opts:["0","-1","0.5","-0.5"], ans:1, explain:"Python's floor division (//) rounds toward negative infinity. -1 / 2 = -0.5, floored to -1." },
-            { cat:"ml", diff:"easy", q:"Random Forest reduces which type of error compared to a single Decision Tree?", opts:["Bias","Variance","Both equally","Neither"], ans:1, explain:"Random Forest is a bagging ensemble. Averaging many uncorrelated trees reduces variance." },
-            { cat:"ml", diff:"medium", q:"When should you use AUC-ROC over accuracy?", opts:["When you have balanced classes","When classes are imbalanced","Only for regression problems","When you need speed"], ans:1, explain:"With imbalanced classes, accuracy is misleading. AUC-ROC evaluates across all thresholds." },
-            { cat:"ml", diff:"medium", q:"L1 (Lasso) regularization tends to produce:", opts:["Dense weight vectors","Sparse weight vectors (some weights exactly 0)","Negative weights only","Identical weights for all features"], ans:1, explain:"L1 adds |w| penalty, pushing weights to exactly zero — performing feature selection." },
-            { cat:"ml", diff:"hard", q:"What's the main risk of fitting a scaler on the entire dataset before cross-validation?", opts:["Slower training","Data leakage — test fold info leaks into training","No risk, it's best practice","Features won't be normalized"], ans:1, explain:"Test fold statistics influence training transformation, causing data leakage and overly optimistic estimates." },
-            { cat:"statistics", diff:"easy", q:"A p-value of 0.03 means:", opts:["3% chance the null hypothesis is true","3% probability of seeing this data (or more extreme) if H0 is true","The effect size is 3%","97% chance the alternative is true"], ans:1, explain:"The p-value is P(data or more extreme | H0 true). It is NOT the probability that H0 is true." },
-            { cat:"statistics", diff:"medium", q:"What is a Type II error?", opts:["Rejecting a true null hypothesis","Failing to reject a false null hypothesis","Using the wrong test","Setting alpha too high"], ans:1, explain:"Type I = false positive. Type II = false negative. Power = 1 - P(Type II)." },
-            { cat:"statistics", diff:"medium", q:"The Central Limit Theorem states that:", opts:["All data is normally distributed","Sample means approach normal distribution as n increases","Larger samples are always better","Variance increases with sample size"], ans:1, explain:"Regardless of population distribution, sample means become approximately normal as n grows." },
-            { cat:"statistics", diff:"hard", q:"In an A/B test, you 'peek' at results daily and stop early when p < 0.05. What happens?", opts:["You get more precise results","Your false positive rate inflates well above 5%","Nothing — p-values are always valid","You reduce Type II error"], ans:1, explain:"Repeated testing inflates Type I error. With daily peeking, false positive rate can exceed 25%." },
-            { cat:"probability", diff:"easy", q:"In the Monty Hall problem, should you switch doors?", opts:["No — it's 50/50 after a door opens","Yes — switching gives 2/3 probability","It doesn't matter","Only if the host chooses randomly"], ans:1, explain:"Switching wins 2/3 of the time. Initial pick has 1/3 chance." },
-            { cat:"probability", diff:"medium", q:"A test is 99% accurate. Disease prevalence is 1%. If you test positive, what's the approximate probability you're sick?", opts:["99%","50%","1%","90%"], ans:1, explain:"By Bayes' Theorem: P(sick|+) ≈ 50%. Low prevalence drastically reduces positive predictive value." },
-            { cat:"probability", diff:"medium", q:"Events A and B are independent. P(A)=0.3, P(B)=0.5. What is P(A and B)?", opts:["0.8","0.15","0.2","0.35"], ans:1, explain:"For independent events, P(A ∩ B) = P(A) × P(B) = 0.3 × 0.5 = 0.15." },
-            { cat:"probability", diff:"hard", q:"How many people needed for a >50% chance of a shared birthday?", opts:["50","23","365","183"], ans:1, explain:"With 23 people, C(23,2) = 253 pairs. P(match) > 50%." },
-            { cat:"casing", diff:"easy", q:"What is a 'North Star Metric'?", opts:["The highest revenue metric","A single metric that best captures the core value your product delivers","The first metric you track","Customer satisfaction score"], ans:1, explain:"E.g., Airbnb: nights booked, Spotify: time spent listening." },
-            { cat:"casing", diff:"medium", q:"'Daily active users dropped 15% last week.' What's the BEST first step?", opts:["Immediately run an A/B test","Check if the metric definition or tracking changed","Build a predictive model","Increase marketing spend"], ans:1, explain:"Verify data correctness first. Tracking bugs are common causes of phantom metric drops." },
-            { cat:"casing", diff:"medium", q:"Which metric would be a good GUARDRAIL metric for a test that tries to increase purchase conversion?", opts:["Click-through rate","Revenue per user","Page load time","Cart abandonment rate"], ans:2, explain:"Page load time is a good guardrail — don't break UX while optimizing conversion." },
-            { cat:"casing", diff:"hard", q:"A ride-sharing company sees revenue up 20% but rides are down 5%. What's most likely?", opts:["A bug in revenue tracking","Price per ride increased (e.g., surge pricing, route changes)","More drivers joined the platform","Users are taking shorter rides"], ans:1, explain:"Revenue = rides × price per ride. Price per ride increased ~26%." },
-        ];
+<footer>
+    <p>Claudea's DS Interview Prep &middot; v02 &middot; <a href="index.html">Back to All Topics</a></p>
+</footer>
 
-        let correctCount = 0;
-        let answeredCount = 0;
-        const container = document.getElementById('quiz-container');
-        const correctEl = document.getElementById('correct');
-        const totalEl = document.getElementById('total');
+<script>
+const questions = [
+    { topic: "sql", q: "What does COUNT(*) count?", options: ["Only non-NULL values", "All rows including NULLs", "Only distinct values", "Only numeric columns"], correct: 1, explanation: "COUNT(*) counts all rows regardless of NULL values. COUNT(column) skips NULLs." },
+    { topic: "sql", q: "Which clause filters rows BEFORE grouping?", options: ["HAVING", "WHERE", "ORDER BY", "SELECT"], correct: 1, explanation: "WHERE filters individual rows before GROUP BY. HAVING filters after grouping." },
+    { topic: "sql", q: "What's the difference between RANK() and DENSE_RANK()?", options: ["RANK() is faster", "RANK() skips numbers after ties, DENSE_RANK() doesn't", "DENSE_RANK() only works with integers", "No difference"], correct: 1, explanation: "With values 1,1,3: RANK() gives 1,1,3. DENSE_RANK() gives 1,1,2." },
+    { topic: "sql", q: "Can you use a SELECT alias in the WHERE clause?", options: ["Yes, always", "No, because WHERE executes before SELECT", "Only with subqueries", "Only in MySQL"], correct: 1, explanation: "SQL execution order: FROM → WHERE → GROUP BY → SELECT. WHERE runs before aliases are defined." },
+    { topic: "sql", q: "Which is more efficient for checking existence in a large table?", options: ["IN with subquery", "EXISTS with correlated subquery", "JOIN with DISTINCT", "UNION"], correct: 1, explanation: "EXISTS can short-circuit — it stops scanning once a match is found. IN must evaluate the entire subquery." },
+    { topic: "python", q: "Time complexity of dict lookup in Python?", options: ["O(n)", "O(log n)", "O(1) average", "O(n log n)"], correct: 2, explanation: "Python dicts use hash tables, giving O(1) average-case lookup. Worst case is O(n) due to hash collisions, but this is rare." },
+    { topic: "python", q: "What does df.groupby('col')['val'].transform('mean') return?", options: ["A single scalar value", "A DataFrame with group means", "A Series the same length as df with group means", "An error"], correct: 2, explanation: "transform() broadcasts the group result back to the original DataFrame's index, unlike agg() which reduces." },
+    { topic: "python", q: "Why is def f(x=[]) dangerous?", options: ["Lists can't be default arguments", "The default list is shared across all calls", "It causes a syntax error", "It's only dangerous in Python 2"], correct: 1, explanation: "Mutable default arguments are created once at function definition. All calls share the same list object, leading to unexpected mutations." },
+    { topic: "python", q: "What is the output of -1 // 2 in Python?", options: ["0", "-1", "0.5", "Error"], correct: 1, explanation: "Python's floor division (//) rounds toward negative infinity. -1/2 = -0.5, floored to -1." },
+    { topic: "ml", q: "Random Forest primarily reduces which type of error?", options: ["Bias", "Variance", "Both equally", "Neither"], correct: 1, explanation: "Random Forest uses bagging (bootstrap aggregation) which reduces variance by averaging many decorrelated trees." },
+    { topic: "ml", q: "When should you prefer AUC-ROC over accuracy?", options: ["When the dataset is large", "When classes are imbalanced", "When using neural networks", "When features are categorical"], correct: 1, explanation: "With imbalanced classes (e.g., 99% negative), a model predicting all-negative gets 99% accuracy but is useless. AUC-ROC evaluates across all thresholds." },
+    { topic: "ml", q: "What does L1 (Lasso) regularization produce?", options: ["Larger weights", "Sparse weight vectors (some weights exactly 0)", "Negative weights only", "Equal weights"], correct: 1, explanation: "L1 penalty encourages sparsity — it drives some coefficients to exactly zero, effectively performing feature selection." },
+    { topic: "ml", q: "What's the risk of fitting a scaler on the entire dataset before cross-validation?", options: ["Slower training", "Data leakage — test fold info leaks into training", "Higher bias", "No risk"], correct: 1, explanation: "Fitting the scaler on all data means test-fold statistics influence training. Always fit transformers only on the training fold." },
+    { topic: "stats", q: "A p-value of 0.03 means:", options: ["3% chance the alternative hypothesis is true", "3% probability of seeing this data (or more extreme) if H₀ is true", "97% confidence in the result", "The effect size is 0.03"], correct: 1, explanation: "The p-value is P(data | H₀). It's NOT the probability that H₀ is true or false." },
+    { topic: "stats", q: "What is a Type II error?", options: ["Rejecting a true null hypothesis", "Failing to reject a false null hypothesis", "Using the wrong test", "Having too small a sample"], correct: 1, explanation: "Type II (false negative): you miss a real effect. Type I (false positive): you detect an effect that isn't there." },
+    { topic: "stats", q: "The Central Limit Theorem states:", options: ["All data is normally distributed", "Sample means approach normal distribution as n increases", "Larger samples have higher variance", "The median equals the mean"], correct: 1, explanation: "CLT: regardless of the population distribution, the distribution of sample means approaches normal as sample size grows (given finite variance)." },
+    { topic: "stats", q: "What happens if you peek at A/B test results daily?", options: ["Nothing, it's good practice", "Your false positive rate inflates well above 5%", "Results become more accurate", "Only affects one-tailed tests"], correct: 1, explanation: "Repeated peeking is multiple testing — each peek is a chance to falsely reject H₀. Use sequential testing methods or commit to a fixed duration." },
+    { topic: "probability", q: "In the Monty Hall problem, should you switch doors?", options: ["No — it's 50/50 after a door is revealed", "Yes — switching gives 2/3 probability", "It doesn't matter", "Only if the host knows what's behind the doors"], correct: 1, explanation: "Your initial pick has 1/3 chance. The other two doors have 2/3 combined. When one is revealed, all 2/3 transfers to the remaining door." },
+    { topic: "probability", q: "A test is 99% accurate. Disease prevalence is 1%. You test positive. Probability you have it?", options: ["99%", "~50%", "1%", "~90%"], correct: 1, explanation: "By Bayes: P(disease|+) = (0.99 × 0.01) / (0.99 × 0.01 + 0.01 × 0.99) = 0.5. The low base rate dramatically affects the posterior." },
+    { topic: "probability", q: "Events A and B are independent. P(A)=0.3, P(B)=0.5. P(A and B)?", options: ["0.8", "0.2", "0.15", "0.35"], correct: 2, explanation: "For independent events: P(A and B) = P(A) × P(B) = 0.3 × 0.5 = 0.15." },
+    { topic: "probability", q: "How many people needed for >50% chance of a shared birthday?", options: ["50", "365", "23", "183"], correct: 2, explanation: "The birthday paradox: with just 23 people, there's a ~50.7% chance two share a birthday. It grows fast — 70 people gives 99.9%." },
+    { topic: "casing", q: 'What is a "North Star Metric"?', options: ["The highest metric value achieved", "A single metric that best captures the core value your product delivers", "The first metric you should track", "A metric that never changes"], correct: 1, explanation: "The North Star Metric is the single most important measure of value delivered to customers. E.g., Airbnb: nights booked; Spotify: time spent listening." },
+    { topic: "casing", q: "Daily active users dropped 15%. Best first step?", options: ["Launch a new feature", "Check if the metric definition or tracking changed", "Run an A/B test", "Increase marketing spend"], correct: 1, explanation: "Always rule out measurement issues first — broken tracking, definition changes, or data pipeline failures can look like real drops." },
+    { topic: "casing", q: "What's a good guardrail metric for a conversion rate optimization test?", options: ["Revenue per user", "Page load time", "Number of A/B tests running", "Company stock price"], correct: 1, explanation: "Guardrail metrics protect against unintended harm. Page load time ensures conversion optimizations don't degrade user experience." },
+    { topic: "casing", q: "Revenue is up 20% but rides are down 5% for a rideshare company. Most likely explanation?", options: ["Data error", "Price per ride increased (e.g., surge pricing, route changes)", "Seasonal effect", "New competitor entered"], correct: 1, explanation: "Revenue = rides × price per ride. If rides are down but revenue is up, price per ride must have increased significantly." },
+    { topic: "casing", q: "Why is randomization important in A/B testing?", options: ["It makes the test faster", "It ensures groups are comparable and results are causal", "It increases sample size", "It's not important"], correct: 1, explanation: "Randomization ensures treatment and control groups are statistically similar on both observed and unobserved variables, enabling causal inference." }
+];
 
-        function catLabel(cat) {
-            const labels = { sql:'SQL', python:'Python', ml:'ML', statistics:'Statistics', probability:'Probability', casing:'Casing' };
-            return labels[cat] || cat;
-        }
+let correctCount = 0;
+let answeredCount = 0;
+let currentFilter = 'all';
 
-        function renderQuiz() {
-            container.innerHTML = '';
-            questions.forEach((item, idx) => {
-                const card = document.createElement('div');
-                card.className = 'quiz-card';
-                card.dataset.cat = item.cat;
+function renderQuiz() {
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
 
-                let optsHTML = '';
-                item.opts.forEach((opt, oi) => {
-                    optsHTML += `<button class="option-btn" data-qi="${idx}" data-oi="${oi}">${opt}</button>`;
-                });
+    const filtered = currentFilter === 'all'
+        ? questions
+        : questions.filter(q => q.topic === currentFilter);
 
-                card.innerHTML = `
-                    <div class="card-tags">
-                        <span class="tag tag-${item.cat}">${catLabel(item.cat)}</span>
-                        <span class="tag tag-${item.diff}">${item.diff.charAt(0).toUpperCase() + item.diff.slice(1)}</span>
-                    </div>
-                    <div class="question-text">${item.q}</div>
-                    <div class="options">${optsHTML}</div>
-                    <div class="explanation" id="explain-${idx}"><strong>Explanation:</strong> ${item.explain}</div>
-                `;
-                container.appendChild(card);
-            });
+    filtered.forEach((q, i) => {
+        const globalIdx = questions.indexOf(q);
+        const card = document.createElement('div');
+        card.className = 'quiz-card';
+        card.dataset.topic = q.topic;
+        card.id = `q-${globalIdx}`;
 
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.addEventListener('click', handleAnswer);
-            });
-        }
+        const optionsHTML = q.options.map((opt, oi) =>
+            `<div class="option" data-qi="${globalIdx}" data-oi="${oi}">${opt}</div>`
+        ).join('');
 
-        function handleAnswer(e) {
-            const btn = e.currentTarget;
-            const qi = parseInt(btn.dataset.qi);
-            const oi = parseInt(btn.dataset.oi);
-            const question = questions[qi];
+        card.innerHTML = `
+            <span class="topic-tag tag-${q.topic}">${q.topic}</span>
+            <div class="question">${q.q}</div>
+            <div class="options">${optionsHTML}</div>
+            <div class="explanation">${q.explanation}</div>
+        `;
+        container.appendChild(card);
+    });
 
-            const card = btn.closest('.quiz-card');
-            const allBtns = card.querySelectorAll('.option-btn');
+    document.querySelectorAll('.option').forEach(opt => {
+        opt.addEventListener('click', handleAnswer);
+    });
+}
 
-            allBtns.forEach(b => b.disabled = true);
+function handleAnswer(e) {
+    const opt = e.currentTarget;
+    const qi = parseInt(opt.dataset.qi);
+    const oi = parseInt(opt.dataset.oi);
+    const q = questions[qi];
+    const card = document.getElementById(`q-${qi}`);
+    const allOpts = card.querySelectorAll('.option');
 
-            const correctIdx = question.ans;
-            allBtns[correctIdx].classList.add('correct');
+    if (opt.classList.contains('disabled')) return;
 
-            if (oi === correctIdx) {
-                correctCount++;
-            } else {
-                btn.classList.add('wrong');
-            }
+    answeredCount++;
 
-            answeredCount++;
-            correctEl.textContent = correctCount;
-            totalEl.textContent = answeredCount;
+    allOpts.forEach(o => {
+        o.classList.add('disabled');
+        const idx = parseInt(o.dataset.oi);
+        if (idx === q.correct) o.classList.add('reveal-correct');
+    });
 
-            document.getElementById(`explain-${qi}`).classList.add('show');
-        }
+    if (oi === q.correct) {
+        opt.classList.add('selected-correct');
+        correctCount++;
+    } else {
+        opt.classList.add('selected-wrong');
+    }
 
-        // Filtering
-        document.getElementById('filters').addEventListener('click', (e) => {
-            if (!e.target.classList.contains('filter-btn')) return;
+    card.querySelector('.explanation').classList.add('show');
 
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            e.target.classList.add('active');
+    document.querySelector('.correct-count').textContent = correctCount;
+    document.querySelector('.total-answered').textContent = answeredCount;
+}
 
-            const cat = e.target.dataset.cat;
-            document.querySelectorAll('.quiz-card').forEach(card => {
-                if (cat === 'all' || card.dataset.cat === cat) {
-                    card.classList.remove('hidden');
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
-        });
-
+document.querySelectorAll('.filters button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        correctCount = 0;
+        answeredCount = 0;
+        document.querySelector('.correct-count').textContent = '0';
+        document.querySelector('.total-answered').textContent = '0';
         renderQuiz();
-    </script>
+    });
+});
 
+renderQuiz();
+</script>
 </body>
 </html>

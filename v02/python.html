@@ -3,148 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Python – DS Interview Prep</title>
+  <title>Python – Claudea's DS Interview Prep</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #0d1117; --surface: #161b22; --border: #21262d;
-      --text: #c9d1d9; --text-muted: #8b949e; --text-dim: #484f58; --white: #e6edf3;
-      --green: #4ade80; --blue: #60a5fa; --yellow: #fbbf24;
+      --bg: #faf6f1; --surface: #ffffff; --border: #e8e0d6;
+      --text: #3d3529; --text-muted: #8a7e6f; --text-dim: #b5a998;
+      --heading: #2a1f14; --terracotta: #c4654a; --sage: #6b8f71;
+      --navy: #2c3e6b; --amber: #d4953a; --plum: #7b5ea7; --teal: #3a8a8a;
     }
-    body {
-      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
-      min-height: 100vh; padding: 0;
-    }
+    body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.7; }
 
-    /* Nav */
-    nav {
-      position: sticky; top: 0; z-index: 200;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0 32px; height: 56px;
-      background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-    nav .brand { font-weight: 800; font-size: 1rem; color: var(--white); display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    nav .brand span { color: #4ade80; }
-    nav .nav-links { display: flex; gap: 4px; }
-    nav .nav-links a {
-      text-decoration: none; color: var(--text-muted); font-size: 0.78rem;
-      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
-    }
-    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
-    nav .nav-links a.active { color: var(--white); background: var(--surface); }
-    nav .nav-links a.quiz-link { color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
-    nav .nav-links a.quiz-link:hover { background: rgba(74,222,128,0.1); }
+    nav { position: sticky; top: 0; z-index: 200; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; height: 60px; background: rgba(250,246,241,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    nav .brand { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; color: var(--heading); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    nav .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--terracotta); }
+    nav .nav-links { display: flex; gap: 2px; }
+    nav .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.8rem; padding: 6px 14px; border-radius: 6px; transition: all 0.2s; font-weight: 500; }
+    nav .nav-links a:hover { background: rgba(0,0,0,0.04); color: var(--heading); }
+    nav .nav-links a.active { color: var(--heading); background: rgba(0,0,0,0.05); font-weight: 600; }
+    nav .nav-links a.quiz-link { color: var(--terracotta); border: 1px solid rgba(196,101,74,0.3); font-weight: 600; }
+    nav .nav-links a.quiz-link:hover { background: rgba(196,101,74,0.08); }
 
-    /* Container */
-    .container { max-width: 960px; margin: 0 auto; padding: 40px 24px 60px; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 44px 32px 64px; }
+    .section-header { margin-bottom: 40px; }
+    .section-header .icon-title { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+    .section-header .icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; background: rgba(212,149,58,0.12); }
+    .section-header h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 800; color: var(--heading); }
+    .section-header p { font-size: 0.95rem; color: var(--text-muted); margin-left: 64px; }
 
-    /* Section header */
-    .section-header {
-      display: flex; align-items: center; gap: 20px; margin-bottom: 36px;
-    }
-    .section-icon {
-      width: 56px; height: 56px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.7rem; background: rgba(251,191,36,0.15); flex-shrink: 0;
-    }
-    .section-header h1 {
-      font-size: 1.8rem; font-weight: 800; color: var(--white); margin-bottom: 4px;
-    }
-    .section-header p {
-      font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;
-    }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; position: relative; transition: all 0.25s; box-shadow: 0 1px 3px rgba(0,0,0,0.04); scroll-margin-top: 72px; }
+    .card:hover { border-color: #d0c8be; box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
+    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .card-header h2 { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--heading); }
+    .card .anchor-link { position: absolute; top: 16px; right: 16px; font-size: 0.85rem; color: var(--text-dim); text-decoration: none; opacity: 0; transition: opacity 0.2s; }
+    .card:hover .anchor-link { opacity: 1; }
 
-    /* Cards grid */
-    .cards-grid {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
-    }
+    .tag { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 3px 9px; border-radius: 6px; }
+    .tag-key { background: rgba(44,62,107,0.1); color: var(--navy); }
+    .tag-tip { background: rgba(107,143,113,0.12); color: var(--sage); }
+    .tag-warn { background: rgba(212,149,58,0.12); color: var(--amber); }
 
-    /* Card */
-    .card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-      padding: 24px; scroll-margin-top: 72px; position: relative;
-    }
-    .card:hover { border-color: #3a3a4a; }
-    .card-head {
-      display: flex; align-items: center; justify-content: space-between;
-      margin-bottom: 16px;
-    }
-    .card-head h2 {
-      font-size: 0.95rem; font-weight: 700; color: var(--white);
-    }
-    .card-anchor {
-      color: var(--text-dim); text-decoration: none; font-size: 0.85rem;
-      opacity: 0; transition: opacity 0.2s;
-    }
-    .card:hover .card-anchor { opacity: 1; }
-    .card-anchor:hover { color: var(--text-muted); }
+    .card ul { list-style: none; padding: 0; }
+    .card ul li { font-size: 0.87rem; color: var(--text); padding: 4px 0; line-height: 1.55; }
+    .card p.note { font-size: 0.82rem; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
 
-    /* Tags */
-    .tag {
-      display: inline-block; font-size: 0.6rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 1.5px; padding: 3px 8px;
-      border-radius: 6px; margin-left: 10px; vertical-align: middle;
-    }
-    .tag-key { background: rgba(96,165,250,0.15); color: var(--blue); }
-    .tag-tip { background: rgba(74,222,128,0.15); color: var(--green); }
-    .tag-warn { background: rgba(251,191,36,0.15); color: var(--yellow); }
+    pre { background: #2a1f14; border: none; border-radius: 10px; padding: 18px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; line-height: 1.7; color: #e8ddd0; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+    .inline-code { background: rgba(42,31,20,0.07); padding: 2px 7px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--heading); }
+    .kw { color: #e8916e; } .fn { color: #c4a8e0; } .str { color: #8cbfab; } .cm { color: #7a6f62; font-style: italic; } .num { color: #7aaed4; }
 
-    /* Card content */
-    .card ul {
-      list-style: none; padding: 0;
-    }
-    .card ul li {
-      font-size: 0.82rem; color: var(--text); padding: 6px 0;
-      border-bottom: 1px solid var(--border); line-height: 1.5;
-    }
-    .card ul li:last-child { border-bottom: none; }
-    .card ul li strong {
-      color: var(--white); font-weight: 600;
-    }
-    .card ul li code {
-      font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
-      background: rgba(110,118,129,0.1); padding: 1px 5px; border-radius: 4px;
-    }
-
-    /* Code blocks */
-    pre {
-      font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
-      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-      padding: 14px 16px; overflow-x: auto; line-height: 1.7; color: var(--text);
-    }
-    .card pre + ul, .card ul + pre { margin-top: 12px; }
-
-    /* Syntax highlighting */
-    .kw { color: #ff7b72; }
-    .fn { color: #d2a8ff; }
-    .str { color: #a5d6ff; }
-    .cm { color: #484f58; font-style: italic; }
-    .num { color: #79c0ff; }
-
-    /* Footer */
-    footer {
-      text-align: center; padding: 40px 24px 32px;
-      font-size: 0.8rem; color: var(--text-dim);
-    }
+    footer { text-align: center; padding: 36px; font-size: 0.82rem; color: var(--text-dim); border-top: 1px solid var(--border); margin-top: 20px; }
     footer a { color: var(--text-muted); text-decoration: none; }
-    footer a:hover { color: var(--white); }
+    footer a:hover { color: var(--heading); }
 
-    @media (max-width: 680px) {
-      .cards-grid { grid-template-columns: 1fr; }
-      nav { padding: 0 16px; }
-      nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
-      .container { padding: 28px 16px 48px; }
-      .section-header h1 { font-size: 1.4rem; }
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; } nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
+      .container { padding: 24px 16px 48px; } .section-header h1 { font-size: 1.6rem; }
+      .section-header p { margin-left: 0; } .cards-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-
   <nav>
-    <a href="index.html" class="brand"><span>&#9670;</span> Claudea's DS Prep</a>
+    <a href="index.html" class="brand"><span class="dot"></span> Claudea's DS Prep</a>
     <div class="nav-links">
       <a href="sql.html">SQL</a>
       <a href="python.html" class="active">Python</a>
@@ -158,101 +82,113 @@
 
   <div class="container">
     <div class="section-header">
-      <div class="section-icon">&#128013;</div>
-      <div>
+      <div class="icon-title">
+        <div class="icon">&#128013;</div>
         <h1>Python</h1>
-        <p>Data structures, Pandas, NumPy, and coding patterns</p>
       </div>
+      <p>Data structures, Pandas, NumPy, coding patterns, and common gotchas for DS interviews.</p>
     </div>
 
     <div class="cards-grid">
 
-      <!-- Card 1: Data Structures Complexity -->
-      <div class="card" id="py-structures">
-        <div class="card-head">
-          <h2>Data Structures Complexity <span class="tag tag-key">Key</span></h2>
-          <a class="card-anchor" href="#py-structures">#</a>
+      <div class="card" id="py-complexity">
+        <a href="#py-complexity" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Data Structures Complexity</h2>
+          <span class="tag tag-key">Key</span>
         </div>
         <ul>
-          <li><strong>list</strong> — append O(1), index O(1), search O(n), insert O(n)</li>
-          <li><strong>dict</strong> — get/set O(1) avg, iteration O(n)</li>
-          <li><strong>set</strong> — add/remove/lookup O(1) avg</li>
-          <li><strong>deque</strong> — append/pop both ends O(1)</li>
-          <li><strong>heap</strong> — push/pop O(log n), min O(1)</li>
+          <li><span class="inline-code">list</span> &mdash; append O(1), index O(1), search O(n), insert O(n)</li>
+          <li><span class="inline-code">dict</span> &mdash; get/set O(1) avg, iteration O(n)</li>
+          <li><span class="inline-code">set</span> &mdash; add/remove/lookup O(1) avg</li>
+          <li><span class="inline-code">deque</span> &mdash; append/pop both ends O(1)</li>
+          <li><span class="inline-code">heap</span> &mdash; push/pop O(log n), min O(1)</li>
         </ul>
       </div>
 
-      <!-- Card 2: Pandas Essentials -->
       <div class="card" id="py-pandas">
-        <div class="card-head">
-          <h2>Pandas Essentials <span class="tag tag-key">Key</span></h2>
-          <a class="card-anchor" href="#py-pandas">#</a>
+        <a href="#py-pandas" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Pandas Essentials</h2>
+          <span class="tag tag-key">Key</span>
         </div>
-<pre>df.<span class="fn">groupby</span>(<span class="str">'col'</span>)[<span class="str">'val'</span>].<span class="fn">agg</span>([<span class="str">'mean'</span>,<span class="str">'sum'</span>])
+        <pre><span class="cm"># Grouping & aggregation</span>
+df.<span class="fn">groupby</span>(<span class="str">'col'</span>)[<span class="str">'val'</span>].<span class="fn">agg</span>([<span class="str">'mean'</span>,<span class="str">'sum'</span>])
+
+<span class="cm"># Merging</span>
 df.<span class="fn">merge</span>(df2, on=<span class="str">'id'</span>, how=<span class="str">'left'</span>)
+
+<span class="cm"># Pivot table</span>
 df.<span class="fn">pivot_table</span>(values=<span class="str">'rev'</span>, index=<span class="str">'month'</span>, aggfunc=<span class="str">'sum'</span>)
+
+<span class="cm"># Missing data</span>
 df.<span class="fn">fillna</span>(<span class="num">0</span>) | df.<span class="fn">dropna</span>()
+
+<span class="cm"># Apply</span>
 df.<span class="fn">apply</span>(<span class="kw">lambda</span> x: x * <span class="num">2</span>)</pre>
       </div>
 
-      <!-- Card 3: NumPy Patterns -->
       <div class="card" id="py-numpy">
-        <div class="card-head">
-          <h2>NumPy Patterns <span class="tag tag-tip">Tip</span></h2>
-          <a class="card-anchor" href="#py-numpy">#</a>
+        <a href="#py-numpy" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>NumPy Patterns</h2>
+          <span class="tag tag-tip">Tip</span>
         </div>
-<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+        <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
 a = np.<span class="fn">array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])
 np.<span class="fn">mean</span>(a) | np.<span class="fn">std</span>(a) | np.<span class="fn">median</span>(a)
-np.<span class="fn">dot</span>(a, b)        <span class="cm"># dot product</span>
-np.linalg.<span class="fn">inv</span>(M)   <span class="cm"># matrix inverse</span>
-a[a > <span class="num">2</span>]            <span class="cm"># boolean indexing</span>
+np.<span class="fn">dot</span>(a, b)           <span class="cm"># dot product</span>
+np.linalg.<span class="fn">inv</span>(M)      <span class="cm"># matrix inverse</span>
+a[a > <span class="num">2</span>]              <span class="cm"># boolean indexing</span>
 np.random.<span class="fn">normal</span>(<span class="num">0</span>, <span class="num">1</span>, <span class="num">1000</span>)</pre>
       </div>
 
-      <!-- Card 4: Common Coding Patterns -->
       <div class="card" id="py-patterns">
-        <div class="card-head">
-          <h2>Common Coding Patterns <span class="tag tag-key">Key</span></h2>
-          <a class="card-anchor" href="#py-patterns">#</a>
+        <a href="#py-patterns" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Common Coding Patterns</h2>
+          <span class="tag tag-key">Key</span>
         </div>
         <ul>
-          <li><strong>Two pointers</strong> — sorted array problems</li>
-          <li><strong>Hash map</strong> — counting, grouping, lookup</li>
-          <li><strong>Sliding window</strong> — subarray/substring</li>
-          <li><strong>Sorting + greedy</strong> — optimization</li>
-          <li><strong>defaultdict / Counter</strong> — frequency counts</li>
+          <li><strong>Two pointers</strong> &mdash; sorted array problems</li>
+          <li><strong>Hash map</strong> &mdash; counting, grouping, lookup</li>
+          <li><strong>Sliding window</strong> &mdash; subarray / substring</li>
+          <li><strong>Sorting + greedy</strong> &mdash; optimization</li>
+          <li><strong>defaultdict / Counter</strong> &mdash; frequency counts</li>
         </ul>
-<pre><span class="kw">from</span> collections <span class="kw">import</span> Counter
+        <pre><span class="kw">from</span> collections <span class="kw">import</span> Counter
 c = <span class="fn">Counter</span>(words)
 c.<span class="fn">most_common</span>(<span class="num">10</span>)</pre>
       </div>
 
-      <!-- Card 5: String & List Tricks -->
       <div class="card" id="py-tricks">
-        <div class="card-head">
-          <h2>String &amp; List Tricks <span class="tag tag-tip">Tip</span></h2>
-          <a class="card-anchor" href="#py-tricks">#</a>
+        <a href="#py-tricks" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>String &amp; List Tricks</h2>
+          <span class="tag tag-tip">Tip</span>
         </div>
-<pre><span class="cm"># List comprehension</span>
+        <pre><span class="cm"># List comprehension</span>
 [x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>) <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]
+
 <span class="cm"># Zip two lists</span>
 <span class="fn">dict</span>(<span class="fn">zip</span>(keys, values))
+
 <span class="cm"># Sort by custom key</span>
 <span class="fn">sorted</span>(data, key=<span class="kw">lambda</span> x: x[<span class="num">1</span>], reverse=<span class="kw">True</span>)</pre>
       </div>
 
-      <!-- Card 6: Gotchas -->
       <div class="card" id="py-gotchas">
-        <div class="card-head">
-          <h2>Gotchas <span class="tag tag-warn">Watch</span></h2>
-          <a class="card-anchor" href="#py-gotchas">#</a>
+        <a href="#py-gotchas" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Gotchas</h2>
+          <span class="tag tag-warn">Watch</span>
         </div>
         <ul>
-          <li><strong>Mutable defaults</strong> — never use <code>def f(x=[])</code></li>
-          <li><strong>Shallow copy</strong> — <code>a = b[:]</code> or <code>copy.deepcopy()</code></li>
-          <li><strong>Integer division</strong> — <code>//</code> truncates toward -inf</li>
-          <li><strong>is vs ==</strong> — <code>is</code> checks identity, <code>==</code> checks value</li>
+          <li><strong>Mutable defaults</strong> &mdash; never use <span class="inline-code">def f(x=[])</span></li>
+          <li><strong>Shallow copy</strong> &mdash; <span class="inline-code">a = b[:]</span> or <span class="inline-code">copy.deepcopy()</span></li>
+          <li><strong>Integer division</strong> &mdash; <span class="inline-code">//</span> truncates toward &minus;inf</li>
+          <li><strong>is vs ==</strong> &mdash; <span class="inline-code">is</span> checks identity, <span class="inline-code">==</span> checks value</li>
         </ul>
       </div>
 
@@ -262,6 +198,5 @@ c.<span class="fn">most_common</span>(<span class="num">10</span>)</pre>
   <footer>
     <p>Claudea's DS Interview Prep &middot; v02 &middot; <a href="index.html">Back to All Topics</a></p>
   </footer>
-
 </body>
 </html>

@@ -3,644 +3,183 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Python - DS Interview Prep</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Python — Test First | DS Prep v11</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f8fafc;
-      color: #1e293b;
-      min-height: 100vh;
+    :root {
+      --bg: #0f0f13; --surface: #1a1a22; --surface2: #22222e;
+      --border: #2a2a38; --text: #c8c8d4; --text-muted: #7a7a8e;
+      --heading: #ededf5; --accent: #fbbf24; --accent-glow: rgba(251,191,36,0.15);
+      --green: #34d399; --rose: #f472b6; --amber: #fbbf24;
     }
-
-    header {
-      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-      color: white;
-      padding: 40px 32px;
-      text-align: center;
-    }
-    header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    header p {
-      opacity: 0.9;
-      font-size: 1.1rem;
-    }
-
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 32px;
-    }
-
-    .nav {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 32px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .nav .back-btn {
-      background: #f1f5f9;
-      color: #64748b;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-    .nav .back-btn:hover {
-      background: #e2e8f0;
-      color: #1e293b;
-    }
-
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 32px;
-    }
-
-    .main-content {
-      background: white;
-      border-radius: 12px;
-      padding: 32px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .section {
-      margin-bottom: 40px;
-    }
-    .section h2 {
-      font-size: 1.8rem;
-      color: #1e293b;
-      margin-bottom: 16px;
-      border-bottom: 3px solid #3b82f6;
-      padding-bottom: 8px;
-    }
-
-    .concept-card {
-      background: #f8fafc;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 16px;
-      border-left: 4px solid #3b82f6;
-      transition: all 0.3s ease;
-    }
-    .concept-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .concept-card h3 {
-      color: #1e293b;
-      margin-bottom: 8px;
-      font-size: 1.2rem;
-    }
-    .concept-card p {
-      color: #64748b;
-      line-height: 1.6;
-    }
-
-    .interactive-demo {
-      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-      border-radius: 12px;
-      padding: 24px;
-      margin: 20px 0;
-      border: 2px solid #3b82f6;
-      position: relative;
-      overflow: hidden;
-    }
-    .interactive-demo::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%233b82f6" opacity="0.1"/><circle cx="80" cy="30" r="1.5" fill="%233b82f6" opacity="0.15"/><circle cx="40" cy="70" r="1" fill="%233b82f6" opacity="0.1"/><circle cx="90" cy="80" r="2.5" fill="%233b82f6" opacity="0.08"/></svg>');
-      pointer-events: none;
-    }
-    .interactive-demo h4 {
-      color: #1e293b;
-      margin-bottom: 12px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .code-demo {
-      background: #1e1e1e;
-      color: #e0e0e0;
-      font-family: 'Monaco', 'Menlo', monospace;
-      padding: 20px;
-      border-radius: 8px;
-      margin: 16px 0;
-      position: relative;
-      z-index: 1;
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-    .code-demo .comment {
-      color: #6b7280;
-    }
-    .code-demo .keyword {
-      color: #60a5fa;
-    }
-    .code-demo .string {
-      color: #34d399;
-    }
-    .code-demo .function {
-      color: #fbbf24;
-    }
-    .code-demo .output {
-      color: #f87171;
-      margin-top: 12px;
-      padding-top: 12px;
-      border-top: 1px solid #374151;
-    }
-
-    .demo-controls {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1;
-      flex-wrap: wrap;
-    }
-    .demo-btn {
-      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-    .demo-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-
-    .sidebar {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      height: fit-content;
-    }
-
-    .progress-section {
-      margin-bottom: 24px;
-    }
-    .progress-section h3 {
-      font-size: 1.2rem;
-      color: #1e293b;
-      margin-bottom: 16px;
-    }
-
-    .progress-item {
-      margin-bottom: 12px;
-    }
-    .progress-item .label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-      margin-bottom: 4px;
-    }
-    .progress-bar {
-      height: 6px;
-      background: #e2e8f0;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #3b82f6, #06b6d4);
-      border-radius: 3px;
-      transition: width 0.5s ease;
-    }
-
-    .quiz-section {
-      background: #f8fafc;
-      border-radius: 8px;
-      padding: 20px;
-    }
-    .quiz-section h3 {
-      color: #1e293b;
-      margin-bottom: 16px;
-    }
-
-    .quiz-question {
-      margin-bottom: 16px;
-    }
-    .quiz-question p {
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .option {
-      background: white;
-      border: 2px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-    .option:hover {
-      border-color: #3b82f6;
-      background: #f0f9ff;
-    }
-    .option.selected {
-      border-color: #3b82f6;
-      background: #eff6ff;
-    }
-    .option.correct {
-      border-color: #10b981;
-      background: #f0fdf4;
-    }
-    .option.incorrect {
-      border-color: #ef4444;
-      background: #fef2f2;
-    }
-
-    .quiz-btn {
-      background: linear-gradient(135deg, #3b82f6, #06b6d4);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-weight: 500;
-      margin-top: 12px;
-      transition: all 0.3s ease;
-    }
-    .quiz-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-
-    .data-viz {
-      background: white;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 16px 0;
-      border: 1px solid #e2e8f0;
-      position: relative;
-      z-index: 1;
-    }
-    .data-viz h5 {
-      color: #1e293b;
-      margin-bottom: 12px;
-      font-size: 1rem;
-    }
-    .chart-area {
-      height: 200px;
-      background: #f8fafc;
-      border-radius: 4px;
-      display: flex;
-      align-items: end;
-      justify-content: space-around;
-      padding: 20px;
-    }
-    .bar {
-      width: 30px;
-      background: linear-gradient(135deg, #3b82f6, #06b6d4);
-      border-radius: 4px 4px 0 0;
-      transition: all 0.3s ease;
-      position: relative;
-    }
-    .bar:hover {
-      transform: scale(1.1);
-    }
-    .bar-label {
-      position: absolute;
-      top: -25px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 0.8rem;
-      color: #64748b;
-      font-weight: 500;
-    }
-
-    @media (max-width: 768px) {
-      .content-grid { grid-template-columns: 1fr; }
-      .container { padding: 16px; }
-      header { padding: 32px 16px; }
-      header h1 { font-size: 2rem; }
-    }
+    body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    nav { position: sticky; top: 0; z-index: 200; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; height: 56px; background: rgba(15,15,19,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    nav .brand { font-weight: 700; font-size: 1rem; color: var(--heading); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    nav .brand .logo { width: 20px; height: 20px; border-radius: 6px; background: linear-gradient(135deg, #7c6cf0, #22d3ee); }
+    nav .nav-links { display: flex; gap: 2px; }
+    nav .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.78rem; padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500; }
+    nav .nav-links a:hover { background: var(--surface); color: var(--heading); }
+    nav .nav-links a.active { color: var(--heading); background: var(--surface2); }
+    .page-header { padding: 32px 32px 24px; max-width: 900px; margin: 0 auto; }
+    .page-header .top { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+    .page-header .icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; background: var(--accent-glow); }
+    .page-header h1 { font-size: 2rem; font-weight: 700; color: var(--heading); }
+    .page-header p { font-size: 0.9rem; color: var(--text-muted); margin-left: 62px; }
+    .progress-bar { max-width: 900px; margin: 0 auto 24px; padding: 0 32px; }
+    .progress-bar .track { height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
+    .progress-bar .fill { height: 100%; border-radius: 3px; background: var(--accent); width: 0%; transition: width 0.5s ease; }
+    .progress-bar .label { display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.72rem; color: var(--text-muted); }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 32px 64px; }
+    .challenge-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 16px; overflow: hidden; transition: all 0.3s; }
+    .challenge-card.completed { border-color: rgba(52,211,153,0.3); }
+    .question-section { padding: 24px 28px; }
+    .question-section .q-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .question-section .q-num { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); }
+    .question-section .status { font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 12px; }
+    .status-locked { background: var(--surface2); color: var(--text-muted); }
+    .status-correct { background: rgba(52,211,153,0.12); color: var(--green); }
+    .status-wrong { background: rgba(244,114,182,0.12); color: var(--rose); }
+    .question-section .question { font-size: 1rem; font-weight: 600; color: var(--heading); margin-bottom: 16px; line-height: 1.5; }
+    .options { display: flex; flex-direction: column; gap: 8px; }
+    .option { padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; font-size: 0.87rem; line-height: 1.5; background: var(--bg); }
+    .option:hover:not(.disabled) { border-color: #3a3a4e; background: var(--surface2); }
+    .option.correct { border-color: var(--green); background: rgba(52,211,153,0.08); color: var(--green); }
+    .option.wrong { border-color: var(--rose); background: rgba(244,114,182,0.08); color: var(--rose); }
+    .option.reveal { border-color: rgba(52,211,153,0.4); }
+    .option.disabled { cursor: default; opacity: 0.7; }
+    .cheat-card { border-top: 1px solid var(--border); padding: 24px 28px; background: var(--surface2); display: none; }
+    .cheat-card.unlocked { display: block; animation: slideDown 0.4s ease; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .cheat-card .unlock-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .cheat-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--heading); margin-bottom: 10px; }
+    .cheat-card ul { list-style: none; padding: 0; }
+    .cheat-card ul li { font-size: 0.84rem; color: var(--text); padding: 3px 0; line-height: 1.55; }
+    .cheat-card p.note { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+    .cheat-card pre { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; line-height: 1.7; color: var(--text); margin-top: 8px; }
+    .kw { color: #ff7b72; } .fn { color: #d2a8ff; } .str { color: #a5d6ff; } .cm { color: #484f58; font-style: italic; } .num { color: #79c0ff; }
+    .inline-code { background: rgba(110,118,129,0.15); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; }
+    .retry-btn { display: none; margin: 24px auto; padding: 10px 28px; border: 1px solid var(--accent); background: var(--accent-glow); color: var(--accent); border-radius: 10px; font-family: 'Space Grotesk', sans-serif; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .retry-btn:hover { background: rgba(251,191,36,0.25); }
+    .retry-btn.show { display: block; }
+    .confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+    footer { text-align: center; padding: 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border); }
+    footer a { color: #7c6cf0; text-decoration: none; }
+    @media (max-width: 600px) { nav { padding: 0 16px; } nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; } .page-header, .progress-bar, .container { padding-left: 16px; padding-right: 16px; } .page-header h1 { font-size: 1.5rem; } }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🐍 Python for Data Science</h1>
-    <p>Master Python data structures, libraries, and algorithms</p>
-  </header>
-
-  <div class="container">
-    <div class="nav">
-      <button class="back-btn" onclick="window.location.href='index.html'">← Back to Topics</button>
-      <div style="font-weight: 500; color: #64748b;">Python Fundamentals</div>
+  <nav>
+    <a href="index.html" class="brand"><div class="logo"></div> DS Prep v11</a>
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html" class="active">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Probability</a>
+      <a href="casing.html">Casing</a>
     </div>
-
-    <div class="content-grid">
-      <div class="main-content">
-        <div class="section">
-          <h2>Core Python Concepts</h2>
-
-          <div class="concept-card">
-            <h3>Data Structures</h3>
-            <p>Master lists, dictionaries, sets, and tuples. Understand when to use each structure and their performance characteristics.</p>
-          </div>
-
-          <div class="concept-card">
-            <h3>List Comprehensions</h3>
-            <p>Create concise, readable code for transforming and filtering data. Learn advanced patterns with nested comprehensions.</p>
-          </div>
-
-          <div class="concept-card">
-            <h3>Functions & Decorators</h3>
-            <p>Write clean, reusable functions. Understand closures, lambda functions, and how decorators modify behavior.</p>
-          </div>
-
-          <div class="interactive-demo">
-            <h4>🎮 Interactive Python Playground</h4>
-            <div class="demo-controls">
-              <button class="demo-btn" onclick="showListComp()">List Comprehension</button>
-              <button class="demo-btn" onclick="showDictMethods()">Dictionary Methods</button>
-              <button class="demo-btn" onclick="showLambda()">Lambda Functions</button>
-              <button class="demo-btn" onclick="showGenerator()">Generators</button>
-            </div>
-            <div class="code-demo" id="pythonDemo">
-              <div class="comment"># Click a button above to see Python examples</div>
-              <div class="output"># Output will appear here</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h2>Data Science Libraries</h2>
-
-          <div class="concept-card">
-            <h3>NumPy Arrays</h3>
-            <p>Efficient numerical computing with multidimensional arrays. Vectorized operations and broadcasting.</p>
-          </div>
-
-          <div class="concept-card">
-            <h3>Pandas DataFrames</h3>
-            <p>Data manipulation and analysis with Series and DataFrame objects. Essential for data cleaning and exploration.</p>
-          </div>
-
-          <div class="concept-card">
-            <h3>Scikit-learn</h3>
-            <p>Machine learning algorithms, preprocessing, model evaluation, and pipelines for production ML systems.</p>
-          </div>
-
-          <div class="interactive-demo">
-            <h4>📊 Data Visualization Demo</h4>
-            <p>Explore this dataset interactively:</p>
-            <div class="data-viz">
-              <h5>Sales Data Analysis</h5>
-              <div class="chart-area" id="chartArea">
-                <div class="bar" style="height: 40%;" data-value="1200">
-                  <div class="bar-label">Jan</div>
-                </div>
-                <div class="bar" style="height: 60%;" data-value="1800">
-                  <div class="bar-label">Feb</div>
-                </div>
-                <div class="bar" style="height: 80%;" data-value="2400">
-                  <div class="bar-label">Mar</div>
-                </div>
-                <div class="bar" style="height: 100%;" data-value="3000">
-                  <div class="bar-label">Apr</div>
-                </div>
-                <div class="bar" style="height: 70%;" data-value="2100">
-                  <div class="bar-label">May</div>
-                </div>
-                <div class="bar" style="height: 90%;" data-value="2700">
-                  <div class="bar-label">Jun</div>
-                </div>
-              </div>
-              <div style="margin-top: 12px; font-size: 0.9rem; color: #64748b;">
-                <span id="dataInsight">Click bars to see details!</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h2>Interview Practice</h2>
-
-          <div class="concept-card">
-            <h3>Common Python Interview Questions</h3>
-            <p>Practice with algorithmic problems, data structure implementations, and library-specific questions.</p>
-          </div>
-
-          <div class="interactive-demo">
-            <h4>🧠 Algorithm Challenge</h4>
-            <p>Implement a function to find duplicates in a list:</p>
-            <div style="background: white; padding: 16px; border-radius: 8px; margin-top: 12px;">
-              <p style="margin-bottom: 12px; font-weight: 500;">Write a function that returns all duplicate elements in a list.</p>
-              <div style="display: flex; gap: 8px;">
-                <button class="demo-btn" onclick="showPythonSolution()">Show Solution</button>
-                <button class="demo-btn" onclick="testSolution()">Test Your Code</button>
-              </div>
-              <div id="pythonSolution" style="margin-top: 12px; padding: 12px; background: #f8fafc; border-radius: 4px; display: none;">
-                <code style="color: #1e293b; font-family: monospace; font-size: 0.9rem;">
-def find_duplicates(nums):<br>
-&nbsp;&nbsp;&nbsp;&nbsp;seen = set()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;duplicates = set()<br>
-&nbsp;&nbsp;&nbsp;&nbsp;for num in nums:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if num in seen:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;duplicates.add(num)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else:<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;seen.add(num)<br>
-&nbsp;&nbsp;&nbsp;&nbsp;return list(duplicates)
-                </code>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sidebar">
-        <div class="progress-section">
-          <h3>Your Progress</h3>
-          <div class="progress-item">
-            <div class="label">
-              <span>Python Basics</span>
-              <span>85%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 85%"></div>
-            </div>
-          </div>
-          <div class="progress-item">
-            <div class="label">
-              <span>Data Structures</span>
-              <span>70%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 70%"></div>
-            </div>
-          </div>
-          <div class="progress-item">
-            <div class="label">
-              <span>Libraries</span>
-              <span>55%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 55%"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="quiz-section">
-          <h3>Quick Quiz</h3>
-          <div class="quiz-question">
-            <p>What is the output of: [x**2 for x in range(3)]?</p>
-            <div class="options">
-              <div class="option" onclick="selectOption(this, 0)">[0, 1, 4]</div>
-              <div class="option" onclick="selectOption(this, 1)">[1, 2, 3]</div>
-              <div class="option" onclick="selectOption(this, 2)">[0, 2, 4]</div>
-              <div class="option" onclick="selectOption(this, 3)">Error</div>
-            </div>
-          </div>
-          <button class="quiz-btn" onclick="checkQuizAnswer()">Check Answer</button>
-          <div id="quizFeedback" style="margin-top: 12px; font-size: 0.9rem;"></div>
-        </div>
-      </div>
-    </div>
+  </nav>
+  <div class="page-header">
+    <div class="top"><div class="icon">&#128013;</div><h1>Python</h1></div>
+    <p>Answer each question to unlock its cheat sheet card.</p>
   </div>
+  <div class="progress-bar"><div class="track"><div class="fill" id="progress-fill"></div></div><div class="label"><span id="progress-text">0 / 6 unlocked</span><span id="progress-pct">0%</span></div></div>
+  <div class="container" id="challenges"></div>
+  <button class="retry-btn" id="retry-btn">Retry Missed Questions</button>
+  <canvas class="confetti" id="confetti"></canvas>
+  <footer><p>Claudea's DS Interview Prep &middot; v11 &middot; <a href="index.html">Back to Topics</a></p></footer>
 
-  <script>
-    let selectedOption = null;
-    let correctAnswer = 0;
+<script>
+const TOPIC = 'python';
+const challenges = [
+  {
+    question: "What is the average time complexity of a dict lookup in Python?",
+    options: ["O(n)", "O(log n)", "O(1)", "O(n log n)"],
+    correct: 2,
+    cardTitle: "Data Structures Complexity",
+    cardHTML: `<ul>
+      <li><span class="inline-code">list</span> — append O(1), index O(1), search O(n), insert O(n)</li>
+      <li><span class="inline-code">dict</span> — get/set O(1) avg, iteration O(n)</li>
+      <li><span class="inline-code">set</span> — add/remove/lookup O(1) avg</li>
+      <li><span class="inline-code">deque</span> — append/pop both ends O(1)</li>
+      <li><span class="inline-code">heap</span> — push/pop O(log n), min O(1)</li>
+    </ul>`
+  },
+  {
+    question: "What does df.groupby('col')['val'].transform('mean') return?",
+    options: ["A single scalar", "A reduced DataFrame", "A Series the same length as df with group means", "An error"],
+    correct: 2,
+    cardTitle: "Pandas Essentials",
+    cardHTML: `<pre><span class="cm"># Grouping & aggregation</span>\ndf.<span class="fn">groupby</span>(<span class="str">'col'</span>)[<span class="str">'val'</span>].<span class="fn">agg</span>([<span class="str">'mean'</span>,<span class="str">'sum'</span>])\n\n<span class="cm"># Merging</span>\ndf.<span class="fn">merge</span>(df2, on=<span class="str">'id'</span>, how=<span class="str">'left'</span>)\n\n<span class="cm"># Pivot table</span>\ndf.<span class="fn">pivot_table</span>(values=<span class="str">'rev'</span>, index=<span class="str">'month'</span>, aggfunc=<span class="str">'sum'</span>)</pre>`
+  },
+  {
+    question: "What does np.dot(a, b) compute?",
+    options: ["Element-wise multiplication", "Dot product", "Cross product", "Matrix transpose"],
+    correct: 1,
+    cardTitle: "NumPy Patterns",
+    cardHTML: `<pre><span class="kw">import</span> numpy <span class="kw">as</span> np\n\na = np.<span class="fn">array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])\nnp.<span class="fn">mean</span>(a) | np.<span class="fn">std</span>(a) | np.<span class="fn">median</span>(a)\nnp.<span class="fn">dot</span>(a, b)           <span class="cm"># dot product</span>\nnp.linalg.<span class="fn">inv</span>(M)      <span class="cm"># matrix inverse</span>\na[a > <span class="num">2</span>]              <span class="cm"># boolean indexing</span></pre>`
+  },
+  {
+    question: "Which pattern is best for counting word frequencies?",
+    options: ["Two pointers", "Sliding window", "Counter / defaultdict", "Binary search"],
+    correct: 2,
+    cardTitle: "Common Coding Patterns",
+    cardHTML: `<ul>
+      <li><strong>Two pointers</strong> — sorted array problems</li>
+      <li><strong>Hash map</strong> — counting, grouping, lookup</li>
+      <li><strong>Sliding window</strong> — subarray / substring</li>
+      <li><strong>Sorting + greedy</strong> — optimization</li>
+      <li><strong>defaultdict / Counter</strong> — frequency counts</li>
+    </ul>
+    <pre><span class="kw">from</span> collections <span class="kw">import</span> Counter\nc = <span class="fn">Counter</span>(words)\nc.<span class="fn">most_common</span>(<span class="num">10</span>)</pre>`
+  },
+  {
+    question: "What does [x**2 for x in range(4)] produce?",
+    options: ["[1, 4, 9, 16]", "[0, 1, 4, 9]", "[0, 2, 4, 6]", "Error"],
+    correct: 1,
+    cardTitle: "String & List Tricks",
+    cardHTML: `<pre><span class="cm"># List comprehension</span>\n[x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>) <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]\n\n<span class="cm"># Zip two lists</span>\n<span class="fn">dict</span>(<span class="fn">zip</span>(keys, values))\n\n<span class="cm"># Sort by custom key</span>\n<span class="fn">sorted</span>(data, key=<span class="kw">lambda</span> x: x[<span class="num">1</span>], reverse=<span class="kw">True</span>)</pre>`
+  },
+  {
+    question: "Why is def f(x=[]) dangerous?",
+    options: ["Lists can't be defaults", "The default list is shared across all calls", "It causes a syntax error", "It's slow"],
+    correct: 1,
+    cardTitle: "Gotchas",
+    cardHTML: `<ul>
+      <li><strong>Mutable defaults</strong> — never use <span class="inline-code">def f(x=[])</span></li>
+      <li><strong>Shallow copy</strong> — <span class="inline-code">a = b[:]</span> or <span class="inline-code">copy.deepcopy()</span></li>
+      <li><strong>Integer division</strong> — <span class="inline-code">//</span> truncates toward −inf</li>
+      <li><strong>is vs ==</strong> — <span class="inline-code">is</span> checks identity, <span class="inline-code">==</span> checks value</li>
+    </ul>`
+  }
+];
 
-    function showListComp() {
-      document.getElementById('pythonDemo').innerHTML = `
-        <div class="comment"># List comprehension examples</div>
-        <div class="keyword">numbers = [1, 2, 3, 4, 5]</div>
-        <div class="keyword">squares = [x**2 for x in numbers]</div>
-        <div class="keyword">even_squares = [x**2 for x in numbers if x % 2 == 0]</div>
-        <div class="keyword">matrix = [[i*j for j in range(3)] for i in range(3)]</div>
-        <div class="output">squares: [1, 4, 9, 16, 25]</div>
-        <div class="output">even_squares: [4, 16]</div>
-        <div class="output">matrix: [[0, 0, 0], [0, 1, 2], [0, 2, 4]]</div>
-      `;
-    }
-
-    function showDictMethods() {
-      document.getElementById('pythonDemo').innerHTML = `
-        <div class="comment"># Dictionary methods and operations</div>
-        <div class="keyword">data = {'name': 'Alice', 'age': 30, 'city': 'NYC'}</div>
-        <div class="keyword">keys = data.keys()</div>
-        <div class="keyword">values = data.values()</div>
-        <div class="keyword">items = list(data.items())</div>
-        <div class="keyword">data.get('salary', 'Not found')</div>
-        <div class="keyword">data.setdefault('department', 'Engineering')</div>
-        <div class="output">keys: dict_keys(['name', 'age', 'city', 'department'])</div>
-        <div class="output">values: dict_values(['Alice', 30, 'NYC', 'Engineering'])</div>
-        <div class="output">items: [('name', 'Alice'), ('age', 30), ...]</div>
-      `;
-    }
-
-    function showLambda() {
-      document.getElementById('pythonDemo').innerHTML = `
-        <div class="comment"># Lambda functions and higher-order functions</div>
-        <div class="keyword">numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]</div>
-        <div class="keyword">evens = list(filter(lambda x: x % 2 == 0, numbers))</div>
-        <div class="keyword">doubles = list(map(lambda x: x * 2, numbers))</div>
-        <div class="keyword">sum_squares = sum(map(lambda x: x**2, numbers))</div>
-        <div class="keyword">sorted_by_last = sorted(['Alice', 'Bob', 'Charlie'], key=lambda x: x[-1])</div>
-        <div class="output">evens: [2, 4, 6, 8, 10]</div>
-        <div class="output">doubles: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]</div>
-        <div class="output">sum_squares: 385</div>
-        <div class="output">sorted_by_last: ['Alice', 'Charlie', 'Bob']</div>
-      `;
-    }
-
-    function showGenerator() {
-      document.getElementById('pythonDemo').innerHTML = `
-        <div class="comment"># Generator functions for memory efficiency</div>
-        <div class="keyword">def fibonacci_generator(n):</div>
-        <div class="keyword">&nbsp;&nbsp;&nbsp;&nbsp;a, b = 0, 1</div>
-        <div class="keyword">&nbsp;&nbsp;&nbsp;&nbsp;for _ in range(n):</div>
-        <div class="keyword">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;yield a</div>
-        <div class="keyword">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a, b = b, a + b</div>
-        <div class="keyword"></div>
-        <div class="keyword">fib_gen = fibonacci_generator(10)</div>
-        <div class="keyword">fib_list = list(fib_gen)</div>
-        <div class="output">fib_list: [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]</div>
-        <div class="output">Memory efficient: generates values on demand!</div>
-      `;
-    }
-
-    function showPythonSolution() {
-      document.getElementById('pythonSolution').style.display = 'block';
-    }
-
-    function testSolution() {
-      alert('Try implementing the function yourself! Test cases: [1,2,2,3,3,3] should return [2,3]');
-    }
-
-    // Data visualization interaction
-    document.querySelectorAll('.bar').forEach((bar, index) => {
-      bar.addEventListener('click', () => {
-        const value = bar.dataset.value;
-        const months = ['January', 'February', 'March', 'April', 'May', 'June'];
-        document.getElementById('dataInsight').textContent = `${months[index]}: $${value} in sales`;
-      });
-    });
-
-    function selectOption(element, index) {
-      // Remove selected class from all options
-      document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-      // Add selected class to clicked option
-      element.classList.add('selected');
-      selectedOption = index;
-    }
-
-    function checkQuizAnswer() {
-      const feedback = document.getElementById('quizFeedback');
-      const options = document.querySelectorAll('.option');
-
-      if (selectedOption === null) {
-        feedback.innerHTML = 'Please select an answer first!';
-        feedback.style.color = '#f59e0b';
-        return;
-      }
-
-      options.forEach((opt, index) => {
-        if (index === correctAnswer) {
-          opt.classList.add('correct');
-        } else if (index === selectedOption) {
-          opt.classList.add('incorrect');
-        }
-      });
-
-      if (selectedOption === correctAnswer) {
-        feedback.innerHTML = '🎉 Correct! List comprehension creates [0², 1², 2²] = [0, 1, 4]';
-        feedback.style.color = '#10b981';
-      } else {
-        feedback.innerHTML = '❌ Not quite. List comprehensions transform each element in the iterable.';
-        feedback.style.color = '#ef4444';
-      }
-    }
-
-    // Initialize with list comprehension example
-    showListComp();
-  </script>
+let correctCount = 0, answeredCount = 0;
+function render() {
+  const container = document.getElementById('challenges'); container.innerHTML = '';
+  challenges.forEach((c, i) => {
+    const div = document.createElement('div'); div.className = 'challenge-card'; div.id = `challenge-${i}`;
+    div.innerHTML = `<div class="question-section"><div class="q-header"><span class="q-num">Question ${i+1} of ${challenges.length}</span><span class="status status-locked" id="status-${i}">Locked</span></div><div class="question">${c.question}</div><div class="options" id="options-${i}">${c.options.map((o,oi) => `<div class="option" data-qi="${i}" data-oi="${oi}">${o}</div>`).join('')}</div></div><div class="cheat-card" id="card-${i}"><div class="unlock-label">&#9989; Unlocked</div><h3>${c.cardTitle}</h3>${c.cardHTML}</div>`;
+    container.appendChild(div);
+  });
+  document.querySelectorAll('.option').forEach(o => o.addEventListener('click', handleAnswer));
+}
+function handleAnswer(e) {
+  const opt = e.currentTarget; if (opt.classList.contains('disabled')) return;
+  const qi = parseInt(opt.dataset.qi), oi = parseInt(opt.dataset.oi), c = challenges[qi];
+  document.querySelectorAll(`#options-${qi} .option`).forEach(o => { o.classList.add('disabled'); if (parseInt(o.dataset.oi) === c.correct) o.classList.add('reveal'); });
+  answeredCount++;
+  if (oi === c.correct) { opt.classList.add('correct'); document.getElementById(`status-${qi}`).className = 'status status-correct'; document.getElementById(`status-${qi}`).textContent = 'Unlocked'; document.getElementById(`card-${qi}`).classList.add('unlocked'); document.getElementById(`challenge-${qi}`).classList.add('completed'); correctCount++; }
+  else { opt.classList.add('wrong'); document.getElementById(`status-${qi}`).className = 'status status-wrong'; document.getElementById(`status-${qi}`).textContent = 'Missed'; const cl = document.getElementById(`card-${qi}`); cl.querySelector('.unlock-label').innerHTML = '&#128218; Review'; cl.querySelector('.unlock-label').style.color = 'var(--amber)'; cl.classList.add('unlocked'); }
+  updateProgress();
+  if (answeredCount === challenges.length) { saveProgress(); if (correctCount < challenges.length) document.getElementById('retry-btn').classList.add('show'); else launchConfetti(); }
+}
+function updateProgress() { const pct = Math.round((correctCount/challenges.length)*100); document.getElementById('progress-fill').style.width = pct+'%'; document.getElementById('progress-text').textContent = `${correctCount} / ${challenges.length} unlocked`; document.getElementById('progress-pct').textContent = pct+'%'; }
+function saveProgress() { localStorage.setItem(`v11_${TOPIC}`, JSON.stringify({correct:correctCount,total:challenges.length,unlocked:correctCount})); const today = new Date().toDateString(); const streak = JSON.parse(localStorage.getItem('v11_streak')||'{"count":0,"lastDate":""}'); if(streak.lastDate!==today){const y=new Date(Date.now()-86400000).toDateString();streak.count=(streak.lastDate===y)?streak.count+1:1;streak.lastDate=today;localStorage.setItem('v11_streak',JSON.stringify(streak));} }
+document.getElementById('retry-btn').addEventListener('click', () => { correctCount=0; answeredCount=0; document.getElementById('retry-btn').classList.remove('show'); render(); updateProgress(); });
+function launchConfetti(){const canvas=document.getElementById('confetti'),ctx=canvas.getContext('2d');canvas.width=innerWidth;canvas.height=innerHeight;const p=[],cols=['#60a5fa','#34d399','#fbbf24','#f472b6','#a78bfa','#22d3ee'];for(let i=0;i<120;i++)p.push({x:Math.random()*canvas.width,y:-20-Math.random()*200,w:6+Math.random()*6,h:4+Math.random()*4,color:cols[Math.floor(Math.random()*cols.length)],vy:2+Math.random()*3,vx:(Math.random()-0.5)*4,rot:Math.random()*360,vr:(Math.random()-0.5)*10,life:1});let f=0;function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);let alive=false;p.forEach(p=>{if(p.life<=0)return;alive=true;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.vy+=0.05;if(p.y>canvas.height)p.life=0;if(f>60)p.life-=0.015;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);ctx.restore()});f++;if(alive)requestAnimationFrame(draw)}draw()}
+render();
+</script>
 </body>
 </html>

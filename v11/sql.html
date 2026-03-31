@@ -3,567 +3,363 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SQL - DS Interview Prep</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>SQL — Test First | DS Prep v11</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #f8fafc;
-      color: #1e293b;
-      min-height: 100vh;
+    :root {
+      --bg: #0f0f13; --surface: #1a1a22; --surface2: #22222e;
+      --border: #2a2a38; --text: #c8c8d4; --text-muted: #7a7a8e;
+      --heading: #ededf5; --accent: #60a5fa; --accent-glow: rgba(96,165,250,0.15);
+      --green: #34d399; --rose: #f472b6; --amber: #fbbf24;
     }
+    body { font-family: 'Space Grotesk', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-    header {
-      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-      color: white;
-      padding: 40px 32px;
-      text-align: center;
-    }
-    header h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    header p {
-      opacity: 0.9;
-      font-size: 1.1rem;
-    }
+    nav { position: sticky; top: 0; z-index: 200; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; height: 56px; background: rgba(15,15,19,0.9); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    nav .brand { font-weight: 700; font-size: 1rem; color: var(--heading); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    nav .brand .logo { width: 20px; height: 20px; border-radius: 6px; background: linear-gradient(135deg, #7c6cf0, #22d3ee); }
+    nav .nav-links { display: flex; gap: 2px; }
+    nav .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.78rem; padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500; }
+    nav .nav-links a:hover { background: var(--surface); color: var(--heading); }
+    nav .nav-links a.active { color: var(--heading); background: var(--surface2); }
 
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 32px;
-    }
+    .page-header { padding: 32px 32px 24px; max-width: 900px; margin: 0 auto; }
+    .page-header .top { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+    .page-header .icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; background: var(--accent-glow); }
+    .page-header h1 { font-size: 2rem; font-weight: 700; color: var(--heading); }
+    .page-header p { font-size: 0.9rem; color: var(--text-muted); margin-left: 62px; }
 
-    .nav {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      margin-bottom: 32px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .nav .back-btn {
-      background: #f1f5f9;
-      color: #64748b;
-      border: none;
-      border-radius: 8px;
-      padding: 10px 16px;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-    .nav .back-btn:hover {
-      background: #e2e8f0;
-      color: #1e293b;
-    }
+    .progress-bar { max-width: 900px; margin: 0 auto 24px; padding: 0 32px; }
+    .progress-bar .track { height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
+    .progress-bar .fill { height: 100%; border-radius: 3px; background: var(--accent); width: 0%; transition: width 0.5s ease; }
+    .progress-bar .label { display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.72rem; color: var(--text-muted); }
 
-    .content-grid {
-      display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 32px;
-    }
+    .container { max-width: 900px; margin: 0 auto; padding: 0 32px 64px; }
 
-    .main-content {
-      background: white;
-      border-radius: 12px;
-      padding: 32px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    .challenge-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      margin-bottom: 16px; overflow: hidden; transition: all 0.3s;
     }
+    .challenge-card.completed { border-color: rgba(52,211,153,0.3); }
 
-    .section {
-      margin-bottom: 40px;
-    }
-    .section h2 {
-      font-size: 1.8rem;
-      color: #1e293b;
-      margin-bottom: 16px;
-      border-bottom: 3px solid #3b82f6;
-      padding-bottom: 8px;
-    }
+    .question-section { padding: 24px 28px; }
+    .question-section .q-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .question-section .q-num { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--accent); }
+    .question-section .status { font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 12px; }
+    .status-locked { background: var(--surface2); color: var(--text-muted); }
+    .status-correct { background: rgba(52,211,153,0.12); color: var(--green); }
+    .status-wrong { background: rgba(244,114,182,0.12); color: var(--rose); }
 
-    .concept-card {
-      background: #f8fafc;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 16px;
-      border-left: 4px solid #3b82f6;
-      transition: all 0.3s ease;
-    }
-    .concept-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    .concept-card h3 {
-      color: #1e293b;
-      margin-bottom: 8px;
-      font-size: 1.2rem;
-    }
-    .concept-card p {
-      color: #64748b;
-      line-height: 1.6;
-    }
-
-    .interactive-demo {
-      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-      border-radius: 12px;
-      padding: 24px;
-      margin: 20px 0;
-      border: 2px solid #3b82f6;
-      position: relative;
-      overflow: hidden;
-    }
-    .interactive-demo::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%233b82f6" opacity="0.1"/><circle cx="80" cy="30" r="1.5" fill="%233b82f6" opacity="0.15"/><circle cx="40" cy="70" r="1" fill="%233b82f6" opacity="0.1"/><circle cx="90" cy="80" r="2.5" fill="%233b82f6" opacity="0.08"/></svg>');
-      pointer-events: none;
-    }
-    .interactive-demo h4 {
-      color: #1e293b;
-      margin-bottom: 12px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .sql-demo {
-      background: #1e1e1e;
-      color: #e0e0e0;
-      font-family: 'Monaco', 'Menlo', monospace;
-      padding: 20px;
-      border-radius: 8px;
-      margin: 16px 0;
-      position: relative;
-      z-index: 1;
-    }
-    .sql-demo .query {
-      margin-bottom: 16px;
-      color: #60a5fa;
-    }
-    .sql-demo .result {
-      background: #2d2d2d;
-      padding: 12px;
-      border-radius: 4px;
-      font-size: 0.9rem;
-    }
-
-    .demo-controls {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      position: relative;
-      z-index: 1;
-    }
-    .demo-btn {
-      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 8px 16px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: all 0.3s ease;
-    }
-    .demo-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    }
-
-    .sidebar {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      height: fit-content;
-    }
-
-    .progress-section {
-      margin-bottom: 24px;
-    }
-    .progress-section h3 {
-      font-size: 1.2rem;
-      color: #1e293b;
-      margin-bottom: 16px;
-    }
-
-    .progress-item {
-      margin-bottom: 12px;
-    }
-    .progress-item .label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.9rem;
-      margin-bottom: 4px;
-    }
-    .progress-bar {
-      height: 6px;
-      background: #e2e8f0;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #3b82f6, #06b6d4);
-      border-radius: 3px;
-      transition: width 0.5s ease;
-    }
-
-    .quiz-section {
-      background: #f8fafc;
-      border-radius: 8px;
-      padding: 20px;
-    }
-    .quiz-section h3 {
-      color: #1e293b;
-      margin-bottom: 16px;
-    }
-
-    .quiz-question {
-      margin-bottom: 16px;
-    }
-    .quiz-question p {
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-    .options {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
+    .question-section .question { font-size: 1rem; font-weight: 600; color: var(--heading); margin-bottom: 16px; line-height: 1.5; }
+    .options { display: flex; flex-direction: column; gap: 8px; }
     .option {
-      background: white;
-      border: 2px solid #e2e8f0;
-      border-radius: 6px;
-      padding: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px;
+      cursor: pointer; transition: all 0.2s; font-size: 0.87rem; line-height: 1.5;
+      background: var(--bg);
     }
-    .option:hover {
-      border-color: #3b82f6;
-      background: #f0f9ff;
-    }
-    .option.selected {
-      border-color: #3b82f6;
-      background: #eff6ff;
-    }
-    .option.correct {
-      border-color: #10b981;
-      background: #f0fdf4;
-    }
-    .option.incorrect {
-      border-color: #ef4444;
-      background: #fef2f2;
-    }
+    .option:hover:not(.disabled) { border-color: #3a3a4e; background: var(--surface2); }
+    .option.correct { border-color: var(--green); background: rgba(52,211,153,0.08); color: var(--green); }
+    .option.wrong { border-color: var(--rose); background: rgba(244,114,182,0.08); color: var(--rose); }
+    .option.reveal { border-color: rgba(52,211,153,0.4); }
+    .option.disabled { cursor: default; opacity: 0.7; }
 
-    .quiz-btn {
-      background: linear-gradient(135deg, #3b82f6, #06b6d4);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      padding: 10px 20px;
-      cursor: pointer;
-      font-weight: 500;
-      margin-top: 12px;
-      transition: all 0.3s ease;
+    .cheat-card {
+      border-top: 1px solid var(--border); padding: 24px 28px;
+      background: var(--surface2); display: none;
     }
-    .quiz-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    .cheat-card.unlocked { display: block; animation: slideDown 0.4s ease; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+    .cheat-card .unlock-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+    .cheat-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--heading); margin-bottom: 10px; }
+    .cheat-card ul { list-style: none; padding: 0; }
+    .cheat-card ul li { font-size: 0.84rem; color: var(--text); padding: 3px 0; line-height: 1.55; }
+    .cheat-card p.note { font-size: 0.8rem; color: var(--text-muted); margin-top: 8px; line-height: 1.5; }
+    .cheat-card pre {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 14px; overflow-x: auto; font-family: 'JetBrains Mono', monospace;
+      font-size: 0.76rem; line-height: 1.7; color: var(--text); margin-top: 8px;
     }
+    .kw { color: #ff7b72; } .fn { color: #d2a8ff; } .str { color: #a5d6ff; }
+    .cm { color: #484f58; font-style: italic; } .num { color: #79c0ff; }
+    .inline-code { background: rgba(110,118,129,0.15); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; }
 
-    @media (max-width: 768px) {
-      .content-grid { grid-template-columns: 1fr; }
-      .container { padding: 16px; }
-      header { padding: 32px 16px; }
-      header h1 { font-size: 2rem; }
+    .retry-btn {
+      display: none; margin: 24px auto; padding: 10px 28px;
+      border: 1px solid var(--accent); background: var(--accent-glow);
+      color: var(--accent); border-radius: 10px; font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .retry-btn:hover { background: rgba(96,165,250,0.25); }
+    .retry-btn.show { display: block; }
+
+    .confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+
+    footer { text-align: center; padding: 32px; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border); }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; } nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
+      .page-header, .progress-bar, .container { padding-left: 16px; padding-right: 16px; }
+      .page-header h1 { font-size: 1.5rem; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🗄️ SQL Mastery</h1>
-    <p>Master database queries, joins, and optimization techniques</p>
-  </header>
-
-  <div class="container">
-    <div class="nav">
-      <button class="back-btn" onclick="window.location.href='index.html'">← Back to Topics</button>
-      <div style="font-weight: 500; color: #64748b;">SQL Fundamentals</div>
+  <nav>
+    <a href="index.html" class="brand"><div class="logo"></div> DS Prep v11</a>
+    <div class="nav-links">
+      <a href="sql.html" class="active">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Probability</a>
+      <a href="casing.html">Casing</a>
     </div>
+  </nav>
 
-    <div class="content-grid">
-      <div class="main-content">
-        <div class="section">
-          <h2>Core SQL Concepts</h2>
-
-          <div class="concept-card">
-            <h3>SELECT Statements</h3>
-            <p>The foundation of all queries. Learn to retrieve specific columns, use aliases, and filter data with WHERE clauses.</p>
-          </div>
-
-          <div class="concept-card">
-            <h3>JOIN Operations</h3>
-            <p>Combine data from multiple tables using INNER, LEFT, RIGHT, and FULL JOINs. Understand the differences and when to use each.</p>
-          </div>
-
-          <div class="concept-card">
-            <h3>Aggregation Functions</h3>
-            <p>Use COUNT, SUM, AVG, MIN, MAX with GROUP BY to summarize data. Learn about HAVING clauses for filtering grouped results.</p>
-          </div>
-
-          <div class="interactive-demo">
-            <h4>🎮 Interactive SQL Query Builder</h4>
-            <div class="demo-controls">
-              <button class="demo-btn" onclick="showBasicSelect()">Basic SELECT</button>
-              <button class="demo-btn" onclick="showJoinExample()">JOIN Example</button>
-              <button class="demo-btn" onclick="showAggregation()">Aggregation</button>
-              <button class="demo-btn" onclick="showSubquery()">Subquery</button>
-            </div>
-            <div class="sql-demo" id="sqlDemo">
-              <div class="query">-- Click a button above to see SQL examples</div>
-              <div class="result">-- Results will appear here</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h2>Advanced Topics</h2>
-
-          <div class="concept-card">
-            <h3>Window Functions</h3>
-            <p>Use ROW_NUMBER, RANK, DENSE_RANK, and analytic functions to perform calculations across rows while maintaining detail.</p>
-          </div>
-
-          <div class="concept-card">
-            <h3>Common Table Expressions (CTEs)</h3>
-            <p>Create temporary result sets using WITH clauses for complex queries. Improve readability and performance.</p>
-          </div>
-
-          <div class="concept-card">
-            <h3>Query Optimization</h3>
-            <p>Understand indexes, execution plans, and performance tuning. Learn to write efficient queries that scale.</p>
-          </div>
-
-          <div class="interactive-demo">
-            <h4>🎯 SQL Performance Challenge</h4>
-            <p>Test your knowledge of query optimization!</p>
-            <div style="background: white; padding: 16px; border-radius: 8px; margin-top: 12px;">
-              <p style="margin-bottom: 12px; font-weight: 500;">Which query is more efficient for finding users with >100 orders?</p>
-              <div style="display: flex; gap: 8px; margin-bottom: 12px;">
-                <button class="demo-btn" onclick="checkAnswer('A')" style="flex: 1;">A) Use EXISTS subquery</button>
-                <button class="demo-btn" onclick="checkAnswer('B')" style="flex: 1;">B) Use IN with subquery</button>
-              </div>
-              <div id="performanceAnswer" style="color: #64748b; font-size: 0.9rem;"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="section">
-          <h2>Interview Practice</h2>
-
-          <div class="concept-card">
-            <h3>Common SQL Interview Questions</h3>
-            <p>Practice with frequently asked SQL problems: finding duplicates, calculating running totals, ranking problems, and complex joins.</p>
-          </div>
-
-          <div class="interactive-demo">
-            <h4>🧠 SQL Problem Solver</h4>
-            <p>Try solving this common interview question:</p>
-            <div style="background: white; padding: 16px; border-radius: 8px; margin-top: 12px;">
-              <p style="margin-bottom: 12px; font-weight: 500;">Write a query to find the second highest salary from the employees table.</p>
-              <div style="display: flex; gap: 8px;">
-                <button class="demo-btn" onclick="showSolution()">Show Solution</button>
-                <button class="demo-btn" onclick="tryYourself()">Try It Yourself</button>
-              </div>
-              <div id="sqlSolution" style="margin-top: 12px; padding: 12px; background: #f8fafc; border-radius: 4px; display: none;">
-                <code style="color: #1e293b; font-family: monospace;">
-SELECT MAX(salary) FROM employees<br>
-WHERE salary < (SELECT MAX(salary) FROM employees);
-                </code>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="sidebar">
-        <div class="progress-section">
-          <h3>Your Progress</h3>
-          <div class="progress-item">
-            <div class="label">
-              <span>Basic Queries</span>
-              <span>75%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 75%"></div>
-            </div>
-          </div>
-          <div class="progress-item">
-            <div class="label">
-              <span>Joins</span>
-              <span>60%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 60%"></div>
-            </div>
-          </div>
-          <div class="progress-item">
-            <div class="label">
-              <span>Advanced SQL</span>
-              <span>40%</span>
-            </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="width: 40%"></div>
-            </div>
-          </div>
-        </div>
-
-        <div class="quiz-section">
-          <h3>Quick Quiz</h3>
-          <div class="quiz-question">
-            <p>What does SQL stand for?</p>
-            <div class="options">
-              <div class="option" onclick="selectOption(this, 0)">Structured Query Language</div>
-              <div class="option" onclick="selectOption(this, 1)">Simple Query Language</div>
-              <div class="option" onclick="selectOption(this, 2)">Standard Query Language</div>
-              <div class="option" onclick="selectOption(this, 3)">System Query Language</div>
-            </div>
-          </div>
-          <button class="quiz-btn" onclick="checkQuizAnswer()">Check Answer</button>
-          <div id="quizFeedback" style="margin-top: 12px; font-size: 0.9rem;"></div>
-        </div>
-      </div>
+  <div class="page-header">
+    <div class="top">
+      <div class="icon">&#128450;</div>
+      <h1>SQL</h1>
     </div>
+    <p>Answer each question to unlock its cheat sheet card.</p>
   </div>
 
-  <script>
-    let selectedOption = null;
-    let correctAnswer = 0;
+  <div class="progress-bar">
+    <div class="track"><div class="fill" id="progress-fill"></div></div>
+    <div class="label"><span id="progress-text">0 / 6 unlocked</span><span id="progress-pct">0%</span></div>
+  </div>
 
-    function showBasicSelect() {
-      document.getElementById('sqlDemo').innerHTML = `
-        <div class="query">-- Select all columns from users table</div>
-        <div class="query">SELECT * FROM users;</div>
-        <div class="query"></div>
-        <div class="query">-- Select specific columns with alias</div>
-        <div class="query">SELECT first_name AS fname, last_name AS lname, email</div>
-        <div class="query">FROM users</div>
-        <div class="query">WHERE active = true;</div>
-        <div class="result">-- Results: 1,247 active users found</div>
-      `;
+  <div class="container" id="challenges"></div>
+  <button class="retry-btn" id="retry-btn">Retry Missed Questions</button>
+
+  <canvas class="confetti" id="confetti"></canvas>
+
+  <footer>
+    <p>Claudea's DS Interview Prep &middot; v11 &middot; <a href="index.html">Back to Topics</a></p>
+  </footer>
+
+<script>
+const TOPIC = 'sql';
+const challenges = [
+  {
+    question: "SQL doesn't run in the order you write it. What executes first?",
+    options: ["SELECT", "FROM / JOIN", "ORDER BY", "WHERE"],
+    correct: 1,
+    cardTitle: "Query Execution Order",
+    cardHTML: `<pre><span class="num">1.</span> <span class="kw">FROM</span> / <span class="kw">JOIN</span>\n<span class="num">2.</span> <span class="kw">WHERE</span>\n<span class="num">3.</span> <span class="kw">GROUP BY</span>\n<span class="num">4.</span> <span class="kw">HAVING</span>\n<span class="num">5.</span> <span class="kw">SELECT</span>\n<span class="num">6.</span> <span class="kw">ORDER BY</span>\n<span class="num">7.</span> <span class="kw">LIMIT</span></pre>`
+  },
+  {
+    question: "Which JOIN returns all rows from the left table plus matching rows from the right?",
+    options: ["INNER JOIN", "LEFT JOIN", "CROSS JOIN", "FULL OUTER JOIN"],
+    correct: 1,
+    cardTitle: "JOIN Types",
+    cardHTML: `<ul>
+      <li><span class="inline-code">INNER JOIN</span> — matching rows in both tables</li>
+      <li><span class="inline-code">LEFT JOIN</span> — all left rows + matching right</li>
+      <li><span class="inline-code">RIGHT JOIN</span> — all right rows + matching left</li>
+      <li><span class="inline-code">FULL OUTER</span> — all rows from both sides</li>
+      <li><span class="inline-code">CROSS JOIN</span> — cartesian product</li>
+      <li><span class="inline-code">Self Join</span> — table joined to itself</li>
+    </ul>`
+  },
+  {
+    question: "What does PARTITION BY do in a window function?",
+    options: ["Filters rows before aggregation", "Divides rows into groups for the window calculation", "Limits the number of results", "Sorts the output"],
+    correct: 1,
+    cardTitle: "Window Functions",
+    cardHTML: `<pre><span class="kw">SELECT</span>\n  name, dept, salary,\n  <span class="fn">RANK</span>() <span class="kw">OVER</span>(\n    <span class="kw">PARTITION BY</span> dept\n    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>\n  ) <span class="kw">AS</span> dept_rank\n<span class="kw">FROM</span> employees;</pre>
+    <p class="note">Common: ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, SUM, AVG</p>`
+  },
+  {
+    question: "What's the difference between COUNT(*) and COUNT(col)?",
+    options: ["No difference", "COUNT(*) is faster", "COUNT(*) counts NULLs, COUNT(col) skips them", "COUNT(col) counts all rows"],
+    correct: 2,
+    cardTitle: "Aggregation Gotchas",
+    cardHTML: `<ul>
+      <li><span class="inline-code">COUNT(*)</span> counts all rows incl. NULLs</li>
+      <li><span class="inline-code">COUNT(col)</span> skips NULLs</li>
+      <li><span class="inline-code">WHERE</span> filters rows, <span class="inline-code">HAVING</span> filters groups</li>
+      <li>Can't use aliases in <span class="inline-code">WHERE</span> (runs before <span class="inline-code">SELECT</span>)</li>
+      <li><span class="inline-code">GROUP BY</span> — every non-aggregated column in SELECT must be in GROUP BY</li>
+    </ul>`
+  },
+  {
+    question: "What does a CTE (WITH clause) do?",
+    options: ["Creates a permanent table", "Creates a temporary named result set for the query", "Inserts data into a table", "Defines an index"],
+    correct: 1,
+    cardTitle: "CTEs & Subqueries",
+    cardHTML: `<pre><span class="kw">WITH</span> monthly_revenue <span class="kw">AS</span> (\n  <span class="kw">SELECT</span>\n    <span class="fn">DATE_TRUNC</span>(<span class="str">'month'</span>, dt) <span class="kw">AS</span> m,\n    <span class="fn">SUM</span>(amt) <span class="kw">AS</span> rev\n  <span class="kw">FROM</span> orders\n  <span class="kw">GROUP BY</span> <span class="num">1</span>\n)\n<span class="kw">SELECT</span> m, rev,\n  <span class="fn">LAG</span>(rev) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> m) <span class="kw">AS</span> prev\n<span class="kw">FROM</span> monthly_revenue;</pre>`
+  },
+  {
+    question: "Which is more efficient for checking existence in a large subquery?",
+    options: ["IN", "EXISTS", "CROSS JOIN", "UNION"],
+    correct: 1,
+    cardTitle: "Performance Tips",
+    cardHTML: `<ul>
+      <li>Use <span class="inline-code">EXPLAIN</span> to see query plan</li>
+      <li>Index columns used in <span class="inline-code">WHERE</span> and <span class="inline-code">JOIN</span></li>
+      <li>Avoid <span class="inline-code">SELECT *</span> in production</li>
+      <li>Filter early with <span class="inline-code">WHERE</span> before <span class="inline-code">JOIN</span></li>
+      <li>Use <span class="inline-code">EXISTS</span> over <span class="inline-code">IN</span> for large subqueries</li>
+    </ul>`
+  }
+];
+
+let correctCount = 0;
+let answeredCount = 0;
+
+function render() {
+  const container = document.getElementById('challenges');
+  challenges.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'challenge-card';
+    div.id = `challenge-${i}`;
+    div.innerHTML = `
+      <div class="question-section">
+        <div class="q-header">
+          <span class="q-num">Question ${i + 1} of ${challenges.length}</span>
+          <span class="status status-locked" id="status-${i}">Locked</span>
+        </div>
+        <div class="question">${c.question}</div>
+        <div class="options" id="options-${i}">
+          ${c.options.map((o, oi) => `<div class="option" data-qi="${i}" data-oi="${oi}">${o}</div>`).join('')}
+        </div>
+      </div>
+      <div class="cheat-card" id="card-${i}">
+        <div class="unlock-label">&#9989; Unlocked</div>
+        <h3>${c.cardTitle}</h3>
+        ${c.cardHTML}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+
+  document.querySelectorAll('.option').forEach(opt => {
+    opt.addEventListener('click', handleAnswer);
+  });
+}
+
+function handleAnswer(e) {
+  const opt = e.currentTarget;
+  if (opt.classList.contains('disabled')) return;
+  const qi = parseInt(opt.dataset.qi);
+  const oi = parseInt(opt.dataset.oi);
+  const c = challenges[qi];
+  const allOpts = document.querySelectorAll(`#options-${qi} .option`);
+  const status = document.getElementById(`status-${qi}`);
+  const card = document.getElementById(`card-${qi}`);
+  const challengeCard = document.getElementById(`challenge-${qi}`);
+
+  allOpts.forEach(o => {
+    o.classList.add('disabled');
+    if (parseInt(o.dataset.oi) === c.correct) o.classList.add('reveal');
+  });
+
+  answeredCount++;
+
+  if (oi === c.correct) {
+    opt.classList.add('correct');
+    status.className = 'status status-correct';
+    status.textContent = 'Unlocked';
+    card.classList.add('unlocked');
+    challengeCard.classList.add('completed');
+    correctCount++;
+  } else {
+    opt.classList.add('wrong');
+    status.className = 'status status-wrong';
+    status.textContent = 'Missed';
+    // Still show the card but with a "Review" label
+    card.querySelector('.unlock-label').innerHTML = '&#128218; Review — answer was wrong';
+    card.querySelector('.unlock-label').style.color = 'var(--amber)';
+    card.classList.add('unlocked');
+  }
+
+  updateProgress();
+
+  if (answeredCount === challenges.length) {
+    saveProgress();
+    if (correctCount < challenges.length) {
+      document.getElementById('retry-btn').classList.add('show');
+    } else {
+      launchConfetti();
     }
+  }
+}
 
-    function showJoinExample() {
-      document.getElementById('sqlDemo').innerHTML = `
-        <div class="query">-- Inner join users with orders</div>
-        <div class="query">SELECT u.first_name, u.last_name, o.order_date, o.total</div>
-        <div class="query">FROM users u</div>
-        <div class="query">INNER JOIN orders o ON u.user_id = o.user_id</div>
-        <div class="query">WHERE o.total > 100</div>
-        <div class="query">ORDER BY o.total DESC;</div>
-        <div class="result">-- Results: 892 orders over $100 from 456 users</div>
-      `;
-    }
+function updateProgress() {
+  const pct = Math.round((correctCount / challenges.length) * 100);
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = `${correctCount} / ${challenges.length} unlocked`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+}
 
-    function showAggregation() {
-      document.getElementById('sqlDemo').innerHTML = `
-        <div class="query">-- Aggregate sales by month</div>
-        <div class="query">SELECT</div>
-        <div class="query">  DATE_TRUNC('month', order_date) AS month,</div>
-        <div class="query">  COUNT(*) AS order_count,</div>
-        <div class="query">  SUM(total) AS total_sales,</div>
-        <div class="query">  AVG(total) AS avg_order_value</div>
-        <div class="query">FROM orders</div>
-        <div class="query">WHERE order_date >= '2024-01-01'</div>
-        <div class="query">GROUP BY DATE_TRUNC('month', order_date)</div>
-        <div class="query">HAVING SUM(total) > 50000</div>
-        <div class="query">ORDER BY total_sales DESC;</div>
-        <div class="result">-- Results: 8 months with sales over $50k</div>
-      `;
-    }
+function saveProgress() {
+  localStorage.setItem(`v11_${TOPIC}`, JSON.stringify({
+    correct: correctCount, total: challenges.length, unlocked: correctCount
+  }));
+  // Update streak
+  const today = new Date().toDateString();
+  const streak = JSON.parse(localStorage.getItem('v11_streak') || '{"count":0,"lastDate":""}');
+  if (streak.lastDate !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    streak.count = (streak.lastDate === yesterday) ? streak.count + 1 : 1;
+    streak.lastDate = today;
+    localStorage.setItem('v11_streak', JSON.stringify(streak));
+  }
+}
 
-    function showSubquery() {
-      document.getElementById('sqlDemo').innerHTML = `
-        <div class="query">-- Find users with above-average order totals</div>
-        <div class="query">SELECT first_name, last_name, email</div>
-        <div class="query">FROM users</div>
-        <div class="query">WHERE user_id IN (</div>
-        <div class="query">  SELECT user_id</div>
-        <div class="query">  FROM orders</div>
-        <div class="query">  GROUP BY user_id</div>
-        <div class="query">  HAVING AVG(total) > (</div>
-        <div class="query">    SELECT AVG(total) FROM orders</div>
-        <div class="query">  )</div>
-        <div class="query">);</div>
-        <div class="result">-- Results: 234 high-value customers found</div>
-      `;
-    }
+document.getElementById('retry-btn').addEventListener('click', () => {
+  correctCount = 0; answeredCount = 0;
+  document.getElementById('retry-btn').classList.remove('show');
+  document.getElementById('challenges').innerHTML = '';
+  render();
+  updateProgress();
+});
 
-    function checkAnswer(choice) {
-      const answerDiv = document.getElementById('performanceAnswer');
-      if (choice === 'A') {
-        answerDiv.innerHTML = '✅ Correct! EXISTS is more efficient as it stops searching once a match is found.';
-        answerDiv.style.color = '#10b981';
-      } else {
-        answerDiv.innerHTML = '❌ Actually, EXISTS is more efficient for this scenario as it can use indexes better.';
-        answerDiv.style.color = '#ef4444';
-      }
-    }
+function launchConfetti() {
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const pieces = [];
+  const colors = ['#60a5fa','#34d399','#fbbf24','#f472b6','#a78bfa','#22d3ee'];
+  for (let i = 0; i < 120; i++) {
+    pieces.push({
+      x: Math.random() * canvas.width, y: -20 - Math.random() * 200,
+      w: 6 + Math.random() * 6, h: 4 + Math.random() * 4,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vy: 2 + Math.random() * 3, vx: (Math.random() - 0.5) * 4,
+      rot: Math.random() * 360, vr: (Math.random() - 0.5) * 10,
+      life: 1
+    });
+  }
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let alive = false;
+    pieces.forEach(p => {
+      if (p.life <= 0) return;
+      alive = true;
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+      p.vy += 0.05;
+      if (p.y > canvas.height) p.life = 0;
+      if (frame > 60) p.life -= 0.015;
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot * Math.PI / 180);
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+      ctx.restore();
+    });
+    frame++;
+    if (alive) requestAnimationFrame(draw);
+  }
+  draw();
+}
 
-    function showSolution() {
-      document.getElementById('sqlSolution').style.display = 'block';
-    }
-
-    function tryYourself() {
-      alert('Try writing the query yourself! Think about using subqueries or window functions.');
-    }
-
-    function selectOption(element, index) {
-      // Remove selected class from all options
-      document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
-      // Add selected class to clicked option
-      element.classList.add('selected');
-      selectedOption = index;
-    }
-
-    function checkQuizAnswer() {
-      const feedback = document.getElementById('quizFeedback');
-      const options = document.querySelectorAll('.option');
-
-      if (selectedOption === null) {
-        feedback.innerHTML = 'Please select an answer first!';
-        feedback.style.color = '#f59e0b';
-        return;
-      }
-
-      options.forEach((opt, index) => {
-        if (index === correctAnswer) {
-          opt.classList.add('correct');
-        } else if (index === selectedOption) {
-          opt.classList.add('incorrect');
-        }
-      });
-
-      if (selectedOption === correctAnswer) {
-        feedback.innerHTML = '🎉 Correct! SQL stands for Structured Query Language.';
-        feedback.style.color = '#10b981';
-      } else {
-        feedback.innerHTML = '❌ Not quite. The correct answer is "Structured Query Language".';
-        feedback.style.color = '#ef4444';
-      }
-    }
-
-    // Initialize with basic select example
-    showBasicSelect();
-  </script>
+render();
+</script>
 </body>
 </html>

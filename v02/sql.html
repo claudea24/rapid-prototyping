@@ -5,69 +5,75 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SQL – Claudea's DS Interview Prep</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #0d1117; --surface: #161b22; --border: #21262d;
-      --text: #c9d1d9; --text-muted: #8b949e; --text-dim: #484f58; --white: #e6edf3;
-      --green: #4ade80; --blue: #58a6ff; --yellow: #e3b341;
+      --bg: #faf6f1; --surface: #ffffff; --border: #e8e0d6;
+      --text: #3d3529; --text-muted: #8a7e6f; --text-dim: #b5a998;
+      --heading: #2a1f14; --terracotta: #c4654a; --sage: #6b8f71;
+      --navy: #2c3e6b; --amber: #d4953a; --plum: #7b5ea7; --teal: #3a8a8a;
+      --accent: var(--navy);
     }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.7; }
 
-    /* Nav */
     nav {
       position: sticky; top: 0; z-index: 200;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 0 32px; height: 56px;
-      background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
+      padding: 0 32px; height: 60px;
+      background: rgba(250,246,241,0.95); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
-    nav .brand { font-weight: 800; font-size: 1rem; color: var(--white); display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    nav .brand span { color: #4ade80; }
-    nav .nav-links { display: flex; gap: 4px; }
+    nav .brand {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700; font-size: 1.1rem; color: var(--heading);
+      display: flex; align-items: center; gap: 10px; text-decoration: none;
+    }
+    nav .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--terracotta); }
+    nav .nav-links { display: flex; gap: 2px; }
     nav .nav-links a {
-      text-decoration: none; color: var(--text-muted); font-size: 0.78rem;
-      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+      text-decoration: none; color: var(--text-muted); font-size: 0.8rem;
+      padding: 6px 14px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
     }
-    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
-    nav .nav-links a.active { color: var(--white); background: var(--surface); }
-    nav .nav-links a.quiz-link { color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
-    nav .nav-links a.quiz-link:hover { background: rgba(74,222,128,0.1); }
+    nav .nav-links a:hover { background: rgba(0,0,0,0.04); color: var(--heading); }
+    nav .nav-links a.active { color: var(--heading); background: rgba(0,0,0,0.05); font-weight: 600; }
+    nav .nav-links a.quiz-link { color: var(--terracotta); border: 1px solid rgba(196,101,74,0.3); font-weight: 600; }
+    nav .nav-links a.quiz-link:hover { background: rgba(196,101,74,0.08); }
 
-    /* Container */
-    .container { max-width: 1120px; margin: 0 auto; padding: 40px 32px 64px; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 44px 32px 64px; }
 
-    /* Section header */
-    .section-header { margin-bottom: 36px; }
-    .section-header .icon-title {
-      display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
-    }
+    .section-header { margin-bottom: 40px; }
+    .section-header .icon-title { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
     .section-header .icon {
-      width: 48px; height: 48px; border-radius: 10px;
+      width: 50px; height: 50px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem; background: rgba(96,165,250,0.15);
+      font-size: 1.4rem; background: rgba(44,62,107,0.1);
     }
-    .section-header h1 { font-size: 2rem; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
-    .section-header p { font-size: 0.95rem; color: var(--text-muted); margin-left: 62px; }
+    .section-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem; font-weight: 800; color: var(--heading); letter-spacing: -0.5px;
+    }
+    .section-header p { font-size: 0.95rem; color: var(--text-muted); margin-left: 64px; }
 
-    /* Cards grid */
     .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 20px;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px;
     }
 
-    /* Card */
     .card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-      padding: 28px; position: relative; transition: border-color 0.2s;
-      scroll-margin-top: 72px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 28px; position: relative; transition: all 0.25s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04); scroll-margin-top: 72px;
     }
-    .card:hover { border-color: #3a3a4a; }
+    .card:hover {
+      border-color: #d0c8be; box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
+    }
 
     .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
-    .card-header h2 { font-size: 1rem; font-weight: 700; color: var(--white); }
+    .card-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; font-weight: 700; color: var(--heading);
+    }
 
     .card .anchor-link {
       position: absolute; top: 16px; right: 16px;
@@ -77,55 +83,48 @@
     .card:hover .anchor-link { opacity: 1; }
     .card .anchor-link:hover { color: var(--text-muted); }
 
-    /* Tags */
     .tag {
       font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
-      padding: 3px 8px; border-radius: 6px;
+      padding: 3px 9px; border-radius: 6px;
     }
-    .tag-key { background: rgba(88,166,255,0.15); color: var(--blue); }
-    .tag-tip { background: rgba(74,222,128,0.15); color: var(--green); }
-    .tag-warn { background: rgba(227,179,65,0.15); color: var(--yellow); }
+    .tag-key { background: rgba(44,62,107,0.1); color: var(--navy); }
+    .tag-tip { background: rgba(107,143,113,0.12); color: var(--sage); }
+    .tag-warn { background: rgba(212,149,58,0.12); color: var(--amber); }
 
-    /* Card content */
     .card ul { list-style: none; padding: 0; }
-    .card ul li {
-      font-size: 0.85rem; color: var(--text); padding: 4px 0; line-height: 1.5;
-    }
+    .card ul li { font-size: 0.87rem; color: var(--text); padding: 4px 0; line-height: 1.55; }
     .card ul li::before { content: ""; }
-    .card p.note { font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+    .card p.note { font-size: 0.82rem; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
 
-    /* Code blocks */
     pre {
-      background: #0d1117; border: 1px solid var(--border); border-radius: 8px;
-      padding: 16px; overflow-x: auto; font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem; line-height: 1.7; color: var(--text);
+      background: #2a1f14; border: none; border-radius: 10px;
+      padding: 18px; overflow-x: auto; font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem; line-height: 1.7; color: #e8ddd0;
     }
     code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
     .inline-code {
-      background: rgba(110,118,129,0.15); padding: 2px 6px; border-radius: 4px;
-      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+      background: rgba(42,31,20,0.07); padding: 2px 7px; border-radius: 5px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--heading);
     }
 
-    /* Syntax highlighting */
-    .kw { color: #ff7b72; }
-    .fn { color: #d2a8ff; }
-    .str { color: #a5d6ff; }
-    .cm { color: #484f58; font-style: italic; }
-    .num { color: #79c0ff; }
+    .kw { color: #e8916e; }
+    .fn { color: #c4a8e0; }
+    .str { color: #8cbfab; }
+    .cm { color: #7a6f62; font-style: italic; }
+    .num { color: #7aaed4; }
 
-    /* Footer */
     footer {
-      text-align: center; padding: 32px; font-size: 0.8rem; color: var(--text-dim);
-      border-top: 1px solid var(--border);
+      text-align: center; padding: 36px; font-size: 0.82rem; color: var(--text-dim);
+      border-top: 1px solid var(--border); margin-top: 20px;
     }
     footer a { color: var(--text-muted); text-decoration: none; }
-    footer a:hover { color: var(--white); }
+    footer a:hover { color: var(--heading); }
 
     @media (max-width: 600px) {
       nav { padding: 0 16px; }
       nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
       .container { padding: 24px 16px 48px; }
-      .section-header h1 { font-size: 1.5rem; }
+      .section-header h1 { font-size: 1.6rem; }
       .section-header p { margin-left: 0; }
       .cards-grid { grid-template-columns: 1fr; }
     }
@@ -134,7 +133,7 @@
 <body>
 
   <nav>
-    <a href="index.html" class="brand"><span>&#9670;</span> Claudea's DS Prep</a>
+    <a href="index.html" class="brand"><span class="dot"></span> Claudea's DS Prep</a>
     <div class="nav-links">
       <a href="sql.html" class="active">SQL</a>
       <a href="python.html">Python</a>
@@ -157,14 +156,13 @@
 
     <div class="cards-grid">
 
-      <!-- Card 1: Query Execution Order -->
       <div class="card" id="sql-execution-order">
         <a href="#sql-execution-order" class="anchor-link">#</a>
         <div class="card-header">
           <h2>Query Execution Order</h2>
           <span class="tag tag-key">Key</span>
         </div>
-        <p style="font-size:0.85rem; margin-bottom:12px; color:var(--text-muted);">SQL doesn't run in the order you write it:</p>
+        <p style="font-size:0.87rem; margin-bottom:12px; color:var(--text-muted);">SQL doesn't run in the order you write it:</p>
         <pre><span class="num">1.</span> <span class="kw">FROM</span> / <span class="kw">JOIN</span>
 <span class="num">2.</span> <span class="kw">WHERE</span>
 <span class="num">3.</span> <span class="kw">GROUP BY</span>
@@ -174,7 +172,6 @@
 <span class="num">7.</span> <span class="kw">LIMIT</span></pre>
       </div>
 
-      <!-- Card 2: JOIN Types -->
       <div class="card" id="sql-joins">
         <a href="#sql-joins" class="anchor-link">#</a>
         <div class="card-header">
@@ -182,16 +179,15 @@
           <span class="tag tag-key">Key</span>
         </div>
         <ul>
-          <li><span class="inline-code"><span class="kw">INNER JOIN</span></span> &mdash; matching rows in both tables</li>
-          <li><span class="inline-code"><span class="kw">LEFT JOIN</span></span> &mdash; all left rows + matching right</li>
-          <li><span class="inline-code"><span class="kw">RIGHT JOIN</span></span> &mdash; all right rows + matching left</li>
-          <li><span class="inline-code"><span class="kw">FULL OUTER</span></span> &mdash; all rows from both sides</li>
-          <li><span class="inline-code"><span class="kw">CROSS JOIN</span></span> &mdash; cartesian product</li>
+          <li><span class="inline-code">INNER JOIN</span> &mdash; matching rows in both tables</li>
+          <li><span class="inline-code">LEFT JOIN</span> &mdash; all left rows + matching right</li>
+          <li><span class="inline-code">RIGHT JOIN</span> &mdash; all right rows + matching left</li>
+          <li><span class="inline-code">FULL OUTER</span> &mdash; all rows from both sides</li>
+          <li><span class="inline-code">CROSS JOIN</span> &mdash; cartesian product</li>
           <li><span class="inline-code">Self Join</span> &mdash; table joined to itself</li>
         </ul>
       </div>
 
-      <!-- Card 3: Window Functions -->
       <div class="card" id="sql-window">
         <a href="#sql-window" class="anchor-link">#</a>
         <div class="card-header">
@@ -208,7 +204,6 @@
         <p class="note">Common: <code>ROW_NUMBER</code>, <code>RANK</code>, <code>DENSE_RANK</code>, <code>LAG</code>, <code>LEAD</code>, <code>SUM</code>, <code>AVG</code></p>
       </div>
 
-      <!-- Card 4: Aggregation Gotchas -->
       <div class="card" id="sql-aggregation">
         <a href="#sql-aggregation" class="anchor-link">#</a>
         <div class="card-header">
@@ -216,15 +211,14 @@
           <span class="tag tag-warn">Watch</span>
         </div>
         <ul>
-          <li><span class="inline-code"><span class="fn">COUNT</span>(*)</span> counts all rows incl. NULLs</li>
-          <li><span class="inline-code"><span class="fn">COUNT</span>(col)</span> skips NULLs</li>
-          <li><span class="inline-code"><span class="kw">WHERE</span></span> filters rows, <span class="inline-code"><span class="kw">HAVING</span></span> filters groups</li>
-          <li>Can't use aliases in <span class="inline-code"><span class="kw">WHERE</span></span> (runs before <span class="inline-code"><span class="kw">SELECT</span></span>)</li>
-          <li><span class="inline-code"><span class="kw">GROUP BY</span></span> &mdash; every non-aggregated column in SELECT must be in GROUP BY</li>
+          <li><span class="inline-code">COUNT(*)</span> counts all rows incl. NULLs</li>
+          <li><span class="inline-code">COUNT(col)</span> skips NULLs</li>
+          <li><span class="inline-code">WHERE</span> filters rows, <span class="inline-code">HAVING</span> filters groups</li>
+          <li>Can't use aliases in <span class="inline-code">WHERE</span> (runs before <span class="inline-code">SELECT</span>)</li>
+          <li><span class="inline-code">GROUP BY</span> &mdash; every non-aggregated column in SELECT must be in GROUP BY</li>
         </ul>
       </div>
 
-      <!-- Card 5: CTEs & Subqueries -->
       <div class="card" id="sql-ctes">
         <a href="#sql-ctes" class="anchor-link">#</a>
         <div class="card-header">
@@ -243,7 +237,6 @@
 <span class="kw">FROM</span> monthly_revenue;</pre>
       </div>
 
-      <!-- Card 6: Performance Tips -->
       <div class="card" id="sql-performance">
         <a href="#sql-performance" class="anchor-link">#</a>
         <div class="card-header">
@@ -251,11 +244,11 @@
           <span class="tag tag-tip">Tip</span>
         </div>
         <ul>
-          <li>Use <span class="inline-code"><span class="kw">EXPLAIN</span></span> to see query plan</li>
-          <li>Index columns used in <span class="inline-code"><span class="kw">WHERE</span></span> and <span class="inline-code"><span class="kw">JOIN</span></span></li>
-          <li>Avoid <span class="inline-code"><span class="kw">SELECT</span> *</span> in production</li>
-          <li>Filter early with <span class="inline-code"><span class="kw">WHERE</span></span> before <span class="inline-code"><span class="kw">JOIN</span></span></li>
-          <li>Use <span class="inline-code"><span class="kw">EXISTS</span></span> over <span class="inline-code"><span class="kw">IN</span></span> for large subqueries</li>
+          <li>Use <span class="inline-code">EXPLAIN</span> to see query plan</li>
+          <li>Index columns used in <span class="inline-code">WHERE</span> and <span class="inline-code">JOIN</span></li>
+          <li>Avoid <span class="inline-code">SELECT *</span> in production</li>
+          <li>Filter early with <span class="inline-code">WHERE</span> before <span class="inline-code">JOIN</span></li>
+          <li>Use <span class="inline-code">EXISTS</span> over <span class="inline-code">IN</span> for large subqueries</li>
         </ul>
       </div>
 

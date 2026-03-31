@@ -3,139 +3,65 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Machine Learning — Claudea's DS Interview Prep</title>
+  <title>Machine Learning – Claudea's DS Interview Prep</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #0d1117; --surface: #161b22; --border: #21262d;
-      --text: #c9d1d9; --text-muted: #8b949e; --text-dim: #484f58; --white: #e6edf3;
-      --blue: #96d0ff; --green: #4ade80; --yellow: #e3b341;
-      --purple: #c084fc;
+      --bg: #faf6f1; --surface: #ffffff; --border: #e8e0d6;
+      --text: #3d3529; --text-muted: #8a7e6f; --text-dim: #b5a998;
+      --heading: #2a1f14; --terracotta: #c4654a; --sage: #6b8f71;
+      --navy: #2c3e6b; --amber: #d4953a; --plum: #7b5ea7; --teal: #3a8a8a;
     }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg); color: var(--text);
-      min-height: 100vh; padding: 0;
-    }
+    body { font-family: 'Source Sans 3', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.7; }
 
-    /* Nav */
-    nav {
-      position: sticky; top: 0; z-index: 200;
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 0 32px; height: 56px;
-      background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-    nav .brand { font-weight: 800; font-size: 1rem; color: var(--white); display: flex; align-items: center; gap: 8px; text-decoration: none; }
-    nav .brand span { color: #4ade80; }
-    nav .nav-links { display: flex; gap: 4px; }
-    nav .nav-links a {
-      text-decoration: none; color: var(--text-muted); font-size: 0.78rem;
-      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
-    }
-    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
-    nav .nav-links a.active { color: var(--white); background: var(--surface); }
-    nav .nav-links a.quiz-link { color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
-    nav .nav-links a.quiz-link:hover { background: rgba(74,222,128,0.1); }
+    nav { position: sticky; top: 0; z-index: 200; display: flex; justify-content: space-between; align-items: center; padding: 0 32px; height: 60px; background: rgba(250,246,241,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+    nav .brand { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1.1rem; color: var(--heading); display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    nav .brand .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--terracotta); }
+    nav .nav-links { display: flex; gap: 2px; }
+    nav .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.8rem; padding: 6px 14px; border-radius: 6px; transition: all 0.2s; font-weight: 500; }
+    nav .nav-links a:hover { background: rgba(0,0,0,0.04); color: var(--heading); }
+    nav .nav-links a.active { color: var(--heading); background: rgba(0,0,0,0.05); font-weight: 600; }
+    nav .nav-links a.quiz-link { color: var(--terracotta); border: 1px solid rgba(196,101,74,0.3); font-weight: 600; }
+    nav .nav-links a.quiz-link:hover { background: rgba(196,101,74,0.08); }
 
-    /* Container */
-    .container { max-width: 800px; margin: 0 auto; padding: 48px 24px 64px; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 44px 32px 64px; }
+    .section-header { margin-bottom: 40px; }
+    .section-header .icon-title { display: flex; align-items: center; gap: 14px; margin-bottom: 8px; }
+    .section-header .icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; background: rgba(123,94,167,0.1); }
+    .section-header h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 800; color: var(--heading); }
+    .section-header p { font-size: 0.95rem; color: var(--text-muted); margin-left: 64px; }
 
-    /* Section header */
-    .section-header {
-      display: flex; align-items: center; gap: 20px; margin-bottom: 40px;
-    }
-    .section-icon {
-      width: 56px; height: 56px; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.7rem; flex-shrink: 0;
-      background: rgba(192,132,252,0.15);
-    }
-    .section-header .info h1 {
-      font-size: 1.8rem; font-weight: 800; color: var(--white);
-      letter-spacing: -0.5px; margin-bottom: 4px;
-    }
-    .section-header .info p {
-      font-size: 0.9rem; color: var(--text-muted); line-height: 1.4;
-    }
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 28px; position: relative; transition: all 0.25s; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .card:hover { border-color: #d0c8be; box-shadow: 0 8px 24px rgba(0,0,0,0.06); transform: translateY(-2px); }
+    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .card-header h2 { font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700; color: var(--heading); }
 
-    /* Cards */
-    .card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 28px; margin-bottom: 20px;
-      scroll-margin-top: 72px;
-    }
-    .card-head {
-      display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
-    }
-    .card-head h2 {
-      font-size: 1.1rem; font-weight: 700; color: var(--white);
-    }
-    .card-head h2 a {
-      color: inherit; text-decoration: none;
-    }
-    .card-head h2 a .anchor {
-      opacity: 0; margin-left: 6px; color: var(--text-dim);
-      font-weight: 400; transition: opacity 0.2s;
-    }
-    .card:hover .anchor { opacity: 1; }
-    .card-head h2 a .anchor:hover { color: var(--purple); }
+    .tag { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; padding: 3px 9px; border-radius: 6px; }
+    .tag-key { background: rgba(44,62,107,0.1); color: var(--navy); }
+    .tag-tip { background: rgba(107,143,113,0.12); color: var(--sage); }
+    .tag-warn { background: rgba(212,149,58,0.12); color: var(--amber); }
 
-    .tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.65rem; font-weight: 600; text-transform: uppercase;
-      letter-spacing: 1px; padding: 3px 8px; border-radius: 6px;
-    }
-    .tag-key { background: rgba(150,208,255,0.12); color: var(--blue); }
-    .tag-tip { background: rgba(74,222,128,0.12); color: var(--green); }
-    .tag-warn { background: rgba(227,179,65,0.12); color: var(--yellow); }
+    .card ul { list-style: none; padding: 0; }
+    .card ul li { font-size: 0.87rem; color: var(--text); padding: 4px 0; line-height: 1.55; }
+    .inline-code { background: rgba(42,31,20,0.07); padding: 2px 7px; border-radius: 5px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--heading); }
 
-    .card ul {
-      list-style: none; padding: 0;
-    }
-    .card ul li {
-      padding: 8px 0; border-bottom: 1px solid var(--border);
-      font-size: 0.88rem; line-height: 1.55;
-    }
-    .card ul li:last-child { border-bottom: none; padding-bottom: 0; }
-    .card ul li:first-child { padding-top: 0; }
-    .card ul li strong {
-      color: var(--white); font-weight: 600;
-    }
-    .card ul li code {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8em; padding: 2px 6px;
-      background: rgba(110,118,129,0.15); border-radius: 4px;
-    }
-
-    .card p {
-      font-size: 0.88rem; line-height: 1.65; color: var(--text);
-    }
-    .card p + ul { margin-top: 12px; }
-
-    /* Footer */
-    footer {
-      text-align: center; padding: 40px 24px;
-      font-size: 0.8rem; color: var(--text-dim);
-    }
+    footer { text-align: center; padding: 36px; font-size: 0.82rem; color: var(--text-dim); border-top: 1px solid var(--border); margin-top: 20px; }
     footer a { color: var(--text-muted); text-decoration: none; }
-    footer a:hover { color: var(--white); }
+    footer a:hover { color: var(--heading); }
 
     @media (max-width: 600px) {
-      nav { padding: 0 16px; }
-      nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
-      .container { padding: 32px 16px 48px; }
-      .section-header .info h1 { font-size: 1.4rem; }
-      .card { padding: 20px; }
+      nav { padding: 0 16px; } nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
+      .container { padding: 24px 16px 48px; } .section-header h1 { font-size: 1.6rem; }
+      .section-header p { margin-left: 0; } .cards-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-
   <nav>
-    <a href="index.html" class="brand"><span>&#9670;</span> Claudea's DS Prep</a>
+    <a href="index.html" class="brand"><span class="dot"></span> Claudea's DS Prep</a>
     <div class="nav-links">
       <a href="sql.html">SQL</a>
       <a href="python.html">Python</a>
@@ -148,114 +74,109 @@
   </nav>
 
   <div class="container">
-
     <div class="section-header">
-      <div class="section-icon">&#129302;</div>
-      <div class="info">
+      <div class="icon-title">
+        <div class="icon">&#129302;</div>
         <h1>Machine Learning</h1>
-        <p>Algorithms, evaluation metrics, and model selection</p>
       </div>
+      <p>Algorithms, evaluation metrics, bias-variance, feature engineering, and cross-validation.</p>
     </div>
 
-    <!-- Card 1: Supervised Algorithms -->
-    <div class="card" id="ml-supervised">
-      <div class="card-head">
-        <span class="tag tag-key">Key</span>
-        <h2><a href="#ml-supervised">Supervised Algorithms<span class="anchor">#</span></a></h2>
-      </div>
-      <ul>
-        <li><strong>Linear Regression</strong> &mdash; continuous target, assumes linearity</li>
-        <li><strong>Logistic Regression</strong> &mdash; binary classification, outputs probabilities</li>
-        <li><strong>Decision Trees</strong> &mdash; interpretable, prone to overfitting</li>
-        <li><strong>Random Forest</strong> &mdash; bagging ensemble, reduces variance</li>
-        <li><strong>Gradient Boosting (XGBoost)</strong> &mdash; sequential trees, reduces bias</li>
-        <li><strong>SVM</strong> &mdash; finds max-margin hyperplane, kernel trick</li>
-        <li><strong>KNN</strong> &mdash; instance-based, no training, slow at scale</li>
-      </ul>
-    </div>
+    <div class="cards-grid">
 
-    <!-- Card 2: Unsupervised Algorithms -->
-    <div class="card" id="ml-unsupervised">
-      <div class="card-head">
-        <span class="tag tag-key">Key</span>
-        <h2><a href="#ml-unsupervised">Unsupervised Algorithms<span class="anchor">#</span></a></h2>
+      <div class="card">
+        <div class="card-header">
+          <h2>Supervised Algorithms</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>Linear Regression</strong> &mdash; continuous target, assumes linearity</li>
+          <li><strong>Logistic Regression</strong> &mdash; binary classification, outputs probabilities</li>
+          <li><strong>Decision Trees</strong> &mdash; interpretable, prone to overfitting</li>
+          <li><strong>Random Forest</strong> &mdash; bagging ensemble, reduces variance</li>
+          <li><strong>Gradient Boosting (XGBoost)</strong> &mdash; sequential trees, reduces bias</li>
+          <li><strong>SVM</strong> &mdash; finds max-margin hyperplane, kernel trick</li>
+          <li><strong>KNN</strong> &mdash; instance-based, no training, slow at scale</li>
+        </ul>
       </div>
-      <ul>
-        <li><strong>K-Means</strong> &mdash; partition into k clusters by centroid distance</li>
-        <li><strong>Hierarchical</strong> &mdash; agglomerative / divisive dendrogram</li>
-        <li><strong>DBSCAN</strong> &mdash; density-based, finds arbitrary-shaped clusters</li>
-        <li><strong>PCA</strong> &mdash; dimensionality reduction, max variance directions</li>
-        <li><strong>t-SNE / UMAP</strong> &mdash; non-linear embedding for visualization</li>
-      </ul>
-    </div>
 
-    <!-- Card 3: Evaluation Metrics -->
-    <div class="card" id="ml-metrics">
-      <div class="card-head">
-        <span class="tag tag-key">Key</span>
-        <h2><a href="#ml-metrics">Evaluation Metrics<span class="anchor">#</span></a></h2>
+      <div class="card">
+        <div class="card-header">
+          <h2>Unsupervised Algorithms</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>K-Means</strong> &mdash; partition into k clusters by centroid distance</li>
+          <li><strong>Hierarchical</strong> &mdash; agglomerative / divisive dendrogram</li>
+          <li><strong>DBSCAN</strong> &mdash; density-based, finds arbitrary-shaped clusters</li>
+          <li><strong>PCA</strong> &mdash; dimensionality reduction, max variance directions</li>
+          <li><strong>t-SNE / UMAP</strong> &mdash; non-linear embedding for visualization</li>
+        </ul>
       </div>
-      <ul>
-        <li><strong>Accuracy</strong> &mdash; (TP+TN) / total &mdash; misleading if imbalanced</li>
-        <li><strong>Precision</strong> &mdash; TP / (TP+FP) &mdash; &ldquo;of predicted positive, how many correct?&rdquo;</li>
-        <li><strong>Recall</strong> &mdash; TP / (TP+FN) &mdash; &ldquo;of actual positive, how many found?&rdquo;</li>
-        <li><strong>F1 Score</strong> &mdash; harmonic mean of precision &amp; recall</li>
-        <li><strong>AUC-ROC</strong> &mdash; area under TPR vs FPR curve</li>
-        <li><strong>RMSE / MAE</strong> &mdash; regression error metrics</li>
-      </ul>
-    </div>
 
-    <!-- Card 4: Bias-Variance Tradeoff -->
-    <div class="card" id="ml-bias-variance">
-      <div class="card-head">
-        <span class="tag tag-key">Key</span>
-        <h2><a href="#ml-bias-variance">Bias-Variance Tradeoff<span class="anchor">#</span></a></h2>
+      <div class="card">
+        <div class="card-header">
+          <h2>Evaluation Metrics</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>Accuracy</strong> &mdash; (TP+TN) / total &mdash; misleading if imbalanced</li>
+          <li><strong>Precision</strong> &mdash; TP / (TP+FP) &mdash; "of predicted positive, how many correct?"</li>
+          <li><strong>Recall</strong> &mdash; TP / (TP+FN) &mdash; "of actual positive, how many found?"</li>
+          <li><strong>F1 Score</strong> &mdash; harmonic mean of precision &amp; recall</li>
+          <li><strong>AUC-ROC</strong> &mdash; area under TPR vs FPR curve</li>
+          <li><strong>RMSE / MAE</strong> &mdash; regression error metrics</li>
+        </ul>
       </div>
-      <p><strong>Bias</strong> = error from wrong assumptions (underfitting).<br>
-      <strong>Variance</strong> = error from sensitivity to training data (overfitting).</p>
-      <ul>
-        <li><strong>High bias</strong> &mdash; try more features, complex model</li>
-        <li><strong>High variance</strong> &mdash; more data, regularization, simpler model</li>
-        <li><strong>L1 (Lasso)</strong> &mdash; feature selection (sparse)</li>
-        <li><strong>L2 (Ridge)</strong> &mdash; shrinks coefficients (stable)</li>
-      </ul>
-    </div>
 
-    <!-- Card 5: Feature Engineering -->
-    <div class="card" id="ml-features">
-      <div class="card-head">
-        <span class="tag tag-tip">Tip</span>
-        <h2><a href="#ml-features">Feature Engineering<span class="anchor">#</span></a></h2>
+      <div class="card">
+        <div class="card-header">
+          <h2>Bias-Variance Tradeoff</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>Bias</strong> = error from wrong assumptions (underfitting)</li>
+          <li><strong>Variance</strong> = error from sensitivity to training data (overfitting)</li>
+          <li>High bias &rarr; try more features, complex model</li>
+          <li>High variance &rarr; more data, regularization, simpler model</li>
+          <li><strong>L1 (Lasso)</strong> &mdash; feature selection (sparse)</li>
+          <li><strong>L2 (Ridge)</strong> &mdash; shrinks coefficients (stable)</li>
+        </ul>
       </div>
-      <ul>
-        <li><strong>One-hot encoding</strong> &mdash; categorical &rarr; binary columns</li>
-        <li><strong>Label encoding</strong> &mdash; ordinal categories</li>
-        <li><strong>Scaling</strong> &mdash; StandardScaler (z-score), MinMaxScaler</li>
-        <li><strong>Log transform</strong> &mdash; right-skewed distributions</li>
-        <li><strong>Feature crosses</strong> &mdash; interaction terms</li>
-        <li><strong>Target encoding</strong> &mdash; category &rarr; mean of target (watch leakage!)</li>
-      </ul>
-    </div>
 
-    <!-- Card 6: Cross-Validation -->
-    <div class="card" id="ml-cv">
-      <div class="card-head">
-        <span class="tag tag-warn">Watch</span>
-        <h2><a href="#ml-cv">Cross-Validation<span class="anchor">#</span></a></h2>
+      <div class="card">
+        <div class="card-header">
+          <h2>Feature Engineering</h2>
+          <span class="tag tag-tip">Tip</span>
+        </div>
+        <ul>
+          <li><strong>One-hot encoding</strong> &mdash; categorical &rarr; binary columns</li>
+          <li><strong>Label encoding</strong> &mdash; ordinal categories</li>
+          <li><strong>Scaling</strong> &mdash; StandardScaler (z-score), MinMaxScaler</li>
+          <li><strong>Log transform</strong> &mdash; right-skewed distributions</li>
+          <li><strong>Feature crosses</strong> &mdash; interaction terms</li>
+          <li><strong>Target encoding</strong> &mdash; category &rarr; mean of target (watch leakage!)</li>
+        </ul>
       </div>
-      <ul>
-        <li><strong>k-Fold CV</strong> &mdash; split data into k folds, rotate test set</li>
-        <li><strong>Stratified k-Fold</strong> &mdash; preserves class distribution</li>
-        <li><strong>Time Series CV</strong> &mdash; expanding or sliding window (no future data!)</li>
-        <li><strong>Data leakage</strong> &mdash; fit scalers/encoders ONLY on training fold</li>
-      </ul>
-    </div>
 
+      <div class="card">
+        <div class="card-header">
+          <h2>Cross-Validation</h2>
+          <span class="tag tag-warn">Watch</span>
+        </div>
+        <ul>
+          <li><strong>k-Fold CV</strong> &mdash; split data into k folds, rotate test set</li>
+          <li><strong>Stratified k-Fold</strong> &mdash; preserves class distribution</li>
+          <li><strong>Time Series CV</strong> &mdash; expanding or sliding window (no future data!)</li>
+          <li><strong>Data leakage</strong> &mdash; fit scalers/encoders ONLY on training fold</li>
+        </ul>
+      </div>
+
+    </div>
   </div>
 
   <footer>
     <p>Claudea's DS Interview Prep &middot; v02 &middot; <a href="index.html">Back to All Topics</a></p>
   </footer>
-
 </body>
 </html>

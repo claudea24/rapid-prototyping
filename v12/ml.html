@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML Lab — Interactive DS Prep v12</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f5f5f0; --surface: #ffffff; --border: #e2e2da;
+      --text: #2d2d2d; --text-muted: #6b6b6b; --heading: #1a1a1a;
+      --purple: #7c3aed; --green: #16a34a; --amber: #d97706;
+      --blue: #2563eb; --rose: #e11d48;
+      --code-bg: #1e1e2e; --code-text: #cdd6f4;
+    }
+    body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    nav {
+      position: sticky; top: 0; z-index: 200; display: flex; justify-content: space-between;
+      align-items: center; padding: 0 32px; height: 56px;
+      background: rgba(245,245,240,0.95); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand { font-weight: 700; font-size: 1rem; color: var(--heading); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    nav .brand .dot { width: 8px; height: 8px; border-radius: 3px; background: var(--blue); }
+    nav .nav-links { display: flex; gap: 2px; }
+    nav .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.78rem; padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500; }
+    nav .nav-links a:hover { background: rgba(0,0,0,0.04); color: var(--heading); }
+    nav .nav-links a.active { color: var(--heading); background: rgba(0,0,0,0.06); font-weight: 600; }
+
+    .page-header { padding: 32px 32px 20px; max-width: 1100px; margin: 0 auto; }
+    .page-header .top { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+    .page-header .icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: rgba(124,58,237,0.08); }
+    .page-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--heading); }
+    .page-header p { font-size: 0.88rem; color: var(--text-muted); margin-left: 58px; }
+
+    .layout { max-width: 1100px; margin: 0 auto; padding: 0 32px 64px; display: grid; grid-template-columns: 220px 1fr; gap: 24px; }
+
+    .sidebar { position: sticky; top: 72px; height: fit-content; }
+    .sidebar h3 { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 10px; }
+    .topic-list { display: flex; flex-direction: column; gap: 4px; }
+    .topic-btn {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+      cursor: pointer; transition: all 0.2s; text-align: left;
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 0.8rem; color: var(--text);
+    }
+    .topic-btn:hover { border-color: #ccc; background: #fafaf6; }
+    .topic-btn.active { border-color: var(--purple); background: rgba(124,58,237,0.04); color: var(--purple); font-weight: 600; }
+    .topic-btn .num { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); width: 20px; text-align: center; flex-shrink: 0; }
+    .topic-btn.active .num { color: var(--purple); }
+
+    .main { min-width: 0; }
+
+    .section-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      margin-bottom: 20px; overflow: hidden; display: none;
+    }
+    .section-card.active { display: block; }
+    .section-card .card-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .section-card .card-header h2 { font-size: 1.05rem; font-weight: 700; color: var(--heading); }
+    .section-card .card-header .tag {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      padding: 3px 10px; border-radius: 12px;
+      background: rgba(124,58,237,0.08); color: var(--purple);
+    }
+    .section-card .card-desc {
+      padding: 16px 24px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-card .card-body { padding: 24px; }
+
+    /* Confusion Matrix */
+    .cm-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .cm-grid { display: grid; grid-template-columns: auto 1fr 1fr; grid-template-rows: auto 1fr 1fr; gap: 0; }
+    .cm-corner { width: 60px; height: 40px; }
+    .cm-col-label, .cm-row-label {
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text-muted); display: flex; align-items: center; justify-content: center; padding: 4px;
+    }
+    .cm-row-label { writing-mode: vertical-lr; transform: rotate(180deg); }
+    .cm-cell {
+      border: 1px solid var(--border); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 16px 8px; gap: 8px;
+      min-height: 100px; border-radius: 8px; margin: 2px; transition: background 0.2s;
+    }
+    .cm-cell.tp { background: rgba(22,163,74,0.06); }
+    .cm-cell.fp { background: rgba(225,29,72,0.06); }
+    .cm-cell.fn { background: rgba(217,119,6,0.06); }
+    .cm-cell.tn { background: rgba(37,99,235,0.06); }
+    .cm-cell .cm-label { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); }
+    .cm-cell .cm-value { font-size: 1.6rem; font-weight: 700; color: var(--heading); font-family: 'IBM Plex Mono', monospace; }
+    .cm-cell .cm-controls { display: flex; gap: 6px; }
+    .cm-btn {
+      width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--surface); cursor: pointer; font-size: 0.9rem; font-weight: 600;
+      color: var(--text); display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s; font-family: 'IBM Plex Sans', sans-serif;
+    }
+    .cm-btn:hover { border-color: var(--purple); color: var(--purple); background: rgba(124,58,237,0.04); }
+    .metrics-panel { display: flex; flex-direction: column; gap: 12px; }
+    .metric-row { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+    .metric-row .metric-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 4px; }
+    .metric-row .metric-val { font-size: 1.3rem; font-weight: 700; color: var(--heading); font-family: 'IBM Plex Mono', monospace; }
+    .metric-row .metric-formula { font-size: 0.72rem; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; margin-top: 4px; }
+
+    /* Algorithm Comparison */
+    .algo-controls { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+    .algo-slider-group { flex: 1; min-width: 200px; }
+    .algo-slider-group label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); display: block; margin-bottom: 8px; }
+    .algo-slider-group .slider-row { display: flex; align-items: center; gap: 12px; }
+    .algo-slider-group input[type=range] { flex: 1; accent-color: var(--purple); height: 6px; }
+    .algo-slider-group .slider-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; font-weight: 600; color: var(--heading); min-width: 50px; text-align: right; }
+    .algo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+    .algo-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; transition: all 0.3s; }
+    .algo-card:hover { border-color: #ccc; }
+    .algo-card .algo-name { font-size: 0.78rem; font-weight: 700; color: var(--heading); margin-bottom: 12px; }
+    .algo-card .algo-metric { margin-bottom: 8px; }
+    .algo-card .algo-metric .am-label { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+    .algo-card .algo-metric .am-bar { height: 6px; border-radius: 3px; background: var(--border); margin-top: 4px; overflow: hidden; }
+    .algo-card .algo-metric .am-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+    .algo-card .algo-metric .am-fill.acc { background: var(--green); }
+    .algo-card .algo-metric .am-fill.spd { background: var(--purple); }
+    .algo-card .algo-metric .am-val { font-size: 0.72rem; font-weight: 600; font-family: 'IBM Plex Mono', monospace; color: var(--heading); margin-top: 3px; }
+
+    /* Bias-Variance */
+    .bv-slider-row { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+    .bv-slider-row label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); white-space: nowrap; }
+    .bv-slider-row input[type=range] { flex: 1; accent-color: var(--purple); }
+    .bv-slider-row .bv-val { font-family: 'IBM Plex Mono', monospace; font-size: 1rem; font-weight: 700; color: var(--heading); min-width: 28px; text-align: center; }
+    .bv-display { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .bv-box { border-radius: 12px; padding: 20px; text-align: center; border: 1px solid var(--border); transition: all 0.3s; }
+    .bv-box.bias-box { background: rgba(37,99,235,0.04); }
+    .bv-box.var-box { background: rgba(225,29,72,0.04); }
+    .bv-box .bv-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 6px; }
+    .bv-box .bv-number { font-size: 2rem; font-weight: 700; font-family: 'IBM Plex Mono', monospace; transition: all 0.3s; }
+    .bv-box.bias-box .bv-number { color: var(--blue); }
+    .bv-box.var-box .bv-number { color: var(--rose); }
+    .bv-bar-section { display: flex; flex-direction: column; gap: 10px; }
+    .bv-bar-row { display: flex; align-items: center; gap: 12px; }
+    .bv-bar-row .bbl { font-size: 0.72rem; font-weight: 600; width: 70px; text-align: right; color: var(--text-muted); }
+    .bv-track { flex: 1; height: 10px; background: var(--border); border-radius: 5px; overflow: hidden; }
+    .bv-fill { height: 100%; border-radius: 5px; transition: width 0.4s ease; }
+    .bv-fill.bias-fill { background: var(--blue); }
+    .bv-fill.var-fill { background: var(--rose); }
+    .bv-fill.total-fill { background: var(--purple); }
+    .bv-note { margin-top: 16px; padding: 14px 16px; background: rgba(124,58,237,0.04); border: 1px solid rgba(124,58,237,0.15); border-radius: 10px; font-size: 0.82rem; color: var(--text); line-height: 1.55; }
+    .bv-note strong { color: var(--heading); }
+
+    /* Feature Engineering Checklist */
+    .fe-list { display: flex; flex-direction: column; gap: 8px; }
+    .fe-item { border: 1px solid var(--border); border-radius: 10px; background: var(--surface); overflow: hidden; transition: all 0.2s; }
+    .fe-item:hover { border-color: #ccc; }
+    .fe-item.checked { border-color: rgba(22,163,74,0.3); }
+    .fe-header {
+      display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer;
+      user-select: none; transition: background 0.15s;
+    }
+    .fe-header:hover { background: rgba(0,0,0,0.01); }
+    .fe-check {
+      width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: all 0.2s; font-size: 0.7rem; color: transparent;
+    }
+    .fe-item.checked .fe-check { border-color: var(--green); background: var(--green); color: #fff; }
+    .fe-header .fe-name { font-size: 0.88rem; font-weight: 600; color: var(--heading); flex: 1; }
+    .fe-header .fe-tag {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 2px 8px; border-radius: 10px; background: rgba(124,58,237,0.08); color: var(--purple);
+    }
+    .fe-header .fe-arrow { font-size: 0.7rem; color: var(--text-muted); transition: transform 0.2s; }
+    .fe-item.expanded .fe-arrow { transform: rotate(90deg); }
+    .fe-detail { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .fe-item.expanded .fe-detail { max-height: 300px; }
+    .fe-detail-inner {
+      padding: 0 16px 16px 50px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.6;
+    }
+    .fe-detail-inner code { font-family: 'IBM Plex Mono', monospace; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px; font-size: 0.78rem; color: var(--heading); }
+    .fe-progress { margin-top: 16px; display: flex; align-items: center; gap: 12px; }
+    .fe-progress .fp-track { flex: 1; height: 6px; border-radius: 3px; background: var(--border); overflow: hidden; }
+    .fe-progress .fp-fill { height: 100%; border-radius: 3px; background: var(--green); transition: width 0.3s; }
+    .fe-progress .fp-text { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); min-width: 80px; text-align: right; }
+
+    footer { text-align: center; padding: 32px; font-size: 0.82rem; color: var(--text-muted); border-top: 1px solid var(--border); }
+    footer a { color: var(--purple); text-decoration: none; }
+
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      nav { padding: 0 16px; }
+      .page-header { padding: 24px 16px 16px; }
+      .layout { padding: 0 16px 48px; }
+      .cm-layout { grid-template-columns: 1fr; }
+      .algo-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="brand"><span class="dot"></span> DS Prep v12</a>
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html" class="active">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Probability</a>
+      <a href="casing.html">Casing</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="top">
+      <div class="icon">&#129302;</div>
+      <h1>ML Lab</h1>
+    </div>
+    <p>Interactive tools to build intuition for core machine learning concepts.</p>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <h3>Sections</h3>
+      <div class="topic-list" id="topic-list">
+        <button class="topic-btn active" data-section="confusion" onclick="showSection('confusion')">
+          <span class="num">1</span> Confusion Matrix
+        </button>
+        <button class="topic-btn" data-section="algorithms" onclick="showSection('algorithms')">
+          <span class="num">2</span> Algorithm Compare
+        </button>
+        <button class="topic-btn" data-section="biasvar" onclick="showSection('biasvar')">
+          <span class="num">3</span> Bias-Variance
+        </button>
+        <button class="topic-btn" data-section="features" onclick="showSection('features')">
+          <span class="num">4</span> Feature Engineering
+        </button>
+      </div>
+    </div>
+
+    <div class="main">
+
+      <!-- 1. Confusion Matrix Explorer -->
+      <div class="section-card active" id="section-confusion">
+        <div class="card-header">
+          <h2>Confusion Matrix Explorer</h2>
+          <span class="tag">Interactive</span>
+        </div>
+        <div class="card-desc">
+          Adjust TP, FP, FN, and TN values to see how classification metrics change in real time.
+        </div>
+        <div class="card-body">
+          <div class="cm-layout">
+            <div>
+              <div class="cm-grid">
+                <div class="cm-corner"></div>
+                <div class="cm-col-label">Predicted +</div>
+                <div class="cm-col-label">Predicted &minus;</div>
+                <div class="cm-row-label">Actual +</div>
+                <div class="cm-cell tp">
+                  <div class="cm-label">TP</div>
+                  <div class="cm-value" id="cm-tp">50</div>
+                  <div class="cm-controls">
+                    <button class="cm-btn" onclick="cmAdjust('tp',-1)">&minus;</button>
+                    <button class="cm-btn" onclick="cmAdjust('tp',1)">+</button>
+                  </div>
+                </div>
+                <div class="cm-cell fn">
+                  <div class="cm-label">FN</div>
+                  <div class="cm-value" id="cm-fn">10</div>
+                  <div class="cm-controls">
+                    <button class="cm-btn" onclick="cmAdjust('fn',-1)">&minus;</button>
+                    <button class="cm-btn" onclick="cmAdjust('fn',1)">+</button>
+                  </div>
+                </div>
+                <div class="cm-row-label">Actual &minus;</div>
+                <div class="cm-cell fp">
+                  <div class="cm-label">FP</div>
+                  <div class="cm-value" id="cm-fp">5</div>
+                  <div class="cm-controls">
+                    <button class="cm-btn" onclick="cmAdjust('fp',-1)">&minus;</button>
+                    <button class="cm-btn" onclick="cmAdjust('fp',1)">+</button>
+                  </div>
+                </div>
+                <div class="cm-cell tn">
+                  <div class="cm-label">TN</div>
+                  <div class="cm-value" id="cm-tn">35</div>
+                  <div class="cm-controls">
+                    <button class="cm-btn" onclick="cmAdjust('tn',-1)">&minus;</button>
+                    <button class="cm-btn" onclick="cmAdjust('tn',1)">+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="metrics-panel" id="metrics-panel">
+              <div class="metric-row">
+                <div class="metric-label">Accuracy</div>
+                <div class="metric-val" id="m-accuracy">0.85</div>
+                <div class="metric-formula">(TP + TN) / Total</div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-label">Precision</div>
+                <div class="metric-val" id="m-precision">0.91</div>
+                <div class="metric-formula">TP / (TP + FP)</div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-label">Recall</div>
+                <div class="metric-val" id="m-recall">0.83</div>
+                <div class="metric-formula">TP / (TP + FN)</div>
+              </div>
+              <div class="metric-row">
+                <div class="metric-label">F1 Score</div>
+                <div class="metric-val" id="m-f1">0.87</div>
+                <div class="metric-formula">2 * (P * R) / (P + R)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Algorithm Comparison -->
+      <div class="section-card" id="section-algorithms">
+        <div class="card-header">
+          <h2>Algorithm Comparison</h2>
+          <span class="tag">Simulator</span>
+        </div>
+        <div class="card-desc">
+          Adjust data size and feature count to see how different algorithms perform under varying conditions.
+        </div>
+        <div class="card-body">
+          <div class="algo-controls">
+            <div class="algo-slider-group">
+              <label>Data Size (rows)</label>
+              <div class="slider-row">
+                <input type="range" id="algo-data" min="100" max="100000" value="5000" step="100" oninput="updateAlgos()">
+                <span class="slider-val" id="algo-data-val">5,000</span>
+              </div>
+            </div>
+            <div class="algo-slider-group">
+              <label>Features</label>
+              <div class="slider-row">
+                <input type="range" id="algo-feat" min="2" max="200" value="20" step="1" oninput="updateAlgos()">
+                <span class="slider-val" id="algo-feat-val">20</span>
+              </div>
+            </div>
+          </div>
+          <div class="algo-grid" id="algo-grid"></div>
+        </div>
+      </div>
+
+      <!-- 3. Bias-Variance Visualizer -->
+      <div class="section-card" id="section-biasvar">
+        <div class="card-header">
+          <h2>Bias-Variance Tradeoff</h2>
+          <span class="tag">Visualizer</span>
+        </div>
+        <div class="card-desc">
+          Slide model complexity from simple (1) to highly complex (10) and observe how bias and variance change.
+        </div>
+        <div class="card-body">
+          <div class="bv-slider-row">
+            <label>Model Complexity</label>
+            <input type="range" id="bv-slider" min="1" max="10" value="5" step="1" oninput="updateBV()">
+            <span class="bv-val" id="bv-val">5</span>
+          </div>
+          <div class="bv-display">
+            <div class="bv-box bias-box">
+              <div class="bv-label">Bias</div>
+              <div class="bv-number" id="bv-bias">0.50</div>
+            </div>
+            <div class="bv-box var-box">
+              <div class="bv-label">Variance</div>
+              <div class="bv-number" id="bv-variance">0.50</div>
+            </div>
+          </div>
+          <div class="bv-bar-section">
+            <div class="bv-bar-row">
+              <span class="bbl">Bias</span>
+              <div class="bv-track"><div class="bv-fill bias-fill" id="bv-bias-bar" style="width:50%"></div></div>
+            </div>
+            <div class="bv-bar-row">
+              <span class="bbl">Variance</span>
+              <div class="bv-track"><div class="bv-fill var-fill" id="bv-var-bar" style="width:50%"></div></div>
+            </div>
+            <div class="bv-bar-row">
+              <span class="bbl">Total Error</span>
+              <div class="bv-track"><div class="bv-fill total-fill" id="bv-total-bar" style="width:50%"></div></div>
+            </div>
+          </div>
+          <div class="bv-note" id="bv-note">
+            <strong>Moderate complexity.</strong> Bias and variance are roughly balanced. This is often the sweet spot for generalization.
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Feature Engineering Checklist -->
+      <div class="section-card" id="section-features">
+        <div class="card-header">
+          <h2>Feature Engineering Checklist</h2>
+          <span class="tag">Reference</span>
+        </div>
+        <div class="card-desc">
+          Click to check off techniques you know. Expand each item to see details and usage tips.
+        </div>
+        <div class="card-body">
+          <div class="fe-list" id="fe-list"></div>
+          <div class="fe-progress">
+            <div class="fp-track"><div class="fp-fill" id="fe-fill" style="width:0%"></div></div>
+            <span class="fp-text" id="fe-text">0 / 10 mastered</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>Claudea's DS Interview Prep &middot; v12 &middot; <a href="index.html">Back to Topics</a></p>
+  </footer>
+
+<script>
+// Section Navigation
+function showSection(id) {
+  document.querySelectorAll('.section-card').forEach(function(c) { c.classList.remove('active'); });
+  document.querySelectorAll('.topic-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.getElementById('section-' + id).classList.add('active');
+  document.querySelector('[data-section="' + id + '"]').classList.add('active');
+}
+
+// 1. Confusion Matrix
+var cm = { tp: 50, fp: 5, fn: 10, tn: 35 };
+
+function cmAdjust(key, delta) {
+  cm[key] = Math.max(0, cm[key] + delta);
+  document.getElementById('cm-' + key).textContent = cm[key];
+  updateMetrics();
+}
+
+function updateMetrics() {
+  var tp = cm.tp, fp = cm.fp, fn = cm.fn, tn = cm.tn;
+  var total = tp + fp + fn + tn;
+  var acc = total > 0 ? (tp + tn) / total : 0;
+  var prec = (tp + fp) > 0 ? tp / (tp + fp) : 0;
+  var rec = (tp + fn) > 0 ? tp / (tp + fn) : 0;
+  var f1 = (prec + rec) > 0 ? 2 * (prec * rec) / (prec + rec) : 0;
+  document.getElementById('m-accuracy').textContent = acc.toFixed(2);
+  document.getElementById('m-precision').textContent = prec.toFixed(2);
+  document.getElementById('m-recall').textContent = rec.toFixed(2);
+  document.getElementById('m-f1').textContent = f1.toFixed(2);
+}
+updateMetrics();
+
+// 2. Algorithm Comparison
+var algorithms = [
+  { name: 'Linear Reg', baseAcc: 0.72, baseSpd: 0.95, dataScale: 0.03, featScale: -0.08, spdData: -0.05, spdFeat: -0.02 },
+  { name: 'Logistic Reg', baseAcc: 0.75, baseSpd: 0.93, dataScale: 0.04, featScale: -0.06, spdData: -0.06, spdFeat: -0.02 },
+  { name: 'Decision Tree', baseAcc: 0.78, baseSpd: 0.88, dataScale: 0.02, featScale: 0.05, spdData: -0.15, spdFeat: -0.08 },
+  { name: 'Random Forest', baseAcc: 0.84, baseSpd: 0.70, dataScale: 0.06, featScale: 0.04, spdData: -0.20, spdFeat: -0.10 },
+  { name: 'XGBoost', baseAcc: 0.87, baseSpd: 0.65, dataScale: 0.08, featScale: 0.03, spdData: -0.18, spdFeat: -0.12 }
+];
+
+function updateAlgos() {
+  var dataRaw = parseInt(document.getElementById('algo-data').value);
+  var feat = parseInt(document.getElementById('algo-feat').value);
+  document.getElementById('algo-data-val').textContent = dataRaw.toLocaleString();
+  document.getElementById('algo-feat-val').textContent = feat;
+  var dataNorm = Math.log10(dataRaw) / Math.log10(100000);
+  var featNorm = feat / 200;
+  var grid = document.getElementById('algo-grid');
+  grid.innerHTML = '';
+  algorithms.forEach(function(algo) {
+    var acc = algo.baseAcc + algo.dataScale * dataNorm + algo.featScale * featNorm;
+    var spd = algo.baseSpd + algo.spdData * dataNorm + algo.spdFeat * featNorm;
+    acc = Math.max(0.4, Math.min(0.99, acc));
+    spd = Math.max(0.05, Math.min(0.99, spd));
+    var card = document.createElement('div');
+    card.className = 'algo-card';
+    card.innerHTML =
+      '<div class="algo-name">' + algo.name + '</div>' +
+      '<div class="algo-metric">' +
+        '<div class="am-label">Accuracy</div>' +
+        '<div class="am-bar"><div class="am-fill acc" style="width:' + (acc * 100) + '%"></div></div>' +
+        '<div class="am-val">' + (acc * 100).toFixed(1) + '%</div>' +
+      '</div>' +
+      '<div class="algo-metric">' +
+        '<div class="am-label">Speed</div>' +
+        '<div class="am-bar"><div class="am-fill spd" style="width:' + (spd * 100) + '%"></div></div>' +
+        '<div class="am-val">' + (spd * 100).toFixed(1) + '%</div>' +
+      '</div>';
+    grid.appendChild(card);
+  });
+}
+updateAlgos();
+
+// 3. Bias-Variance
+function updateBV() {
+  var c = parseInt(document.getElementById('bv-slider').value);
+  document.getElementById('bv-val').textContent = c;
+  var bias = 1.0 - (c - 1) / 9;
+  var variance = (c - 1) / 9;
+  var total = 0.15 + bias * 0.42 + variance * 0.42;
+  document.getElementById('bv-bias').textContent = bias.toFixed(2);
+  document.getElementById('bv-variance').textContent = variance.toFixed(2);
+  document.getElementById('bv-bias-bar').style.width = (bias * 100) + '%';
+  document.getElementById('bv-var-bar').style.width = (variance * 100) + '%';
+  document.getElementById('bv-total-bar').style.width = (total * 100) + '%';
+  var note = document.getElementById('bv-note');
+  if (c <= 3) {
+    note.innerHTML = '<strong>Underfitting (high bias).</strong> The model is too simple to capture underlying patterns. Try adding more features or using a more complex model.';
+  } else if (c <= 7) {
+    note.innerHTML = '<strong>Balanced complexity.</strong> Bias and variance are roughly balanced. This is typically the sweet spot where total error is minimized.';
+  } else {
+    note.innerHTML = '<strong>Overfitting (high variance).</strong> The model memorizes training data and fails on new data. Try regularization, pruning, or gathering more training data.';
+  }
+}
+updateBV();
+
+// 4. Feature Engineering Checklist
+var feItems = [
+  { name: 'One-Hot Encoding', tag: 'Categorical', desc: 'Converts each category into a separate binary (0/1) column. Use for nominal categories with no inherent order. Example: <code>pd.get_dummies(df["color"])</code>.' },
+  { name: 'Label Encoding', tag: 'Categorical', desc: 'Maps categories to integers. Best for ordinal features where order matters (e.g., low=1, medium=2, high=3). Caution: tree models handle this well, but linear models may assume false ordering.' },
+  { name: 'Standard Scaling (Z-score)', tag: 'Numeric', desc: 'Transforms features to zero mean and unit variance: <code>(x - mean) / std</code>. Essential for distance-based models (KNN, SVM) and gradient descent convergence.' },
+  { name: 'Min-Max Scaling', tag: 'Numeric', desc: 'Scales features to a [0, 1] range: <code>(x - min) / (max - min)</code>. Good for neural networks and when you need bounded values. Sensitive to outliers.' },
+  { name: 'Log Transform', tag: 'Numeric', desc: 'Applies <code>log(1 + x)</code> to compress right-skewed distributions. Common for income, prices, and counts. Helps linear models meet normality assumptions.' },
+  { name: 'Polynomial Features', tag: 'Interaction', desc: 'Creates powers and cross-products of existing features. <code>PolynomialFeatures(degree=2)</code> on [a, b] yields [a, b, a&sup2;, ab, b&sup2;]. Watch out for feature explosion.' },
+  { name: 'Feature Crosses', tag: 'Interaction', desc: 'Manually combine two features to capture interactions, e.g., <code>city + "_" + device_type</code>. Useful when the effect of one feature depends on another.' },
+  { name: 'Binning / Discretization', tag: 'Numeric', desc: 'Groups continuous values into discrete bins (e.g., age ranges). Reduces noise and can help tree models, but loses granularity. Use <code>pd.cut()</code> or <code>pd.qcut()</code>.' },
+  { name: 'Target Encoding', tag: 'Categorical', desc: 'Replaces each category with the mean of the target variable for that group. Powerful but risky: always compute on training folds only to avoid data leakage.' },
+  { name: 'Missing Value Indicators', tag: 'Imputation', desc: 'Add a binary column <code>is_missing_X</code> before imputing. This lets the model learn whether missingness itself is predictive, which is often the case in real-world data.' }
+];
+
+var feChecked = {};
+
+function renderFE() {
+  var list = document.getElementById('fe-list');
+  list.innerHTML = '';
+  feItems.forEach(function(item, i) {
+    var isChecked = !!feChecked[i];
+    var div = document.createElement('div');
+    div.className = 'fe-item' + (isChecked ? ' checked' : '');
+    div.id = 'fe-item-' + i;
+    div.innerHTML =
+      '<div class="fe-header" data-idx="' + i + '">' +
+        '<div class="fe-check" data-idx="' + i + '">&#10003;</div>' +
+        '<span class="fe-name">' + item.name + '</span>' +
+        '<span class="fe-tag">' + item.tag + '</span>' +
+        '<span class="fe-arrow">&#9654;</span>' +
+      '</div>' +
+      '<div class="fe-detail">' +
+        '<div class="fe-detail-inner">' + item.desc + '</div>' +
+      '</div>';
+    list.appendChild(div);
+  });
+  // Attach event listeners
+  document.querySelectorAll('.fe-header').forEach(function(header) {
+    header.addEventListener('click', function(e) {
+      var idx = parseInt(this.getAttribute('data-idx'));
+      if (e.target.closest('.fe-check')) {
+        toggleFECheck(idx);
+      } else {
+        toggleFEExpand(idx);
+      }
+    });
+  });
+  updateFEProgress();
+}
+
+function toggleFECheck(i) {
+  if (feChecked[i]) { delete feChecked[i]; } else { feChecked[i] = true; }
+  var el = document.getElementById('fe-item-' + i);
+  el.classList.toggle('checked');
+  updateFEProgress();
+}
+
+function toggleFEExpand(i) {
+  document.getElementById('fe-item-' + i).classList.toggle('expanded');
+}
+
+function updateFEProgress() {
+  var total = feItems.length;
+  var done = Object.keys(feChecked).length;
+  var pct = Math.round((done / total) * 100);
+  document.getElementById('fe-fill').style.width = pct + '%';
+  document.getElementById('fe-text').textContent = done + ' / ' + total + ' mastered';
+}
+
+renderFE();
+</script>
+</body>
+</html>

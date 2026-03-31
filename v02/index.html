@@ -5,45 +5,86 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Claudea's DS Interview Prep</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800;900&family=Source+Sans+3:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #0d1117; --surface: #161b22; --border: #21262d;
-      --text: #c9d1d9; --text-muted: #8b949e; --text-dim: #484f58; --white: #e6edf3;
-      --green: #4ade80;
+      --bg: #faf6f1;
+      --surface: #ffffff;
+      --border: #e8e0d6;
+      --text: #3d3529;
+      --text-muted: #8a7e6f;
+      --text-dim: #b5a998;
+      --heading: #2a1f14;
+      --terracotta: #c4654a;
+      --sage: #6b8f71;
+      --navy: #2c3e6b;
+      --amber: #d4953a;
+      --plum: #7b5ea7;
+      --teal: #3a8a8a;
     }
-    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; padding-top: 88px; }
 
-    /* ── Nav ── */
+    body {
+      font-family: 'Source Sans 3', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      padding-top: 88px;
+    }
+
+    /* Nav */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 0 32px; height: 56px;
-      background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
+      padding: 0 32px; height: 60px;
+      background: rgba(250,246,241,0.95); backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
     }
-    nav .brand { font-weight: 800; font-size: 1rem; color: var(--white); display: flex; align-items: center; gap: 8px; }
-    nav .brand span { color: var(--green); }
-    nav .nav-links { display: flex; gap: 4px; }
-    nav .nav-links a {
-      text-decoration: none; color: var(--text-muted); font-size: 0.78rem;
-      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    nav .brand {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700; font-size: 1.1rem; color: var(--heading);
+      display: flex; align-items: center; gap: 10px;
     }
-    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
-    nav .nav-links a.quiz-link { color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
-    nav .nav-links a.quiz-link:hover { background: rgba(74,222,128,0.1); }
+    nav .brand .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--terracotta);
+    }
+    nav .nav-links { display: flex; gap: 2px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.8rem;
+      padding: 6px 14px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: rgba(0,0,0,0.04); color: var(--heading); }
+    nav .nav-links a.quiz-link {
+      color: var(--terracotta);
+      border: 1px solid rgba(196,101,74,0.3);
+      font-weight: 600;
+    }
+    nav .nav-links a.quiz-link:hover { background: rgba(196,101,74,0.08); }
 
-    .container { max-width: 720px; width: 100%; text-align: center; }
+    .container { max-width: 760px; width: 100%; text-align: center; }
 
     .badge {
       display: inline-block; font-size: 0.65rem; font-weight: 700;
-      text-transform: uppercase; letter-spacing: 3px; padding: 5px 14px;
-      border-radius: 20px; background: rgba(74,222,128,0.1);
-      color: var(--green); margin-bottom: 24px; border: 1px solid rgba(74,222,128,0.2);
+      text-transform: uppercase; letter-spacing: 3px; padding: 5px 16px;
+      border-radius: 20px; background: rgba(196,101,74,0.1);
+      color: var(--terracotta); margin-bottom: 24px;
+      border: 1px solid rgba(196,101,74,0.2);
     }
-    h1 { font-size: 2.8rem; font-weight: 900; color: var(--white); letter-spacing: -1px; line-height: 1.1; margin-bottom: 12px; }
-    .subtitle { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 48px; }
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem; font-weight: 800; color: var(--heading);
+      letter-spacing: -1px; line-height: 1.15; margin-bottom: 14px;
+    }
+    .subtitle {
+      font-size: 1.1rem; color: var(--text-muted);
+      margin-bottom: 48px; font-weight: 300; line-height: 1.6;
+    }
 
     .topics-grid {
       display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;
@@ -51,53 +92,73 @@
     .topic-btn {
       display: flex; align-items: center; gap: 16px;
       text-decoration: none; padding: 24px;
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-      transition: all 0.2s; text-align: left;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      transition: all 0.25s; text-align: left;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
-    .topic-btn:hover { border-color: #3a3a4a; transform: translateY(-2px); }
+    .topic-btn:hover {
+      border-color: #d0c8be;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
     .topic-btn .icon {
-      width: 48px; height: 48px; border-radius: 10px;
+      width: 50px; height: 50px; border-radius: 12px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem; flex-shrink: 0;
+      font-size: 1.3rem; flex-shrink: 0;
     }
-    .topic-btn .label h2 { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 2px; }
-    .topic-btn .label p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+    .topic-btn .label h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem; font-weight: 700; color: var(--heading); margin-bottom: 3px;
+    }
+    .topic-btn .label p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
     .topic-btn .count {
-      margin-left: auto; font-size: 0.7rem; font-weight: 600; color: var(--text-dim);
-      white-space: nowrap;
+      margin-left: auto; font-size: 0.7rem; font-weight: 600;
+      color: var(--text-dim); white-space: nowrap;
     }
 
-    .icon-sql { background: rgba(96,165,250,0.15); }
-    .icon-python { background: rgba(251,191,36,0.15); }
-    .icon-ml { background: rgba(192,132,252,0.15); }
-    .icon-stats { background: rgba(45,212,191,0.15); }
-    .icon-prob { background: rgba(251,146,60,0.15); }
-    .icon-case { background: rgba(74,222,128,0.15); }
+    .icon-sql { background: rgba(44,62,107,0.1); }
+    .icon-python { background: rgba(212,149,58,0.12); }
+    .icon-ml { background: rgba(123,94,167,0.1); }
+    .icon-stats { background: rgba(58,138,138,0.1); }
+    .icon-prob { background: rgba(196,101,74,0.1); }
+    .icon-case { background: rgba(107,143,113,0.1); }
 
     .quiz-btn {
       display: block; width: 100%; text-decoration: none;
-      padding: 20px; border-radius: 12px; text-align: center;
-      background: linear-gradient(135deg, rgba(74,222,128,0.1), rgba(45,212,191,0.1));
-      border: 1px solid rgba(74,222,128,0.25);
-      transition: all 0.2s; margin-bottom: 48px;
+      padding: 22px; border-radius: 14px; text-align: center;
+      background: linear-gradient(135deg, rgba(196,101,74,0.08), rgba(212,149,58,0.08));
+      border: 1px solid rgba(196,101,74,0.2);
+      transition: all 0.25s; margin-bottom: 48px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
-    .quiz-btn:hover { border-color: rgba(74,222,128,0.5); transform: translateY(-2px); }
-    .quiz-btn h2 { font-size: 1.1rem; font-weight: 700; color: var(--green); margin-bottom: 2px; }
-    .quiz-btn p { font-size: 0.82rem; color: var(--text-muted); }
+    .quiz-btn:hover {
+      border-color: rgba(196,101,74,0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+    }
+    .quiz-btn h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--terracotta); margin-bottom: 4px;
+    }
+    .quiz-btn p { font-size: 0.85rem; color: var(--text-muted); }
 
-    footer { font-size: 0.8rem; color: var(--text-dim); }
+    footer { font-size: 0.82rem; color: var(--text-dim); }
     footer a { color: var(--text-muted); text-decoration: none; }
-    footer a:hover { color: var(--white); }
+    footer a:hover { color: var(--heading); }
 
     @media (max-width: 600px) {
       .topics-grid { grid-template-columns: 1fr; }
-      h1 { font-size: 2rem; }
+      h1 { font-size: 2.2rem; }
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.72rem; padding: 5px 8px; }
     }
   </style>
 </head>
 <body>
   <nav>
-    <div class="brand"><span>&#9670;</span> Claudea's DS Prep</div>
+    <div class="brand"><span class="dot"></span> Claudea's DS Prep</div>
     <div class="nav-links">
       <a href="sql.html">SQL</a>
       <a href="python.html">Python</a>

@@ -1,8 +1,8 @@
 # Claudea's DS Interview Prep — Rapid Prototyping
 
-11 iterations of building a **Data Science Interview Prep Guide** from scratch. Each version (`v01`–`v11`) is a self-contained HTML/CSS/JS prototype that builds on the last.
+12 iterations of building a **Data Science Interview Prep Guide** from scratch. Each version (`v01`–`v12`) is a self-contained HTML/CSS/JS prototype that builds on the last.
 
-The root `index.html` is a gallery that shows all 11 versions side by side with live iframe previews.
+The root `index.html` is a gallery that shows all 12 versions side by side with live iframe previews.
 
 ## The Product
 
@@ -31,21 +31,8 @@ Each topic gets a **cheat sheet** reference section and there is a **quiz** sect
 | **v08** | Interactive Kids Edition | Fun, interactive statistics for kids — hypothesis testing coin flips, confidence interval sliders, A/B testing buttons, CLT histograms. Bright colors, animations, simple explanations |
 | **v09** | Professional Review | Interactive pro-level review for experienced DS professionals — advanced SQL, Python data science, probability theory, ML concepts. Clean interface, assessment quiz, focused content |
 | **v10** | Spaced Repetition System | Intelligent flashcard system with spaced repetition algorithm — review scheduling, progress tracking, mastery analytics, study streaks, and detailed statistics dashboard |
-| **v11** | Interactive Edition | Combines v09's clean design (Inter font, subtle grays, blue gradients) with v08's interactive elements (demos, animations, engaging interactions) for optimal learning experience |
-| v12 | Responsive Layout | Mobile-first breakpoints, stacking cards, collapsing nav |
-| v13 | Sidebar Navigation | Fixed sidebar on desktop, hamburger menu on mobile |
-| v14 | Progress Tracking | Checkboxes, localStorage persistence, progress bar |
-| v15 | Search & Filter | Global search across topics, concepts, and quiz |
-| v16 | Quiz Timer Mode | Countdown timer, speed-based scoring |
-| v17 | Tip & Warning Callouts | Interview tips, common mistakes, gotcha boxes |
-| v18 | Print-Friendly Cheat Sheets | Print stylesheet for clean output |
-| v19 | Dark/Light Toggle | Theme toggle with preference persistence |
-| v20 | Scroll Animations | Intersection Observer fade-in and slide-up effects |
-| v21 | Spaced Repetition | Missed quiz questions resurface more often |
-| v22 | Bookmarks & Notes | User bookmarks and notes saved to localStorage |
-| v23 | Accessibility Pass | ARIA labels, keyboard nav, focus rings, contrast fixes |
-| v24 | Content QA | Accuracy review, code tested, links verified |
-| v25 | Launch Ready | Meta tags, OG image, favicon, production-ready |
+| **v11** | Interactive Edition | Clean design combining the best interactive elements from previous versions — feature cards, demo buttons, modal explanations, focus on user engagement without visual clutter |
+| **v12** | Animated Explanations | Transforms v11's interactive demos into educational animations showing step-by-step calculations and derivations that teach why concepts work. SQL join algorithms, confidence interval math, Bayes theorem walkthroughs, A/B test power analysis. Emphasis on "why it works" with mathematical foundations |
 
 ## Structure
 

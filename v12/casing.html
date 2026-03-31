@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Workshop — Interactive DS Prep v12</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f5f5f0; --surface: #ffffff; --border: #e2e2da;
+      --text: #2d2d2d; --text-muted: #6b6b6b; --heading: #1a1a1a;
+      --blue: #2563eb; --green: #16a34a; --amber: #d97706; --purple: #7c3aed;
+      --cyan: #0891b2; --rose: #e11d48;
+      --code-bg: #1e1e2e; --code-text: #cdd6f4;
+    }
+    body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    nav {
+      position: sticky; top: 0; z-index: 200; display: flex; justify-content: space-between;
+      align-items: center; padding: 0 32px; height: 56px;
+      background: rgba(245,245,240,0.95); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand { font-weight: 700; font-size: 1rem; color: var(--heading); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    nav .brand .dot { width: 8px; height: 8px; border-radius: 3px; background: var(--cyan); }
+    nav .nav-links { display: flex; gap: 2px; }
+    nav .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.78rem; padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500; }
+    nav .nav-links a:hover { background: rgba(0,0,0,0.04); color: var(--heading); }
+    nav .nav-links a.active { color: var(--heading); background: rgba(0,0,0,0.06); font-weight: 600; }
+
+    .page-header { padding: 32px 32px 20px; max-width: 1100px; margin: 0 auto; }
+    .page-header .top { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+    .page-header .icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: rgba(8,145,178,0.08); }
+    .page-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--heading); }
+    .page-header p { font-size: 0.88rem; color: var(--text-muted); margin-left: 58px; }
+
+    .layout { max-width: 1100px; margin: 0 auto; padding: 0 32px 64px; display: grid; grid-template-columns: 220px 1fr; gap: 24px; }
+
+    .sidebar { position: sticky; top: 72px; height: fit-content; }
+    .sidebar h3 { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 10px; }
+    .topic-list { display: flex; flex-direction: column; gap: 4px; }
+    .topic-btn {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+      cursor: pointer; transition: all 0.2s; text-align: left;
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 0.82rem; color: var(--text);
+    }
+    .topic-btn:hover { border-color: #ccc; background: #fafaf6; }
+    .topic-btn.active { border-color: var(--cyan); background: rgba(8,145,178,0.04); color: var(--cyan); font-weight: 600; }
+    .topic-btn .num { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); width: 20px; text-align: center; flex-shrink: 0; }
+    .topic-btn.active .num { color: var(--cyan); }
+
+    .main { min-width: 0; }
+
+    .section-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      margin-bottom: 20px; overflow: hidden; display: none;
+    }
+    .section-card.visible { display: block; }
+    .section-card .card-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .section-card .card-header h2 { font-size: 1.05rem; font-weight: 700; color: var(--heading); }
+    .section-card .card-header .badge {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      padding: 3px 10px; border-radius: 12px; background: rgba(8,145,178,0.08); color: var(--cyan);
+    }
+    .card-body { padding: 24px; }
+
+    /* Metrics Dashboard */
+    .scenario-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+    .scenario-bar label { font-size: 0.82rem; font-weight: 600; color: var(--heading); }
+    .scenario-bar select {
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 0.82rem; padding: 7px 12px;
+      border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+      color: var(--text); cursor: pointer;
+    }
+    .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .metric-card {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      padding: 18px; text-align: center; transition: all 0.4s;
+    }
+    .metric-card .label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 6px; }
+    .metric-card .value { font-size: 1.6rem; font-weight: 700; color: var(--heading); font-family: 'IBM Plex Mono', monospace; transition: all 0.5s; }
+    .metric-card .delta { font-size: 0.72rem; font-weight: 600; margin-top: 4px; }
+    .delta-up { color: var(--green); }
+    .delta-down { color: var(--rose); }
+    .delta-flat { color: var(--text-muted); }
+
+    /* AB Test */
+    .ab-inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+    .input-group label { display: block; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .input-group input {
+      width: 100%; font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem; padding: 10px 12px;
+      border: 1px solid var(--border); border-radius: 8px; background: var(--bg);
+      color: var(--heading); transition: border 0.2s;
+    }
+    .input-group input:focus { outline: none; border-color: var(--cyan); }
+    .ab-run-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 10px 24px; border: none; border-radius: 8px;
+      background: var(--cyan); color: #fff; font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .ab-run-btn:hover { background: #0e7490; }
+    .ab-results { margin-top: 20px; display: none; }
+    .ab-results.show { display: block; }
+    .ab-stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+    .ab-stat { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+    .ab-stat .stat-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
+    .ab-stat .stat-value { font-size: 1.3rem; font-weight: 700; font-family: 'IBM Plex Mono', monospace; }
+    .confidence-bar-wrap { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+    .confidence-bar-wrap .bar-label { font-size: 0.75rem; font-weight: 600; color: var(--heading); margin-bottom: 8px; }
+    .confidence-track { height: 24px; background: #e5e5e0; border-radius: 6px; overflow: hidden; position: relative; }
+    .confidence-fill { height: 100%; border-radius: 6px; transition: width 1s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; }
+    .confidence-fill span { font-size: 0.68rem; font-weight: 700; color: #fff; }
+    .confidence-thresholds { display: flex; justify-content: space-between; margin-top: 4px; }
+    .confidence-thresholds span { font-size: 0.6rem; color: var(--text-muted); }
+
+    /* Framework Builder */
+    .framework-steps { display: flex; flex-direction: column; gap: 8px; }
+    .fw-step {
+      border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+      overflow: hidden; transition: all 0.3s;
+    }
+    .fw-step.active { border-color: var(--cyan); }
+    .fw-step-header {
+      display: flex; align-items: center; gap: 12px; padding: 14px 18px; cursor: pointer;
+      transition: background 0.2s;
+    }
+    .fw-step-header:hover { background: rgba(0,0,0,0.015); }
+    .fw-step-num {
+      width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 0.72rem; font-weight: 700; background: var(--bg); color: var(--text-muted);
+      border: 2px solid var(--border); transition: all 0.3s; flex-shrink: 0;
+    }
+    .fw-step.active .fw-step-num { background: var(--cyan); color: #fff; border-color: var(--cyan); }
+    .fw-step-title { font-size: 0.88rem; font-weight: 600; color: var(--heading); flex: 1; }
+    .fw-step-chevron { font-size: 0.7rem; color: var(--text-muted); transition: transform 0.3s; }
+    .fw-step.active .fw-step-chevron { transform: rotate(90deg); }
+    .fw-step-body { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+    .fw-step.active .fw-step-body { max-height: 300px; }
+    .fw-step-content { padding: 0 18px 18px 58px; }
+    .fw-step-content p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 8px; }
+    .fw-step-content .example {
+      font-size: 0.78rem; font-family: 'IBM Plex Mono', monospace; background: var(--code-bg);
+      color: var(--code-text); padding: 10px 14px; border-radius: 8px; line-height: 1.5;
+    }
+
+    /* Market Sizing */
+    .ms-inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+    .ms-inputs-row2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px; }
+    .funnel-viz { display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 20px; }
+    .funnel-step {
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      padding: 12px; border-radius: 8px; text-align: center; transition: all 0.5s; position: relative;
+      min-height: 44px;
+    }
+    .funnel-step .f-label { font-size: 0.72rem; font-weight: 600; color: rgba(255,255,255,0.85); }
+    .funnel-step .f-value { font-size: 0.95rem; font-weight: 700; color: #fff; font-family: 'IBM Plex Mono', monospace; }
+    .funnel-arrow { color: var(--text-muted); font-size: 0.8rem; }
+    .tam-results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .tam-card { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; text-align: center; }
+    .tam-card .tam-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); margin-bottom: 4px; }
+    .tam-card .tam-value { font-size: 1.2rem; font-weight: 700; font-family: 'IBM Plex Mono', monospace; color: var(--heading); }
+
+    /* Metric Decomposition */
+    .decomp-input-row { display: flex; gap: 12px; align-items: flex-end; margin-bottom: 20px; }
+    .decomp-input-row .input-group { flex: 1; }
+    .decomp-btn {
+      padding: 10px 20px; border: none; border-radius: 8px; background: var(--cyan); color: #fff;
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s; white-space: nowrap;
+    }
+    .decomp-btn:hover { background: #0e7490; }
+    .tree-container { position: relative; }
+    .tree-node {
+      background: var(--surface); border: 2px solid var(--border); border-radius: 10px;
+      padding: 14px 18px; display: inline-flex; flex-direction: column; align-items: center;
+      gap: 4px; transition: all 0.3s; cursor: default;
+    }
+    .tree-node.root { border-color: var(--cyan); background: rgba(8,145,178,0.04); }
+    .tree-node.highlight { border-color: var(--rose); background: rgba(225,29,72,0.04); }
+    .tree-node .node-label { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .tree-node .node-value { font-size: 1.1rem; font-weight: 700; font-family: 'IBM Plex Mono', monospace; color: var(--heading); }
+    .tree-node input {
+      width: 90px; font-family: 'IBM Plex Mono', monospace; font-size: 0.88rem; padding: 4px 8px;
+      border: 1px solid var(--border); border-radius: 6px; text-align: center; background: var(--bg);
+      color: var(--heading);
+    }
+    .tree-node input:focus { outline: none; border-color: var(--cyan); }
+    .tree-level { display: flex; justify-content: center; gap: 24px; margin-bottom: 8px; }
+    .tree-connector { display: flex; justify-content: center; margin: 8px 0; color: var(--text-muted); font-size: 0.8rem; }
+    .tree-op { font-weight: 700; font-size: 1rem; color: var(--cyan); margin: 0 4px; }
+    .decomp-explanation {
+      margin-top: 16px; padding: 14px 18px; border-radius: 10px; font-size: 0.82rem; line-height: 1.6;
+      border: 1px solid var(--border); background: var(--bg);
+    }
+    .decomp-explanation.drop { border-color: var(--rose); background: rgba(225,29,72,0.03); color: var(--rose); }
+    .decomp-explanation.ok { border-color: var(--green); background: rgba(22,163,74,0.03); color: var(--green); }
+
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .topic-list { flex-direction: row; flex-wrap: wrap; }
+      .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+      .ab-inputs, .ms-inputs { grid-template-columns: 1fr; }
+      .ab-stat-row { grid-template-columns: 1fr; }
+      .tam-results { grid-template-columns: 1fr; }
+      nav .nav-links { gap: 0; }
+      nav .nav-links a { font-size: 0.7rem; padding: 6px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand"><span class="dot"></span>DS Prep v12</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="ml.html">ML</a>
+    <a href="casing.html" class="active">Casing</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="color: var(--cyan);">&#128202;</div>
+    <h1>Case Workshop</h1>
+  </div>
+  <p>Interactive tools for product analytics, A/B testing, market sizing, and metric decomposition.</p>
+</div>
+
+<div class="layout">
+  <aside class="sidebar">
+    <h3>Sections</h3>
+    <div class="topic-list">
+      <button class="topic-btn active" onclick="showSection(0)"><span class="num">01</span> Metrics Dashboard</button>
+      <button class="topic-btn" onclick="showSection(1)"><span class="num">02</span> A/B Test Designer</button>
+      <button class="topic-btn" onclick="showSection(2)"><span class="num">03</span> Framework Builder</button>
+      <button class="topic-btn" onclick="showSection(3)"><span class="num">04</span> Market Sizing</button>
+      <button class="topic-btn" onclick="showSection(4)"><span class="num">05</span> Decomposition</button>
+    </div>
+  </aside>
+
+  <div class="main">
+
+    <!-- Section 1: Metrics Dashboard -->
+    <div class="section-card visible" id="sec-0">
+      <div class="card-header">
+        <h2>Metrics Dashboard</h2>
+        <span class="badge">Interactive</span>
+      </div>
+      <div class="card-body">
+        <div class="scenario-bar">
+          <label>Scenario:</label>
+          <select id="scenarioSelect" onchange="changeScenario(this.value)">
+            <option value="growth">Growth</option>
+            <option value="stable">Stable</option>
+            <option value="decline">Decline</option>
+          </select>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="label">Revenue</div>
+            <div class="value" id="m-revenue">$2.4M</div>
+            <div class="delta delta-up" id="d-revenue">+12% MoM</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">DAU</div>
+            <div class="value" id="m-dau">45.2K</div>
+            <div class="delta delta-up" id="d-dau">+8% MoM</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">Churn</div>
+            <div class="value" id="m-churn">3.2%</div>
+            <div class="delta delta-down" id="d-churn">-0.5pp MoM</div>
+          </div>
+          <div class="metric-card">
+            <div class="label">LTV</div>
+            <div class="value" id="m-ltv">$156</div>
+            <div class="delta delta-up" id="d-ltv">+5% MoM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: A/B Test Designer -->
+    <div class="section-card" id="sec-1">
+      <div class="card-header">
+        <h2>A/B Test Designer</h2>
+        <span class="badge">Simulator</span>
+      </div>
+      <div class="card-body">
+        <div class="ab-inputs">
+          <div class="input-group">
+            <label>Control Conversion (%)</label>
+            <input type="number" id="ab-control" value="12.0" step="0.1" min="0" max="100">
+          </div>
+          <div class="input-group">
+            <label>Treatment Conversion (%)</label>
+            <input type="number" id="ab-treatment" value="13.5" step="0.1" min="0" max="100">
+          </div>
+          <div class="input-group">
+            <label>Sample Size Per Group</label>
+            <input type="number" id="ab-sample" value="5000" step="100" min="100">
+          </div>
+        </div>
+        <button class="ab-run-btn" onclick="runABTest()">&#9654; Run Test</button>
+        <div class="ab-results" id="abResults">
+          <div class="ab-stat-row">
+            <div class="ab-stat">
+              <div class="stat-label">Relative Lift</div>
+              <div class="stat-value" id="ab-lift" style="color: var(--cyan);">--</div>
+            </div>
+            <div class="ab-stat">
+              <div class="stat-label">p-value</div>
+              <div class="stat-value" id="ab-pval">--</div>
+            </div>
+            <div class="ab-stat">
+              <div class="stat-label">Verdict</div>
+              <div class="stat-value" id="ab-verdict" style="font-size: 0.88rem;">--</div>
+            </div>
+          </div>
+          <div class="confidence-bar-wrap">
+            <div class="bar-label">Confidence Level</div>
+            <div class="confidence-track">
+              <div class="confidence-fill" id="ab-conf-fill" style="width: 0%; background: var(--text-muted);"><span id="ab-conf-text">0%</span></div>
+            </div>
+            <div class="confidence-thresholds">
+              <span>0%</span><span>90%</span><span>95%</span><span>99%</span><span>100%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Framework Builder -->
+    <div class="section-card" id="sec-2">
+      <div class="card-header">
+        <h2>Case Framework Builder</h2>
+        <span class="badge">Step-by-Step</span>
+      </div>
+      <div class="card-body">
+        <div class="framework-steps" id="fwSteps">
+          <!-- Steps built by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Market Sizing Calculator -->
+    <div class="section-card" id="sec-3">
+      <div class="card-header">
+        <h2>Market Sizing Calculator</h2>
+        <span class="badge">Calculator</span>
+      </div>
+      <div class="card-body">
+        <div class="ms-inputs">
+          <div class="input-group">
+            <label>Total Population</label>
+            <input type="number" id="ms-pop" value="330000000" step="1000000">
+          </div>
+          <div class="input-group">
+            <label>Filter Rate 1 (%)</label>
+            <input type="number" id="ms-f1" value="65" step="1" min="0" max="100">
+          </div>
+          <div class="input-group">
+            <label>Filter Rate 2 (%)</label>
+            <input type="number" id="ms-f2" value="40" step="1" min="0" max="100">
+          </div>
+        </div>
+        <div class="ms-inputs-row2">
+          <div class="input-group">
+            <label>Filter Rate 3 (%)</label>
+            <input type="number" id="ms-f3" value="15" step="1" min="0" max="100">
+          </div>
+          <div class="input-group">
+            <label>ARPU ($)</label>
+            <input type="number" id="ms-arpu" value="120" step="1">
+          </div>
+        </div>
+        <button class="ab-run-btn" onclick="calcMarket()" style="margin-bottom: 20px;">&#128200; Calculate</button>
+        <div id="funnelViz" class="funnel-viz"></div>
+        <div class="tam-results" id="tamResults" style="display: none;">
+          <div class="tam-card">
+            <div class="tam-label">TAM</div>
+            <div class="tam-value" id="tam-val">--</div>
+          </div>
+          <div class="tam-card">
+            <div class="tam-label">SAM</div>
+            <div class="tam-value" id="sam-val">--</div>
+          </div>
+          <div class="tam-card">
+            <div class="tam-label">SOM</div>
+            <div class="tam-value" id="som-val">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5: Metric Decomposition -->
+    <div class="section-card" id="sec-4">
+      <div class="card-header">
+        <h2>Metric Decomposition</h2>
+        <span class="badge">Diagnostic</span>
+      </div>
+      <div class="card-body">
+        <div class="decomp-input-row">
+          <div class="input-group">
+            <label>Metric Statement</label>
+            <input type="text" id="decomp-stmt" value="Revenue dropped 15%" style="width:100%;">
+          </div>
+          <button class="decomp-btn" onclick="resetDecomp()">&#8635; Reset</button>
+        </div>
+        <div class="tree-container" id="decompTree">
+          <div class="tree-level">
+            <div class="tree-node root" id="dn-revenue">
+              <span class="node-label">Revenue</span>
+              <span class="node-value" id="dn-rev-val">$1,000,000</span>
+            </div>
+          </div>
+          <div class="tree-connector">&#9552; = Users &times; ARPU &#9552;</div>
+          <div class="tree-level">
+            <div class="tree-node" id="dn-users">
+              <span class="node-label">Users</span>
+              <input type="number" id="decomp-users" value="10000" onchange="updateDecomp()">
+              <span class="node-value" style="font-size:0.7rem; color:var(--text-muted);" id="du-prev">prev: 10,000</span>
+            </div>
+            <div class="tree-node" id="dn-arpu">
+              <span class="node-label">ARPU</span>
+              <input type="number" id="decomp-arpu" value="100" step="1" onchange="updateDecomp()">
+              <span class="node-value" style="font-size:0.7rem; color:var(--text-muted);" id="da-prev">prev: $100.00</span>
+            </div>
+          </div>
+          <div class="tree-connector" style="font-size:0.72rem; color: var(--text-muted); margin-top: 4px;">&#9660; Drill further &#9660;</div>
+          <div class="tree-level">
+            <div class="tree-node" id="dn-new">
+              <span class="node-label">New Users</span>
+              <input type="number" id="decomp-new" value="3000" onchange="updateDecomp()">
+            </div>
+            <div class="tree-node" id="dn-ret">
+              <span class="node-label">Returning</span>
+              <input type="number" id="decomp-ret" value="7000" onchange="updateDecomp()">
+            </div>
+            <div class="tree-node" id="dn-freq">
+              <span class="node-label">Frequency</span>
+              <input type="number" id="decomp-freq" value="2.5" step="0.1" onchange="updateDecomp()">
+            </div>
+            <div class="tree-node" id="dn-aov">
+              <span class="node-label">AOV</span>
+              <input type="number" id="decomp-aov" value="40" step="1" onchange="updateDecomp()">
+            </div>
+          </div>
+        </div>
+        <div class="decomp-explanation" id="decompExpl">
+          Adjust the values above to model what changed. Revenue = Users &times; ARPU. ARPU = Frequency &times; AOV. Users = New + Returning. The baseline revenue is <strong>$1,000,000</strong> (10,000 users &times; $100 ARPU).
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// --- Section Navigation ---
+const sections = document.querySelectorAll('.section-card');
+const topicBtns = document.querySelectorAll('.topic-btn');
+function showSection(idx) {
+  sections.forEach((s, i) => { s.classList.toggle('visible', i === idx); });
+  topicBtns.forEach((b, i) => { b.classList.toggle('active', i === idx); });
+}
+
+// --- Metrics Dashboard ---
+const scenarios = {
+  growth:  { revenue: '$3.1M', dau: '52.8K', churn: '2.8%', ltv: '$178', dr: '+28% MoM', dd: '+17% MoM', dc: '-0.4pp MoM', dl: '+14% MoM', drc:'delta-up', ddc:'delta-up', dcc:'delta-up', dlc:'delta-up' },
+  stable:  { revenue: '$2.4M', dau: '45.2K', churn: '3.2%', ltv: '$156', dr: '+1% MoM', dd: '+0.5% MoM', dc: '+0.0pp MoM', dl: '+0.2% MoM', drc:'delta-flat', ddc:'delta-flat', dcc:'delta-flat', dlc:'delta-flat' },
+  decline: { revenue: '$1.8M', dau: '38.1K', churn: '4.7%', ltv: '$121', dr: '-15% MoM', dd: '-12% MoM', dc: '+1.5pp MoM', dl: '-8% MoM', drc:'delta-down', ddc:'delta-down', dcc:'delta-down', dlc:'delta-down' }
+};
+function changeScenario(key) {
+  const s = scenarios[key];
+  animateValue('m-revenue', s.revenue);
+  animateValue('m-dau', s.dau);
+  animateValue('m-churn', s.churn);
+  animateValue('m-ltv', s.ltv);
+  document.getElementById('d-revenue').textContent = s.dr; document.getElementById('d-revenue').className = 'delta ' + s.drc;
+  document.getElementById('d-dau').textContent = s.dd; document.getElementById('d-dau').className = 'delta ' + s.ddc;
+  document.getElementById('d-churn').textContent = s.dc; document.getElementById('d-churn').className = 'delta ' + s.dcc;
+  document.getElementById('d-ltv').textContent = s.dl; document.getElementById('d-ltv').className = 'delta ' + s.dlc;
+}
+function animateValue(id, newVal) {
+  const el = document.getElementById(id);
+  el.style.opacity = '0'; el.style.transform = 'translateY(8px)';
+  setTimeout(() => { el.textContent = newVal; el.style.opacity = '1'; el.style.transform = 'translateY(0)'; }, 250);
+}
+
+// --- A/B Test ---
+function runABTest() {
+  const c = parseFloat(document.getElementById('ab-control').value) / 100;
+  const t = parseFloat(document.getElementById('ab-treatment').value) / 100;
+  const n = parseInt(document.getElementById('ab-sample').value);
+  const lift = ((t - c) / c * 100).toFixed(1);
+  const se = Math.sqrt(c*(1-c)/n + t*(1-t)/n);
+  const z = (t - c) / se;
+  const p = 2 * (1 - normalCDF(Math.abs(z)));
+  const conf = ((1 - p) * 100);
+  const confPct = Math.min(conf, 99.9);
+
+  document.getElementById('abResults').classList.add('show');
+  document.getElementById('ab-lift').textContent = (lift > 0 ? '+' : '') + lift + '%';
+  document.getElementById('ab-lift').style.color = lift > 0 ? 'var(--green)' : 'var(--rose)';
+  document.getElementById('ab-pval').textContent = p < 0.0001 ? '< 0.0001' : p.toFixed(4);
+  document.getElementById('ab-pval').style.color = p < 0.05 ? 'var(--green)' : 'var(--amber)';
+
+  let verdict = 'Not Significant';
+  let verdictColor = 'var(--amber)';
+  if (p < 0.01) { verdict = 'Highly Significant'; verdictColor = 'var(--green)'; }
+  else if (p < 0.05) { verdict = 'Significant'; verdictColor = 'var(--green)'; }
+  else if (p < 0.1) { verdict = 'Marginal'; verdictColor = 'var(--amber)'; }
+  document.getElementById('ab-verdict').textContent = verdict;
+  document.getElementById('ab-verdict').style.color = verdictColor;
+
+  const fill = document.getElementById('ab-conf-fill');
+  let fillColor = 'var(--rose)';
+  if (confPct >= 99) fillColor = 'var(--green)';
+  else if (confPct >= 95) fillColor = 'var(--cyan)';
+  else if (confPct >= 90) fillColor = 'var(--amber)';
+  setTimeout(() => {
+    fill.style.width = confPct + '%';
+    fill.style.background = fillColor;
+    document.getElementById('ab-conf-text').textContent = confPct.toFixed(1) + '%';
+  }, 50);
+}
+function normalCDF(x) {
+  const a1=0.254829592, a2=-0.284496736, a3=1.421413741, a4=-1.453152027, a5=1.061405429, p=0.3275911;
+  const sign = x < 0 ? -1 : 1; x = Math.abs(x) / Math.sqrt(2);
+  const t = 1.0 / (1.0 + p * x);
+  const y = 1.0 - (((((a5*t+a4)*t)+a3)*t+a2)*t+a1)*t*Math.exp(-x*x);
+  return 0.5*(1.0+sign*y);
+}
+
+// --- Framework Builder ---
+const fwData = [
+  { title: 'Clarify', desc: 'Restate the problem. Ask clarifying questions to scope the case. Identify the user, product, and business goal.', example: '"Just to confirm -- we are looking at a 10% drop in weekly active users on the iOS app over the past 2 weeks, and the goal is to diagnose root cause?"' },
+  { title: 'Define Metrics', desc: 'Choose your North Star and supporting metrics. Distinguish leading vs lagging indicators.', example: 'North Star: WAU\nSupporting: DAU, D7 retention, session length, signup rate, crash rate' },
+  { title: 'Hypothesize', desc: 'List potential causes ranked by likelihood. Think across product, technical, seasonal, and external factors.', example: '1. Recent app update introduced a bug (crash logs?)\n2. Seasonal drop (holiday period)\n3. Competitor launched new feature\n4. Push notification frequency changed' },
+  { title: 'Analyze', desc: 'Segment data to test each hypothesis. Use cohort analysis, time series, and comparisons.', example: 'Segment by: platform (iOS vs Android), geo, user tenure, acquisition channel. Check: crash rate by app version, retention curves pre/post update.' },
+  { title: 'Recommend', desc: 'Propose concrete actions with expected impact and effort. Prioritize using an impact/effort framework.', example: 'High impact / Low effort: Hotfix crash bug (est. +4% WAU recovery)\nHigh impact / High effort: Redesign onboarding flow\nMonitor: Seasonal effect -- wait 1 week for data' },
+  { title: 'Measure', desc: 'Define success criteria and monitoring plan. Set up dashboards and alerts for the recommended changes.', example: 'Success: WAU returns to baseline within 2 weeks of hotfix\nAlert: If crash rate > 2% on any build\nReview cadence: Daily for 1 week, then weekly' }
+];
+function buildFramework() {
+  const container = document.getElementById('fwSteps');
+  fwData.forEach((step, i) => {
+    const div = document.createElement('div');
+    div.className = 'fw-step' + (i === 0 ? ' active' : '');
+    div.innerHTML = `
+      <div class="fw-step-header" onclick="toggleStep(${i})">
+        <div class="fw-step-num">${i+1}</div>
+        <div class="fw-step-title">${step.title}</div>
+        <div class="fw-step-chevron">&#9654;</div>
+      </div>
+      <div class="fw-step-body">
+        <div class="fw-step-content">
+          <p>${step.desc}</p>
+          <div class="example">${step.example}</div>
+        </div>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+function toggleStep(idx) {
+  document.querySelectorAll('.fw-step').forEach((s, i) => { s.classList.toggle('active', i === idx); });
+}
+buildFramework();
+
+// --- Market Sizing ---
+function calcMarket() {
+  const pop = parseInt(document.getElementById('ms-pop').value);
+  const f1 = parseFloat(document.getElementById('ms-f1').value) / 100;
+  const f2 = parseFloat(document.getElementById('ms-f2').value) / 100;
+  const f3 = parseFloat(document.getElementById('ms-f3').value) / 100;
+  const arpu = parseFloat(document.getElementById('ms-arpu').value);
+
+  const step0 = pop;
+  const step1 = Math.round(pop * f1);
+  const step2 = Math.round(step1 * f2);
+  const step3 = Math.round(step2 * f3);
+
+  const tam = step1 * arpu;
+  const sam = step2 * arpu;
+  const som = step3 * arpu;
+
+  const steps = [
+    { label: 'Total Population', value: step0, pct: 100 },
+    { label: 'After Filter 1', value: step1, pct: f1 * 100 },
+    { label: 'After Filter 2', value: step2, pct: f1 * f2 * 100 },
+    { label: 'After Filter 3', value: step3, pct: f1 * f2 * f3 * 100 }
+  ];
+
+  const funnelEl = document.getElementById('funnelViz');
+  funnelEl.innerHTML = '';
+  const colors = ['#0891b2', '#0e7490', '#155e75', '#164e63'];
+  steps.forEach((s, i) => {
+    const widthPct = Math.max(20, (s.pct / 100) * 100);
+    const bar = document.createElement('div');
+    bar.className = 'funnel-step';
+    bar.style.cssText = `width:${widthPct}%; background:${colors[i]};`;
+    bar.innerHTML = `<span class="f-label">${s.label}</span><span class="f-value">${formatNum(s.value)}</span>`;
+    funnelEl.appendChild(bar);
+    if (i < steps.length - 1) {
+      const arrow = document.createElement('div');
+      arrow.className = 'funnel-arrow';
+      arrow.textContent = '▼';
+      funnelEl.appendChild(arrow);
+    }
+  });
+
+  document.getElementById('tamResults').style.display = 'grid';
+  document.getElementById('tam-val').textContent = formatMoney(tam);
+  document.getElementById('sam-val').textContent = formatMoney(sam);
+  document.getElementById('som-val').textContent = formatMoney(som);
+}
+
+// --- Metric Decomposition ---
+const baseline = { users: 10000, arpu: 100, newU: 3000, retU: 7000, freq: 2.5, aov: 40 };
+function resetDecomp() {
+  document.getElementById('decomp-users').value = baseline.users;
+  document.getElementById('decomp-arpu').value = baseline.arpu;
+  document.getElementById('decomp-new').value = baseline.newU;
+  document.getElementById('decomp-ret').value = baseline.retU;
+  document.getElementById('decomp-freq').value = baseline.freq;
+  document.getElementById('decomp-aov').value = baseline.aov;
+  updateDecomp();
+}
+function updateDecomp() {
+  const users = parseInt(document.getElementById('decomp-users').value) || 0;
+  const arpu = parseFloat(document.getElementById('decomp-arpu').value) || 0;
+  const newU = parseInt(document.getElementById('decomp-new').value) || 0;
+  const retU = parseInt(document.getElementById('decomp-ret').value) || 0;
+  const freq = parseFloat(document.getElementById('decomp-freq').value) || 0;
+  const aov = parseFloat(document.getElementById('decomp-aov').value) || 0;
+
+  const totalUsers = newU + retU;
+  const calcArpu = freq * aov;
+  const revenue = totalUsers * calcArpu;
+  const baseRevenue = baseline.users * baseline.arpu;
+  const change = ((revenue - baseRevenue) / baseRevenue * 100).toFixed(1);
+
+  document.getElementById('decomp-users').value = totalUsers;
+  document.getElementById('decomp-arpu').value = calcArpu.toFixed(0);
+  document.getElementById('dn-rev-val').textContent = formatMoney(revenue);
+  document.getElementById('du-prev').textContent = 'prev: ' + formatNum(baseline.users);
+  document.getElementById('da-prev').textContent = 'prev: $' + baseline.arpu.toFixed(2);
+
+  // Highlight changed nodes
+  const userChg = Math.abs(totalUsers - baseline.users) / baseline.users;
+  const arpuChg = Math.abs(calcArpu - baseline.arpu) / baseline.arpu;
+  document.getElementById('dn-users').classList.toggle('highlight', userChg > 0.05);
+  document.getElementById('dn-arpu').classList.toggle('highlight', arpuChg > 0.05);
+  document.getElementById('dn-revenue').classList.toggle('highlight', Math.abs(change) > 5);
+
+  const expl = document.getElementById('decompExpl');
+  if (Math.abs(change) < 1) {
+    expl.className = 'decomp-explanation ok';
+    expl.innerHTML = `Revenue is at baseline: <strong>${formatMoney(revenue)}</strong> (${change > 0 ? '+' : ''}${change}%). No significant change detected.`;
+  } else {
+    const drivers = [];
+    if (userChg > 0.03) drivers.push(`Users changed from ${formatNum(baseline.users)} to ${formatNum(totalUsers)} (${((totalUsers/baseline.users-1)*100).toFixed(1)}%)`);
+    if (arpuChg > 0.03) drivers.push(`ARPU changed from $${baseline.arpu} to $${calcArpu.toFixed(0)} (${((calcArpu/baseline.arpu-1)*100).toFixed(1)}%)`);
+    const isDown = change < 0;
+    expl.className = 'decomp-explanation ' + (isDown ? 'drop' : 'ok');
+    expl.innerHTML = `Revenue is <strong>${formatMoney(revenue)}</strong> (${change > 0 ? '+' : ''}${change}% vs baseline). ` +
+      (drivers.length ? 'Drivers: ' + drivers.join('; ') + '.' : 'Adjust sub-metrics to find the driver.');
+  }
+}
+
+// --- Helpers ---
+function formatNum(n) {
+  if (n >= 1e9) return (n/1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1) + 'K';
+  return n.toLocaleString();
+}
+function formatMoney(n) {
+  if (n >= 1e9) return '$' + (n/1e9).toFixed(2) + 'B';
+  if (n >= 1e6) return '$' + (n/1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '$' + (n/1e3).toFixed(1) + 'K';
+  return '$' + n.toLocaleString();
+}
+
+// Init
+changeScenario('growth');
+</script>
+
+</body>
+</html>

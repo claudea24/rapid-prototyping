@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Sandbox — Interactive DS Prep v12</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f5f5f0; --surface: #ffffff; --border: #e2e2da;
+      --text: #2d2d2d; --text-muted: #6b6b6b; --heading: #1a1a1a;
+      --blue: #2563eb; --green: #16a34a; --amber: #d97706;
+      --code-bg: #1e1e2e; --code-text: #cdd6f4;
+    }
+    body { font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    nav {
+      position: sticky; top: 0; z-index: 200; display: flex; justify-content: space-between;
+      align-items: center; padding: 0 32px; height: 56px;
+      background: rgba(245,245,240,0.95); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand { font-weight: 700; font-size: 1rem; color: var(--heading); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    nav .brand .dot { width: 8px; height: 8px; border-radius: 3px; background: var(--blue); }
+    nav .nav-links { display: flex; gap: 2px; }
+    nav .nav-links a { text-decoration: none; color: var(--text-muted); font-size: 0.78rem; padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500; }
+    nav .nav-links a:hover { background: rgba(0,0,0,0.04); color: var(--heading); }
+    nav .nav-links a.active { color: var(--heading); background: rgba(0,0,0,0.06); font-weight: 600; }
+
+    .page-header { padding: 32px 32px 20px; max-width: 1100px; margin: 0 auto; }
+    .page-header .top { display: flex; align-items: center; gap: 14px; margin-bottom: 6px; }
+    .page-header .icon { width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; background: rgba(37,99,235,0.08); }
+    .page-header h1 { font-size: 1.8rem; font-weight: 700; color: var(--heading); }
+    .page-header p { font-size: 0.88rem; color: var(--text-muted); margin-left: 58px; }
+
+    .layout { max-width: 1100px; margin: 0 auto; padding: 0 32px 64px; display: grid; grid-template-columns: 260px 1fr; gap: 24px; }
+
+    .sidebar { position: sticky; top: 72px; height: fit-content; }
+    .sidebar h3 { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-muted); margin-bottom: 10px; }
+    .topic-list { display: flex; flex-direction: column; gap: 4px; }
+    .topic-btn {
+      display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+      border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+      cursor: pointer; transition: all 0.2s; text-align: left;
+      font-family: 'IBM Plex Sans', sans-serif; font-size: 0.82rem; color: var(--text);
+    }
+    .topic-btn:hover { border-color: #ccc; background: #fafaf6; }
+    .topic-btn.active { border-color: var(--blue); background: rgba(37,99,235,0.04); color: var(--blue); font-weight: 600; }
+    .topic-btn .num { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); width: 20px; text-align: center; flex-shrink: 0; }
+    .topic-btn.active .num { color: var(--blue); }
+
+    .tables-ref { margin-top: 20px; }
+    .tables-ref h3 { margin-bottom: 8px; }
+    .mini-table { font-size: 0.68rem; width: 100%; border-collapse: collapse; margin-bottom: 12px; background: var(--surface); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+    .mini-table caption { text-align: left; font-weight: 700; font-size: 0.72rem; color: var(--heading); padding: 8px 10px 4px; background: rgba(0,0,0,0.02); }
+    .mini-table th { background: rgba(0,0,0,0.03); font-weight: 600; color: var(--heading); padding: 5px 8px; text-align: left; border-bottom: 1px solid var(--border); }
+    .mini-table td { padding: 4px 8px; border-bottom: 1px solid rgba(0,0,0,0.04); color: var(--text); }
+    .mini-table tr:last-child td { border-bottom: none; }
+
+    .main { min-width: 0; }
+
+    .lesson-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      margin-bottom: 20px; overflow: hidden;
+    }
+    .lesson-card .lesson-header {
+      padding: 20px 24px; border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .lesson-card .lesson-header h2 { font-size: 1.05rem; font-weight: 700; color: var(--heading); }
+    .lesson-card .lesson-header .diff {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+      padding: 3px 10px; border-radius: 12px;
+    }
+    .diff-basic { background: rgba(22,163,74,0.08); color: var(--green); }
+    .diff-inter { background: rgba(217,119,6,0.08); color: var(--amber); }
+    .diff-adv { background: rgba(37,99,235,0.08); color: var(--blue); }
+
+    .lesson-card .lesson-desc { padding: 16px 24px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; border-bottom: 1px solid var(--border); }
+    .lesson-card .lesson-desc code { font-family: 'IBM Plex Mono', monospace; background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px; font-size: 0.8rem; color: var(--heading); }
+
+    .editor-wrap { padding: 0; }
+    .editor-toolbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px; background: #1a1a2a; border-bottom: 1px solid #2a2a3e;
+    }
+    .editor-toolbar .file-label { font-size: 0.7rem; color: #7a7a9e; font-family: 'IBM Plex Mono', monospace; }
+    .run-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 16px; border: none; border-radius: 6px;
+      background: var(--green); color: #fff; font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .run-btn:hover { background: #15803d; }
+    .run-btn .play { font-size: 0.7rem; }
+
+    .code-editor {
+      width: 100%; min-height: 100px; padding: 16px; border: none; resize: vertical;
+      background: var(--code-bg); color: var(--code-text);
+      font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; line-height: 1.7;
+      outline: none;
+    }
+
+    .result-area { border-top: 1px solid #2a2a3e; }
+    .result-header {
+      padding: 8px 16px; background: #1a1a2a; font-size: 0.68rem; font-weight: 600;
+      color: #7a7a9e; text-transform: uppercase; letter-spacing: 1px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .result-header .row-count { color: var(--green); }
+    .result-table-wrap { overflow-x: auto; background: var(--code-bg); max-height: 280px; overflow-y: auto; }
+    .result-table {
+      width: 100%; border-collapse: collapse; font-family: 'IBM Plex Mono', monospace; font-size: 0.76rem;
+    }
+    .result-table th {
+      background: #2a2a3e; color: #a0a0c4; padding: 8px 14px; text-align: left;
+      font-weight: 600; position: sticky; top: 0; border-bottom: 1px solid #3a3a4e;
+    }
+    .result-table td { padding: 6px 14px; color: var(--code-text); border-bottom: 1px solid #2a2a3e; }
+    .result-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .result-table .null { color: #6a6a8e; font-style: italic; }
+    .result-error { padding: 14px 16px; background: rgba(225,29,72,0.08); color: #f87171; font-size: 0.82rem; font-family: 'IBM Plex Mono', monospace; }
+
+    footer { text-align: center; padding: 32px; font-size: 0.82rem; color: var(--text-muted); border-top: 1px solid var(--border); }
+    footer a { color: var(--blue); text-decoration: none; }
+
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      nav { padding: 0 16px; }
+      .page-header { padding: 24px 16px 16px; }
+      .layout { padding: 0 16px 48px; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="index.html" class="brand"><span class="dot"></span> DS Prep v12</a>
+    <div class="nav-links">
+      <a href="sql.html" class="active">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Probability</a>
+      <a href="casing.html">Casing</a>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <div class="top">
+      <div class="icon">&#128450;</div>
+      <h1>SQL Sandbox</h1>
+    </div>
+    <p>Pick a topic, edit the query, and hit Run to see live results from sample tables.</p>
+  </div>
+
+  <div class="layout">
+    <div class="sidebar">
+      <h3>Topics</h3>
+      <div class="topic-list" id="topic-list"></div>
+
+      <div class="tables-ref">
+        <h3>Sample Tables</h3>
+        <table class="mini-table">
+          <caption>employees</caption>
+          <tr><th>id</th><th>name</th><th>dept</th><th>salary</th></tr>
+          <tr><td>1</td><td>Alice</td><td>Eng</td><td>95000</td></tr>
+          <tr><td>2</td><td>Bob</td><td>Eng</td><td>92000</td></tr>
+          <tr><td>3</td><td>Carol</td><td>Sales</td><td>78000</td></tr>
+          <tr><td>4</td><td>Dave</td><td>Sales</td><td>78000</td></tr>
+          <tr><td>5</td><td>Eve</td><td>HR</td><td>65000</td></tr>
+        </table>
+        <table class="mini-table">
+          <caption>orders</caption>
+          <tr><th>id</th><th>emp_id</th><th>amount</th><th>dt</th></tr>
+          <tr><td>1</td><td>1</td><td>1200</td><td>2024-01</td></tr>
+          <tr><td>2</td><td>1</td><td>800</td><td>2024-02</td></tr>
+          <tr><td>3</td><td>2</td><td>2400</td><td>2024-01</td></tr>
+          <tr><td>4</td><td>3</td><td>500</td><td>2024-02</td></tr>
+          <tr><td>5</td><td>6</td><td>300</td><td>2024-01</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="main" id="main"></div>
+  </div>
+
+  <footer>
+    <p>Claudea's DS Interview Prep &middot; v12 &middot; <a href="index.html">Back to Topics</a></p>
+  </footer>
+
+<script>
+// ── In-memory SQL engine ──
+const DB = {
+  employees: [
+    { id: 1, name: 'Alice', dept: 'Eng', salary: 95000 },
+    { id: 2, name: 'Bob', dept: 'Eng', salary: 92000 },
+    { id: 3, name: 'Carol', dept: 'Sales', salary: 78000 },
+    { id: 4, name: 'Dave', dept: 'Sales', salary: 78000 },
+    { id: 5, name: 'Eve', dept: 'HR', salary: 65000 },
+  ],
+  orders: [
+    { id: 1, emp_id: 1, amount: 1200, dt: '2024-01' },
+    { id: 2, emp_id: 1, amount: 800, dt: '2024-02' },
+    { id: 3, emp_id: 2, amount: 2400, dt: '2024-01' },
+    { id: 4, emp_id: 3, amount: 500, dt: '2024-02' },
+    { id: 5, emp_id: 6, amount: 300, dt: '2024-01' },
+  ]
+};
+
+function runSQL(query) {
+  const q = query.trim().replace(/;\s*$/, '').toLowerCase().replace(/\n/g, ' ').replace(/\s+/g, ' ');
+  try {
+    if (q.startsWith('with ')) return doCTE(q);
+    if (q.includes('over(') || q.includes('over (')) return doWindow(q);
+    if (q.includes('group by')) return doGroupBy(q);
+    if (q.includes('cross join')) return doCrossJoin(q);
+    if (q.includes('left join')) return doJoin(q, 'left');
+    if (q.includes('join')) return doJoin(q, 'inner');
+
+    const m = q.match(/^select\s+(.+?)\s+from\s+(\w+)(?:\s+where\s+(.+?))?(?:\s+order\s+by\s+(.+?))?(?:\s+limit\s+(\d+))?$/);
+    if (!m) throw new Error('Query not supported by this sandbox. Try the pre-loaded examples!');
+    const [, colsPart, table, wherePart, orderPart, limitPart] = m;
+    if (!DB[table]) throw new Error(`Table "${table}" not found`);
+    let rows = [...DB[table]];
+    if (wherePart) rows = applyWhere(rows, wherePart);
+    if (colsPart.trim() !== '*') {
+      const cols = colsPart.split(',').map(c => c.trim().split(/\s+as\s+/));
+      rows = rows.map(r => {
+        const nr = {};
+        cols.forEach(([src, alias]) => { const k = src.trim(); if (r[k] !== undefined) nr[alias ? alias.trim() : k] = r[k]; });
+        return nr;
+      });
+    }
+    if (orderPart) rows = applyOrder(rows, orderPart);
+    if (limitPart) rows = rows.slice(0, parseInt(limitPart));
+    return { rows, cols: rows.length ? Object.keys(rows[0]) : [] };
+  } catch (e) { return { error: e.message }; }
+}
+
+function applyWhere(rows, w) {
+  const m = w.match(/(\w+)\s*(=|>|<|>=|<=|!=|<>)\s*'?([^']*?)'?\s*$/);
+  if (!m) return rows;
+  const [, col, op, val] = m;
+  return rows.filter(r => {
+    const v = r[col]; const cv = isNaN(val) ? val : Number(val);
+    if (op === '=' || op === '==') return v == cv;
+    if (op === '>') return v > cv;  if (op === '<') return v < cv;
+    if (op === '>=') return v >= cv; if (op === '<=') return v <= cv;
+    if (op === '!=' || op === '<>') return v != cv;
+    return true;
+  });
+}
+
+function applyOrder(rows, o) {
+  const desc = o.toLowerCase().includes('desc');
+  const col = o.replace(/\s+(asc|desc)/i, '').trim();
+  return rows.sort((a, b) => { if (a[col] < b[col]) return desc ? 1 : -1; if (a[col] > b[col]) return desc ? -1 : 1; return 0; });
+}
+
+function doJoin(q, type) {
+  const jm = q.match(/from\s+(\w+)\s+(\w+)\s+(?:inner\s+)?(?:left\s+)?join\s+(\w+)\s+(\w+)\s+on\s+(\w+)\.(\w+)\s*=\s*(\w+)\.(\w+)/);
+  if (!jm) throw new Error('JOIN format: FROM t1 a JOIN t2 b ON a.col = b.col');
+  const [, t1, a1, t2, a2, ja, jca, jb, jcb] = jm;
+  if (!DB[t1] || !DB[t2]) throw new Error('Table not found');
+  const tbl = {}; tbl[a1] = DB[t1]; tbl[a2] = DB[t2];
+  const rows = [];
+  DB[t1].forEach(r1 => {
+    let matched = false;
+    DB[t2].forEach(r2 => {
+      const v1 = r1[jca] !== undefined ? r1[jca] : r1[jcb];
+      const v2 = r2[jcb] !== undefined ? r2[jcb] : r2[jca];
+      if (v1 === v2) {
+        const row = {};
+        Object.keys(r1).forEach(k => row[`${a1}.${k}`] = r1[k]);
+        Object.keys(r2).forEach(k => row[`${a2}.${k}`] = r2[k]);
+        rows.push(row); matched = true;
+      }
+    });
+    if (!matched && type === 'left') {
+      const row = {};
+      Object.keys(r1).forEach(k => row[`${a1}.${k}`] = r1[k]);
+      Object.keys(DB[t2][0]).forEach(k => row[`${a2}.${k}`] = null);
+      rows.push(row);
+    }
+  });
+  return { rows, cols: rows.length ? Object.keys(rows[0]) : [] };
+}
+
+function doCrossJoin(q) {
+  const m = q.match(/from\s+(\w+)\s*cross\s+join\s+(\w+)/);
+  if (!m) throw new Error('CROSS JOIN format error');
+  const [, t1, t2] = m;
+  if (!DB[t1] || !DB[t2]) throw new Error('Table not found');
+  const rows = [];
+  DB[t1].forEach(r1 => { DB[t2].forEach(r2 => {
+    const row = {}; Object.keys(r1).forEach(k => row[`${t1}.${k}`] = r1[k]); Object.keys(r2).forEach(k => row[`${t2}.${k}`] = r2[k]); rows.push(row);
+  }); });
+  return { rows, cols: rows.length ? Object.keys(rows[0]) : [] };
+}
+
+function doGroupBy(q) {
+  const m = q.match(/select\s+(.+?)\s+from\s+(\w+)(?:\s+where\s+(.+?))?\s+group\s+by\s+(.+?)(?:\s+having\s+(.+?))?(?:\s+order\s+by\s+(.+?))?$/);
+  if (!m) throw new Error('GROUP BY parse error');
+  const [, selPart, table, wherePart, groupCol] = m;
+  if (!DB[table]) throw new Error(`Table "${table}" not found`);
+  let rows = [...DB[table]];
+  if (wherePart) rows = applyWhere(rows, wherePart);
+  const gc = groupCol.trim();
+  const groups = {};
+  rows.forEach(r => { const key = r[gc]; if (!groups[key]) groups[key] = []; groups[key].push(r); });
+  const aggCols = selPart.split(',').map(c => c.trim());
+  const result = [];
+  Object.entries(groups).forEach(([key, gRows]) => {
+    const row = {};
+    aggCols.forEach(col => {
+      const aggM = col.match(/(count|sum|avg|min|max)\s*\(\s*(\*|\w+)\s*\)(?:\s+as\s+(\w+))?/i);
+      if (aggM) {
+        const [, fn, field, alias] = aggM;
+        const name = alias || `${fn}(${field})`;
+        if (fn === 'count') row[name] = gRows.length;
+        else if (fn === 'sum') row[name] = gRows.reduce((s, r) => s + (r[field] || 0), 0);
+        else if (fn === 'avg') row[name] = Math.round(gRows.reduce((s, r) => s + (r[field] || 0), 0) / gRows.length);
+        else if (fn === 'min') row[name] = Math.min(...gRows.map(r => r[field]));
+        else if (fn === 'max') row[name] = Math.max(...gRows.map(r => r[field]));
+      } else {
+        const parts = col.split(/\s+as\s+/); const src = parts[0].trim(); const alias = parts[1] ? parts[1].trim() : src;
+        row[alias] = gRows[0][src];
+      }
+    });
+    result.push(row);
+  });
+  return { rows: result, cols: result.length ? Object.keys(result[0]) : [] };
+}
+
+function doWindow(q) {
+  const m = q.match(/select\s+(.+?)\s+from\s+(\w+)/);
+  if (!m) throw new Error('Window function parse error');
+  const [, selPart, table] = m;
+  if (!DB[table]) throw new Error(`Table "${table}" not found`);
+  let rows = [...DB[table]];
+  const winM = selPart.match(/(row_number|rank|dense_rank|sum|avg)\s*\(\s*(\w*)\s*\)\s*over\s*\(\s*(?:partition\s+by\s+(\w+))?\s*order\s+by\s+(\w+)(?:\s+(desc))?\s*\)(?:\s+as\s+(\w+))?/i);
+  if (!winM) throw new Error('Window: FN() OVER(PARTITION BY col ORDER BY col) AS alias');
+  const [, fn, fnArg, partCol, orderCol, descFlag, alias] = winM;
+  const resName = alias || fn; const isDesc = !!descFlag;
+  const baseCols = selPart.split(',').map(c => c.trim()).filter(c => !c.toLowerCase().includes('over(') && !c.toLowerCase().includes('over ('));
+  const partitions = {};
+  rows.forEach(r => { const key = partCol ? r[partCol] : '_'; if (!partitions[key]) partitions[key] = []; partitions[key].push(r); });
+  const result = [];
+  Object.values(partitions).forEach(pRows => {
+    pRows.sort((a, b) => isDesc ? b[orderCol] - a[orderCol] : a[orderCol] - b[orderCol]);
+    let rank = 0, prevVal = null;
+    pRows.forEach((r, i) => {
+      const row = {};
+      baseCols.forEach(c => { const clean = c.trim(); if (r[clean] !== undefined) row[clean] = r[clean]; });
+      if (fn === 'row_number') row[resName] = i + 1;
+      else if (fn === 'rank') { if (r[orderCol] !== prevVal) rank = i + 1; row[resName] = rank; prevVal = r[orderCol]; }
+      else if (fn === 'dense_rank') { if (r[orderCol] !== prevVal) rank++; row[resName] = rank; prevVal = r[orderCol]; }
+      else if (fn === 'sum') row[resName] = pRows.reduce((s, x) => s + (x[fnArg] || 0), 0);
+      else if (fn === 'avg') row[resName] = Math.round(pRows.reduce((s, x) => s + (x[fnArg] || 0), 0) / pRows.length);
+      result.push(row);
+    });
+  });
+  return { rows: result, cols: result.length ? Object.keys(result[0]) : [] };
+}
+
+function doCTE(q) {
+  const cm = q.match(/with\s+(\w+)\s+as\s*\((.+?)\)\s*(select.+)$/s);
+  if (!cm) throw new Error('CTE: WITH name AS (subquery) SELECT ... FROM name');
+  const [, cteName, subQ, mainQ] = cm;
+  const subResult = runSQL(subQ);
+  if (subResult.error) throw new Error(subResult.error);
+  DB[cteName] = subResult.rows;
+  const result = runSQL(mainQ);
+  delete DB[cteName];
+  return result;
+}
+
+// ── Lessons ──
+const lessons = [
+  { id:'select', title:'SELECT & WHERE', diff:'basic',
+    desc:'Retrieve rows from a table and filter with <code>WHERE</code>. Try changing the salary threshold or selecting different columns.',
+    query:'SELECT name, dept, salary\nFROM employees\nWHERE salary > 80000' },
+  { id:'inner-join', title:'INNER JOIN', diff:'basic',
+    desc:'Combine rows from two tables where a match exists. Only matching rows appear — emp_id 6 in orders has no employee, and Eve has no orders.',
+    query:'SELECT e.name, e.dept, o.amount, o.dt\nFROM employees e\nINNER JOIN orders o ON e.id = o.emp_id' },
+  { id:'left-join', title:'LEFT JOIN', diff:'basic',
+    desc:'Keep ALL rows from the left table. Non-matching right columns become <code>NULL</code>. Notice Eve appears with NULL amount.',
+    query:'SELECT e.name, e.dept, o.amount, o.dt\nFROM employees e\nLEFT JOIN orders o ON e.id = o.emp_id' },
+  { id:'group-by', title:'GROUP BY & Aggregation', diff:'inter',
+    desc:'Collapse rows into groups and compute aggregates. Try replacing <code>AVG</code> with <code>SUM</code>, <code>MIN</code>, or <code>MAX</code>.',
+    query:'SELECT dept, COUNT(*) AS headcount, AVG(salary) AS avg_salary\nFROM employees\nGROUP BY dept' },
+  { id:'window-rank', title:'Window: RANK', diff:'adv',
+    desc:'Rank employees within each department by salary. Tied salaries (Carol & Dave) get the same rank, and the next rank skips.',
+    query:'SELECT name, dept, salary, RANK() OVER(PARTITION BY dept ORDER BY salary DESC) AS dept_rank\nFROM employees' },
+  { id:'window-dense', title:'Window: DENSE_RANK', diff:'adv',
+    desc:'Like RANK but no gaps. Carol & Dave both get rank 1, next person gets rank 2 (not 3). Compare with RANK above.',
+    query:'SELECT name, dept, salary, DENSE_RANK() OVER(PARTITION BY dept ORDER BY salary DESC) AS d_rank\nFROM employees' },
+  { id:'window-row', title:'Window: ROW_NUMBER', diff:'adv',
+    desc:'Assigns a unique number within each partition — no ties, always 1, 2, 3... Useful for deduplication and top-N queries.',
+    query:'SELECT name, dept, salary, ROW_NUMBER() OVER(PARTITION BY dept ORDER BY salary DESC) AS rn\nFROM employees' },
+  { id:'cte', title:'CTEs (WITH clause)', diff:'inter',
+    desc:'Create a named temporary result set. The CTE runs first, then the main query reads from it like a table.',
+    query:'WITH dept_totals AS (\n  SELECT dept, SUM(salary) AS total_sal\n  FROM employees\n  GROUP BY dept\n)\nSELECT * FROM dept_totals' },
+  { id:'order-limit', title:'ORDER BY & LIMIT', diff:'basic',
+    desc:'Sort results and limit output. Try <code>ASC</code> vs <code>DESC</code> and different <code>LIMIT</code> values.',
+    query:'SELECT name, salary\nFROM employees\nORDER BY salary DESC\nLIMIT 3' },
+];
+
+function renderSidebar() {
+  const list = document.getElementById('topic-list');
+  lessons.forEach((l, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'topic-btn' + (i === 0 ? ' active' : '');
+    btn.innerHTML = `<span class="num">${i + 1}</span> ${l.title}`;
+    btn.onclick = () => selectLesson(i);
+    list.appendChild(btn);
+  });
+}
+function selectLesson(idx) {
+  document.querySelectorAll('.topic-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+  renderLesson(idx);
+}
+function renderLesson(idx) {
+  const l = lessons[idx];
+  document.getElementById('main').innerHTML = `
+    <div class="lesson-card">
+      <div class="lesson-header">
+        <h2>${l.title}</h2>
+        <span class="diff diff-${l.diff}">${l.diff === 'inter' ? 'Intermediate' : l.diff === 'adv' ? 'Advanced' : 'Basic'}</span>
+      </div>
+      <div class="lesson-desc">${l.desc}</div>
+      <div class="editor-wrap">
+        <div class="editor-toolbar">
+          <span class="file-label">query.sql</span>
+          <button class="run-btn" onclick="execQuery(${idx})"><span class="play">&#9654;</span> Run</button>
+        </div>
+        <textarea class="code-editor" id="editor-${idx}" spellcheck="false">${l.query}</textarea>
+        <div class="result-area" id="result-${idx}">
+          <div class="result-header"><span>Output</span><span class="row-count">Press Run to execute</span></div>
+        </div>
+      </div>
+    </div>`;
+}
+function execQuery(idx) {
+  const editor = document.getElementById(`editor-${idx}`);
+  const area = document.getElementById(`result-${idx}`);
+  const result = runSQL(editor.value);
+  if (result.error) {
+    area.innerHTML = `<div class="result-header"><span>Output</span><span class="row-count" style="color:var(--amber)">Error</span></div><div class="result-error">${result.error}</div>`;
+    return;
+  }
+  const { rows, cols } = result;
+  if (!rows.length) { area.innerHTML = `<div class="result-header"><span>Output</span><span class="row-count">0 rows</span></div><div style="padding:16px;color:var(--code-text);background:var(--code-bg);font-size:.82rem;">No rows returned.</div>`; return; }
+  area.innerHTML = `
+    <div class="result-header"><span>Output</span><span class="row-count">${rows.length} row${rows.length!==1?'s':''}</span></div>
+    <div class="result-table-wrap"><table class="result-table"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${cols.map(c=>`<td>${r[c]===null?'<span class="null">NULL</span>':r[c]}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+
+renderSidebar();
+renderLesson(0);
+</script>
+</body>
+</html>
