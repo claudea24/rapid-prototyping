@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Adventure - Data Science</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      color: #ff6b6b;
+      text-shadow: 2px 2px 0px #fff;
+      margin-bottom: 20px;
+    }
+
+    .quiz-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .question {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .option {
+      background: #f0f8ff;
+      border: 2px solid #4ecdc4;
+      border-radius: 10px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1.1rem;
+    }
+
+    .option:hover {
+      background: #4ecdc4;
+      color: white;
+    }
+
+    .option.correct {
+      background: #4ade80;
+      color: white;
+    }
+
+    .option.incorrect {
+      background: #f87171;
+      color: white;
+    }
+
+    .btn {
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      font-family: 'Fredoka', sans-serif;
+      margin: 10px;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .score {
+      font-size: 1.5rem;
+      color: #ff6b6b;
+      margin-bottom: 20px;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+    .back-btn:hover {
+      transform: scale(1.1);
+    }
+
+    @media (max-width: 768px) {
+      .quiz-container { padding: 20px; }
+      .question { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">←</button>
+
+  <header>
+    <h1>🧠 Quiz Adventure!</h1>
+  </header>
+
+  <div class="quiz-container">
+    <div id="quiz">
+      <div class="score" id="score">Score: 0/0</div>
+      <div class="question" id="question">Loading question...</div>
+      <div class="options" id="options"></div>
+      <button class="btn" id="nextBtn" style="display: none;" onclick="nextQuestion()">Next Question</button>
+    </div>
+    <div id="results" style="display: none;">
+      <h2>🎉 Quiz Complete!</h2>
+      <p class="score" id="finalScore"></p>
+      <button class="btn" onclick="restartQuiz()">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "What does SQL stand for?",
+        options: ["Simple Query Language", "Structured Query Language", "Super Quick Language", "Smart Question Language"],
+        correct: 1
+      },
+      {
+        question: "In Python, what do we use to store multiple items?",
+        options: ["Variables", "Lists", "Print", "If statements"],
+        correct: 1
+      },
+      {
+        question: "What is machine learning?",
+        options: ["Teaching computers", "Writing code", "Drawing graphs", "Counting numbers"],
+        correct: 0
+      },
+      {
+        question: "What does a confidence interval tell us?",
+        options: ["The exact answer", "A range where the true value might be", "How many samples we have", "The average"],
+        correct: 1
+      },
+      {
+        question: "What is probability?",
+        options: ["How likely something is to happen", "A type of graph", "A math operation", "A programming language"],
+        correct: 0
+      },
+      {
+        question: "In case studies, what do data scientists do?",
+        options: ["Solve real-world problems", "Write stories", "Draw pictures", "Play games"],
+        correct: 0
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedOption = null;
+
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('question').textContent = q.question;
+      const optionsDiv = document.getElementById('options');
+      optionsDiv.innerHTML = '';
+      q.options.forEach((option, index) => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'option';
+        optionDiv.textContent = option;
+        optionDiv.onclick = () => selectOption(index);
+        optionsDiv.appendChild(optionDiv);
+      });
+      document.getElementById('nextBtn').style.display = 'none';
+      selectedOption = null;
+    }
+
+    function selectOption(index) {
+      if (selectedOption !== null) return;
+      selectedOption = index;
+      const options = document.querySelectorAll('.option');
+      options.forEach((opt, i) => {
+        if (i === questions[currentQuestion].correct) {
+          opt.classList.add('correct');
+        } else if (i === index) {
+          opt.classList.add('incorrect');
+        }
+      });
+      if (index === questions[currentQuestion].correct) {
+        score++;
+      }
+      document.getElementById('score').textContent = `Score: ${score}/${currentQuestion + 1}`;
+      document.getElementById('nextBtn').style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('finalScore').textContent = `Final Score: ${score}/${questions.length}`;
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      selectedOption = null;
+      document.getElementById('score').textContent = 'Score: 0/0';
+      document.getElementById('quiz').style.display = 'block';
+      document.getElementById('results').style.display = 'none';
+      loadQuestion();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>

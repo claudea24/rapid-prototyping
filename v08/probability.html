@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probability - Data Science Adventure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: #fff;
+      text-shadow: 2px 2px 0px #333;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #ddd;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      font-size: 2rem;
+      color: #43e97b;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .btn {
+      background: linear-gradient(45deg, #43e97b, #38f9d7);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      font-family: 'Fredoka', sans-serif;
+      margin: 10px;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #43e97b;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+    .back-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .interactive {
+      margin: 20px 0;
+      padding: 20px;
+      background: #e8f5e8;
+      border-radius: 15px;
+      border: 2px solid #43e97b;
+    }
+
+    .dice-result {
+      font-size: 2rem;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    @media (max-width: 768px) {
+      header h1 { font-size: 2rem; }
+      .section { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">←</button>
+
+  <header>
+    <h1>🎲 Probability</h1>
+    <p>Chance and predictions — how likely is it?</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>What is Probability?</h2>
+      <p>Probability is about how likely something is to happen. It's like guessing the weather or picking lottery numbers, but with math!</p>
+    </div>
+
+    <div class="section">
+      <h2>Basic Concepts</h2>
+      <ul>
+        <li><strong>Probability:</strong> A number between 0 and 1 (0% to 100%)</li>
+        <li><strong>Events:</strong> Things that can happen</li>
+        <li><strong>Independent:</strong> One event doesn't affect another</li>
+        <li><strong>Dependent:</strong> Events affect each other</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Try Probability!</h2>
+      <div class="interactive">
+        <h3>Dice Rolling Experiment</h3>
+        <p>Roll virtual dice and see the probabilities!</p>
+        <button class="btn" onclick="rollDice()">Roll Dice</button>
+        <button class="btn" onclick="resetDice()">Reset</button>
+        <div class="dice-result" id="diceResult">🎲 🎲</div>
+        <p id="diceStats">Rolls: 0 | Average: 0</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Key Concepts</h2>
+      <ul>
+        <li><strong>Expected Value:</strong> What you expect to happen on average</li>
+        <li><strong>Bayes' Theorem:</strong> Updating beliefs with new information</li>
+        <li><strong>Distributions:</strong> How probabilities are spread out</li>
+        <li><strong>Conditional Probability:</strong> Probability given some condition</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    let rolls = [];
+    const diceEmojis = ['🎲', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+
+    function rollDice() {
+      const roll1 = Math.floor(Math.random() * 6) + 1;
+      const roll2 = Math.floor(Math.random() * 6) + 1;
+      const sum = roll1 + roll2;
+      rolls.push(sum);
+      document.getElementById('diceResult').textContent = `${diceEmojis[roll1]} ${diceEmojis[roll2]} = ${sum}`;
+      updateStats();
+    }
+
+    function resetDice() {
+      rolls = [];
+      document.getElementById('diceResult').textContent = '🎲 🎲';
+      document.getElementById('diceStats').textContent = 'Rolls: 0 | Average: 0';
+    }
+
+    function updateStats() {
+      const total = rolls.length;
+      const average = total > 0 ? (rolls.reduce((a, b) => a + b) / total).toFixed(2) : 0;
+      document.getElementById('diceStats').textContent = `Rolls: ${total} | Average: ${average}`;
+    }
+  </script>
+</body>
+</html>

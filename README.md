@@ -28,7 +28,7 @@ Each topic gets a **cheat sheet** reference section and there is a **quiz** sect
 | **v05** | Duolingo-Style Path | Learning path with zigzag nodes, 3 lessons per topic, checkpoints, hearts, XP, chunky green buttons, continue where you left off |
 | **v06** | Daily Challenge | Daily quiz format — one topic per day, countdown timer, calendar heatmap, streaks, timed 5-question challenges, tabbed study guide |
 | **v07** | Textbook Edition | Traditional book — burgundy cover, serif font, parchment bg, 6 in-depth chapters with worked examples and analogies, practice exam appendix |
-| v08 | Statistics Content | Real Stats cheat sheet — hypothesis testing, CIs, A/B testing, CLT |
+| **v08** | Interactive Kids Edition | Fun, interactive statistics for kids — hypothesis testing coin flips, confidence interval sliders, A/B testing buttons, CLT histograms. Bright colors, animations, simple explanations |
 | v09 | Probability Content | Real Probability cheat sheet — Bayes, distributions, expected value |
 | v10 | Case Studies Content | Real Casing cheat sheet — product metrics, frameworks, debugging |
 | v11 | Quiz Build-Out | 25+ real questions with explanations and difficulty tags |

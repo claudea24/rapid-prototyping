@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Coding - Data Science Adventure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: #fff;
+      text-shadow: 2px 2px 0px #333;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #ddd;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      font-size: 2rem;
+      color: #f093fb;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .code-example {
+      background: #f4f4f4;
+      border-radius: 10px;
+      padding: 20px;
+      font-family: 'Courier New', monospace;
+      margin: 20px 0;
+      border-left: 5px solid #f093fb;
+    }
+
+    .btn {
+      background: linear-gradient(45deg, #f093fb, #f5576c);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      font-family: 'Fredoka', sans-serif;
+      margin: 10px;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #f093fb;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+    .back-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .interactive {
+      margin: 20px 0;
+      padding: 20px;
+      background: #fce4ec;
+      border-radius: 15px;
+      border: 2px solid #f093fb;
+    }
+
+    .output {
+      background: #e8f5e8;
+      border-radius: 10px;
+      padding: 10px;
+      margin-top: 10px;
+      font-family: 'Courier New', monospace;
+    }
+
+    @media (max-width: 768px) {
+      header h1 { font-size: 2rem; }
+      .section { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">←</button>
+
+  <header>
+    <h1>🐍 Python Coding</h1>
+    <p>Code your way to data magic!</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>What is Python?</h2>
+      <p>Python is a friendly programming language that's great for data science. It's like having a super smart assistant that can do math, analyze data, and even draw pictures!</p>
+    </div>
+
+    <div class="section">
+      <h2>Basic Code</h2>
+      <p>Here's a simple Python program:</p>
+      <div class="code-example">
+print("Hello, Data Scientist!")
+numbers = [1, 2, 3, 4, 5]
+total = sum(numbers)
+print(f"Sum: {total}")
+      </div>
+      <p>This prints a message and calculates the sum of numbers!</p>
+    </div>
+
+    <div class="section">
+      <h2>Try Python!</h2>
+      <div class="interactive">
+        <h3>Simple Calculator</h3>
+        <input type="number" id="num1" placeholder="First number" value="5">
+        <select id="operation">
+          <option value="+">+</option>
+          <option value="-">-</option>
+          <option value="*">*</option>
+          <option value="/">/</option>
+        </select>
+        <input type="number" id="num2" placeholder="Second number" value="3">
+        <button class="btn" onclick="calculate()">Calculate</button>
+        <div class="output" id="calcResult"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Key Concepts</h2>
+      <ul>
+        <li><strong>Variables:</strong> Store information like names or numbers</li>
+        <li><strong>Lists:</strong> Collections of items</li>
+        <li><strong>Loops:</strong> Repeat actions</li>
+        <li><strong>Functions:</strong> Reusable code blocks</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function calculate() {
+      const num1 = parseFloat(document.getElementById('num1').value);
+      const num2 = parseFloat(document.getElementById('num2').value);
+      const op = document.getElementById('operation').value;
+      let result;
+      switch(op) {
+        case '+': result = num1 + num2; break;
+        case '-': result = num1 - num2; break;
+        case '*': result = num1 * num2; break;
+        case '/': result = num1 / num2; break;
+      }
+      document.getElementById('calcResult').textContent = `Result: ${result}`;
+    }
+  </script>
+</body>
+</html>

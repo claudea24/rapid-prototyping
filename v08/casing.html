@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies - Data Science Adventure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: #fff;
+      text-shadow: 2px 2px 0px #333;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #ddd;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      font-size: 2rem;
+      color: #fa709a;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .btn {
+      background: linear-gradient(45deg, #fa709a, #fee140);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      font-family: 'Fredoka', sans-serif;
+      margin: 10px;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #fa709a;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+    .back-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .interactive {
+      margin: 20px 0;
+      padding: 20px;
+      background: #fce4ec;
+      border-radius: 15px;
+      border: 2px solid #fa709a;
+    }
+
+    .case-scenario {
+      background: #fff3cd;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px 0;
+      border-left: 5px solid #fa709a;
+    }
+
+    @media (max-width: 768px) {
+      header h1 { font-size: 2rem; }
+      .section { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">←</button>
+
+  <header>
+    <h1>💼 Case Studies</h1>
+    <p>Real-world data puzzles to solve!</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>What are Case Studies?</h2>
+      <p>Case studies are like real-life mysteries where you use data to solve business problems. It's detective work with numbers!</p>
+    </div>
+
+    <div class="section">
+      <h2>Common Frameworks</h2>
+      <ul>
+        <li><strong>Product Metrics:</strong> Track how users interact with products</li>
+        <li><strong>A/B Testing:</strong> Compare different versions</li>
+        <li><strong>Cohort Analysis:</strong> Study groups over time</li>
+        <li><strong>Funnel Analysis:</strong> See where users drop off</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Try a Case!</h2>
+      <div class="interactive">
+        <h3>E-commerce Case Study</h3>
+        <div class="case-scenario">
+          <strong>Problem:</strong> An online store has 10,000 visitors but only 100 purchases. Conversion rate is 1%. How can we improve?
+        </div>
+        <p>What would you investigate first?</p>
+        <button class="btn" onclick="showHint('Check the checkout process - is it too complicated?')">Checkout Process</button>
+        <button class="btn" onclick="showHint('Look at product pages - are they loading slowly?')">Product Pages</button>
+        <button class="btn" onclick="showHint('Analyze traffic sources - are visitors from the right places?')">Traffic Sources</button>
+        <button class="btn" onclick="showHint('Review pricing - is it competitive?')">Pricing Strategy</button>
+        <div id="hint" style="margin-top: 20px; font-weight: bold;"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Key Steps in Case Studies</h2>
+      <ol>
+        <li><strong>Understand the Problem:</strong> What exactly needs to be solved?</li>
+        <li><strong>Gather Data:</strong> Find relevant information</li>
+        <li><strong>Analyze:</strong> Look for patterns and insights</li>
+        <li><strong>Recommend:</strong> Suggest solutions with evidence</li>
+        <li><strong>Present:</strong> Explain your findings clearly</li>
+      </ol>
+    </div>
+  </div>
+
+  <script>
+    function showHint(hint) {
+      document.getElementById('hint').textContent = `💡 ${hint}`;
+    }
+  </script>
+</body>
+</html>

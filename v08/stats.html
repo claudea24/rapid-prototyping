@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics - Data Science Adventure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: #ff6b6b;
+      text-shadow: 2px 2px 0px #fff;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #666;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      font-size: 2rem;
+      color: #4ecdc4;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .interactive-demo {
+      margin: 20px 0;
+      padding: 20px;
+      background: #f0f8ff;
+      border-radius: 15px;
+      border: 2px solid #4ecdc4;
+    }
+    .interactive-demo h3 {
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .slider-container {
+      margin: 20px 0;
+    }
+    .slider {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 10px;
+      border-radius: 5px;
+      background: #ddd;
+      outline: none;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: #4ecdc4;
+      cursor: pointer;
+    }
+    .slider::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: #4ecdc4;
+      cursor: pointer;
+      border: none;
+    }
+
+    .result {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ff6b6b;
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .btn {
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      font-family: 'Fredoka', sans-serif;
+      margin: 10px;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+    .back-btn:hover {
+      transform: scale(1.1);
+    }
+
+    canvas {
+      border: 2px solid #4ecdc4;
+      border-radius: 10px;
+      background: white;
+    }
+
+    @media (max-width: 768px) {
+      header h1 { font-size: 2rem; }
+      .section { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">←</button>
+
+  <header>
+    <h1>📊 Statistics Fun!</h1>
+    <p>Explore numbers and make cool discoveries!</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>What is Statistics?</h2>
+      <p>Statistics is like being a detective with numbers! It helps us understand data, make predictions, and find patterns. Let's dive in with some fun experiments!</p>
+    </div>
+
+    <div class="section">
+      <h2>🎯 Hypothesis Testing</h2>
+      <p>Hypothesis testing is like guessing if something is true or not, then checking with data!</p>
+      <div class="interactive-demo">
+        <h3>Coin Flip Test</h3>
+        <p>Let's test if a coin is fair. Flip it many times and see!</p>
+        <button class="btn" onclick="flipCoin()">Flip Coin</button>
+        <button class="btn" onclick="resetFlips()">Reset</button>
+        <p id="flipResult">Heads: 0, Tails: 0</p>
+        <p id="hypothesisResult"></p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📏 Confidence Intervals</h2>
+      <p>A confidence interval is like a range where we're pretty sure the real answer is!</p>
+      <div class="interactive-demo">
+        <h3>Sample Size Explorer</h3>
+        <p>Move the slider to change sample size and see how the confidence interval changes!</p>
+        <label>Sample Size: <span id="sampleSize">30</span></label>
+        <input type="range" min="10" max="100" value="30" class="slider" id="sampleSlider">
+        <button class="btn" onclick="generateCI()">Generate New Sample</button>
+        <canvas id="ciCanvas" width="400" height="200"></canvas>
+        <p class="result" id="ciResult">95% Confidence Interval: [0, 0]</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>🅰️ A/B Testing</h2>
+      <p>A/B testing is like comparing two versions to see which is better!</p>
+      <div class="interactive-demo">
+        <h3>Button Color Test</h3>
+        <p>Click the buttons and see which one people like more!</p>
+        <button class="btn" style="background: #ff6b6b;" onclick="clickA()">Red Button (A)</button>
+        <button class="btn" style="background: #4ecdc4;" onclick="clickB()">Green Button (B)</button>
+        <p id="abResult">A: 0 clicks, B: 0 clicks</p>
+        <p id="abConclusion"></p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📈 Central Limit Theorem</h2>
+      <p>The CLT says that if you take lots of samples, their averages will look like a bell curve!</p>
+      <div class="interactive-demo">
+        <h3>Sample Means Distribution</h3>
+        <p>Watch the histogram build as we take more samples!</p>
+        <button class="btn" onclick="addSample()">Add Sample</button>
+        <button class="btn" onclick="resetSamples()">Reset</button>
+        <canvas id="cltCanvas" width="400" height="200"></canvas>
+        <p id="sampleCount">Samples: 0</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Coin Flip Simulation
+    let heads = 0, tails = 0;
+    function flipCoin() {
+      if (Math.random() < 0.5) {
+        heads++;
+      } else {
+        tails++;
+      }
+      document.getElementById('flipResult').textContent = `Heads: ${heads}, Tails: ${tails}`;
+      const total = heads + tails;
+      const expected = total / 2;
+      const chiSquare = Math.pow(heads - expected, 2) / expected + Math.pow(tails - expected, 2) / expected;
+      if (total > 10) {
+        document.getElementById('hypothesisResult').textContent = 
+          chiSquare > 3.84 ? "Wow! The coin might not be fair! 🎉" : "Looks fair so far! 👍";
+      }
+    }
+    function resetFlips() {
+      heads = 0; tails = 0;
+      document.getElementById('flipResult').textContent = 'Heads: 0, Tails: 0';
+      document.getElementById('hypothesisResult').textContent = '';
+    }
+
+    // Confidence Interval Demo
+    const sampleSlider = document.getElementById('sampleSlider');
+    const sampleSizeSpan = document.getElementById('sampleSize');
+    sampleSlider.addEventListener('input', function() {
+      sampleSizeSpan.textContent = this.value;
+    });
+
+    function generateCI() {
+      const n = parseInt(sampleSlider.value);
+      const data = [];
+      for (let i = 0; i < n; i++) {
+        data.push(Math.random() * 100); // Simulate data from 0-100
+      }
+      const mean = data.reduce((a, b) => a + b) / n;
+      const std = Math.sqrt(data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / (n - 1));
+      const se = std / Math.sqrt(n);
+      const ciLower = mean - 1.96 * se;
+      const ciUpper = mean + 1.96 * se;
+
+      document.getElementById('ciResult').textContent = `95% Confidence Interval: [${ciLower.toFixed(2)}, ${ciUpper.toFixed(2)}]`;
+
+      // Draw on canvas
+      const canvas = document.getElementById('ciCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw mean line
+      ctx.strokeStyle = '#ff6b6b';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2, 50);
+      ctx.lineTo(canvas.width / 2, 150);
+      ctx.stroke();
+
+      // Draw CI
+      ctx.strokeStyle = '#4ecdc4';
+      ctx.lineWidth = 5;
+      const ciStart = (ciLower / 100) * canvas.width;
+      const ciEnd = (ciUpper / 100) * canvas.width;
+      ctx.beginPath();
+      ctx.moveTo(ciStart, 100);
+      ctx.lineTo(ciEnd, 100);
+      ctx.stroke();
+
+      // Labels
+      ctx.fillStyle = '#333';
+      ctx.font = '14px Fredoka';
+      ctx.fillText('Confidence Interval', ciStart, 130);
+      ctx.fillText(`Mean: ${mean.toFixed(2)}`, canvas.width / 2 - 40, 40);
+    }
+
+    // A/B Testing
+    let clicksA = 0, clicksB = 0;
+    function clickA() { clicksA++; updateAB(); }
+    function clickB() { clicksB++; updateAB(); }
+    function updateAB() {
+      document.getElementById('abResult').textContent = `A: ${clicksA} clicks, B: ${clicksB} clicks`;
+      const total = clicksA + clicksB;
+      if (total > 20) {
+        const pA = clicksA / total;
+        const pB = clicksB / total;
+        const se = Math.sqrt(pA * (1 - pA) / clicksA + pB * (1 - pB) / clicksB);
+        const z = Math.abs(pA - pB) / se;
+        document.getElementById('abConclusion').textContent = 
+          z > 1.96 ? "One button is significantly better! 🎊" : "Too close to call yet! 🤔";
+      }
+    }
+
+    // Central Limit Theorem
+    let samples = [];
+    function addSample() {
+      const sampleSize = 10;
+      const sample = [];
+      for (let i = 0; i < sampleSize; i++) {
+        sample.push(Math.random());
+      }
+      const mean = sample.reduce((a, b) => a + b) / sampleSize;
+      samples.push(mean);
+      document.getElementById('sampleCount').textContent = `Samples: ${samples.length}`;
+
+      drawCLT();
+    }
+    function resetSamples() {
+      samples = [];
+      document.getElementById('sampleCount').textContent = 'Samples: 0';
+      const canvas = document.getElementById('cltCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    function drawCLT() {
+      const canvas = document.getElementById('cltCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (samples.length < 5) return;
+
+      // Simple histogram
+      const bins = 20;
+      const hist = new Array(bins).fill(0);
+      const min = Math.min(...samples);
+      const max = Math.max(...samples);
+      const range = max - min || 1;
+
+      samples.forEach(s => {
+        const bin = Math.floor(((s - min) / range) * bins);
+        if (bin >= 0 && bin < bins) hist[bin]++;
+      });
+
+      const maxCount = Math.max(...hist);
+      ctx.fillStyle = '#4ecdc4';
+      hist.forEach((count, i) => {
+        const x = (i / bins) * canvas.width;
+        const height = (count / maxCount) * 150;
+        ctx.fillRect(x, canvas.height - height - 20, canvas.width / bins - 2, height);
+      });
+
+      // Labels
+      ctx.fillStyle = '#333';
+      ctx.font = '12px Fredoka';
+      ctx.fillText('Sample Means Distribution', 10, 20);
+    }
+
+    // Initialize CI demo
+    generateCI();
+  </script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Queries - Data Science Adventure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Fredoka', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #333;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: #fff;
+      text-shadow: 2px 2px 0px #333;
+    }
+    header p {
+      font-size: 1.2rem;
+      color: #ddd;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .section {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .section h2 {
+      font-size: 2rem;
+      color: #667eea;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .code-example {
+      background: #f4f4f4;
+      border-radius: 10px;
+      padding: 20px;
+      font-family: 'Courier New', monospace;
+      margin: 20px 0;
+      border-left: 5px solid #667eea;
+    }
+
+    .btn {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      font-family: 'Fredoka', sans-serif;
+      margin: 10px;
+    }
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+    .back-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .interactive {
+      margin: 20px 0;
+      padding: 20px;
+      background: #e8f4fd;
+      border-radius: 15px;
+      border: 2px solid #667eea;
+    }
+
+    @media (max-width: 768px) {
+      header h1 { font-size: 2rem; }
+      .section { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">←</button>
+
+  <header>
+    <h1>🗃️ SQL Queries</h1>
+    <p>Talk to databases and get the data you need!</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>What is SQL?</h2>
+      <p>SQL is like a special language to ask questions to databases. It's like being a detective in a huge library of information!</p>
+    </div>
+
+    <div class="section">
+      <h2>Basic Commands</h2>
+      <p>Here are some fun SQL commands to get you started:</p>
+      <div class="code-example">
+SELECT name FROM users WHERE age > 18;
+      </div>
+      <p>This finds all users older than 18!</p>
+    </div>
+
+    <div class="section">
+      <h2>Try It Out!</h2>
+      <div class="interactive">
+        <h3>SQL Query Builder</h3>
+        <p>Build your own query!</p>
+        <select id="tableSelect">
+          <option>users</option>
+          <option>products</option>
+          <option>orders</option>
+        </select>
+        <input type="text" id="columnInput" placeholder="column name" value="name">
+        <input type="text" id="conditionInput" placeholder="condition (optional)" value="age > 18">
+        <button class="btn" onclick="buildQuery()">Build Query</button>
+        <div class="code-example" id="builtQuery"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Key Concepts</h2>
+      <ul>
+        <li><strong>SELECT:</strong> Choose what you want to see</li>
+        <li><strong>FROM:</strong> Tell which table to look in</li>
+        <li><strong>WHERE:</strong> Add conditions to filter data</li>
+        <li><strong>JOIN:</strong> Combine data from different tables</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function buildQuery() {
+      const table = document.getElementById('tableSelect').value;
+      const column = document.getElementById('columnInput').value;
+      const condition = document.getElementById('conditionInput').value;
+      let query = `SELECT ${column} FROM ${table}`;
+      if (condition) {
+        query += ` WHERE ${condition}`;
+      }
+      query += ';';
+      document.getElementById('builtQuery').textContent = query;
+    }
+  </script>
+</body>
+</html>
