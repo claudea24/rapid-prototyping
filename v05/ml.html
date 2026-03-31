@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning — Claudea's DS Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #131f24; --surface: #1b2b32; --surface2: #223640;
+      --border: #2a4450; --text: #d4e4ea; --text-muted: #7a9baa; --text-dim: #4a6a7a;
+      --white: #eaf4f8;
+      --green: #58cc02; --green-dark: #46a302; --green-light: #d7ffb8;
+      --gold: #ffc800; --gold-dark: #e6b400;
+      --blue: #49c0f8; --blue-dark: #1cb0f6;
+      --red: #ff4b4b; --red-dark: #ea2b2b;
+      --orange: #ff9600;
+    }
+    body {
+      font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh;
+    }
+    code, .code { font-family: 'Fira Code', monospace; }
+
+    /* ── Top Bar ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 24px; height: 60px;
+      background: var(--surface); border-bottom: 2px solid var(--border);
+    }
+    .topbar .brand {
+      font-weight: 900; font-size: 1.1rem; color: var(--green);
+      text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    .topbar .brand .owl { font-size: 1.3rem; }
+    .topbar .stats { display: flex; gap: 20px; align-items: center; }
+    .topbar .stat {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 700;
+    }
+    .topbar .stat .s-icon { font-size: 1rem; }
+    .topbar .stat-xp { color: var(--gold); }
+
+    /* ── Progress Bar ── */
+    .progress-bar-container {
+      position: fixed; top: 60px; left: 0; right: 0; z-index: 199;
+      background: var(--surface); padding: 10px 24px; border-bottom: 2px solid var(--border);
+    }
+    .progress-track {
+      height: 12px; background: var(--surface2); border-radius: 8px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: var(--green); border-radius: 8px;
+      transition: width 0.5s ease;
+    }
+
+    /* ── Lesson Tabs ── */
+    .lesson-tabs {
+      max-width: 720px; margin: 0 auto;
+      padding: 100px 24px 0;
+      display: flex; gap: 8px; justify-content: center;
+    }
+    .lesson-tab {
+      padding: 10px 20px; border-radius: 12px 12px 0 0;
+      font-weight: 800; font-size: 0.82rem; cursor: pointer;
+      background: var(--surface2); color: var(--text-muted);
+      border: 2px solid var(--border); border-bottom: none;
+      transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .lesson-tab:hover { color: var(--text); background: var(--surface); }
+    .lesson-tab.active {
+      background: var(--surface); color: var(--green);
+      border-color: var(--green);
+    }
+    .lesson-tab.completed-tab { color: var(--green); }
+    .lesson-tab.completed-tab::after { content: " \2713"; }
+
+    /* ── Main Content ── */
+    .lesson-area {
+      max-width: 720px; margin: 0 auto;
+      padding: 0 24px 120px;
+    }
+    .lesson-panel {
+      display: none; background: var(--surface); border: 2px solid var(--border);
+      border-radius: 0 16px 16px 16px; padding: 32px; animation: fadeIn 0.3s ease;
+    }
+    .lesson-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .lesson-panel h2 {
+      font-size: 1.4rem; font-weight: 900; color: var(--white); margin-bottom: 8px;
+    }
+    .lesson-panel .lesson-subtitle {
+      font-size: 0.85rem; color: var(--text-muted); margin-bottom: 24px;
+    }
+
+    /* ── Content Cards ── */
+    .content-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; margin-bottom: 16px;
+    }
+    .content-card h3 {
+      font-size: 1rem; font-weight: 800; color: var(--blue); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .content-card h3 .card-icon { font-size: 1.1rem; }
+    .content-card p { font-size: 0.88rem; line-height: 1.7; color: var(--text); margin-bottom: 8px; }
+    .content-card ul { list-style: none; padding: 0; }
+    .content-card li {
+      font-size: 0.85rem; line-height: 1.7; padding: 3px 0; padding-left: 20px;
+      position: relative; color: var(--text);
+    }
+    .content-card li::before {
+      content: "\25B8"; position: absolute; left: 0; color: var(--green); font-weight: 700;
+    }
+    .content-card code {
+      background: rgba(73,192,248,0.1); color: var(--blue);
+      padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;
+    }
+
+    /* ── Quiz Section ── */
+    .quiz-section {
+      background: var(--surface2); border: 2px solid var(--border);
+      border-radius: 12px; padding: 24px; margin-top: 24px;
+    }
+    .quiz-section h3 {
+      font-size: 1rem; font-weight: 800; color: var(--gold); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .quiz-question {
+      font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 16px;
+    }
+    .quiz-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+    .quiz-option {
+      padding: 14px 18px; background: var(--surface);
+      border: 2px solid var(--border); border-radius: 12px;
+      font-size: 0.88rem; font-weight: 700; color: var(--text);
+      cursor: pointer; transition: all 0.15s; text-align: left;
+    }
+    .quiz-option:hover { border-color: var(--blue); background: rgba(73,192,248,0.05); }
+    .quiz-option.selected { border-color: var(--blue); background: rgba(73,192,248,0.1); color: var(--blue); }
+    .quiz-option.correct { border-color: var(--green); background: rgba(88,204,2,0.1); color: var(--green); }
+    .quiz-option.wrong { border-color: var(--red); background: rgba(255,75,75,0.1); color: var(--red); }
+    .quiz-option.disabled { pointer-events: none; opacity: 0.6; }
+    .quiz-option.disabled.correct { opacity: 1; }
+
+    /* ── Check Button ── */
+    .check-btn {
+      display: block; width: 100%; padding: 16px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1px; border: none; border-radius: 14px;
+      cursor: pointer; transition: all 0.15s;
+      background: var(--surface2); color: var(--text-dim);
+      border-bottom: 4px solid #1a2a32;
+      pointer-events: none;
+    }
+    .check-btn.ready {
+      background: var(--green); color: #fff;
+      border-bottom: 4px solid var(--green-dark);
+      pointer-events: auto;
+    }
+    .check-btn.ready:hover { background: #4db802; transform: translateY(-1px); }
+    .check-btn.ready:active { transform: translateY(2px); border-bottom-width: 1px; }
+
+    /* ── Feedback Bar ── */
+    .feedback-bar {
+      display: none; padding: 16px 20px; border-radius: 12px;
+      margin-top: 12px; font-weight: 800; font-size: 0.92rem;
+      align-items: center; gap: 10px;
+    }
+    .feedback-bar.show { display: flex; }
+    .feedback-bar.correct-fb {
+      background: rgba(88,204,2,0.15); border: 2px solid var(--green); color: var(--green);
+    }
+    .feedback-bar.wrong-fb {
+      background: rgba(255,75,75,0.15); border: 2px solid var(--red); color: var(--red);
+    }
+    .feedback-bar .fb-icon { font-size: 1.3rem; }
+
+    /* ── Lesson Complete ── */
+    .lesson-complete {
+      display: none; text-align: center; padding: 32px; margin-top: 16px;
+      background: linear-gradient(135deg, rgba(88,204,2,0.1), rgba(73,192,248,0.1));
+      border: 2px solid var(--green); border-radius: 16px;
+    }
+    .lesson-complete.show { display: block; }
+    .lesson-complete .trophy { font-size: 3rem; margin-bottom: 12px; }
+    .lesson-complete h3 { font-size: 1.2rem; font-weight: 900; color: var(--green); margin-bottom: 6px; }
+    .lesson-complete p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; }
+    .lesson-complete .xp-badge {
+      display: inline-block; padding: 8px 24px;
+      background: var(--gold); color: var(--bg); font-weight: 900;
+      border-radius: 20px; font-size: 0.9rem;
+    }
+    .next-btn {
+      display: inline-block; margin-top: 16px; padding: 14px 40px;
+      background: var(--green); color: #fff; font-weight: 800;
+      font-size: 0.95rem; border-radius: 14px; text-decoration: none;
+      text-transform: uppercase; letter-spacing: 1px;
+      border-bottom: 4px solid var(--green-dark); transition: all 0.15s;
+      font-family: 'Nunito', sans-serif; border: none; cursor: pointer;
+    }
+    .next-btn:hover { background: #4db802; transform: translateY(-1px); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 24px 24px 40px;
+      font-size: 0.75rem; color: var(--text-dim);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--green); }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .lesson-tabs { padding: 100px 12px 0; gap: 4px; }
+      .lesson-tab { padding: 8px 12px; font-size: 0.72rem; }
+      .lesson-area { padding: 0 12px 120px; }
+      .lesson-panel { padding: 20px; }
+      .content-card { padding: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <a href="index.html" class="brand"><span class="owl">&#129417;</span> Claudea's DS Prep</a>
+  <div class="stats">
+    <div class="stat stat-xp"><span class="s-icon">&#9733;</span> <span id="xpNum">0</span> XP</div>
+  </div>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress-bar-container">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+  </div>
+</div>
+
+<!-- Lesson Tabs -->
+<div class="lesson-tabs">
+  <div class="lesson-tab active" data-lesson="1">1. Supervised</div>
+  <div class="lesson-tab" data-lesson="2">2. Unsupervised</div>
+  <div class="lesson-tab" data-lesson="3">3. Evaluation</div>
+</div>
+
+<!-- Lesson Area -->
+<div class="lesson-area">
+
+  <!-- ═══════════ LESSON 1: Supervised Learning ═══════════ -->
+  <div class="lesson-panel active" id="lesson-1" data-id="ml-1">
+    <h2>&#129302; Supervised Learning</h2>
+    <p class="lesson-subtitle">Learn the core algorithms that map inputs to labeled outputs.</p>
+
+    <div class="content-card">
+      <h3><span class="card-icon">&#128209;</span> Core Algorithms</h3>
+      <ul>
+        <li><strong>Linear Regression</strong> &mdash; fits a hyperplane minimizing <code>MSE</code>; assumes linearity and homoscedasticity</li>
+        <li><strong>Logistic Regression</strong> &mdash; sigmoid output for binary classification; optimizes cross-entropy loss</li>
+        <li><strong>Decision Trees</strong> &mdash; recursive splits on features using Gini impurity or information gain</li>
+        <li><strong>Random Forest</strong> &mdash; ensemble of decorrelated trees via bagging + feature subsampling; reduces <em>variance</em></li>
+        <li><strong>XGBoost</strong> &mdash; sequential boosting with regularized objective; reduces <em>bias</em> iteratively</li>
+        <li><strong>SVM</strong> &mdash; maximizes margin between classes; kernel trick for non-linear boundaries</li>
+        <li><strong>KNN</strong> &mdash; classifies by majority vote of <code>k</code> nearest neighbors; lazy learner, sensitive to scale</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="card-icon">&#9878;</span> Bias-Variance Tradeoff &amp; Regularization</h3>
+      <p>Total error = Bias&sup2; + Variance + Irreducible Noise. High bias &rarr; underfitting; high variance &rarr; overfitting.</p>
+      <ul>
+        <li><strong>L1 (Lasso)</strong> &mdash; adds <code>|w|</code> penalty; drives weights to exactly zero &rarr; sparse feature selection</li>
+        <li><strong>L2 (Ridge)</strong> &mdash; adds <code>w&sup2;</code> penalty; shrinks weights toward zero but keeps all features</li>
+        <li><strong>Elastic Net</strong> &mdash; combines L1 + L2 for correlated features</li>
+      </ul>
+    </div>
+
+    <div class="quiz-section" id="quiz-1">
+      <h3>&#128218; Knowledge Check</h3>
+      <div class="quiz-question">Random Forest primarily reduces which component of prediction error?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0">Bias</button>
+        <button class="quiz-option" data-idx="1">Variance</button>
+        <button class="quiz-option" data-idx="2">Irreducible noise</button>
+        <button class="quiz-option" data-idx="3">Training loss</button>
+      </div>
+      <button class="check-btn" id="check-1">Check</button>
+      <div class="feedback-bar" id="feedback-1"></div>
+      <div class="lesson-complete" id="complete-1">
+        <div class="trophy">&#127942;</div>
+        <h3>Lesson Complete!</h3>
+        <p>You've mastered Supervised Learning fundamentals.</p>
+        <div class="xp-badge">+50 XP</div><br>
+        <button class="next-btn" onclick="goToLesson(2)">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ LESSON 2: Unsupervised Learning ═══════════ -->
+  <div class="lesson-panel" id="lesson-2" data-id="ml-2">
+    <h2>&#128300; Unsupervised Learning</h2>
+    <p class="lesson-subtitle">Discover patterns in unlabeled data through clustering and dimensionality reduction.</p>
+
+    <div class="content-card">
+      <h3><span class="card-icon">&#127760;</span> Clustering Algorithms</h3>
+      <ul>
+        <li><strong>K-Means</strong> &mdash; partitions data into <code>k</code> clusters by minimizing within-cluster variance; sensitive to initialization (use k-means++)</li>
+        <li><strong>Hierarchical</strong> &mdash; agglomerative (bottom-up) or divisive (top-down); produces a dendrogram; no need to pre-specify <code>k</code></li>
+        <li><strong>DBSCAN</strong> &mdash; density-based; finds arbitrarily shaped clusters; robust to outliers; needs <code>eps</code> and <code>min_samples</code></li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="card-icon">&#128200;</span> Dimensionality Reduction</h3>
+      <ul>
+        <li><strong>PCA</strong> &mdash; linear projection onto principal components (eigenvectors of covariance matrix); preserves maximum variance</li>
+        <li><strong>t-SNE</strong> &mdash; non-linear; preserves local neighborhood structure; great for visualization; not deterministic</li>
+        <li><strong>UMAP</strong> &mdash; faster than t-SNE; better global structure preservation; works for high-dim embeddings</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="card-icon">&#128295;</span> Feature Engineering</h3>
+      <ul>
+        <li><strong>One-Hot Encoding</strong> &mdash; creates binary columns for categorical features; watch for high cardinality</li>
+        <li><strong>Scaling</strong> &mdash; StandardScaler (z-score) or MinMaxScaler; critical for distance-based models</li>
+        <li><strong>Log Transform</strong> &mdash; reduces right skew; stabilizes variance; use <code>log1p</code> for zeros</li>
+        <li><strong>Target Encoding</strong> &mdash; replaces categories with mean of target; risk of leakage &rarr; use with CV folds</li>
+      </ul>
+    </div>
+
+    <div class="quiz-section" id="quiz-2">
+      <h3>&#128218; Knowledge Check</h3>
+      <div class="quiz-question">L1 (Lasso) regularization produces what kind of result?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0">Dense weight vectors with small values</button>
+        <button class="quiz-option" data-idx="1">Sparse weight vectors</button>
+        <button class="quiz-option" data-idx="2">Uniform weight distribution</button>
+        <button class="quiz-option" data-idx="3">Increased model complexity</button>
+      </div>
+      <button class="check-btn" id="check-2">Check</button>
+      <div class="feedback-bar" id="feedback-2"></div>
+      <div class="lesson-complete" id="complete-2">
+        <div class="trophy">&#127942;</div>
+        <h3>Lesson Complete!</h3>
+        <p>You've mastered Unsupervised Learning and Feature Engineering.</p>
+        <div class="xp-badge">+50 XP</div><br>
+        <button class="next-btn" onclick="goToLesson(3)">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ LESSON 3: Model Evaluation ═══════════ -->
+  <div class="lesson-panel" id="lesson-3" data-id="ml-3">
+    <h2>&#127919; Model Evaluation</h2>
+    <p class="lesson-subtitle">Measure model performance correctly and avoid common pitfalls.</p>
+
+    <div class="content-card">
+      <h3><span class="card-icon">&#128202;</span> Classification Metrics</h3>
+      <ul>
+        <li><strong>Accuracy</strong> &mdash; correct / total; misleading on imbalanced data</li>
+        <li><strong>Precision</strong> &mdash; TP / (TP + FP); "of predicted positives, how many are correct?"</li>
+        <li><strong>Recall</strong> &mdash; TP / (TP + FN); "of actual positives, how many did we catch?"</li>
+        <li><strong>F1 Score</strong> &mdash; harmonic mean of precision and recall; balances both</li>
+        <li><strong>AUC-ROC</strong> &mdash; area under ROC curve; threshold-independent ranking metric</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="card-icon">&#128201;</span> Regression Metrics</h3>
+      <ul>
+        <li><strong>RMSE</strong> &mdash; root mean squared error; penalizes large errors more</li>
+        <li><strong>MAE</strong> &mdash; mean absolute error; more robust to outliers than RMSE</li>
+        <li><strong>R&sup2;</strong> &mdash; proportion of variance explained; 1.0 is perfect, can be negative for bad models</li>
+      </ul>
+    </div>
+
+    <div class="content-card">
+      <h3><span class="card-icon">&#128256;</span> Cross-Validation &amp; Leakage</h3>
+      <ul>
+        <li><strong>k-Fold CV</strong> &mdash; splits data into <code>k</code> folds; each fold serves as validation once; standard is k=5 or 10</li>
+        <li><strong>Stratified k-Fold</strong> &mdash; preserves class distribution in each fold; essential for imbalanced data</li>
+        <li><strong>Time Series CV</strong> &mdash; expanding window; never use future data to predict the past</li>
+        <li><strong>Data Leakage</strong> &mdash; occurs when info from outside training leaks in; e.g., fitting scaler on full data before splitting</li>
+      </ul>
+    </div>
+
+    <div class="quiz-section" id="quiz-3">
+      <h3>&#128218; Knowledge Check</h3>
+      <div class="quiz-question">What's the risk of fitting a scaler on the full dataset before cross-validation?</div>
+      <div class="quiz-options">
+        <button class="quiz-option" data-idx="0">Slower training time</button>
+        <button class="quiz-option" data-idx="1">Data leakage</button>
+        <button class="quiz-option" data-idx="2">Higher bias</button>
+        <button class="quiz-option" data-idx="3">Feature redundancy</button>
+      </div>
+      <button class="check-btn" id="check-3">Check</button>
+      <div class="feedback-bar" id="feedback-3"></div>
+      <div class="lesson-complete" id="complete-3">
+        <div class="trophy">&#127942;</div>
+        <h3>All ML Lessons Complete!</h3>
+        <p>You're ready for Machine Learning interview questions.</p>
+        <div class="xp-badge">+50 XP</div><br>
+        <a class="next-btn" href="index.html">Back to Path</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; v05 &middot; <a href="index.html">Learning Path</a> &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<script>
+// ── Lesson Data ──
+const LESSONS = [
+  { num: 1, id: 'ml-1', answer: 1 },
+  { num: 2, id: 'ml-2', answer: 1 },
+  { num: 3, id: 'ml-3', answer: 1 },
+];
+const XP_PER_LESSON = 50;
+
+// ── Progress ──
+function getProgress() {
+  const saved = localStorage.getItem('ds-v05-progress');
+  return saved ? JSON.parse(saved) : { completed: [], xp: 0, streak: 0, hearts: 5 };
+}
+function saveProgress(p) { localStorage.setItem('ds-v05-progress', JSON.stringify(p)); }
+
+let progress = getProgress();
+document.getElementById('xpNum').textContent = progress.xp;
+
+// ── Tab Switching ──
+const tabs = document.querySelectorAll('.lesson-tab');
+const panels = document.querySelectorAll('.lesson-panel');
+
+function goToLesson(num) {
+  tabs.forEach(t => t.classList.remove('active'));
+  panels.forEach(p => p.classList.remove('active'));
+  tabs[num - 1].classList.add('active');
+  document.getElementById('lesson-' + num).classList.add('active');
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => goToLesson(parseInt(tab.dataset.lesson)));
+});
+
+// ── Handle hash navigation ──
+function checkHash() {
+  const hash = window.location.hash;
+  if (hash) {
+    const match = hash.match(/lesson-(\d)/);
+    if (match) goToLesson(parseInt(match[1]));
+  }
+}
+checkHash();
+window.addEventListener('hashchange', checkHash);
+
+// ── Quiz Logic ──
+LESSONS.forEach(lesson => {
+  const quizSection = document.getElementById('quiz-' + lesson.num);
+  const options = quizSection.querySelectorAll('.quiz-option');
+  const checkBtn = document.getElementById('check-' + lesson.num);
+  const feedback = document.getElementById('feedback-' + lesson.num);
+  const complete = document.getElementById('complete-' + lesson.num);
+  let selected = null;
+
+  // Skip if already completed
+  if (progress.completed.includes(lesson.id)) {
+    markLessonDone(lesson.num);
+    return;
+  }
+
+  options.forEach(opt => {
+    opt.addEventListener('click', () => {
+      if (opt.classList.contains('disabled')) return;
+      options.forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      selected = parseInt(opt.dataset.idx);
+      checkBtn.classList.add('ready');
+    });
+  });
+
+  checkBtn.addEventListener('click', () => {
+    if (selected === null) return;
+
+    const isCorrect = selected === lesson.answer;
+
+    // Disable all options
+    options.forEach(o => {
+      o.classList.add('disabled');
+      if (parseInt(o.dataset.idx) === lesson.answer) o.classList.add('correct');
+      else if (o.classList.contains('selected')) o.classList.add('wrong');
+    });
+
+    // Show feedback
+    feedback.classList.add('show');
+    if (isCorrect) {
+      feedback.classList.add('correct-fb');
+      feedback.innerHTML = '<span class="fb-icon">&#9989;</span> Correct! Great job!';
+    } else {
+      feedback.classList.add('wrong-fb');
+      feedback.innerHTML = '<span class="fb-icon">&#10060;</span> Not quite. The correct answer is highlighted above.';
+    }
+
+    // Hide check button
+    checkBtn.style.display = 'none';
+
+    // Mark complete & award XP
+    if (!progress.completed.includes(lesson.id)) {
+      progress.completed.push(lesson.id);
+      progress.xp += XP_PER_LESSON;
+      saveProgress(progress);
+      document.getElementById('xpNum').textContent = progress.xp;
+    }
+
+    // Show completion card
+    setTimeout(() => {
+      complete.classList.add('show');
+      updateProgress();
+    }, 800);
+  });
+});
+
+function markLessonDone(num) {
+  const quizSection = document.getElementById('quiz-' + num);
+  const options = quizSection.querySelectorAll('.quiz-option');
+  const checkBtn = document.getElementById('check-' + num);
+  const feedback = document.getElementById('feedback-' + num);
+  const complete = document.getElementById('complete-' + num);
+  const lesson = LESSONS[num - 1];
+
+  options.forEach(o => {
+    o.classList.add('disabled');
+    if (parseInt(o.dataset.idx) === lesson.answer) o.classList.add('correct');
+  });
+  checkBtn.style.display = 'none';
+  feedback.classList.add('show', 'correct-fb');
+  feedback.innerHTML = '<span class="fb-icon">&#9989;</span> Completed!';
+  complete.classList.add('show');
+
+  // Mark tab
+  tabs[num - 1].classList.add('completed-tab');
+}
+
+function updateProgress() {
+  let done = 0;
+  LESSONS.forEach(l => {
+    if (progress.completed.includes(l.id)) {
+      done++;
+      tabs[l.num - 1].classList.add('completed-tab');
+    }
+  });
+  const pct = Math.round((done / LESSONS.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+updateProgress();
+</script>
+
+</body>
+</html>

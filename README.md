@@ -25,7 +25,7 @@ Each topic gets a **cheat sheet** reference section and there is a **quiz** sect
 | **v02** | Multi-Page Layout | Reorganized into separate pages — home with topic buttons (Strata-style), dedicated pages for each topic + quiz, top nav bar linking to all subpages |
 | **v03** | RPG Gamified Layout | Entirely new design — RPG theme with XP bars, skill dungeons, loot-rarity concept cards, daily quests, battle-mode quiz with hearts/streaks |
 | **v04** | Bloom — Light Pastel Theme | New mood — light pastel palette (rose, lavender, mint), garden metaphor, DM Serif Display headings, soft shadows, feminine aesthetic |
-| v05 | SQL Content | Real SQL cheat sheet — query order, JOINs, window functions, CTEs |
+| **v05** | Duolingo-Style Path | Learning path with zigzag nodes, 3 lessons per topic, checkpoints, hearts, XP, chunky green buttons, continue where you left off |
 | v06 | Python Content | Real Python cheat sheet — data structures, Pandas, NumPy, patterns |
 | v07 | ML Content | Real ML cheat sheet — algorithms, metrics, bias-variance, features |
 | v08 | Statistics Content | Real Stats cheat sheet — hypothesis testing, CIs, A/B testing, CLT |

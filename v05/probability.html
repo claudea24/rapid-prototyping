@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probability — Claudea's DS Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #131f24; --surface: #1b2b32; --surface2: #223640;
+      --border: #2a4450; --text: #d4e4ea; --text-muted: #7a9baa; --text-dim: #4a6a7a;
+      --white: #eaf4f8;
+      --green: #58cc02; --green-dark: #46a302; --green-light: #d7ffb8;
+      --gold: #ffc800; --gold-dark: #e6b400;
+      --blue: #49c0f8; --blue-dark: #1cb0f6;
+      --purple: #ce82ff; --purple-dark: #a855f7;
+      --red: #ff4b4b; --red-dark: #ea2b2b;
+      --orange: #ff9600;
+    }
+    body {
+      font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh; line-height: 1.6;
+    }
+
+    /* -- Top Bar -- */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 24px; height: 60px;
+      background: var(--surface); border-bottom: 2px solid var(--border);
+    }
+    .topbar .brand {
+      font-weight: 900; font-size: 1.1rem; color: var(--green);
+      text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    .topbar .brand .owl { font-size: 1.3rem; }
+    .topbar .stats { display: flex; gap: 20px; align-items: center; }
+    .topbar .stat {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 700;
+    }
+    .topbar .stat .s-icon { font-size: 1rem; }
+    .topbar .stat-streak { color: var(--orange); }
+    .topbar .stat-xp { color: var(--gold); }
+    .topbar .stat-hearts { color: var(--red); }
+
+    /* -- Main Content -- */
+    .main {
+      max-width: 720px; margin: 0 auto;
+      padding: 84px 24px 80px;
+    }
+
+    /* -- Page Title -- */
+    .page-title {
+      text-align: center; margin-bottom: 32px;
+    }
+    .page-title .icon { font-size: 2.4rem; margin-bottom: 8px; }
+    .page-title h1 {
+      font-size: 1.8rem; font-weight: 900; color: var(--white);
+    }
+    .page-title p {
+      font-size: 0.9rem; color: var(--text-muted); margin-top: 4px;
+    }
+
+    /* -- Progress Bar -- */
+    .progress-bar-wrap {
+      background: var(--surface2); border-radius: 12px; height: 14px;
+      margin-bottom: 36px; overflow: hidden; border: 1px solid var(--border);
+    }
+    .progress-bar-fill {
+      height: 100%; background: var(--green); border-radius: 12px;
+      transition: width 0.5s ease; width: 0%;
+    }
+    .progress-label {
+      text-align: center; font-size: 0.75rem; font-weight: 700;
+      color: var(--text-muted); margin-top: -4px; margin-bottom: 24px;
+    }
+
+    /* -- Lesson Card -- */
+    .lesson {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 16px; padding: 28px 24px; margin-bottom: 24px;
+      transition: border-color 0.2s;
+    }
+    .lesson.active { border-color: var(--blue); }
+    .lesson.completed { border-color: var(--green); }
+    .lesson .lesson-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+      cursor: pointer;
+    }
+    .lesson .lesson-num {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1rem; flex-shrink: 0;
+      background: var(--surface2); color: var(--text-muted);
+      border: 2px solid var(--border);
+    }
+    .lesson.active .lesson-num { background: var(--blue); color: #fff; border-color: var(--blue-dark); }
+    .lesson.completed .lesson-num { background: var(--green); color: #fff; border-color: var(--green-dark); }
+    .lesson .lesson-title { font-weight: 800; font-size: 1.1rem; color: var(--white); }
+    .lesson .lesson-status {
+      margin-left: auto; font-size: 1.2rem;
+    }
+
+    /* -- Lesson Body -- */
+    .lesson-body { display: none; }
+    .lesson.active .lesson-body,
+    .lesson.completed .lesson-body { display: block; }
+
+    .topic-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      margin-bottom: 16px;
+    }
+    .topic-chip {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 10px; padding: 8px 12px;
+      font-size: 0.8rem; font-weight: 600; color: var(--text);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .topic-chip .chip-icon { font-size: 0.9rem; }
+
+    /* -- Formula Blocks -- */
+    .formula-block {
+      background: var(--bg); border: 1px solid var(--border);
+      border-left: 4px solid var(--purple); border-radius: 10px;
+      padding: 14px 16px; margin: 12px 0;
+      font-family: 'Fira Code', monospace; font-size: 0.85rem;
+      color: var(--purple); line-height: 1.7;
+    }
+    .formula-block .label {
+      font-family: 'Nunito', sans-serif; font-size: 0.7rem;
+      font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+      color: var(--text-muted); margin-bottom: 6px;
+    }
+    .formula-block code {
+      display: block; color: var(--white);
+    }
+    .formula-block .highlight { color: var(--green); font-weight: 500; }
+    .formula-block .accent { color: var(--gold); }
+    .formula-block .note {
+      font-family: 'Nunito', sans-serif; font-size: 0.75rem;
+      color: var(--text-muted); margin-top: 6px; font-style: italic;
+    }
+
+    /* -- Key Concept -- */
+    .key-concept {
+      background: rgba(88,204,2,0.08); border: 1px solid rgba(88,204,2,0.25);
+      border-radius: 10px; padding: 12px 16px; margin: 12px 0;
+      font-size: 0.85rem; color: var(--green-light);
+    }
+    .key-concept strong { color: var(--green); }
+
+    /* -- Quiz Section -- */
+    .quiz-section {
+      background: var(--bg); border: 2px solid var(--border);
+      border-radius: 12px; padding: 20px; margin-top: 16px;
+    }
+    .quiz-section .quiz-label {
+      font-size: 0.7rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--gold); margin-bottom: 8px;
+    }
+    .quiz-section .quiz-question {
+      font-size: 0.95rem; font-weight: 700; color: var(--white);
+      margin-bottom: 12px;
+    }
+    .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-option {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 12px; padding: 12px 16px;
+      font-size: 0.85rem; font-weight: 600; color: var(--text);
+      cursor: pointer; transition: all 0.15s; text-align: left;
+      width: 100%;
+    }
+    .quiz-option:hover { border-color: var(--blue); background: var(--surface2); }
+    .quiz-option.selected { border-color: var(--blue); background: rgba(73,192,248,0.1); color: var(--blue); }
+    .quiz-option.correct { border-color: var(--green); background: rgba(88,204,2,0.12); color: var(--green); }
+    .quiz-option.wrong { border-color: var(--red); background: rgba(255,75,75,0.1); color: var(--red); }
+    .quiz-option:disabled { cursor: default; }
+
+    .quiz-feedback {
+      margin-top: 12px; padding: 12px 16px; border-radius: 10px;
+      font-size: 0.85rem; font-weight: 700; display: none;
+    }
+    .quiz-feedback.correct {
+      display: block; background: rgba(88,204,2,0.12);
+      border: 1px solid rgba(88,204,2,0.3); color: var(--green);
+    }
+    .quiz-feedback.wrong {
+      display: block; background: rgba(255,75,75,0.1);
+      border: 1px solid rgba(255,75,75,0.3); color: var(--red);
+    }
+
+    /* -- Complete Button -- */
+    .complete-btn {
+      display: none; margin-top: 16px; width: 100%;
+      padding: 14px; background: var(--green); color: #fff;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 0.95rem;
+      border: none; border-radius: 14px; cursor: pointer;
+      border-bottom: 4px solid var(--green-dark);
+      text-transform: uppercase; letter-spacing: 1px; transition: all 0.15s;
+    }
+    .complete-btn:hover { background: #4db802; transform: translateY(-1px); }
+    .complete-btn:active { transform: translateY(2px); border-bottom-width: 1px; }
+    .complete-btn.show { display: block; }
+
+    /* -- XP Toast -- */
+    .xp-toast {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px);
+      background: var(--gold); color: var(--bg); font-weight: 900; font-size: 1rem;
+      padding: 10px 24px; border-radius: 12px;
+      opacity: 0; transition: all 0.4s; pointer-events: none; z-index: 300;
+    }
+    .xp-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* -- Footer -- */
+    footer {
+      text-align: center; padding: 24px 24px 40px; font-size: 0.75rem; color: var(--text-dim);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--green); }
+
+    @media (max-width: 480px) {
+      .main { padding: 76px 16px 80px; }
+      .topic-grid { grid-template-columns: 1fr; }
+      .page-title h1 { font-size: 1.4rem; }
+      .formula-block { font-size: 0.78rem; padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <a href="index.html" class="brand"><span class="owl">&#129417;</span> Claudea's DS Prep</a>
+  <div class="stats">
+    <div class="stat stat-streak"><span class="s-icon">&#128293;</span> <span id="streakNum">0</span></div>
+    <div class="stat stat-xp"><span class="s-icon">&#9733;</span> <span id="xpNum">0</span> XP</div>
+    <div class="stat stat-hearts"><span class="s-icon">&#10084;</span> <span id="heartsNum">5</span></div>
+  </div>
+</div>
+
+<!-- XP Toast -->
+<div class="xp-toast" id="xpToast">+50 XP &#9733;</div>
+
+<!-- Main Content -->
+<div class="main">
+
+  <div class="page-title">
+    <div class="icon">&#127922;</div>
+    <h1>Probability</h1>
+    <p>Bayes, distributions &amp; classic puzzles</p>
+  </div>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 / 3 lessons complete</div>
+
+  <!-- ==================== LESSON 1 ==================== -->
+  <div class="lesson" id="prob-1" data-lesson="prob-1">
+    <div class="lesson-header" onclick="toggleLesson('prob-1')">
+      <div class="lesson-num">1</div>
+      <div class="lesson-title">Fundamentals</div>
+      <div class="lesson-status" id="status-prob-1"></div>
+    </div>
+    <div class="lesson-body">
+
+      <div class="topic-grid">
+        <div class="topic-chip"><span class="chip-icon">&#128994;</span> P(A or B)</div>
+        <div class="topic-chip"><span class="chip-icon">&#128308;</span> P(A and B)</div>
+        <div class="topic-chip"><span class="chip-icon">&#128280;</span> Independence</div>
+        <div class="topic-chip"><span class="chip-icon">&#128260;</span> Complement</div>
+        <div class="topic-chip"><span class="chip-icon">&#128290;</span> Permutations</div>
+        <div class="topic-chip"><span class="chip-icon">&#129513;</span> Combinations</div>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Addition Rule</div>
+        <code><span class="highlight">P(A &#8746; B)</span> = P(A) + P(B) - <span class="accent">P(A &#8745; B)</span></code>
+        <div class="note">For mutually exclusive events: P(A &#8746; B) = P(A) + P(B)</div>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Multiplication Rule</div>
+        <code><span class="highlight">P(A &#8745; B)</span> = P(A) &#183; P(B|A)</code>
+        <div class="note">If independent: P(A &#8745; B) = P(A) &#183; P(B)</div>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Complement</div>
+        <code><span class="highlight">P(A')</span> = 1 - P(A)</code>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Counting</div>
+        <code><span class="highlight">nPr</span> = n! / (n-r)!</code>
+        <code><span class="accent">nCr</span> = n! / (r! &#183; (n-r)!)</code>
+      </div>
+
+      <div class="key-concept">
+        <strong>Law of Large Numbers:</strong> As the number of trials increases, the sample mean converges to the expected value. This is why casinos always win in the long run.
+      </div>
+
+      <div class="quiz-section" id="quiz-prob-1">
+        <div class="quiz-label">&#128300; Quick Check</div>
+        <div class="quiz-question">In the Monty Hall problem, should you switch doors?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" data-idx="0" onclick="checkAnswer('prob-1', this, 0)">No, it's always 50/50</button>
+          <button class="quiz-option" data-idx="1" onclick="checkAnswer('prob-1', this, 1)">Yes, switching gives you 2/3 chance</button>
+          <button class="quiz-option" data-idx="2" onclick="checkAnswer('prob-1', this, 2)">It doesn't matter either way</button>
+        </div>
+        <div class="quiz-feedback" id="feedback-prob-1"></div>
+      </div>
+
+      <button class="complete-btn" id="btn-prob-1" onclick="completeLesson('prob-1')">Complete Lesson +50 XP</button>
+    </div>
+  </div>
+
+  <!-- ==================== LESSON 2 ==================== -->
+  <div class="lesson" id="prob-2" data-lesson="prob-2">
+    <div class="lesson-header" onclick="toggleLesson('prob-2')">
+      <div class="lesson-num">2</div>
+      <div class="lesson-title">Distributions</div>
+      <div class="lesson-status" id="status-prob-2"></div>
+    </div>
+    <div class="lesson-body">
+
+      <div class="topic-grid">
+        <div class="topic-chip"><span class="chip-icon">&#9898;</span> Bernoulli</div>
+        <div class="topic-chip"><span class="chip-icon">&#128202;</span> Binomial</div>
+        <div class="topic-chip"><span class="chip-icon">&#128168;</span> Poisson</div>
+        <div class="topic-chip"><span class="chip-icon">&#128200;</span> Geometric</div>
+        <div class="topic-chip"><span class="chip-icon">&#128208;</span> Normal</div>
+        <div class="topic-chip"><span class="chip-icon">&#9201;</span> Exponential</div>
+        <div class="topic-chip"><span class="chip-icon">&#9632;</span> Uniform</div>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Expected Value</div>
+        <code><span class="highlight">E[X]</span> = <span class="accent">&#931;</span> x &#183; P(x)</code>
+        <div class="note">The "center of mass" of a distribution</div>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Variance</div>
+        <code><span class="highlight">Var(X)</span> = E[X&#178;] - (E[X])&#178;</code>
+        <code><span class="accent">Var(X)</span> = &#931; (x - &#956;)&#178; &#183; P(x)</code>
+        <div class="note">Standard deviation: &#963; = &#8730;Var(X)</div>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Binomial Distribution</div>
+        <code><span class="highlight">P(X=k)</span> = C(n,k) &#183; p&#7503; &#183; (1-p)&#8319;&#8315;&#7503;</code>
+        <code>E[X] = np, Var(X) = np(1-p)</code>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Poisson Distribution</div>
+        <code><span class="highlight">P(X=k)</span> = (&#955;&#7503; &#183; e&#8315;&#7515;) / k!</code>
+        <code>E[X] = &#955;, Var(X) = &#955;</code>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Normal Distribution</div>
+        <code><span class="highlight">f(x)</span> = (1/&#963;&#8730;2&#960;) &#183; e&#8315;&#189;((x-&#956;)/&#963;)&#178;</code>
+        <div class="note">68-95-99.7 rule for 1, 2, 3 standard deviations</div>
+      </div>
+
+      <div class="key-concept">
+        <strong>Key insight:</strong> Bernoulli is a single trial, Binomial sums n Bernoulli trials, Poisson approximates Binomial when n is large &amp; p is small, and Normal approximates Binomial when np &ge; 5.
+      </div>
+
+      <div class="quiz-section" id="quiz-prob-2">
+        <div class="quiz-label">&#128300; Quick Check</div>
+        <div class="quiz-question">P(A) = 0.3, P(B) = 0.5, A and B are independent. What is P(A and B)?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" data-idx="0" onclick="checkAnswer('prob-2', this, 0)">0.8</button>
+          <button class="quiz-option" data-idx="1" onclick="checkAnswer('prob-2', this, 1)">0.15</button>
+          <button class="quiz-option" data-idx="2" onclick="checkAnswer('prob-2', this, 2)">0.2</button>
+          <button class="quiz-option" data-idx="3" onclick="checkAnswer('prob-2', this, 3)">0.35</button>
+        </div>
+        <div class="quiz-feedback" id="feedback-prob-2"></div>
+      </div>
+
+      <button class="complete-btn" id="btn-prob-2" onclick="completeLesson('prob-2')">Complete Lesson +50 XP</button>
+    </div>
+  </div>
+
+  <!-- ==================== LESSON 3 ==================== -->
+  <div class="lesson" id="prob-3" data-lesson="prob-3">
+    <div class="lesson-header" onclick="toggleLesson('prob-3')">
+      <div class="lesson-num">3</div>
+      <div class="lesson-title">Bayes' Theorem</div>
+      <div class="lesson-status" id="status-prob-3"></div>
+    </div>
+    <div class="lesson-body">
+
+      <div class="formula-block">
+        <div class="label">Bayes' Theorem</div>
+        <code><span class="highlight">P(A|B)</span> = <span class="accent">P(B|A) &#183; P(A)</span> / P(B)</code>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">In Words</div>
+        <code><span class="highlight">Posterior</span> = <span class="accent">Likelihood &#183; Prior</span> / Evidence</code>
+        <div class="note">Update your beliefs when new evidence arrives</div>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Law of Total Probability</div>
+        <code>P(B) = &#931; P(B|A&#7522;) &#183; P(A&#7522;)</code>
+        <div class="note">Used to compute the denominator (Evidence) in Bayes</div>
+      </div>
+
+      <div class="key-concept">
+        <strong>Medical test example:</strong> A 99% accurate test with 1% disease prevalence: P(sick|+) = (0.99 &#215; 0.01) / (0.99 &#215; 0.01 + 0.01 &#215; 0.99) &#8776; 50%. Base rate matters enormously!
+      </div>
+
+      <div class="topic-grid">
+        <div class="topic-chip"><span class="chip-icon">&#127874;</span> Birthday Problem</div>
+        <div class="topic-chip"><span class="chip-icon">&#128682;</span> Monty Hall</div>
+        <div class="topic-chip"><span class="chip-icon">&#127915;</span> Coupon Collector</div>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Birthday Problem</div>
+        <code>P(match in n) = 1 - (365!/((365-n)! &#183; 365&#8319;))</code>
+        <div class="note">50% chance of a shared birthday with just 23 people</div>
+      </div>
+
+      <div class="formula-block">
+        <div class="label">Coupon Collector</div>
+        <code>E[T] = n &#183; H(n) &#8776; n &#183; ln(n)</code>
+        <div class="note">Expected draws to collect all n distinct items</div>
+      </div>
+
+      <div class="quiz-section" id="quiz-prob-3">
+        <div class="quiz-label">&#128300; Quick Check</div>
+        <div class="quiz-question">A test is 99% accurate. Disease prevalence is 1%. If you test positive, what's the probability you're actually sick?</div>
+        <div class="quiz-options">
+          <button class="quiz-option" data-idx="0" onclick="checkAnswer('prob-3', this, 0)">99%</button>
+          <button class="quiz-option" data-idx="1" onclick="checkAnswer('prob-3', this, 1)">~50%</button>
+          <button class="quiz-option" data-idx="2" onclick="checkAnswer('prob-3', this, 2)">~1%</button>
+          <button class="quiz-option" data-idx="3" onclick="checkAnswer('prob-3', this, 3)">~75%</button>
+        </div>
+        <div class="quiz-feedback" id="feedback-prob-3"></div>
+      </div>
+
+      <button class="complete-btn" id="btn-prob-3" onclick="completeLesson('prob-3')">Complete Lesson +50 XP</button>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; v05 &middot; <a href="index.html">Back to Path</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+// -- Progress --
+const STORAGE_KEY = 'ds-v05-progress';
+const LESSON_IDS = ['prob-1', 'prob-2', 'prob-3'];
+const CORRECT_ANSWERS = { 'prob-1': 1, 'prob-2': 1, 'prob-3': 1 };
+
+function getProgress() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  return saved ? JSON.parse(saved) : { completed: [], xp: 0, streak: 0, hearts: 5 };
+}
+function saveProgress(p) { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
+
+let progress = getProgress();
+
+// -- Top bar stats --
+function updateStats() {
+  document.getElementById('streakNum').textContent = progress.streak;
+  document.getElementById('xpNum').textContent = progress.xp;
+  document.getElementById('heartsNum').textContent = progress.hearts;
+}
+updateStats();
+
+// -- Progress bar --
+function updateProgressBar() {
+  const done = LESSON_IDS.filter(id => progress.completed.includes(id)).length;
+  const pct = Math.round((done / LESSON_IDS.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = done + ' / ' + LESSON_IDS.length + ' lessons complete';
+}
+updateProgressBar();
+
+// -- Lesson state --
+const quizPassed = {};
+
+function updateLessonStates() {
+  LESSON_IDS.forEach((id, idx) => {
+    const el = document.getElementById(id);
+    const statusEl = document.getElementById('status-' + id);
+    if (progress.completed.includes(id)) {
+      el.classList.add('completed');
+      el.classList.remove('active');
+      statusEl.textContent = '\u2705';
+    } else {
+      // First incomplete is active
+      const isActive = !LESSON_IDS.slice(0, idx).some(prev => !progress.completed.includes(prev));
+      if (isActive) {
+        el.classList.add('active');
+        statusEl.textContent = '\u{1F449}';
+      } else {
+        statusEl.textContent = '\u{1F512}';
+      }
+    }
+  });
+}
+updateLessonStates();
+
+// -- Activate first lesson on load from hash --
+function activateFromHash() {
+  const hash = window.location.hash;
+  if (hash) {
+    const lessonNum = hash.replace('#lesson-', '');
+    const mapIdx = { '1': 'prob-1', '2': 'prob-2', '3': 'prob-3' };
+    const target = mapIdx[lessonNum];
+    if (target) {
+      const el = document.getElementById(target);
+      if (el) {
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+      }
+    }
+  }
+}
+activateFromHash();
+
+// -- Toggle lesson --
+function toggleLesson(id) {
+  const el = document.getElementById(id);
+  if (el.classList.contains('active') || el.classList.contains('completed')) {
+    el.classList.toggle('collapsed');
+  }
+}
+
+// -- Quiz --
+function checkAnswer(lessonId, btn, idx) {
+  const section = document.getElementById('quiz-' + lessonId);
+  const feedback = document.getElementById('feedback-' + lessonId);
+  const buttons = section.querySelectorAll('.quiz-option');
+  const correct = CORRECT_ANSWERS[lessonId];
+
+  // Disable all
+  buttons.forEach(b => {
+    b.disabled = true;
+    b.classList.remove('selected');
+  });
+
+  if (idx === correct) {
+    btn.classList.add('correct');
+    feedback.className = 'quiz-feedback correct';
+    feedback.textContent = '\u2705 Correct! Well done.';
+    quizPassed[lessonId] = true;
+    // Show complete button
+    document.getElementById('btn-' + lessonId).classList.add('show');
+  } else {
+    btn.classList.add('wrong');
+    buttons[correct].classList.add('correct');
+    feedback.className = 'quiz-feedback wrong';
+    feedback.textContent = '\u274C Not quite. The correct answer is highlighted above.';
+    quizPassed[lessonId] = true; // still let them complete
+    document.getElementById('btn-' + lessonId).classList.add('show');
+  }
+}
+
+// -- Complete lesson --
+function completeLesson(id) {
+  if (progress.completed.includes(id)) return;
+
+  progress.completed.push(id);
+  progress.xp += 50;
+  saveProgress(progress);
+
+  // XP toast
+  const toast = document.getElementById('xpToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+
+  updateStats();
+  updateProgressBar();
+  updateLessonStates();
+
+  // Scroll to next lesson
+  const idx = LESSON_IDS.indexOf(id);
+  if (idx < LESSON_IDS.length - 1) {
+    const next = document.getElementById(LESSON_IDS[idx + 1]);
+    setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'center' }), 500);
+  }
+}
+
+// -- Auto-show complete button for already-completed lessons --
+LESSON_IDS.forEach(id => {
+  if (progress.completed.includes(id)) {
+    const btn = document.getElementById('btn-' + id);
+    if (btn) btn.style.display = 'none';
+  }
+});
+</script>
+
+</body>
+</html>

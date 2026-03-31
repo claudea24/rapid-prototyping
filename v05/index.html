@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claudea's DS Interview Prep — Learning Path</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #131f24; --surface: #1b2b32; --surface2: #223640;
+      --border: #2a4450; --text: #d4e4ea; --text-muted: #7a9baa; --text-dim: #4a6a7a;
+      --white: #eaf4f8;
+      --green: #58cc02; --green-dark: #46a302; --green-light: #d7ffb8;
+      --gold: #ffc800; --gold-dark: #e6b400;
+      --blue: #49c0f8; --blue-dark: #1cb0f6;
+      --purple: #ce82ff; --purple-dark: #a855f7;
+      --red: #ff4b4b; --red-dark: #ea2b2b;
+      --orange: #ff9600;
+      --owl-green: #58cc02;
+    }
+    body {
+      font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Top Bar ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 24px; height: 60px;
+      background: var(--surface); border-bottom: 2px solid var(--border);
+    }
+    .topbar .brand {
+      font-weight: 900; font-size: 1.1rem; color: var(--green);
+      text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    .topbar .brand .owl { font-size: 1.3rem; }
+    .topbar .stats {
+      display: flex; gap: 20px; align-items: center;
+    }
+    .topbar .stat {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 700;
+    }
+    .topbar .stat .s-icon { font-size: 1rem; }
+    .topbar .stat-streak { color: var(--orange); }
+    .topbar .stat-xp { color: var(--gold); }
+    .topbar .stat-hearts { color: var(--red); }
+
+    /* ── Path Container ── */
+    .path-container {
+      max-width: 420px; margin: 0 auto;
+      padding: 84px 24px 64px;
+    }
+
+    /* ── Unit Header ── */
+    .unit-header {
+      text-align: center; margin-bottom: 8px; padding: 20px;
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 16px; position: relative;
+    }
+    .unit-header .unit-num {
+      font-size: 0.65rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--text-muted); margin-bottom: 4px;
+    }
+    .unit-header h2 { font-size: 1.1rem; font-weight: 800; color: var(--white); }
+    .unit-header p { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* ── Lesson Nodes ── */
+    .path-segment { display: flex; flex-direction: column; align-items: center; padding: 8px 0; }
+
+    .node-row {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; padding: 6px 0; position: relative;
+    }
+    /* Zigzag offsets */
+    .node-row.left { justify-content: flex-start; padding-left: 40px; }
+    .node-row.center { justify-content: center; }
+    .node-row.right { justify-content: flex-end; padding-right: 40px; }
+
+    .node {
+      width: 72px; height: 72px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; cursor: pointer; text-decoration: none;
+      position: relative; transition: all 0.2s;
+      border: 4px solid transparent;
+    }
+    .node:hover { transform: scale(1.08); }
+
+    /* Node states */
+    .node.completed {
+      background: var(--green); border-color: var(--green-dark);
+      box-shadow: 0 6px 0 var(--green-dark), 0 6px 20px rgba(88,204,2,0.3);
+    }
+    .node.completed .node-icon { color: #fff; }
+    .node.completed .crown {
+      position: absolute; top: -12px; font-size: 0.9rem;
+    }
+
+    .node.current {
+      background: var(--blue); border-color: var(--blue-dark);
+      box-shadow: 0 6px 0 var(--blue-dark), 0 6px 20px rgba(73,192,248,0.3);
+      animation: pulse 2s ease-in-out infinite;
+    }
+    .node.current .node-icon { color: #fff; }
+
+    .node.locked {
+      background: var(--surface2); border-color: var(--border);
+      box-shadow: 0 6px 0 #1a2a32;
+      cursor: default; opacity: 0.5;
+    }
+    .node.locked .node-icon { color: var(--text-dim); }
+
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 6px 0 var(--blue-dark), 0 6px 20px rgba(73,192,248,0.3); }
+      50% { box-shadow: 0 6px 0 var(--blue-dark), 0 6px 30px rgba(73,192,248,0.5); }
+    }
+
+    .node-icon { font-size: 1.6rem; position: relative; z-index: 1; }
+    .node-label {
+      position: absolute; top: 80px;
+      font-size: 0.68rem; font-weight: 700; color: var(--text-muted);
+      white-space: nowrap; text-align: center;
+    }
+    .node.completed .node-label { color: var(--green); }
+    .node.current .node-label { color: var(--blue); }
+
+    /* ── Connector lines ── */
+    .connector {
+      width: 4px; height: 24px; background: var(--border); border-radius: 4px;
+      margin: 0 auto;
+    }
+    .connector.done { background: var(--green); }
+
+    /* ── Checkpoint ── */
+    .checkpoint {
+      text-align: center; margin: 16px 0; padding: 16px 20px;
+      background: linear-gradient(135deg, rgba(255,200,0,0.1), rgba(206,130,255,0.1));
+      border: 2px dashed var(--gold); border-radius: 16px;
+    }
+    .checkpoint .cp-icon { font-size: 1.5rem; margin-bottom: 4px; }
+    .checkpoint h3 { font-size: 0.85rem; font-weight: 800; color: var(--gold); }
+    .checkpoint p { font-size: 0.7rem; color: var(--text-muted); }
+    .checkpoint a {
+      display: inline-block; margin-top: 8px; padding: 8px 20px;
+      background: var(--gold); color: var(--bg); font-weight: 800; font-size: 0.75rem;
+      border-radius: 12px; text-decoration: none; text-transform: uppercase;
+      letter-spacing: 1px; transition: all 0.2s;
+    }
+    .checkpoint a:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+    /* ── Continue Banner ── */
+    .continue-banner {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+      padding: 16px 24px; text-align: center;
+      background: var(--surface); border-top: 2px solid var(--border);
+    }
+    .continue-banner a {
+      display: inline-block; padding: 14px 48px;
+      background: var(--green); color: #fff; font-weight: 800; font-size: 0.95rem;
+      border-radius: 14px; text-decoration: none; text-transform: uppercase;
+      letter-spacing: 1px; border-bottom: 4px solid var(--green-dark);
+      transition: all 0.15s;
+    }
+    .continue-banner a:hover { background: #4db802; transform: translateY(-1px); }
+    .continue-banner a:active { transform: translateY(2px); border-bottom-width: 1px; }
+    .continue-banner .sub { font-size: 0.7rem; color: var(--text-muted); margin-top: 6px; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 24px 24px 100px; font-size: 0.75rem; color: var(--text-dim);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--green); }
+
+    @media (max-width: 480px) {
+      .path-container { padding: 76px 16px 64px; }
+      .node { width: 64px; height: 64px; }
+      .node-icon { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <a href="index.html" class="brand"><span class="owl">&#129417;</span> Claudea's DS Prep</a>
+  <div class="stats">
+    <div class="stat stat-streak"><span class="s-icon">&#128293;</span> <span id="streakNum">0</span></div>
+    <div class="stat stat-xp"><span class="s-icon">&#9733;</span> <span id="xpNum">0</span> XP</div>
+    <div class="stat stat-hearts"><span class="s-icon">&#10084;</span> <span id="heartsNum">5</span></div>
+  </div>
+</div>
+
+<!-- Learning Path -->
+<div class="path-container" id="pathContainer"></div>
+
+<div class="continue-banner">
+  <a href="#" id="continueBtn">Continue</a>
+  <div class="sub" id="continueSub">Start your first lesson</div>
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; v05 &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<script>
+const units = [
+  {
+    name: "SQL", desc: "Queries & Joins",
+    lessons: [
+      { id: "sql-1", icon: "&#128450;", label: "Query Basics", page: "sql.html#lesson-1" },
+      { id: "sql-2", icon: "&#128279;", label: "JOIN Types", page: "sql.html#lesson-2" },
+      { id: "sql-3", icon: "&#128200;", label: "Window Fns", page: "sql.html#lesson-3" },
+    ]
+  },
+  {
+    name: "Python", desc: "Data & Algorithms",
+    lessons: [
+      { id: "py-1", icon: "&#128013;", label: "Structures", page: "python.html#lesson-1" },
+      { id: "py-2", icon: "&#128060;", label: "Pandas", page: "python.html#lesson-2" },
+      { id: "py-3", icon: "&#128187;", label: "Patterns", page: "python.html#lesson-3" },
+    ]
+  },
+  {
+    name: "Machine Learning", desc: "Models & Metrics",
+    lessons: [
+      { id: "ml-1", icon: "&#129302;", label: "Supervised", page: "ml.html#lesson-1" },
+      { id: "ml-2", icon: "&#128300;", label: "Unsupervised", page: "ml.html#lesson-2" },
+      { id: "ml-3", icon: "&#127919;", label: "Evaluation", page: "ml.html#lesson-3" },
+    ]
+  },
+  {
+    name: "Statistics", desc: "Tests & Experiments",
+    lessons: [
+      { id: "stat-1", icon: "&#128202;", label: "Descriptive", page: "stats.html#lesson-1" },
+      { id: "stat-2", icon: "&#9878;", label: "Hypothesis", page: "stats.html#lesson-2" },
+      { id: "stat-3", icon: "&#128300;", label: "A/B Testing", page: "stats.html#lesson-3" },
+    ]
+  },
+  {
+    name: "Probability", desc: "Bayes & Distributions",
+    lessons: [
+      { id: "prob-1", icon: "&#127922;", label: "Fundamentals", page: "probability.html#lesson-1" },
+      { id: "prob-2", icon: "&#128208;", label: "Distributions", page: "probability.html#lesson-2" },
+      { id: "prob-3", icon: "&#129504;", label: "Bayes", page: "probability.html#lesson-3" },
+    ]
+  },
+  {
+    name: "Case Studies", desc: "Product & Business",
+    lessons: [
+      { id: "case-1", icon: "&#128640;", label: "Metrics", page: "casing.html#lesson-1" },
+      { id: "case-2", icon: "&#128188;", label: "Frameworks", page: "casing.html#lesson-2" },
+      { id: "case-3", icon: "&#128161;", label: "Practice", page: "casing.html#lesson-3" },
+    ]
+  },
+];
+
+// Load progress
+function getProgress() {
+  const saved = localStorage.getItem('ds-v05-progress');
+  return saved ? JSON.parse(saved) : { completed: [], xp: 0, streak: 0, hearts: 5 };
+}
+function saveProgress(p) { localStorage.setItem('ds-v05-progress', JSON.stringify(p)); }
+
+const progress = getProgress();
+document.getElementById('streakNum').textContent = progress.streak;
+document.getElementById('xpNum').textContent = progress.xp;
+document.getElementById('heartsNum').textContent = progress.hearts;
+
+// Build all lesson IDs in order
+const allLessons = [];
+units.forEach(u => u.lessons.forEach(l => allLessons.push(l)));
+
+// Find current lesson
+function getCurrentIndex() {
+  for (let i = 0; i < allLessons.length; i++) {
+    if (!progress.completed.includes(allLessons[i].id)) return i;
+  }
+  return allLessons.length; // all done
+}
+
+const currentIdx = getCurrentIndex();
+const positions = ['center', 'right', 'center', 'left']; // zigzag
+
+// Render path
+const container = document.getElementById('pathContainer');
+let lessonGlobal = 0;
+
+units.forEach((unit, uIdx) => {
+  // Unit header
+  const header = document.createElement('div');
+  header.className = 'unit-header';
+  header.innerHTML = `
+    <div class="unit-num">Unit ${uIdx + 1}</div>
+    <h2>${unit.name}</h2>
+    <p>${unit.desc}</p>
+  `;
+  container.appendChild(header);
+
+  // Lessons
+  const segment = document.createElement('div');
+  segment.className = 'path-segment';
+
+  unit.lessons.forEach((lesson, lIdx) => {
+    // Connector
+    if (lIdx > 0 || uIdx > 0) {
+      const conn = document.createElement('div');
+      conn.className = 'connector' + (progress.completed.includes(lesson.id) || lessonGlobal <= currentIdx ? '' : '');
+      if (lessonGlobal <= currentIdx) conn.classList.add('done');
+      segment.appendChild(conn);
+    }
+
+    // Node row
+    const row = document.createElement('div');
+    const pos = positions[lessonGlobal % positions.length];
+    row.className = 'node-row ' + pos;
+
+    let state = 'locked';
+    if (progress.completed.includes(lesson.id)) state = 'completed';
+    else if (lessonGlobal === currentIdx) state = 'current';
+
+    const isLink = state !== 'locked';
+    const tag = isLink ? 'a' : 'div';
+    const node = document.createElement(tag);
+    node.className = `node ${state}`;
+    if (isLink && lesson.page) node.href = lesson.page;
+
+    let inner = `<span class="node-icon">${lesson.icon}</span>`;
+    if (state === 'completed') inner = `<span class="crown">&#128081;</span>` + inner;
+    inner += `<span class="node-label">${lesson.label}</span>`;
+    node.innerHTML = inner;
+
+    row.appendChild(node);
+    segment.appendChild(row);
+    lessonGlobal++;
+  });
+
+  container.appendChild(segment);
+
+  // Checkpoint after each unit (except last)
+  if (uIdx < units.length - 1) {
+    const cp = document.createElement('div');
+    cp.className = 'checkpoint';
+    cp.innerHTML = `
+      <div class="cp-icon">&#127942;</div>
+      <h3>Checkpoint ${uIdx + 1}</h3>
+      <p>Review ${unit.name} before moving on</p>
+      <a href="quiz.html?unit=${uIdx}">Take Quiz</a>
+    `;
+    container.appendChild(cp);
+  }
+});
+
+// Final checkpoint
+const finalCp = document.createElement('div');
+finalCp.className = 'checkpoint';
+finalCp.innerHTML = `
+  <div class="cp-icon">&#127775;</div>
+  <h3>Final Challenge</h3>
+  <p>All 26 questions across every topic</p>
+  <a href="quiz.html">Start Final</a>
+`;
+container.appendChild(finalCp);
+
+// Continue button
+const continueBtn = document.getElementById('continueBtn');
+const continueSub = document.getElementById('continueSub');
+if (currentIdx < allLessons.length) {
+  const next = allLessons[currentIdx];
+  continueBtn.href = next.page;
+  continueSub.textContent = `Next: ${next.label}`;
+} else {
+  continueBtn.href = 'quiz.html';
+  continueBtn.textContent = 'Final Challenge';
+  continueSub.textContent = 'All lessons complete!';
+}
+</script>
+
+</body>
+</html>

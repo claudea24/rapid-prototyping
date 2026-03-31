@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL · Claudea's DS Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#131f24;--surface:#1b2b32;--border:#2a4450;
+  --text:#d4e4ea;--muted:#7a9baa;--white:#eaf4f8;
+  --green:#58cc02;--blue:#49c0f8;--gold:#ffc800;--red:#ff4b4b;
+}
+body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-top:64px}
+
+/* Top bar */
+.topbar{position:fixed;top:0;left:0;right:0;height:62px;background:var(--surface);border-bottom:2px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100}
+.topbar-left a{text-decoration:none;display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;color:var(--green)}
+.topbar-left a:hover{opacity:.85}
+.topbar-right{display:flex;align-items:center;gap:18px}
+.progress-badge{background:var(--bg);border:2px solid var(--border);border-radius:12px;padding:4px 14px;font-weight:700;font-size:.9rem;color:var(--muted)}
+.xp-badge{background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:4px 14px;font-weight:700;font-size:.9rem;color:var(--gold)}
+
+/* Main */
+.main{max-width:720px;margin:0 auto;padding:28px 18px 80px}
+
+/* Lesson block */
+.lesson-block{background:var(--surface);border:2px solid var(--border);border-radius:20px;margin-bottom:32px;overflow:hidden;transition:opacity .3s}
+.lesson-block.completed-block{opacity:.7}
+.lesson-block.completed-block .lesson-header{background:var(--green)}
+.lesson-header{background:var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between}
+.lesson-header .label{font-size:.82rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700}
+.lesson-header .title{font-size:1.2rem;font-weight:800;color:var(--white)}
+.lesson-header .check-mark{font-size:1.4rem}
+.lesson-body{padding:24px}
+
+/* Concept card */
+.concept-card{background:var(--bg);border:2px solid var(--border);border-radius:14px;padding:20px;margin-bottom:18px}
+.concept-card h3{color:var(--blue);font-size:1rem;font-weight:800;margin-bottom:10px}
+.concept-card p,.concept-card li{font-size:.93rem;line-height:1.65;color:var(--text)}
+.concept-card ul{padding-left:20px;margin-top:6px}
+.concept-card li{margin-bottom:4px}
+.concept-card strong{color:var(--white)}
+
+/* Code blocks */
+pre.code-block{background:var(--bg);border:2px solid var(--border);border-radius:10px;padding:16px;margin:12px 0;overflow-x:auto;font-family:'Fira Code',monospace;font-size:.84rem;line-height:1.7;color:var(--text)}
+.kw{color:#ff7b72}.fn{color:#d2a8ff}.str{color:#a5d6ff}.cm{color:#4a6a7a}.num{color:#49c0f8}
+
+/* Execution order flow */
+.exec-flow{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:10px 0 6px}
+.exec-step{background:var(--border);color:var(--white);padding:5px 12px;border-radius:8px;font-size:.82rem;font-weight:700;font-family:'Fira Code',monospace}
+.exec-arrow{color:var(--muted);font-size:.9rem;font-weight:700}
+
+/* Quiz section */
+.quiz-section{margin-top:24px;border-top:2px solid var(--border);padding-top:20px}
+.quiz-section h4{font-size:1rem;font-weight:800;color:var(--gold);margin-bottom:14px}
+.quiz-section p.question{font-size:1rem;font-weight:700;color:var(--white);margin-bottom:16px}
+
+/* Answer buttons */
+.answer-list{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.answer-btn{background:var(--bg);border:3px solid var(--border);border-bottom-width:5px;border-radius:14px;padding:14px 20px;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:700;color:var(--text);cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
+.answer-btn:hover{border-color:var(--blue);background:rgba(73,192,248,.06)}
+.answer-btn.selected{border-color:var(--blue);background:rgba(73,192,248,.1);color:var(--white)}
+.answer-btn.correct{border-color:var(--green);background:rgba(88,204,2,.12);color:var(--green)}
+.answer-btn.wrong{border-color:var(--red);background:rgba(255,75,75,.1);color:var(--red);animation:shake .4s}
+
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* Action buttons */
+.btn-row{display:flex;gap:12px;flex-wrap:wrap}
+.btn{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:800;border:none;border-radius:14px;padding:14px 32px;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;transition:filter .15s}
+.btn:active{transform:translateY(2px)}
+.btn-check{background:var(--green);color:#1a3a00;border-bottom:4px solid #46a302}
+.btn-check:hover{filter:brightness(1.08)}
+.btn-check:disabled{opacity:.5;cursor:not-allowed}
+.btn-continue{background:var(--blue);color:#0a2030;border-bottom:4px solid #2a9ad8}
+.btn-continue:hover{filter:brightness(1.08)}
+.btn-tryagain{background:var(--red);color:#fff;border-bottom:4px solid #cc2e2e}
+.btn-tryagain:hover{filter:brightness(1.08)}
+
+/* Result messages */
+.result-msg{font-weight:800;font-size:1.05rem;margin-bottom:12px;display:none}
+.result-msg.show{display:block}
+.result-msg.correct-msg{color:var(--green)}
+.result-msg.wrong-msg{color:var(--red)}
+
+/* Completed state */
+.lesson-done-badge{display:inline-block;background:var(--green);color:#1a3a00;font-size:.82rem;font-weight:800;padding:4px 14px;border-radius:10px;margin-top:8px}
+
+/* Celebration overlay */
+.celebration{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:200;opacity:0;pointer-events:none;transition:opacity .4s}
+.celebration.show{opacity:1;pointer-events:auto}
+.celebration-inner{text-align:center;background:var(--surface);border:3px solid var(--gold);border-radius:24px;padding:48px 40px;max-width:420px;width:90%}
+.celebration-inner .emoji-burst{font-size:3rem;margin-bottom:12px;animation:pop .5s ease}
+.celebration-inner h2{color:var(--gold);font-size:1.6rem;margin-bottom:8px}
+.celebration-inner p{color:var(--text);font-size:1rem;margin-bottom:24px}
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.3)}100%{transform:scale(1)}}
+
+/* Footer */
+.footer{text-align:center;padding:32px 18px;color:var(--muted);font-size:.82rem;border-top:2px solid var(--border)}
+.footer a{color:var(--blue);text-decoration:none;font-weight:700}
+.footer a:hover{text-decoration:underline}
+
+/* Responsive */
+@media(max-width:600px){
+  .topbar{padding:0 14px}
+  .topbar-left a{font-size:1rem}
+  .main{padding:18px 10px 60px}
+  .lesson-body{padding:16px}
+  .concept-card{padding:14px}
+  .btn{padding:12px 22px;font-size:.9rem}
+  .exec-flow{gap:4px}
+  .exec-step{padding:4px 8px;font-size:.75rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<nav class="topbar">
+  <div class="topbar-left">
+    <a href="index.html">&#129417; Claudea's DS Prep</a>
+  </div>
+  <div class="topbar-right">
+    <span class="progress-badge" id="progressBadge">0/3</span>
+    <span class="xp-badge" id="xpBadge">0 XP</span>
+  </div>
+</nav>
+
+<div class="main">
+
+<!-- ===== LESSON 1 ===== -->
+<div class="lesson-block" id="lesson-sql-1">
+  <div class="lesson-header">
+    <div>
+      <div class="label">Lesson 1 of 3</div>
+      <div class="title">Query Basics</div>
+    </div>
+    <span class="check-mark" id="check-sql-1"></span>
+  </div>
+  <div class="lesson-body">
+
+    <div class="concept-card">
+      <h3>Query Execution Order</h3>
+      <p>SQL doesn't execute top-to-bottom. The real order is:</p>
+      <div class="exec-flow">
+        <span class="exec-step">FROM</span><span class="exec-arrow">&rarr;</span>
+        <span class="exec-step">WHERE</span><span class="exec-arrow">&rarr;</span>
+        <span class="exec-step">GROUP BY</span><span class="exec-arrow">&rarr;</span>
+        <span class="exec-step">HAVING</span><span class="exec-arrow">&rarr;</span>
+        <span class="exec-step">SELECT</span><span class="exec-arrow">&rarr;</span>
+        <span class="exec-step">ORDER BY</span><span class="exec-arrow">&rarr;</span>
+        <span class="exec-step">LIMIT</span>
+      </div>
+      <p style="margin-top:8px;color:var(--muted);font-size:.88rem"><strong>Key insight:</strong> You can't use a SELECT alias in WHERE because WHERE runs first.</p>
+    </div>
+
+    <div class="concept-card">
+      <h3>Aggregation Gotchas</h3>
+      <ul>
+        <li><strong>COUNT(*)</strong> &mdash; counts all rows, including NULLs</li>
+        <li><strong>COUNT(col)</strong> &mdash; counts only non-NULL values in that column</li>
+        <li><strong>WHERE</strong> &mdash; filters rows <em>before</em> grouping</li>
+        <li><strong>HAVING</strong> &mdash; filters groups <em>after</em> aggregation</li>
+      </ul>
+<pre class="code-block"><span class="kw">SELECT</span> department, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> cnt
+<span class="kw">FROM</span> employees
+<span class="kw">WHERE</span> active = <span class="num">1</span>        <span class="cm">-- filters rows first</span>
+<span class="kw">GROUP BY</span> department
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) > <span class="num">5</span>   <span class="cm">-- filters groups after</span></pre>
+    </div>
+
+    <!-- Quiz -->
+    <div class="quiz-section" id="quiz-sql-1">
+      <h4>&#x1F9E0; Quick Check</h4>
+      <p class="question">Which clause filters rows BEFORE grouping?</p>
+      <div class="answer-list">
+        <button class="answer-btn" data-idx="1">HAVING</button>
+        <button class="answer-btn" data-idx="2">WHERE</button>
+        <button class="answer-btn" data-idx="3">GROUP BY</button>
+        <button class="answer-btn" data-idx="4">SELECT</button>
+      </div>
+      <div class="result-msg correct-msg" id="correct-sql-1">Correct! WHERE filters before GROUP BY runs.</div>
+      <div class="result-msg wrong-msg" id="wrong-sql-1">Not quite. Try again!</div>
+      <div class="btn-row">
+        <button class="btn btn-check" id="checkBtn-sql-1" disabled onclick="checkAnswer('sql-1',2)">Check</button>
+        <button class="btn btn-tryagain" id="retryBtn-sql-1" style="display:none" onclick="retry('sql-1')">Try Again</button>
+        <button class="btn btn-continue" id="continueBtn-sql-1" style="display:none" onclick="completeLesson('sql-1')">Complete Lesson</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LESSON 2 ===== -->
+<div class="lesson-block" id="lesson-sql-2">
+  <div class="lesson-header">
+    <div>
+      <div class="label">Lesson 2 of 3</div>
+      <div class="title">JOIN Types</div>
+    </div>
+    <span class="check-mark" id="check-sql-2"></span>
+  </div>
+  <div class="lesson-body">
+
+    <div class="concept-card">
+      <h3>JOIN Types at a Glance</h3>
+      <ul>
+        <li><strong>INNER JOIN</strong> &mdash; only matching rows from both tables</li>
+        <li><strong>LEFT JOIN</strong> &mdash; all rows from left + matches from right (NULLs for non-matches)</li>
+        <li><strong>RIGHT JOIN</strong> &mdash; all rows from right + matches from left</li>
+        <li><strong>FULL OUTER JOIN</strong> &mdash; all rows from both, NULLs where no match</li>
+        <li><strong>CROSS JOIN</strong> &mdash; cartesian product (every row &times; every row)</li>
+        <li><strong>Self JOIN</strong> &mdash; join a table to itself (e.g., employee &rarr; manager)</li>
+      </ul>
+<pre class="code-block"><span class="cm">-- LEFT JOIN: keep all users, even without orders</span>
+<span class="kw">SELECT</span> u.name, o.total
+<span class="kw">FROM</span> users u
+<span class="kw">LEFT JOIN</span> orders o <span class="kw">ON</span> u.id = o.user_id</pre>
+    </div>
+
+    <div class="concept-card">
+      <h3>Performance Tips</h3>
+      <ul>
+        <li><strong>EXPLAIN / EXPLAIN ANALYZE</strong> &mdash; always check query plans</li>
+        <li><strong>Index join columns</strong> &mdash; especially foreign keys</li>
+        <li><strong>Avoid SELECT *</strong> &mdash; fetch only needed columns</li>
+        <li><strong>Filter early</strong> &mdash; push WHERE conditions before joins when possible</li>
+      </ul>
+    </div>
+
+    <!-- Quiz -->
+    <div class="quiz-section" id="quiz-sql-2">
+      <h4>&#x1F9E0; Quick Check</h4>
+      <p class="question">What does COUNT(*) count?</p>
+      <div class="answer-list">
+        <button class="answer-btn" data-idx="1">All rows including NULLs</button>
+        <button class="answer-btn" data-idx="2">Only non-NULL rows</button>
+        <button class="answer-btn" data-idx="3">Distinct values only</button>
+        <button class="answer-btn" data-idx="4">Only numeric columns</button>
+      </div>
+      <div class="result-msg correct-msg" id="correct-sql-2">Correct! COUNT(*) counts every row regardless of NULLs.</div>
+      <div class="result-msg wrong-msg" id="wrong-sql-2">Not quite. Try again!</div>
+      <div class="btn-row">
+        <button class="btn btn-check" id="checkBtn-sql-2" disabled onclick="checkAnswer('sql-2',1)">Check</button>
+        <button class="btn btn-tryagain" id="retryBtn-sql-2" style="display:none" onclick="retry('sql-2')">Try Again</button>
+        <button class="btn btn-continue" id="continueBtn-sql-2" style="display:none" onclick="completeLesson('sql-2')">Complete Lesson</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LESSON 3 ===== -->
+<div class="lesson-block" id="lesson-sql-3">
+  <div class="lesson-header">
+    <div>
+      <div class="label">Lesson 3 of 3</div>
+      <div class="title">Window Functions</div>
+    </div>
+    <span class="check-mark" id="check-sql-3"></span>
+  </div>
+  <div class="lesson-body">
+
+    <div class="concept-card">
+      <h3>Window Functions</h3>
+      <p>Perform calculations across related rows without collapsing them.</p>
+      <ul>
+        <li><strong>ROW_NUMBER()</strong> &mdash; unique sequential number, no ties</li>
+        <li><strong>RANK()</strong> &mdash; same rank for ties, <em>skips</em> next numbers</li>
+        <li><strong>DENSE_RANK()</strong> &mdash; same rank for ties, no gaps</li>
+        <li><strong>LAG(col, n)</strong> &mdash; value from n rows before</li>
+        <li><strong>LEAD(col, n)</strong> &mdash; value from n rows ahead</li>
+      </ul>
+<pre class="code-block"><span class="kw">SELECT</span>
+  name, department, salary,
+  <span class="fn">RANK</span>() <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> department
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> dept_rank,
+  <span class="fn">LAG</span>(salary, <span class="num">1</span>) <span class="kw">OVER</span> (
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> prev_salary
+<span class="kw">FROM</span> employees</pre>
+    </div>
+
+    <div class="concept-card">
+      <h3>CTEs &amp; Subqueries</h3>
+      <p>Common Table Expressions make complex queries readable and reusable.</p>
+<pre class="code-block"><span class="kw">WITH</span> dept_avg <span class="kw">AS</span> (
+  <span class="kw">SELECT</span> department, <span class="fn">AVG</span>(salary) <span class="kw">AS</span> avg_sal
+  <span class="kw">FROM</span> employees
+  <span class="kw">GROUP BY</span> department
+)
+<span class="kw">SELECT</span> e.name, e.salary, d.avg_sal
+<span class="kw">FROM</span> employees e
+<span class="kw">JOIN</span> dept_avg d <span class="kw">ON</span> e.department = d.department
+<span class="kw">WHERE</span> e.salary > d.avg_sal</pre>
+      <ul>
+        <li><strong>CTEs</strong> &mdash; more readable than nested subqueries</li>
+        <li><strong>Recursive CTEs</strong> &mdash; great for hierarchies and graphs</li>
+        <li><strong>Subqueries</strong> &mdash; can appear in SELECT, FROM, or WHERE</li>
+      </ul>
+    </div>
+
+    <!-- Quiz -->
+    <div class="quiz-section" id="quiz-sql-3">
+      <h4>&#x1F9E0; Quick Check</h4>
+      <p class="question">What's the difference between RANK() and DENSE_RANK()?</p>
+      <div class="answer-list">
+        <button class="answer-btn" data-idx="1">RANK skips numbers after ties, DENSE_RANK does not</button>
+        <button class="answer-btn" data-idx="2">DENSE_RANK skips numbers, RANK does not</button>
+        <button class="answer-btn" data-idx="3">They are identical</button>
+        <button class="answer-btn" data-idx="4">RANK works only with PARTITION BY</button>
+      </div>
+      <div class="result-msg correct-msg" id="correct-sql-3">Correct! RANK() leaves gaps (1,1,3) while DENSE_RANK() doesn't (1,1,2).</div>
+      <div class="result-msg wrong-msg" id="wrong-sql-3">Not quite. Try again!</div>
+      <div class="btn-row">
+        <button class="btn btn-check" id="checkBtn-sql-3" disabled onclick="checkAnswer('sql-3',1)">Check</button>
+        <button class="btn btn-tryagain" id="retryBtn-sql-3" style="display:none" onclick="retry('sql-3')">Try Again</button>
+        <button class="btn btn-continue" id="continueBtn-sql-3" style="display:none" onclick="completeLesson('sql-3')">Complete Lesson</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- .main -->
+
+<!-- Celebration overlay -->
+<div class="celebration" id="celebration">
+  <div class="celebration-inner">
+    <div class="emoji-burst" id="emojiBurst"></div>
+    <h2>All Lessons Complete!</h2>
+    <p>You earned <strong>150 XP</strong> and mastered SQL fundamentals.</p>
+    <a href="index.html" class="btn btn-continue" style="display:inline-block;text-decoration:none;text-align:center">Back to Home</a>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  Claudea's DS Interview Prep &middot; v05 &middot; <a href="../index.html">Back to Gallery</a>
+</footer>
+
+<script>
+const STORAGE_KEY = 'ds-v05-progress';
+const LESSONS = ['sql-1','sql-2','sql-3'];
+
+function getProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const data = JSON.parse(raw);
+      return {
+        completed: Array.isArray(data.completed) ? data.completed : [],
+        xp: typeof data.xp === 'number' ? data.xp : 0,
+        streak: typeof data.streak === 'number' ? data.streak : 0,
+        hearts: typeof data.hearts === 'number' ? data.hearts : 5
+      };
+    }
+  } catch(e) {}
+  return { completed: [], xp: 0, streak: 0, hearts: 5 };
+}
+
+function saveProgress(p) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+}
+
+function updateUI() {
+  const p = getProgress();
+  const done = LESSONS.filter(l => p.completed.includes(l)).length;
+  document.getElementById('progressBadge').textContent = done + '/3';
+  document.getElementById('xpBadge').textContent = p.xp + ' XP';
+
+  LESSONS.forEach(id => {
+    if (p.completed.includes(id)) {
+      const block = document.getElementById('lesson-' + id);
+      block.classList.add('completed-block');
+      document.getElementById('check-' + id).textContent = '\u2705';
+      // Disable quiz interaction
+      const quiz = document.getElementById('quiz-' + id);
+      quiz.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
+      document.getElementById('checkBtn-' + id).style.display = 'none';
+      document.getElementById('retryBtn-' + id).style.display = 'none';
+      document.getElementById('continueBtn-' + id).style.display = 'none';
+      // Show done badge
+      let badge = quiz.querySelector('.lesson-done-badge');
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.className = 'lesson-done-badge';
+        badge.textContent = 'Completed';
+        quiz.querySelector('.btn-row').after(badge);
+      }
+    }
+  });
+}
+
+// Quiz selection
+document.querySelectorAll('.quiz-section').forEach(quiz => {
+  const lessonId = quiz.id.replace('quiz-', '');
+  const buttons = quiz.querySelectorAll('.answer-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => { b.classList.remove('selected'); });
+      btn.classList.add('selected');
+      document.getElementById('checkBtn-' + lessonId).disabled = false;
+    });
+  });
+});
+
+function checkAnswer(lessonId, correctIdx) {
+  const quiz = document.getElementById('quiz-' + lessonId);
+  const selected = quiz.querySelector('.answer-btn.selected');
+  if (!selected) return;
+
+  const idx = parseInt(selected.dataset.idx);
+  const checkBtn = document.getElementById('checkBtn-' + lessonId);
+  const retryBtn = document.getElementById('retryBtn-' + lessonId);
+  const continueBtn = document.getElementById('continueBtn-' + lessonId);
+  const correctMsg = document.getElementById('correct-' + lessonId);
+  const wrongMsg = document.getElementById('wrong-' + lessonId);
+
+  // Reset states
+  quiz.querySelectorAll('.answer-btn').forEach(b => { b.classList.remove('correct','wrong'); });
+  correctMsg.classList.remove('show');
+  wrongMsg.classList.remove('show');
+
+  if (idx === correctIdx) {
+    selected.classList.add('correct');
+    correctMsg.classList.add('show');
+    checkBtn.style.display = 'none';
+    retryBtn.style.display = 'none';
+    continueBtn.style.display = '';
+    quiz.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
+  } else {
+    selected.classList.add('wrong');
+    wrongMsg.classList.add('show');
+    checkBtn.style.display = 'none';
+    retryBtn.style.display = '';
+  }
+}
+
+function retry(lessonId) {
+  const quiz = document.getElementById('quiz-' + lessonId);
+  quiz.querySelectorAll('.answer-btn').forEach(b => {
+    b.classList.remove('selected','correct','wrong');
+    b.disabled = false;
+  });
+  document.getElementById('wrong-' + lessonId).classList.remove('show');
+  document.getElementById('checkBtn-' + lessonId).style.display = '';
+  document.getElementById('checkBtn-' + lessonId).disabled = true;
+  document.getElementById('retryBtn-' + lessonId).style.display = 'none';
+}
+
+function completeLesson(lessonId) {
+  const p = getProgress();
+  if (!p.completed.includes(lessonId)) {
+    p.completed.push(lessonId);
+    p.xp += 50;
+    saveProgress(p);
+  }
+  updateUI();
+
+  // Check if all 3 done
+  const done = LESSONS.filter(l => p.completed.includes(l)).length;
+  if (done === 3) {
+    showCelebration();
+  }
+}
+
+function showCelebration() {
+  const emojis = ['🎉','🏆','⭐','🔥','💯','🎊','✨','🥳','💪','🚀'];
+  const burst = document.getElementById('emojiBurst');
+  burst.textContent = emojis.sort(() => Math.random() - 0.5).slice(0, 5).join(' ');
+  setTimeout(() => {
+    document.getElementById('celebration').classList.add('show');
+  }, 300);
+}
+
+// Close celebration on background click
+document.getElementById('celebration').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('show');
+});
+
+// Init
+updateUI();
+</script>
+</body>
+</html>

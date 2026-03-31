@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics — Claudea's DS Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #131f24; --surface: #1b2b32; --surface2: #223640;
+      --border: #2a4450; --text: #d4e4ea; --text-muted: #7a9baa; --text-dim: #4a6a7a;
+      --white: #eaf4f8;
+      --green: #58cc02; --green-dark: #46a302; --green-light: #d7ffb8;
+      --gold: #ffc800; --gold-dark: #e6b400;
+      --blue: #49c0f8; --blue-dark: #1cb0f6;
+      --purple: #ce82ff; --purple-dark: #a855f7;
+      --red: #ff4b4b; --red-dark: #ea2b2b;
+      --orange: #ff9600;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Top Bar ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 24px; height: 60px;
+      background: var(--surface); border-bottom: 2px solid var(--border);
+    }
+    .topbar .brand {
+      font-weight: 900; font-size: 1.1rem; color: var(--green);
+      text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    .topbar .brand .owl { font-size: 1.3rem; }
+    .topbar .stats-bar {
+      display: flex; gap: 20px; align-items: center;
+    }
+    .topbar .stat {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 700;
+    }
+    .topbar .stat .s-icon { font-size: 1rem; }
+    .topbar .stat-streak { color: var(--orange); }
+    .topbar .stat-xp { color: var(--gold); }
+    .topbar .stat-hearts { color: var(--red); }
+
+    /* ── Progress Bar ── */
+    .progress-bar-container {
+      max-width: 700px; margin: 84px auto 0; padding: 0 24px;
+    }
+    .progress-track {
+      width: 100%; height: 16px; background: var(--surface);
+      border-radius: 12px; border: 2px solid var(--border); overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: var(--green); border-radius: 10px;
+      transition: width 0.5s ease; width: 0%;
+    }
+    .progress-label {
+      text-align: center; font-size: 0.75rem; font-weight: 700;
+      color: var(--text-muted); margin-top: 8px;
+    }
+
+    /* ── Lesson Sections ── */
+    .lesson {
+      max-width: 700px; margin: 36px auto; padding: 0 24px;
+      opacity: 0.4; pointer-events: none; transition: all 0.3s;
+    }
+    .lesson.active, .lesson.completed {
+      opacity: 1; pointer-events: auto;
+    }
+
+    .lesson-header {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 20px; padding-bottom: 14px;
+      border-bottom: 2px solid var(--border);
+    }
+    .lesson-number {
+      width: 44px; height: 44px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1.1rem; color: #fff; flex-shrink: 0;
+      border: 3px solid transparent;
+    }
+    .lesson.active .lesson-number {
+      background: var(--blue); border-color: var(--blue-dark);
+    }
+    .lesson.completed .lesson-number {
+      background: var(--green); border-color: var(--green-dark);
+    }
+    .lesson.locked .lesson-number {
+      background: var(--surface2); border-color: var(--border); color: var(--text-dim);
+    }
+    .lesson-header h2 {
+      font-size: 1.2rem; font-weight: 800; color: var(--white);
+    }
+    .lesson-header .lesson-status {
+      margin-left: auto; font-size: 0.7rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px; padding: 4px 12px;
+      border-radius: 20px;
+    }
+    .lesson.active .lesson-status {
+      background: rgba(73,192,248,0.15); color: var(--blue);
+    }
+    .lesson.completed .lesson-status {
+      background: rgba(88,204,2,0.15); color: var(--green);
+    }
+    .lesson.locked .lesson-status {
+      background: rgba(42,68,80,0.4); color: var(--text-dim);
+    }
+
+    /* ── Content Cards ── */
+    .content-card {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 16px; padding: 24px; margin-bottom: 16px;
+      position: relative; overflow: hidden;
+    }
+    .content-card .card-accent {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--blue);
+    }
+    .content-card h3 {
+      font-size: 0.95rem; font-weight: 800; color: var(--white);
+      margin-bottom: 12px;
+    }
+    .content-card p, .content-card li {
+      font-size: 0.85rem; color: var(--text-muted); line-height: 1.8;
+    }
+    .content-card ul { padding-left: 18px; margin-top: 6px; }
+    .content-card li { margin-bottom: 4px; }
+    .content-card strong { color: var(--text); font-weight: 700; }
+
+    /* ── Formula Block ── */
+    .formula-block {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 12px; padding: 18px 24px; margin: 16px 0;
+      text-align: center; font-family: 'Fira Code', monospace;
+      font-size: 1rem; color: var(--blue); font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Concept List ── */
+    .concept-list {
+      list-style: none; padding: 0; margin-top: 8px;
+    }
+    .concept-list li {
+      padding: 8px 0; border-top: 1px solid var(--border);
+      font-size: 0.85rem; color: var(--text-muted);
+    }
+    .concept-list li:first-child { border-top: none; }
+
+    /* ── Step List ── */
+    .step-list {
+      list-style: none; padding: 0; margin-top: 8px; counter-reset: step;
+    }
+    .step-list li {
+      padding: 6px 0; font-size: 0.85rem; color: var(--text-muted);
+      counter-increment: step; display: flex; gap: 10px; align-items: flex-start;
+    }
+    .step-list li::before {
+      content: counter(step); font-size: 0.68rem; font-weight: 800;
+      color: var(--blue); background: rgba(73,192,248,0.15);
+      width: 22px; height: 22px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 2px;
+    }
+
+    /* ── Quiz ── */
+    .quiz-card {
+      background: var(--surface); border: 2px solid var(--border);
+      border-radius: 16px; padding: 24px; margin-top: 16px;
+    }
+    .quiz-card h3 {
+      font-size: 0.85rem; font-weight: 800; color: var(--gold);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 14px;
+    }
+    .quiz-q {
+      font-size: 0.9rem; font-weight: 700; color: var(--white);
+      margin-bottom: 12px; line-height: 1.5;
+    }
+    .quiz-options { list-style: none; padding: 0; }
+    .quiz-options li {
+      padding: 12px 16px; margin-bottom: 8px; border-radius: 12px;
+      border: 2px solid var(--border); font-size: 0.85rem;
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+      font-weight: 600;
+    }
+    .quiz-options li:hover {
+      border-color: var(--blue); color: var(--blue);
+      background: rgba(73,192,248,0.08);
+    }
+    .quiz-options li.correct {
+      border-color: var(--green); background: rgba(88,204,2,0.12);
+      color: var(--green); font-weight: 700;
+    }
+    .quiz-options li.wrong {
+      border-color: var(--red); background: rgba(255,75,75,0.1);
+      color: var(--red);
+    }
+    .quiz-options li.disabled { pointer-events: none; opacity: 0.7; }
+    .quiz-options li.disabled.correct { opacity: 1; }
+
+    .quiz-result {
+      margin-top: 12px; padding: 12px 16px; border-radius: 10px;
+      font-size: 0.82rem; font-weight: 700; display: none;
+    }
+    .quiz-result.show { display: block; }
+    .quiz-result.pass {
+      background: rgba(88,204,2,0.1); border: 1px solid rgba(88,204,2,0.3);
+      color: var(--green);
+    }
+    .quiz-result.fail {
+      background: rgba(255,75,75,0.1); border: 1px solid rgba(255,75,75,0.3);
+      color: var(--red);
+    }
+
+    /* ── Complete Button ── */
+    .complete-btn-wrap {
+      text-align: center; margin-top: 20px;
+    }
+    .complete-btn {
+      display: inline-block; padding: 14px 40px;
+      background: var(--green); color: #fff; font-weight: 800;
+      font-size: 0.9rem; font-family: 'Nunito', sans-serif;
+      border: none; border-radius: 14px; cursor: pointer;
+      text-transform: uppercase; letter-spacing: 1px;
+      border-bottom: 4px solid var(--green-dark);
+      transition: all 0.15s;
+    }
+    .complete-btn:hover { background: #4db802; transform: translateY(-1px); }
+    .complete-btn:active { transform: translateY(2px); border-bottom-width: 1px; }
+    .complete-btn:disabled {
+      background: var(--surface2); border-color: var(--border);
+      color: var(--text-dim); cursor: default; transform: none;
+    }
+
+    /* ── XP Toast ── */
+    .xp-toast {
+      position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px);
+      background: var(--gold); color: var(--bg); font-weight: 800; font-size: 0.9rem;
+      padding: 10px 24px; border-radius: 12px; z-index: 300;
+      opacity: 0; transition: all 0.4s ease; pointer-events: none;
+    }
+    .xp-toast.show {
+      opacity: 1; transform: translateX(-50%) translateY(0);
+    }
+
+    /* ── Completion Banner ── */
+    .completion-banner {
+      display: none; max-width: 700px; margin: 24px auto 0; padding: 0 24px;
+    }
+    .completion-banner.show { display: block; }
+    .completion-inner {
+      text-align: center; padding: 32px 24px;
+      background: linear-gradient(135deg, rgba(88,204,2,0.1), rgba(73,192,248,0.1));
+      border: 2px solid var(--green); border-radius: 16px;
+    }
+    .completion-inner .trophy { font-size: 2.5rem; margin-bottom: 12px; }
+    .completion-inner h2 {
+      font-size: 1.3rem; font-weight: 900; color: var(--green); margin-bottom: 6px;
+    }
+    .completion-inner p { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px; }
+    .completion-inner a {
+      display: inline-block; padding: 12px 36px;
+      background: var(--green); color: #fff; font-weight: 800; font-size: 0.85rem;
+      border-radius: 12px; text-decoration: none; text-transform: uppercase;
+      letter-spacing: 1px; border-bottom: 4px solid var(--green-dark);
+      transition: all 0.15s;
+    }
+    .completion-inner a:hover { background: #4db802; transform: translateY(-1px); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 32px 24px 48px; font-size: 0.75rem;
+      color: var(--text-dim); margin-top: 48px;
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--green); }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .topbar { padding: 0 16px; }
+      .topbar .stats-bar { gap: 12px; }
+      .topbar .stat { font-size: 0.78rem; }
+      .progress-bar-container { margin-top: 76px; padding: 0 16px; }
+      .lesson { padding: 0 16px; margin: 28px auto; }
+      .content-card, .quiz-card { padding: 20px 16px; }
+      .lesson-header h2 { font-size: 1.05rem; }
+      .formula-block { font-size: 0.85rem; padding: 14px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <a href="index.html" class="brand"><span class="owl">&#129417;</span> Claudea's DS Prep</a>
+  <div class="stats-bar">
+    <div class="stat stat-streak"><span class="s-icon">&#128293;</span> <span id="streakNum">0</span></div>
+    <div class="stat stat-xp"><span class="s-icon">&#9733;</span> <span id="xpNum">0</span> XP</div>
+    <div class="stat stat-hearts"><span class="s-icon">&#10084;</span> <span id="heartsNum">5</span></div>
+  </div>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress-bar-container">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 / 3 Lessons Complete</div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- Lesson 1: Descriptive Stats        -->
+<!-- ═══════════════════════════════════ -->
+<div class="lesson" id="stat-1" data-lesson="stat-1">
+  <div class="lesson-header">
+    <div class="lesson-number">1</div>
+    <h2>Descriptive Stats</h2>
+    <span class="lesson-status">Locked</span>
+  </div>
+
+  <div class="content-card">
+    <div class="card-accent"></div>
+    <h3>Core Measures</h3>
+    <p>Summarize and describe the main features of a dataset:</p>
+    <ul class="concept-list">
+      <li><strong>Mean</strong> &mdash; arithmetic average of all values</li>
+      <li><strong>Median</strong> &mdash; middle value when sorted; robust to outliers</li>
+      <li><strong>Mode</strong> &mdash; most frequently occurring value</li>
+      <li><strong>Variance</strong> &mdash; average of squared deviations from the mean</li>
+      <li><strong>Standard Deviation</strong> &mdash; square root of variance; same units as data</li>
+      <li><strong>IQR</strong> &mdash; interquartile range (Q3 &minus; Q1); measures spread of the middle 50%</li>
+    </ul>
+  </div>
+
+  <div class="content-card">
+    <div class="card-accent"></div>
+    <h3>Confidence Intervals</h3>
+    <p>A range of values likely to contain the true population parameter. A 95% CI means if we repeated the experiment many times, 95% of computed intervals would contain the true parameter.</p>
+    <div class="formula-block">CI = x&#772; &plusmn; z* &middot; (&sigma; / &radic;n)</div>
+    <p>The width depends on confidence level, variability (&sigma;), and sample size (n). Larger samples yield narrower intervals.</p>
+  </div>
+
+  <div class="quiz-card" id="quiz-1">
+    <h3>&#128161; Quick Check</h3>
+    <div class="quiz-q">A p-value of 0.03 means...</div>
+    <ul class="quiz-options">
+      <li onclick="answerQuiz(this, 1, true)">There is a 3% probability of observing this data (or more extreme) if H0 is true</li>
+      <li onclick="answerQuiz(this, 1, false)">There is a 3% chance the null hypothesis is true</li>
+      <li onclick="answerQuiz(this, 1, false)">The treatment effect size is exactly 3%</li>
+    </ul>
+    <div class="quiz-result" id="result-1"></div>
+    <div class="complete-btn-wrap">
+      <button class="complete-btn" id="complete-1" disabled onclick="completeLesson('stat-1', 1)">Complete Lesson</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- Lesson 2: Hypothesis Testing       -->
+<!-- ═══════════════════════════════════ -->
+<div class="lesson" id="stat-2" data-lesson="stat-2">
+  <div class="lesson-header">
+    <div class="lesson-number">2</div>
+    <h2>Hypothesis Testing</h2>
+    <span class="lesson-status">Locked</span>
+  </div>
+
+  <div class="content-card">
+    <div class="card-accent"></div>
+    <h3>Core Concepts</h3>
+    <p>A framework for making statistical decisions using data:</p>
+    <ul class="concept-list">
+      <li><strong>H0 (Null Hypothesis)</strong> &mdash; the default assumption; no effect or difference</li>
+      <li><strong>H1 (Alternative Hypothesis)</strong> &mdash; what we want to prove; there is an effect</li>
+      <li><strong>p-value</strong> &mdash; probability of observing the data (or more extreme) if H0 is true</li>
+      <li><strong>Type I Error</strong> &mdash; false positive; rejecting H0 when it is actually true (&alpha;)</li>
+      <li><strong>Type II Error</strong> &mdash; false negative; failing to reject H0 when it is false (&beta;)</li>
+      <li><strong>Power</strong> &mdash; 1 &minus; &beta;; probability of correctly rejecting a false H0</li>
+    </ul>
+  </div>
+
+  <div class="content-card">
+    <div class="card-accent"></div>
+    <h3>Common Statistical Tests</h3>
+    <p>Choose the right test for your data and hypothesis:</p>
+    <ul class="concept-list">
+      <li><strong>z-test</strong> &mdash; known population variance, large sample (n &gt; 30)</li>
+      <li><strong>t-test</strong> &mdash; unknown variance, small sample; compares means</li>
+      <li><strong>Paired t-test</strong> &mdash; compares means from the same group at two different times</li>
+      <li><strong>Chi-squared test</strong> &mdash; tests independence between categorical variables</li>
+      <li><strong>ANOVA</strong> &mdash; compares means across 3+ groups simultaneously</li>
+      <li><strong>Mann-Whitney U</strong> &mdash; non-parametric alternative to the t-test</li>
+    </ul>
+  </div>
+
+  <div class="quiz-card" id="quiz-2">
+    <h3>&#128161; Quick Check</h3>
+    <div class="quiz-q">What is a Type II error?</div>
+    <ul class="quiz-options">
+      <li onclick="answerQuiz(this, 2, true)">Failing to reject a false null hypothesis (false negative)</li>
+      <li onclick="answerQuiz(this, 2, false)">Rejecting a true null hypothesis (false positive)</li>
+      <li onclick="answerQuiz(this, 2, false)">Choosing the wrong statistical test for the data</li>
+    </ul>
+    <div class="quiz-result" id="result-2"></div>
+    <div class="complete-btn-wrap">
+      <button class="complete-btn" id="complete-2" disabled onclick="completeLesson('stat-2', 2)">Complete Lesson</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ -->
+<!-- Lesson 3: A/B Testing              -->
+<!-- ═══════════════════════════════════ -->
+<div class="lesson" id="stat-3" data-lesson="stat-3">
+  <div class="lesson-header">
+    <div class="lesson-number">3</div>
+    <h2>A/B Testing</h2>
+    <span class="lesson-status">Locked</span>
+  </div>
+
+  <div class="content-card">
+    <div class="card-accent"></div>
+    <h3>5-Step Process</h3>
+    <p>A structured approach to running controlled experiments:</p>
+    <ol class="step-list">
+      <li><span>Define your metric and hypothesis clearly</span></li>
+      <li><span>Calculate the required sample size for statistical power</span></li>
+      <li><span>Randomly assign users to control and treatment groups</span></li>
+      <li><span>Run the experiment for the pre-determined duration</span></li>
+      <li><span>Analyze results and check for statistical significance</span></li>
+    </ol>
+    <p style="margin-top: 14px;"><strong>Common pitfalls:</strong> peeking at results early, multiple comparisons without correction, and novelty effects biasing short-term metrics.</p>
+  </div>
+
+  <div class="content-card">
+    <div class="card-accent"></div>
+    <h3>Central Limit Theorem</h3>
+    <p>Regardless of the population distribution, the distribution of sample means approaches a normal distribution as sample size increases (typically n &ge; 30). This underpins most A/B test analysis.</p>
+    <div class="formula-block">SE = &sigma; / &radic;n</div>
+    <p>The standard error (SE) decreases as sample size grows, meaning larger samples give more precise estimates of the population mean.</p>
+  </div>
+
+  <div class="quiz-card" id="quiz-3">
+    <h3>&#128161; Quick Check</h3>
+    <div class="quiz-q">If you peek at A/B test results daily and stop when significant, what happens?</div>
+    <ul class="quiz-options">
+      <li onclick="answerQuiz(this, 3, true)">The false positive rate inflates well above the nominal &alpha; level</li>
+      <li onclick="answerQuiz(this, 3, false)">Nothing changes; the p-value is still valid at any time</li>
+      <li onclick="answerQuiz(this, 3, false)">The test becomes more powerful due to continuous monitoring</li>
+    </ul>
+    <div class="quiz-result" id="result-3"></div>
+    <div class="complete-btn-wrap">
+      <button class="complete-btn" id="complete-3" disabled onclick="completeLesson('stat-3', 3)">Complete Lesson</button>
+    </div>
+  </div>
+</div>
+
+<!-- Completion Banner -->
+<div class="completion-banner" id="completionBanner">
+  <div class="completion-inner">
+    <div class="trophy">&#127942;</div>
+    <h2>Statistics Complete!</h2>
+    <p>You earned 30 XP and mastered all 3 statistics lessons.</p>
+    <a href="index.html">Back to Learning Path</a>
+  </div>
+</div>
+
+<!-- XP Toast -->
+<div class="xp-toast" id="xpToast">+10 XP &#9733;</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; v05 &middot; <a href="index.html">Learning Path</a> &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<script>
+// ── Progress System ──
+function getProgress() {
+  const saved = localStorage.getItem('ds-v05-progress');
+  return saved ? JSON.parse(saved) : { completed: [], xp: 0, streak: 0, hearts: 5 };
+}
+function saveProgress(p) {
+  localStorage.setItem('ds-v05-progress', JSON.stringify(p));
+}
+
+const progress = getProgress();
+const lessons = ['stat-1', 'stat-2', 'stat-3'];
+const quizPassed = { 1: false, 2: false, 3: false };
+
+// Restore top bar stats
+document.getElementById('streakNum').textContent = progress.streak;
+document.getElementById('xpNum').textContent = progress.xp;
+document.getElementById('heartsNum').textContent = progress.hearts;
+
+// ── Determine lesson states ──
+function updateLessonStates() {
+  let completedCount = 0;
+
+  lessons.forEach((lessonId, idx) => {
+    const el = document.getElementById(lessonId);
+    const status = el.querySelector('.lesson-status');
+    const isCompleted = progress.completed.includes(lessonId);
+
+    // Check if prior lesson is done (or it's the first)
+    const isUnlocked = idx === 0 || progress.completed.includes(lessons[idx - 1]);
+
+    el.classList.remove('active', 'completed', 'locked');
+
+    if (isCompleted) {
+      el.classList.add('completed');
+      status.textContent = '✓ Complete';
+      completedCount++;
+    } else if (isUnlocked) {
+      el.classList.add('active');
+      status.textContent = 'In Progress';
+    } else {
+      el.classList.add('locked');
+      status.textContent = 'Locked';
+    }
+  });
+
+  // Update progress bar
+  const pct = Math.round((completedCount / lessons.length) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = completedCount + ' / ' + lessons.length + ' Lessons Complete';
+
+  // Show completion banner if all done
+  if (completedCount === lessons.length) {
+    document.getElementById('completionBanner').classList.add('show');
+  }
+}
+
+// ── Quiz Logic ──
+function answerQuiz(el, quizNum, isCorrect) {
+  const quizCard = document.getElementById('quiz-' + quizNum);
+  const options = quizCard.querySelectorAll('.quiz-options li');
+  const result = document.getElementById('result-' + quizNum);
+  const btn = document.getElementById('complete-' + quizNum);
+
+  // Disable all options
+  options.forEach(li => li.classList.add('disabled'));
+
+  if (isCorrect) {
+    el.classList.add('correct');
+    result.textContent = '✓ Correct! Well done.';
+    result.className = 'quiz-result show pass';
+    quizPassed[quizNum] = true;
+    btn.disabled = false;
+  } else {
+    el.classList.add('wrong');
+    // Highlight correct answer
+    options.forEach(li => {
+      const attr = li.getAttribute('onclick');
+      if (attr && attr.includes(', true)')) {
+        li.classList.add('correct');
+      }
+    });
+    result.textContent = '✗ Not quite. The correct answer is highlighted above.';
+    result.className = 'quiz-result show fail';
+    // Still allow completion after seeing the answer
+    quizPassed[quizNum] = true;
+    btn.disabled = false;
+
+    // Deduct a heart
+    if (progress.hearts > 0) {
+      progress.hearts--;
+      document.getElementById('heartsNum').textContent = progress.hearts;
+      saveProgress(progress);
+    }
+  }
+}
+
+// ── Lesson Completion ──
+function completeLesson(lessonId, quizNum) {
+  if (progress.completed.includes(lessonId)) return;
+
+  progress.completed.push(lessonId);
+  progress.xp += 10;
+  document.getElementById('xpNum').textContent = progress.xp;
+  saveProgress(progress);
+
+  // Show XP toast
+  const toast = document.getElementById('xpToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1800);
+
+  updateLessonStates();
+
+  // Scroll to next lesson or completion banner
+  const idx = lessons.indexOf(lessonId);
+  if (idx < lessons.length - 1) {
+    setTimeout(() => {
+      document.getElementById(lessons[idx + 1]).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 600);
+  } else {
+    setTimeout(() => {
+      document.getElementById('completionBanner').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 600);
+  }
+}
+
+// ── Handle hash navigation ──
+function scrollToHash() {
+  const hash = window.location.hash;
+  if (hash) {
+    const map = { '#lesson-1': 'stat-1', '#lesson-2': 'stat-2', '#lesson-3': 'stat-3' };
+    const target = map[hash];
+    if (target) {
+      setTimeout(() => {
+        document.getElementById(target).scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
+  }
+}
+
+// ── Init ──
+updateLessonStates();
+scrollToHash();
+</script>
+
+</body>
+</html>

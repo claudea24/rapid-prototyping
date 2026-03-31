@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies — Claudea's DS Interview Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #131f24; --surface: #1b2b32; --surface2: #223640;
+      --border: #2a4450; --text: #d4e4ea; --text-muted: #7a9baa; --text-dim: #4a6a7a;
+      --white: #eaf4f8;
+      --green: #58cc02; --green-dark: #46a302; --green-light: #d7ffb8;
+      --gold: #ffc800; --gold-dark: #e6b400;
+      --blue: #49c0f8; --blue-dark: #1cb0f6;
+      --purple: #ce82ff; --purple-dark: #a855f7;
+      --red: #ff4b4b; --red-dark: #ea2b2b;
+      --orange: #ff9600;
+    }
+    body {
+      font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh;
+    }
+    code, .code { font-family: 'Fira Code', monospace; }
+
+    /* ── Top Bar ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 24px; height: 60px;
+      background: var(--surface); border-bottom: 2px solid var(--border);
+    }
+    .topbar .brand {
+      font-weight: 900; font-size: 1.1rem; color: var(--green);
+      text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    .topbar .brand .owl { font-size: 1.3rem; }
+    .topbar .stats { display: flex; gap: 20px; align-items: center; }
+    .topbar .stat {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 700;
+    }
+    .topbar .stat .s-icon { font-size: 1rem; }
+    .topbar .stat-streak { color: var(--orange); }
+    .topbar .stat-xp { color: var(--gold); }
+    .topbar .stat-hearts { color: var(--red); }
+
+    /* ── Progress Bar ── */
+    .progress-bar-container {
+      position: fixed; top: 60px; left: 0; right: 0; z-index: 190;
+      background: var(--surface); padding: 12px 24px; border-bottom: 2px solid var(--border);
+    }
+    .progress-track {
+      width: 100%; max-width: 640px; margin: 0 auto;
+      height: 16px; background: var(--surface2); border-radius: 12px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: var(--green); border-radius: 12px;
+      transition: width 0.6s ease; width: 0%;
+    }
+
+    /* ── Main Content ── */
+    .main {
+      max-width: 680px; margin: 0 auto;
+      padding: 120px 24px 120px;
+    }
+
+    /* ── Lesson Tabs ── */
+    .lesson-tabs {
+      display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap;
+    }
+    .lesson-tab {
+      padding: 10px 20px; border-radius: 12px; font-weight: 800; font-size: 0.8rem;
+      border: 2px solid var(--border); background: var(--surface); color: var(--text-muted);
+      cursor: pointer; transition: all 0.2s; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .lesson-tab:hover { border-color: var(--blue); color: var(--blue); }
+    .lesson-tab.active {
+      background: var(--green); border-color: var(--green-dark); color: #fff;
+    }
+    .lesson-tab.completed-tab {
+      background: var(--surface2); border-color: var(--green); color: var(--green);
+    }
+    .lesson-tab.locked {
+      opacity: 0.4; cursor: default;
+    }
+    .lesson-tab.locked:hover { border-color: var(--border); color: var(--text-muted); }
+
+    /* ── Lesson Section ── */
+    .lesson { display: none; }
+    .lesson.active { display: block; }
+
+    .lesson-header {
+      text-align: center; margin-bottom: 32px;
+    }
+    .lesson-header .lesson-icon { font-size: 2.5rem; margin-bottom: 8px; }
+    .lesson-header h1 { font-size: 1.6rem; font-weight: 900; color: var(--white); }
+    .lesson-header p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Content Cards ── */
+    .card {
+      background: var(--surface); border: 2px solid var(--border); border-radius: 16px;
+      padding: 24px; margin-bottom: 20px;
+    }
+    .card h3 {
+      font-size: 1rem; font-weight: 800; color: var(--green); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .card h3 .card-icon { font-size: 1.1rem; }
+    .card p, .card li {
+      font-size: 0.88rem; line-height: 1.7; color: var(--text);
+    }
+    .card ul, .card ol {
+      padding-left: 20px; margin-top: 8px;
+    }
+    .card li { margin-bottom: 6px; }
+    .card .highlight {
+      color: var(--green); font-weight: 700;
+    }
+    .card .code-block {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px 18px; margin: 12px 0; font-family: 'Fira Code', monospace;
+      font-size: 0.82rem; color: var(--blue); line-height: 1.6; overflow-x: auto;
+    }
+    .card .step-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; border-radius: 50%; font-size: 0.72rem;
+      font-weight: 800; background: var(--green); color: var(--bg); margin-right: 8px;
+      flex-shrink: 0;
+    }
+    .card .step {
+      display: flex; align-items: flex-start; margin-bottom: 10px;
+    }
+    .card .vs-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px;
+    }
+    .card .vs-col {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px;
+    }
+    .card .vs-col h4 {
+      font-size: 0.82rem; font-weight: 800; margin-bottom: 8px;
+    }
+    .card .vs-col.top-down h4 { color: var(--blue); }
+    .card .vs-col.bottom-up h4 { color: var(--purple); }
+    .card .vs-col p, .card .vs-col li { font-size: 0.8rem; }
+    .card .tag {
+      display: inline-block; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 3px 10px; font-size: 0.75rem; font-weight: 700;
+      color: var(--text-muted); margin: 3px 4px 3px 0;
+    }
+    .card .tag.green { border-color: var(--green); color: var(--green); }
+    .card .tag.blue { border-color: var(--blue); color: var(--blue); }
+    .card .tag.purple { border-color: var(--purple); color: var(--purple); }
+    .card .tag.gold { border-color: var(--gold); color: var(--gold); }
+
+    .funnel {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      margin: 16px 0;
+    }
+    .funnel-stage {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 10px; border-radius: 10px; font-size: 0.82rem; font-weight: 700;
+      color: #fff; width: 100%; text-align: center;
+    }
+    .funnel-stage:nth-child(1) { background: #3b82f6; max-width: 100%; }
+    .funnel-stage:nth-child(2) { background: #8b5cf6; max-width: 88%; }
+    .funnel-stage:nth-child(3) { background: #ec4899; max-width: 76%; }
+    .funnel-stage:nth-child(4) { background: #f59e0b; max-width: 64%; }
+    .funnel-stage:nth-child(5) { background: #10b981; max-width: 52%; }
+
+    /* ── Quiz Card ── */
+    .quiz-card {
+      background: var(--surface); border: 2px solid var(--gold); border-radius: 16px;
+      padding: 28px; margin-top: 28px;
+    }
+    .quiz-card h3 {
+      font-size: 1rem; font-weight: 800; color: var(--gold); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .quiz-card .question {
+      font-size: 0.95rem; font-weight: 700; color: var(--white); margin: 14px 0;
+    }
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+    .quiz-opt {
+      padding: 14px 18px; border: 2px solid var(--border); border-radius: 12px;
+      background: var(--surface2); font-size: 0.88rem; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; color: var(--text);
+    }
+    .quiz-opt:hover { border-color: var(--blue); background: rgba(73,192,248,0.08); }
+    .quiz-opt.selected { border-color: var(--blue); background: rgba(73,192,248,0.12); color: var(--blue); }
+    .quiz-opt.correct {
+      border-color: var(--green); background: rgba(88,204,2,0.12); color: var(--green);
+      animation: correctPop 0.4s ease;
+    }
+    .quiz-opt.wrong {
+      border-color: var(--red); background: rgba(255,75,75,0.12); color: var(--red);
+      animation: shake 0.4s ease;
+    }
+    .quiz-opt.disabled { pointer-events: none; opacity: 0.5; }
+    .quiz-opt.disabled.correct { opacity: 1; }
+
+    @keyframes correctPop {
+      0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      75% { transform: translateX(6px); }
+    }
+
+    .quiz-result {
+      margin-top: 16px; padding: 14px 18px; border-radius: 12px;
+      font-size: 0.88rem; font-weight: 700; display: none;
+    }
+    .quiz-result.show { display: block; }
+    .quiz-result.pass { background: rgba(88,204,2,0.12); color: var(--green); border: 1px solid var(--green); }
+    .quiz-result.fail { background: rgba(255,75,75,0.12); color: var(--red); border: 1px solid var(--red); }
+
+    /* ── Complete Button ── */
+    .complete-btn {
+      display: block; width: 100%; padding: 16px; margin-top: 24px;
+      background: var(--green); color: #fff; font-weight: 800; font-size: 1rem;
+      border: none; border-radius: 14px; cursor: pointer; text-transform: uppercase;
+      letter-spacing: 1px; border-bottom: 4px solid var(--green-dark);
+      transition: all 0.15s; font-family: 'Nunito', sans-serif;
+    }
+    .complete-btn:hover { background: #4db802; transform: translateY(-1px); }
+    .complete-btn:active { transform: translateY(2px); border-bottom-width: 1px; }
+    .complete-btn:disabled {
+      background: var(--surface2); border-color: var(--border); color: var(--text-dim);
+      cursor: default; transform: none;
+    }
+
+    /* ── Celebration Overlay ── */
+    .celebration {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 999; background: rgba(19,31,36,0.92);
+      justify-content: center; align-items: center;
+    }
+    .celebration.show { display: flex; }
+    .celebration-content {
+      text-align: center; animation: celebPop 0.5s ease;
+    }
+    .celebration .big-icon { font-size: 4rem; margin-bottom: 16px; }
+    .celebration h2 { font-size: 1.6rem; font-weight: 900; color: var(--green); margin-bottom: 8px; }
+    .celebration p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 4px; }
+    .celebration .xp-badge {
+      display: inline-block; margin: 12px 0; padding: 8px 24px;
+      background: rgba(255,200,0,0.15); border: 2px solid var(--gold);
+      border-radius: 20px; font-size: 1.1rem; font-weight: 800; color: var(--gold);
+    }
+    .celebration .continue-link {
+      display: inline-block; margin-top: 16px; padding: 14px 48px;
+      background: var(--green); color: #fff; font-weight: 800; font-size: 0.95rem;
+      border-radius: 14px; text-decoration: none; text-transform: uppercase;
+      letter-spacing: 1px; border-bottom: 4px solid var(--green-dark);
+      transition: all 0.15s;
+    }
+    .celebration .continue-link:hover { background: #4db802; }
+    @keyframes celebPop {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 24px; font-size: 0.75rem; color: var(--text-dim);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--green); }
+
+    @media (max-width: 480px) {
+      .main { padding: 110px 16px 100px; }
+      .card .vs-grid { grid-template-columns: 1fr; }
+      .lesson-header h1 { font-size: 1.3rem; }
+      .lesson-tabs { gap: 6px; }
+      .lesson-tab { padding: 8px 14px; font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <a href="index.html" class="brand"><span class="owl">&#129417;</span> Claudea's DS Prep</a>
+  <div class="stats">
+    <div class="stat stat-streak"><span class="s-icon">&#128293;</span> <span id="streakNum">0</span></div>
+    <div class="stat stat-xp"><span class="s-icon">&#9733;</span> <span id="xpNum">0</span> XP</div>
+    <div class="stat stat-hearts"><span class="s-icon">&#10084;</span> <span id="heartsNum">5</span></div>
+  </div>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress-bar-container">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+
+  <!-- Lesson Tabs -->
+  <div class="lesson-tabs">
+    <button class="lesson-tab active" data-lesson="1">&#128640; Lesson 1</button>
+    <button class="lesson-tab locked" data-lesson="2">&#128188; Lesson 2</button>
+    <button class="lesson-tab locked" data-lesson="3">&#128161; Lesson 3</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- LESSON 1: Product Metrics              -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="lesson active" id="lesson-1">
+    <div class="lesson-header">
+      <div class="lesson-icon">&#128640;</div>
+      <h1>Product Metrics</h1>
+      <p>North Star metrics, AARRR funnel, and metric change frameworks</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="card-icon">&#11088;</span> North Star Metric</h3>
+      <p>A <span class="highlight">North Star Metric (NSM)</span> is the single metric that best captures the core value your product delivers to customers. It aligns teams, guides priorities, and predicts long-term sustainable growth.</p>
+      <div class="code-block">
+        Examples:<br>
+        Facebook  &rarr; Daily Active Users (DAU)<br>
+        Airbnb    &rarr; Nights Booked<br>
+        Spotify   &rarr; Time Spent Listening<br>
+        Slack     &rarr; Messages Sent per Team/Day
+      </div>
+      <p>A good NSM should be: <span class="highlight">measurable</span>, reflect <span class="highlight">customer value</span>, be a <span class="highlight">leading indicator</span> of revenue, and be <span class="highlight">actionable</span> by the team.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="card-icon">&#128200;</span> AARRR Pirate Funnel</h3>
+      <p>The AARRR framework (coined by Dave McClure) breaks customer lifecycle into five stages:</p>
+      <div class="funnel">
+        <div class="funnel-stage">&#127758; Acquisition &mdash; How do users find you?</div>
+        <div class="funnel-stage">&#9889; Activation &mdash; Do they have a great first experience?</div>
+        <div class="funnel-stage">&#128257; Retention &mdash; Do they come back?</div>
+        <div class="funnel-stage">&#128176; Revenue &mdash; Do they pay?</div>
+        <div class="funnel-stage">&#128227; Referral &mdash; Do they tell others?</div>
+      </div>
+      <p>Each stage has its own set of metrics. In an interview, identify <span class="highlight">which stage</span> is most relevant before diving into metrics.</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="card-icon">&#128269;</span> Metric Change Questions</h3>
+      <p>When asked <em>"Metric X dropped 10%"</em>, use this <span class="highlight">5-step framework</span>:</p>
+      <div class="step"><span class="step-num">1</span><span><strong>Clarify the metric</strong> &mdash; How is it defined? What time period? Any recent changes to tracking?</span></div>
+      <div class="step"><span class="step-num">2</span><span><strong>Check external factors</strong> &mdash; Seasonality, holidays, competitor actions, market shifts.</span></div>
+      <div class="step"><span class="step-num">3</span><span><strong>Segment the data</strong> &mdash; Break down by platform, geography, user cohort, new vs. returning.</span></div>
+      <div class="step"><span class="step-num">4</span><span><strong>Identify root cause</strong> &mdash; Look for correlated changes: deploys, feature launches, bugs, upstream/downstream effects.</span></div>
+      <div class="step"><span class="step-num">5</span><span><strong>Recommend action</strong> &mdash; Propose fixes, further investigation, or monitoring plan.</span></div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="quiz-card" id="quiz-1">
+      <h3>&#127919; Knowledge Check</h3>
+      <p class="question">What is a North Star Metric?</p>
+      <div class="quiz-options">
+        <div class="quiz-opt" data-idx="0">The single metric that best captures the core value delivered to customers</div>
+        <div class="quiz-opt" data-idx="1">The total revenue a product generates per quarter</div>
+        <div class="quiz-opt" data-idx="2">The number of active users on the platform</div>
+        <div class="quiz-opt" data-idx="3">The conversion rate from free trial to paid</div>
+      </div>
+      <div class="quiz-result" id="result-1"></div>
+    </div>
+
+    <button class="complete-btn" id="complete-1" disabled>Complete Lesson</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- LESSON 2: Frameworks                   -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="lesson" id="lesson-2">
+    <div class="lesson-header">
+      <div class="lesson-icon">&#128188;</div>
+      <h1>Frameworks</h1>
+      <p>Structuring cases, market sizing, and systematic problem solving</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="card-icon">&#128203;</span> Structuring a Case: 6-Step Framework</h3>
+      <p>Follow this structured approach for any product/data case study:</p>
+      <div class="step"><span class="step-num">1</span><span><strong>Clarify</strong> &mdash; Repeat the problem. Ask about scope, user segment, time frame, and success criteria.</span></div>
+      <div class="step"><span class="step-num">2</span><span><strong>Define metrics</strong> &mdash; Choose a primary metric (north star) and supporting/guardrail metrics.</span></div>
+      <div class="step"><span class="step-num">3</span><span><strong>Hypothesize</strong> &mdash; List possible causes or solutions. Prioritize by impact and feasibility.</span></div>
+      <div class="step"><span class="step-num">4</span><span><strong>Analyze</strong> &mdash; Describe what data you'd pull, how you'd segment it, and what patterns to look for.</span></div>
+      <div class="step"><span class="step-num">5</span><span><strong>Recommend</strong> &mdash; State your recommendation clearly. Back it with evidence from the analysis.</span></div>
+      <div class="step"><span class="step-num">6</span><span><strong>Measure</strong> &mdash; Propose how to validate via A/B test or monitoring. Define success criteria.</span></div>
+    </div>
+
+    <div class="card">
+      <h3><span class="card-icon">&#127757;</span> Market Sizing</h3>
+      <p>Two fundamental approaches to estimation questions:</p>
+      <div class="vs-grid">
+        <div class="vs-col top-down">
+          <h4>&#11015; Top-Down</h4>
+          <p>Start from the total market and narrow down with filters:</p>
+          <ul>
+            <li>Total population / users</li>
+            <li>Apply % filters (age, region, internet access)</li>
+            <li>Estimate adoption rate</li>
+            <li>Multiply by ARPU</li>
+          </ul>
+          <p style="margin-top:8px"><span class="tag blue">Fast</span> <span class="tag blue">Big picture</span></p>
+        </div>
+        <div class="vs-col bottom-up">
+          <h4>&#11014; Bottom-Up</h4>
+          <p>Start from a single unit and scale up:</p>
+          <ul>
+            <li>Revenue per transaction</li>
+            <li>Transactions per user/day</li>
+            <li>Number of users in a segment</li>
+            <li>Scale across segments</li>
+          </ul>
+          <p style="margin-top:8px"><span class="tag purple">Precise</span> <span class="tag purple">Granular</span></p>
+        </div>
+      </div>
+      <p style="margin-top: 14px;"><strong>Pro tip:</strong> Use <span class="highlight">both approaches</span> as a sanity check. If they converge, your estimate is more credible.</p>
+    </div>
+
+    <!-- Quiz -->
+    <div class="quiz-card" id="quiz-2">
+      <h3>&#127919; Knowledge Check</h3>
+      <p class="question">DAU dropped 15%. What should be your first step?</p>
+      <div class="quiz-options">
+        <div class="quiz-opt" data-idx="0">Check if tracking or metric definition changed recently</div>
+        <div class="quiz-opt" data-idx="1">Immediately launch an A/B test to diagnose</div>
+        <div class="quiz-opt" data-idx="2">Segment users by geography and compare</div>
+        <div class="quiz-opt" data-idx="3">Recommend reverting the last product change</div>
+      </div>
+      <div class="quiz-result" id="result-2"></div>
+    </div>
+
+    <button class="complete-btn" id="complete-2" disabled>Complete Lesson</button>
+  </div>
+
+  <!-- ═══════════════════════════════════════ -->
+  <!-- LESSON 3: Practice Cases               -->
+  <!-- ═══════════════════════════════════════ -->
+  <div class="lesson" id="lesson-3">
+    <div class="lesson-header">
+      <div class="lesson-icon">&#128161;</div>
+      <h1>Practice Cases</h1>
+      <p>Experiment design principles and communication strategies</p>
+    </div>
+
+    <div class="card">
+      <h3><span class="card-icon">&#128300;</span> Experiment Design</h3>
+      <p>Key principles for designing rigorous product experiments:</p>
+      <div class="step"><span class="step-num">1</span><span><strong>Randomization</strong> &mdash; Randomly assign users to control/treatment to eliminate selection bias. Use hash-based assignment for consistency.</span></div>
+      <div class="step"><span class="step-num">2</span><span><strong>Duration</strong> &mdash; Run long enough to capture weekly cycles (min 1-2 weeks). Account for novelty effects and learning curves.</span></div>
+      <div class="step"><span class="step-num">3</span><span><strong>Guardrail metrics</strong> &mdash; Track metrics you do <em>not</em> want to harm (e.g., page load time, crash rate, customer support tickets) alongside your primary metric.</span></div>
+      <div class="step"><span class="step-num">4</span><span><strong>Network effects</strong> &mdash; Watch for spillover between groups. If users interact (social, marketplace), consider cluster-based randomization or switchback designs.</span></div>
+      <div class="code-block">
+        Common pitfalls:<br>
+        &bull; Peeking at results too early &rarr; inflated false positives<br>
+        &bull; Multiple comparisons without correction<br>
+        &bull; Sample ratio mismatch (SRM) &rarr; check assignment<br>
+        &bull; Simpson's paradox in subgroup analysis
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><span class="card-icon">&#128172;</span> Communication Tips</h3>
+      <p>How to present your analysis in an interview or stakeholder meeting:</p>
+      <div class="step"><span class="step-num">1</span><span><strong>Lead with the answer</strong> &mdash; State your recommendation first. Then walk through the supporting logic. Don't make them wait.</span></div>
+      <div class="step"><span class="step-num">2</span><span><strong>Structure your response</strong> &mdash; Use numbered frameworks. Say "There are three factors..." so the listener can follow along.</span></div>
+      <div class="step"><span class="step-num">3</span><span><strong>Quantify everything</strong> &mdash; "This would impact ~15% of users" is stronger than "some users." Back claims with numbers, even estimates.</span></div>
+      <div class="step"><span class="step-num">4</span><span><strong>Acknowledge trade-offs</strong> &mdash; Show you understand the cost of your recommendation. "This improves X but may regress Y by ~2%."</span></div>
+      <div style="margin-top: 14px;">
+        <span class="tag green">Lead with answer</span>
+        <span class="tag blue">Structure</span>
+        <span class="tag gold">Quantify</span>
+        <span class="tag purple">Trade-offs</span>
+      </div>
+    </div>
+
+    <!-- Quiz -->
+    <div class="quiz-card" id="quiz-3">
+      <h3>&#127919; Knowledge Check</h3>
+      <p class="question">What is a good guardrail metric for a conversion rate optimization test?</p>
+      <div class="quiz-options">
+        <div class="quiz-opt" data-idx="0">Total number of signups</div>
+        <div class="quiz-opt" data-idx="1">Page load time</div>
+        <div class="quiz-opt" data-idx="2">Click-through rate on the CTA</div>
+        <div class="quiz-opt" data-idx="3">Number of A/B test variants</div>
+      </div>
+      <div class="quiz-result" id="result-3"></div>
+    </div>
+
+    <button class="complete-btn" id="complete-3" disabled>Complete Lesson</button>
+  </div>
+
+</div>
+
+<!-- Celebration Overlay -->
+<div class="celebration" id="celebration">
+  <div class="celebration-content">
+    <div class="big-icon">&#127881;</div>
+    <h2 id="celebTitle">Lesson Complete!</h2>
+    <p id="celebSub">You earned XP!</p>
+    <div class="xp-badge" id="celebXP">+20 XP</div>
+    <br>
+    <a href="index.html" class="continue-link" id="celebLink">Continue</a>
+  </div>
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; Case Studies &middot; <a href="index.html">Back to Path</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+// ── Progress ──
+function getProgress() {
+  const saved = localStorage.getItem('ds-v05-progress');
+  return saved ? JSON.parse(saved) : { completed: [], xp: 0, streak: 0, hearts: 5 };
+}
+function saveProgress(p) { localStorage.setItem('ds-v05-progress', JSON.stringify(p)); }
+
+const progress = getProgress();
+document.getElementById('streakNum').textContent = progress.streak;
+document.getElementById('xpNum').textContent = progress.xp;
+document.getElementById('heartsNum').textContent = progress.hearts;
+
+// ── Lesson config ──
+const lessons = [
+  { id: 'case-1', correct: 0, xp: 20 },
+  { id: 'case-2', correct: 0, xp: 25 },
+  { id: 'case-3', correct: 1, xp: 30 },
+];
+
+const quizPassed = [false, false, false];
+let currentLesson = 1;
+
+// ── Initialize tab states ──
+function updateTabs() {
+  document.querySelectorAll('.lesson-tab').forEach(tab => {
+    const ln = parseInt(tab.dataset.lesson);
+    tab.classList.remove('active', 'completed-tab', 'locked');
+
+    if (ln === currentLesson) {
+      tab.classList.add('active');
+    } else if (progress.completed.includes(lessons[ln - 1].id)) {
+      tab.classList.add('completed-tab');
+    } else {
+      // Unlock if previous lesson completed or it's lesson 1
+      const prevId = ln > 1 ? lessons[ln - 2].id : null;
+      if (ln === 1 || progress.completed.includes(prevId)) {
+        // Unlocked but not active
+      } else {
+        tab.classList.add('locked');
+      }
+    }
+  });
+}
+
+function showLesson(n) {
+  const tab = document.querySelector(`.lesson-tab[data-lesson="${n}"]`);
+  if (tab && tab.classList.contains('locked')) return;
+
+  currentLesson = n;
+  document.querySelectorAll('.lesson').forEach(l => l.classList.remove('active'));
+  document.getElementById(`lesson-${n}`).classList.add('active');
+  updateTabs();
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Tab click handlers ──
+document.querySelectorAll('.lesson-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    showLesson(parseInt(tab.dataset.lesson));
+  });
+});
+
+// ── Quiz handlers ──
+document.querySelectorAll('.quiz-card').forEach(quizCard => {
+  const lessonNum = parseInt(quizCard.id.split('-')[1]);
+  const correctIdx = lessons[lessonNum - 1].correct;
+
+  quizCard.querySelectorAll('.quiz-opt').forEach(opt => {
+    opt.addEventListener('click', () => {
+      if (opt.classList.contains('disabled')) return;
+
+      const idx = parseInt(opt.dataset.idx);
+      const allOpts = quizCard.querySelectorAll('.quiz-opt');
+      const result = document.getElementById(`result-${lessonNum}`);
+
+      if (idx === correctIdx) {
+        opt.classList.add('correct');
+        allOpts.forEach(o => { if (o !== opt) o.classList.add('disabled'); });
+        result.textContent = '✓ Correct! Well done.';
+        result.className = 'quiz-result show pass';
+        quizPassed[lessonNum - 1] = true;
+        document.getElementById(`complete-${lessonNum}`).disabled = false;
+      } else {
+        opt.classList.add('wrong');
+        setTimeout(() => { opt.classList.remove('wrong'); }, 600);
+        result.textContent = '✗ Not quite. Try again!';
+        result.className = 'quiz-result show fail';
+        // Lose a heart
+        if (progress.hearts > 0) {
+          progress.hearts--;
+          document.getElementById('heartsNum').textContent = progress.hearts;
+          saveProgress(progress);
+        }
+      }
+    });
+  });
+});
+
+// ── Complete buttons ──
+document.querySelectorAll('.complete-btn').forEach(btn => {
+  const lessonNum = parseInt(btn.id.split('-')[1]);
+
+  btn.addEventListener('click', () => {
+    const lesson = lessons[lessonNum - 1];
+    if (!quizPassed[lessonNum - 1]) return;
+
+    // Mark completed
+    if (!progress.completed.includes(lesson.id)) {
+      progress.completed.push(lesson.id);
+      progress.xp += lesson.xp;
+      document.getElementById('xpNum').textContent = progress.xp;
+      saveProgress(progress);
+    }
+
+    // Show celebration
+    const celeb = document.getElementById('celebration');
+    document.getElementById('celebTitle').textContent = `Lesson ${lessonNum} Complete!`;
+    document.getElementById('celebSub').textContent = `Case Studies — Lesson ${lessonNum}`;
+    document.getElementById('celebXP').textContent = `+${lesson.xp} XP`;
+
+    // Set continue link
+    const celebLink = document.getElementById('celebLink');
+    if (lessonNum < 3) {
+      celebLink.textContent = 'Next Lesson';
+      celebLink.href = '#';
+      celebLink.onclick = (e) => {
+        e.preventDefault();
+        celeb.classList.remove('show');
+        showLesson(lessonNum + 1);
+      };
+    } else {
+      celebLink.textContent = 'Back to Path';
+      celebLink.href = 'index.html';
+      celebLink.onclick = null;
+    }
+
+    celeb.classList.add('show');
+    updateTabs();
+    updateProgress();
+  });
+});
+
+// ── Progress bar ──
+function updateProgress() {
+  const total = lessons.length;
+  let done = 0;
+  lessons.forEach(l => { if (progress.completed.includes(l.id)) done++; });
+  // Count current quiz passed but not yet completed
+  if (quizPassed[currentLesson - 1] && !progress.completed.includes(lessons[currentLesson - 1].id)) {
+    done += 0.5;
+  }
+  const pct = Math.min((done / total) * 100, 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ── Check for already-completed lessons on load ──
+function initState() {
+  // Re-enable complete buttons for passed quizzes
+  lessons.forEach((l, i) => {
+    if (progress.completed.includes(l.id)) {
+      quizPassed[i] = true;
+      // Mark quiz as already answered
+      const quiz = document.getElementById(`quiz-${i + 1}`);
+      const opts = quiz.querySelectorAll('.quiz-opt');
+      opts[l.correct].classList.add('correct');
+      opts.forEach((o, idx) => { if (idx !== l.correct) o.classList.add('disabled'); });
+      const result = document.getElementById(`result-${i + 1}`);
+      result.textContent = '✓ Already completed!';
+      result.className = 'quiz-result show pass';
+      document.getElementById(`complete-${i + 1}`).disabled = true;
+      document.getElementById(`complete-${i + 1}`).textContent = '✓ Completed';
+    }
+  });
+
+  // Navigate to hash lesson if specified
+  const hash = window.location.hash;
+  if (hash && hash.startsWith('#lesson-')) {
+    const ln = parseInt(hash.split('-')[1]);
+    if (ln >= 1 && ln <= 3) showLesson(ln);
+  }
+
+  updateTabs();
+  updateProgress();
+}
+
+initState();
+</script>
+
+</body>
+</html>

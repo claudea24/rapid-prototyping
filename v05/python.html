@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python &mdash; Claudea's DS Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #131f24; --surface: #1b2b32; --surface2: #223640;
+      --border: #2a4450; --text: #d4e4ea; --text-muted: #7a9baa; --text-dim: #4a6a7a;
+      --white: #eaf4f8;
+      --green: #58cc02; --green-dark: #46a302; --green-light: #d7ffb8;
+      --gold: #ffc800; --gold-dark: #e6b400;
+      --blue: #49c0f8; --blue-dark: #1cb0f6;
+      --red: #ff4b4b; --red-dark: #ea2b2b;
+      --orange: #ff9600;
+    }
+    body {
+      font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Top Bar ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 24px; height: 60px;
+      background: var(--surface); border-bottom: 2px solid var(--border);
+    }
+    .topbar .brand {
+      font-weight: 900; font-size: 1.1rem; color: var(--green);
+      text-decoration: none; display: flex; align-items: center; gap: 8px;
+    }
+    .topbar .brand .owl { font-size: 1.3rem; }
+    .topbar .stats { display: flex; gap: 20px; align-items: center; }
+    .topbar .stat {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.85rem; font-weight: 700;
+    }
+    .topbar .stat .s-icon { font-size: 1rem; }
+    .topbar .stat-progress { color: var(--blue); }
+    .topbar .stat-xp { color: var(--gold); }
+
+    /* ── Main Content ── */
+    .main {
+      max-width: 720px; margin: 0 auto;
+      padding: 84px 24px 48px;
+    }
+    .page-title {
+      text-align: center; margin-bottom: 32px;
+    }
+    .page-title h1 {
+      font-size: 1.6rem; font-weight: 900; color: var(--white);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .page-title h1 span.icon { font-size: 1.8rem; }
+    .page-title p { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Lesson Section ── */
+    .lesson {
+      margin-bottom: 40px;
+      border: 2px solid var(--border); border-radius: 16px;
+      overflow: hidden; background: var(--surface);
+    }
+    .lesson-header {
+      padding: 20px 24px;
+      background: var(--surface2); border-bottom: 2px solid var(--border);
+      display: flex; align-items: center; gap: 14px; cursor: pointer;
+    }
+    .lesson-header .lesson-num {
+      width: 42px; height: 42px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 1rem; color: #fff; flex-shrink: 0;
+    }
+    .lesson-header .l1 { background: var(--green); }
+    .lesson-header .l2 { background: var(--blue); }
+    .lesson-header .l3 { background: var(--gold); color: var(--bg); }
+    .lesson-header h2 { font-size: 1.05rem; font-weight: 800; color: var(--white); }
+    .lesson-header .status {
+      margin-left: auto; font-size: 0.75rem; font-weight: 700;
+      padding: 4px 12px; border-radius: 20px;
+    }
+    .lesson-header .status.done {
+      background: rgba(88,204,2,0.15); color: var(--green);
+    }
+    .lesson-header .status.pending {
+      background: rgba(73,192,248,0.1); color: var(--blue);
+    }
+
+    .lesson-body { padding: 24px; display: none; }
+    .lesson.open .lesson-body { display: block; }
+
+    /* ── Content Cards ── */
+    .card {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      padding: 20px; margin-bottom: 16px;
+    }
+    .card h3 {
+      font-size: 0.85rem; font-weight: 800; color: var(--gold);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+    }
+    .card p, .card li {
+      font-size: 0.88rem; color: var(--text); line-height: 1.7;
+    }
+    .card ul { list-style: none; padding: 0; }
+    .card ul li { padding: 4px 0; }
+    .card ul li::before {
+      content: "\25B8"; color: var(--green); margin-right: 8px; font-weight: 700;
+    }
+
+    /* ── Code blocks ── */
+    pre.code {
+      background: #131f24; border: 1px solid var(--border); border-radius: 10px;
+      padding: 16px; margin: 12px 0; overflow-x: auto;
+      font-family: 'Fira Code', monospace; font-size: 0.82rem; line-height: 1.8;
+      color: var(--text);
+    }
+    pre.code .kw { color: #ff7b72; }
+    pre.code .fn { color: #d2a8ff; }
+    pre.code .str { color: #a5d6ff; }
+    pre.code .cm { color: #4a6a7a; }
+    pre.code .num { color: #49c0f8; }
+
+    /* ── Quiz ── */
+    .quiz {
+      background: var(--bg); border: 2px solid var(--border); border-radius: 14px;
+      padding: 24px; margin-top: 8px;
+    }
+    .quiz h3 {
+      font-size: 0.85rem; font-weight: 800; color: var(--blue);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+    }
+    .quiz .question {
+      font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 16px;
+    }
+    .quiz .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .quiz .opt {
+      padding: 14px 18px; border: 2px solid var(--border); border-radius: 12px;
+      background: var(--surface); cursor: pointer; font-size: 0.9rem;
+      font-weight: 600; color: var(--text); transition: all 0.15s;
+    }
+    .quiz .opt:hover { border-color: var(--blue); background: var(--surface2); }
+    .quiz .opt.selected { border-color: var(--blue); background: rgba(73,192,248,0.1); color: var(--white); }
+    .quiz .opt.correct { border-color: var(--green); background: rgba(88,204,2,0.12); color: var(--green-light); }
+    .quiz .opt.wrong { border-color: var(--red); background: rgba(255,75,75,0.1); color: #ffa0a0; }
+
+    .quiz .check-btn {
+      width: 100%; padding: 16px; border: none; border-radius: 14px;
+      background: var(--green); color: #fff; font-family: 'Nunito', sans-serif;
+      font-size: 1rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+      cursor: pointer; border-bottom: 4px solid var(--green-dark); transition: all 0.15s;
+    }
+    .quiz .check-btn:hover { background: #4db802; }
+    .quiz .check-btn:active { transform: translateY(2px); border-bottom-width: 1px; }
+    .quiz .check-btn:disabled { opacity: 0.4; cursor: default; transform: none; }
+    .quiz .check-btn.wrong-btn { background: var(--red); border-bottom-color: var(--red-dark); }
+    .quiz .check-btn.wrong-btn:hover { background: #e64040; }
+
+    .quiz .feedback {
+      margin-top: 14px; padding: 14px 18px; border-radius: 12px;
+      font-size: 0.9rem; font-weight: 700; display: none;
+    }
+    .quiz .feedback.show { display: block; }
+    .quiz .feedback.correct-fb {
+      background: rgba(88,204,2,0.1); border: 1px solid var(--green); color: var(--green-light);
+    }
+    .quiz .feedback.wrong-fb {
+      background: rgba(255,75,75,0.08); border: 1px solid var(--red); color: #ffa0a0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 32px 24px; font-size: 0.75rem; color: var(--text-dim);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--green); }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .main { padding: 76px 14px 40px; }
+      .lesson-header { padding: 16px 18px; }
+      .lesson-body { padding: 18px; }
+      .card { padding: 16px; }
+      pre.code { font-size: 0.75rem; padding: 12px; }
+      .quiz { padding: 18px; }
+      .page-title h1 { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <a href="index.html" class="brand"><span class="owl">&#129417;</span> Claudea's DS Prep</a>
+  <div class="stats">
+    <div class="stat stat-progress"><span class="s-icon">&#128218;</span> <span id="progressNum">0</span>/3</div>
+    <div class="stat stat-xp"><span class="s-icon">&#9733;</span> <span id="xpNum">0</span> XP</div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main">
+  <div class="page-title">
+    <h1><span class="icon">&#128013;</span> Python for Data Science</h1>
+    <p>Data structures, Pandas, NumPy, and coding patterns</p>
+  </div>
+
+  <!-- ═══════════ LESSON 1 ═══════════ -->
+  <div class="lesson open" id="py-1" data-lesson="py-1">
+    <div class="lesson-header" onclick="toggleLesson('py-1')">
+      <div class="lesson-num l1">1</div>
+      <h2>Data Structures</h2>
+      <span class="status pending" id="status-py-1">In Progress</span>
+    </div>
+    <div class="lesson-body">
+
+      <div class="card">
+        <h3>Complexity Cheat Sheet</h3>
+        <ul>
+          <li><strong>list</strong> &mdash; append O(1), index O(1), insert/delete O(n), search O(n)</li>
+          <li><strong>dict</strong> &mdash; get/set/delete O(1) avg, worst O(n) due to hash collisions</li>
+          <li><strong>set</strong> &mdash; add/remove/lookup O(1) avg, union O(m+n)</li>
+          <li><strong>deque</strong> &mdash; appendleft/popleft O(1), index O(n)</li>
+          <li><strong>heapq</strong> &mdash; push/pop O(log n), heapify O(n), peek O(1)</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Common Coding Patterns</h3>
+        <ul>
+          <li><strong>Two Pointers</strong> &mdash; sorted arrays, palindrome checks, partition</li>
+          <li><strong>Hash Map</strong> &mdash; frequency count, two-sum, grouping by key</li>
+          <li><strong>Sliding Window</strong> &mdash; max subarray, substring problems, running stats</li>
+        </ul>
+<pre class="code"><span class="cm"># Two pointers: pair with target sum</span>
+<span class="kw">def</span> <span class="fn">two_sum_sorted</span>(arr, target):
+    lo, hi = <span class="num">0</span>, <span class="fn">len</span>(arr) - <span class="num">1</span>
+    <span class="kw">while</span> lo &lt; hi:
+        s = arr[lo] + arr[hi]
+        <span class="kw">if</span> s == target: <span class="kw">return</span> (lo, hi)
+        <span class="kw">elif</span> s &lt; target: lo += <span class="num">1</span>
+        <span class="kw">else</span>: hi -= <span class="num">1</span>
+
+<span class="cm"># Sliding window: max sum of k elements</span>
+<span class="kw">def</span> <span class="fn">max_sum_k</span>(arr, k):
+    w = <span class="fn">sum</span>(arr[:k])
+    best = w
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(k, <span class="fn">len</span>(arr)):
+        w += arr[i] - arr[i - k]
+        best = <span class="fn">max</span>(best, w)
+    <span class="kw">return</span> best</pre>
+      </div>
+
+      <div class="quiz" id="quiz-py-1">
+        <h3>Quick Check</h3>
+        <div class="question">What is the average time complexity of a dict key lookup in Python?</div>
+        <div class="options">
+          <div class="opt" data-idx="0" onclick="selectOpt('py-1', 0)">O(n)</div>
+          <div class="opt" data-idx="1" onclick="selectOpt('py-1', 1)">O(1) average</div>
+          <div class="opt" data-idx="2" onclick="selectOpt('py-1', 2)">O(log n)</div>
+          <div class="opt" data-idx="3" onclick="selectOpt('py-1', 3)">O(n log n)</div>
+        </div>
+        <button class="check-btn" disabled onclick="checkAnswer('py-1', 1)">Check</button>
+        <div class="feedback" id="fb-py-1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ LESSON 2 ═══════════ -->
+  <div class="lesson" id="py-2" data-lesson="py-2">
+    <div class="lesson-header" onclick="toggleLesson('py-2')">
+      <div class="lesson-num l2">2</div>
+      <h2>Pandas &amp; NumPy</h2>
+      <span class="status pending" id="status-py-2">In Progress</span>
+    </div>
+    <div class="lesson-body">
+
+      <div class="card">
+        <h3>Pandas Essentials</h3>
+<pre class="code"><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+<span class="cm"># GroupBy + aggregation</span>
+df.<span class="fn">groupby</span>(<span class="str">'category'</span>)[<span class="str">'sales'</span>].<span class="fn">agg</span>([<span class="str">'mean'</span>, <span class="str">'sum'</span>])
+
+<span class="cm"># Merge (SQL-style join)</span>
+pd.<span class="fn">merge</span>(orders, products, on=<span class="str">'product_id'</span>, how=<span class="str">'left'</span>)
+
+<span class="cm"># Pivot table</span>
+df.<span class="fn">pivot_table</span>(values=<span class="str">'revenue'</span>, index=<span class="str">'region'</span>,
+              columns=<span class="str">'quarter'</span>, aggfunc=<span class="str">'sum'</span>)
+
+<span class="cm"># Handle missing data</span>
+df[<span class="str">'col'</span>].<span class="fn">fillna</span>(df[<span class="str">'col'</span>].<span class="fn">median</span>(), inplace=<span class="kw">True</span>)
+
+<span class="cm"># Apply custom function</span>
+df[<span class="str">'label'</span>] = df[<span class="str">'score'</span>].<span class="fn">apply</span>(<span class="kw">lambda</span> x: <span class="str">'high'</span> <span class="kw">if</span> x &gt; <span class="num">0.8</span> <span class="kw">else</span> <span class="str">'low'</span>)</pre>
+      </div>
+
+      <div class="card">
+        <h3>NumPy Essentials</h3>
+<pre class="code"><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.<span class="fn">array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>])
+np.<span class="fn">mean</span>(a)               <span class="cm"># 3.0</span>
+np.<span class="fn">dot</span>(a, a)              <span class="cm"># 55</span>
+
+<span class="cm"># Linear algebra</span>
+M = np.<span class="fn">array</span>([[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>]])
+np.linalg.<span class="fn">inv</span>(M)         <span class="cm"># matrix inverse</span>
+np.linalg.<span class="fn">eig</span>(M)         <span class="cm"># eigenvalues</span>
+
+<span class="cm"># Boolean indexing</span>
+mask = a &gt; <span class="num">2</span>
+filtered = a[mask]       <span class="cm"># array([3, 4, 5])</span></pre>
+      </div>
+
+      <div class="quiz" id="quiz-py-2">
+        <h3>Quick Check</h3>
+        <div class="question">What does <code style="font-family:'Fira Code',monospace;color:var(--blue)">df.groupby('col').transform('mean')</code> return?</div>
+        <div class="options">
+          <div class="opt" data-idx="0" onclick="selectOpt('py-2', 0)">A single scalar value</div>
+          <div class="opt" data-idx="1" onclick="selectOpt('py-2', 1)">A Series with the same length as the original DataFrame</div>
+          <div class="opt" data-idx="2" onclick="selectOpt('py-2', 2)">A smaller grouped DataFrame</div>
+          <div class="opt" data-idx="3" onclick="selectOpt('py-2', 3)">A dictionary of group means</div>
+        </div>
+        <button class="check-btn" disabled onclick="checkAnswer('py-2', 1)">Check</button>
+        <div class="feedback" id="fb-py-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ LESSON 3 ═══════════ -->
+  <div class="lesson" id="py-3" data-lesson="py-3">
+    <div class="lesson-header" onclick="toggleLesson('py-3')">
+      <div class="lesson-num l3">3</div>
+      <h2>Coding Patterns</h2>
+      <span class="status pending" id="status-py-3">In Progress</span>
+    </div>
+    <div class="lesson-body">
+
+      <div class="card">
+        <h3>String &amp; List Tricks</h3>
+<pre class="code"><span class="cm"># List comprehension with condition</span>
+evens = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">20</span>) <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]
+
+<span class="cm"># zip for parallel iteration</span>
+names = [<span class="str">'Alice'</span>, <span class="str">'Bob'</span>]
+scores = [<span class="num">95</span>, <span class="num">87</span>]
+<span class="kw">for</span> name, score <span class="kw">in</span> <span class="fn">zip</span>(names, scores):
+    <span class="fn">print</span>(<span class="kw">f</span><span class="str">"{name}: {score}"</span>)
+
+<span class="cm"># Custom sorting</span>
+words = [<span class="str">'banana'</span>, <span class="str">'apple'</span>, <span class="str">'cherry'</span>]
+<span class="fn">sorted</span>(words, key=<span class="fn">len</span>)        <span class="cm"># ['apple', 'banana', 'cherry']</span>
+<span class="fn">sorted</span>(words, key=<span class="kw">lambda</span> w: w[-<span class="num">1</span>])  <span class="cm"># sort by last char</span></pre>
+      </div>
+
+      <div class="card">
+        <h3>Python Gotchas</h3>
+        <ul>
+          <li><strong>Mutable default args</strong> &mdash; <code style="font-family:'Fira Code',monospace;color:var(--red)">def f(x=[])</code> shares the same list across calls!</li>
+          <li><strong>Shallow copy</strong> &mdash; <code style="font-family:'Fira Code',monospace;color:var(--text-muted)">b = a[:]</code> copies the list but nested objects still share references</li>
+          <li><strong>Integer division</strong> &mdash; <code style="font-family:'Fira Code',monospace;color:var(--text-muted)">7 // 2 = 3</code> (floor), <code style="font-family:'Fira Code',monospace;color:var(--text-muted)">-7 // 2 = -4</code> (rounds toward -inf)</li>
+          <li><strong>is vs ==</strong> &mdash; <code style="font-family:'Fira Code',monospace;color:var(--text-muted)">is</code> checks identity (same object), <code style="font-family:'Fira Code',monospace;color:var(--text-muted)">==</code> checks equality (same value)</li>
+        </ul>
+<pre class="code"><span class="cm"># Mutable default gotcha</span>
+<span class="kw">def</span> <span class="fn">bad</span>(items=[]):
+    items.<span class="fn">append</span>(<span class="num">1</span>)
+    <span class="kw">return</span> items
+
+<span class="fn">bad</span>()   <span class="cm"># [1]</span>
+<span class="fn">bad</span>()   <span class="cm"># [1, 1]  &larr; surprise!</span>
+
+<span class="cm"># Fix: use None sentinel</span>
+<span class="kw">def</span> <span class="fn">good</span>(items=<span class="kw">None</span>):
+    items = items <span class="kw">or</span> []
+    items.<span class="fn">append</span>(<span class="num">1</span>)
+    <span class="kw">return</span> items</pre>
+      </div>
+
+      <div class="quiz" id="quiz-py-3">
+        <h3>Quick Check</h3>
+        <div class="question">Why is <code style="font-family:'Fira Code',monospace;color:var(--blue)">def f(x=[])</code> dangerous?</div>
+        <div class="options">
+          <div class="opt" data-idx="0" onclick="selectOpt('py-3', 0)">The default list is shared across all calls and mutates</div>
+          <div class="opt" data-idx="1" onclick="selectOpt('py-3', 1)">It causes a TypeError at runtime</div>
+          <div class="opt" data-idx="2" onclick="selectOpt('py-3', 2)">Empty lists cannot be used as defaults</div>
+          <div class="opt" data-idx="3" onclick="selectOpt('py-3', 3)">It creates a memory leak</div>
+        </div>
+        <button class="check-btn" disabled onclick="checkAnswer('py-3', 0)">Check</button>
+        <div class="feedback" id="fb-py-3"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; v05 &middot; <a href="index.html">Back to Path</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+// ── Progress ──
+function getProgress() {
+  const saved = localStorage.getItem('ds-v05-progress');
+  return saved ? JSON.parse(saved) : { completed: [], xp: 0, streak: 0, hearts: 5 };
+}
+function saveProgress(p) { localStorage.setItem('ds-v05-progress', JSON.stringify(p)); }
+
+const progress = getProgress();
+const lessonIds = ['py-1', 'py-2', 'py-3'];
+const quizState = {};
+
+function updateTopBar() {
+  const done = lessonIds.filter(id => progress.completed.includes(id)).length;
+  document.getElementById('progressNum').textContent = done;
+  document.getElementById('xpNum').textContent = progress.xp;
+}
+
+function updateStatuses() {
+  lessonIds.forEach(id => {
+    const el = document.getElementById('status-' + id);
+    if (progress.completed.includes(id)) {
+      el.textContent = 'Complete \u2713';
+      el.className = 'status done';
+    }
+  });
+}
+
+updateTopBar();
+updateStatuses();
+
+// ── Auto-open to hash ──
+(function() {
+  const hash = window.location.hash;
+  if (hash) {
+    const map = { '#lesson-1': 'py-1', '#lesson-2': 'py-2', '#lesson-3': 'py-3' };
+    const target = map[hash];
+    if (target) {
+      document.querySelectorAll('.lesson').forEach(l => l.classList.remove('open'));
+      const el = document.getElementById(target);
+      if (el) {
+        el.classList.add('open');
+        setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+      }
+    }
+  }
+})();
+
+// ── Toggle Lessons ──
+function toggleLesson(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// ── Quiz Logic ──
+function selectOpt(lessonId, idx) {
+  const quiz = document.getElementById('quiz-' + lessonId);
+  if (quizState[lessonId] === 'done') return;
+
+  quiz.querySelectorAll('.opt').forEach(o => {
+    o.classList.remove('selected', 'correct', 'wrong');
+  });
+  quiz.querySelectorAll('.opt')[idx].classList.add('selected');
+  quiz.querySelector('.check-btn').disabled = false;
+  quizState[lessonId] = idx;
+}
+
+function checkAnswer(lessonId, correctIdx) {
+  const quiz = document.getElementById('quiz-' + lessonId);
+  const selected = quizState[lessonId];
+  if (selected === 'done' || selected === undefined) return;
+
+  const opts = quiz.querySelectorAll('.opt');
+  const fb = document.getElementById('fb-' + lessonId);
+  const btn = quiz.querySelector('.check-btn');
+
+  opts.forEach(o => o.style.pointerEvents = 'none');
+
+  if (selected === correctIdx) {
+    opts[selected].classList.remove('selected');
+    opts[selected].classList.add('correct');
+    fb.textContent = '\u2705 Correct! Great job!';
+    fb.className = 'feedback show correct-fb';
+    btn.textContent = 'Continue \u2192';
+    btn.onclick = () => { completeLesson(lessonId); };
+    quizState[lessonId] = 'done';
+  } else {
+    opts[selected].classList.remove('selected');
+    opts[selected].classList.add('wrong');
+    opts[correctIdx].classList.add('correct');
+    fb.textContent = '\u274C Not quite. The correct answer is highlighted above.';
+    fb.className = 'feedback show wrong-fb';
+    btn.textContent = 'Try Again';
+    btn.className = 'check-btn wrong-btn';
+    btn.onclick = () => { resetQuiz(lessonId, correctIdx); };
+    quizState[lessonId] = 'retry';
+  }
+}
+
+function resetQuiz(lessonId, correctIdx) {
+  const quiz = document.getElementById('quiz-' + lessonId);
+  const opts = quiz.querySelectorAll('.opt');
+  const fb = document.getElementById('fb-' + lessonId);
+  const btn = quiz.querySelector('.check-btn');
+
+  opts.forEach(o => {
+    o.classList.remove('selected', 'correct', 'wrong');
+    o.style.pointerEvents = '';
+  });
+  fb.className = 'feedback';
+  btn.textContent = 'Check';
+  btn.className = 'check-btn';
+  btn.disabled = true;
+  btn.onclick = () => { checkAnswer(lessonId, correctIdx); };
+  quizState[lessonId] = undefined;
+}
+
+function completeLesson(lessonId) {
+  if (!progress.completed.includes(lessonId)) {
+    progress.completed.push(lessonId);
+    progress.xp += 50;
+    saveProgress(progress);
+  }
+  updateTopBar();
+  updateStatuses();
+
+  // Open next lesson
+  const idx = lessonIds.indexOf(lessonId);
+  if (idx < lessonIds.length - 1) {
+    const nextId = lessonIds[idx + 1];
+    const nextEl = document.getElementById(nextId);
+    nextEl.classList.add('open');
+    setTimeout(() => nextEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 200);
+  } else {
+    // All done - scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+</script>
+
+</body>
+</html>
