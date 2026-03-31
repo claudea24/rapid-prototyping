@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probability - DS Interview Prep Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .nav {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav .back-btn {
+      background: #f1f5f9;
+      color: #64748b;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .nav .back-btn:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 32px;
+    }
+
+    .main-content {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+    .section h2 {
+      font-size: 1.8rem;
+      color: #1e293b;
+      margin-bottom: 16px;
+      border-bottom: 3px solid #3b82f6;
+      padding-bottom: 8px;
+    }
+
+    .concept-card {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border-left: 4px solid #3b82f6;
+      transition: all 0.3s ease;
+    }
+    .concept-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .concept-card h3 {
+      color: #1e293b;
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+    }
+    .concept-card p {
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .interactive-demo {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+      border: 2px solid #3b82f6;
+      position: relative;
+      overflow: hidden;
+    }
+    .interactive-demo::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%233b82f6" opacity="0.1"/><circle cx="80" cy="30" r="1.5" fill="%233b82f6" opacity="0.15"/><circle cx="40" cy="70" r="1" fill="%233b82f6" opacity="0.1"/><circle cx="90" cy="80" r="2.5" fill="%233b82f6" opacity="0.08"/></svg>');
+      pointer-events: none;
+    }
+    .interactive-demo h4 {
+      color: #1e293b;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .prob-viz {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 16px 0;
+      border: 1px solid #e2e8f0;
+      position: relative;
+      z-index: 1;
+    }
+    .prob-viz h5 {
+      color: #1e293b;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    .venn-diagram {
+      width: 300px;
+      height: 200px;
+      background: #f8fafc;
+      border-radius: 4px;
+      position: relative;
+      border: 1px solid #e2e8f0;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .venn-circle {
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid;
+      background: rgba(59, 130, 246, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #1e293b;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .venn-circle:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+    .venn-circle.a {
+      width: 120px;
+      height: 120px;
+      left: 40px;
+      top: 40px;
+      border-color: #3b82f6;
+    }
+    .venn-circle.b {
+      width: 120px;
+      height: 120px;
+      right: 40px;
+      top: 40px;
+      border-color: #06b6d4;
+    }
+    .venn-intersection {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 0.9rem;
+      color: #64748b;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+    }
+    .demo-btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .demo-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .bayes-calc {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 16px 0;
+      border: 1px solid #e2e8f0;
+    }
+    .bayes-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .bayes-input {
+      display: flex;
+      flex-direction: column;
+    }
+    .bayes-input label {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .bayes-input input {
+      padding: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .bayes-result {
+      background: #f0f9ff;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #3b82f6;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+    .bayes-explanation {
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .monte-carlo {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 16px 0;
+      border: 1px solid #e2e8f0;
+    }
+    .simulation-area {
+      width: 100%;
+      height: 200px;
+      background: #f8fafc;
+      border-radius: 4px;
+      position: relative;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .point {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+    .point.inside {
+      background: #10b981;
+    }
+    .point.outside {
+      background: #ef4444;
+    }
+    .sim-results {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+
+    .sidebar {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      height: fit-content;
+    }
+
+    .progress-section {
+      margin-bottom: 24px;
+    }
+    .progress-section h3 {
+      font-size: 1.2rem;
+      color: #1e293b;
+      margin-bottom: 16px;
+    }
+
+    .progress-item {
+      margin-bottom: 12px;
+    }
+    .progress-item .label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .progress-bar {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    .quiz-section {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .quiz-section h3 {
+      color: #1e293b;
+      margin-bottom: 16px;
+    }
+
+    .quiz-question {
+      margin-bottom: 16px;
+    }
+    .quiz-question p {
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .option {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .option:hover {
+      border-color: #3b82f6;
+      background: #f0f9ff;
+    }
+    .option.selected {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+    .option.correct {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+    .option.incorrect {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .quiz-btn {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 12px;
+      transition: all 0.3s ease;
+    }
+    .quiz-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .prob-tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .tree-node {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 0.9rem;
+      color: #1e293b;
+      min-width: 80px;
+      text-align: center;
+    }
+    .tree-branch {
+      width: 2px;
+      height: 20px;
+      background: #64748b;
+    }
+    .tree-level {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .container { padding: 16px; }
+      header { padding: 32px 16px; }
+      header h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🎲 Probability Theory</h1>
+    <p>Master random events, distributions, and decision-making under uncertainty</p>
+  </header>
+
+  <div class="container">
+    <div class="nav">
+      <button class="back-btn" onclick="window.location.href='index.html'">← Back to Topics</button>
+      <div style="font-weight: 500; color: #64748b;">Random Events & Bayes</div>
+    </div>
+
+    <div class="content-grid">
+      <div class="main-content">
+        <div class="section">
+          <h2>Basic Probability</h2>
+
+          <div class="concept-card">
+            <h3>Probability Axioms</h3>
+            <p>0 ≤ P(A) ≤ 1, P(S) = 1 for sample space S, and P(A∪B) = P(A) + P(B) for mutually exclusive events.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Independent vs Dependent Events</h3>
+            <p>Independent: P(A∩B) = P(A) × P(B). Dependent: P(A|B) ≠ P(A).</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Addition and Multiplication Rules</h3>
+            <p>Addition: P(A∪B) = P(A) + P(B) - P(A∩B). Multiplication: P(A∩B) = P(A|B) × P(B).</p>
+          </div>
+
+          <div class="interactive-demo">
+            <h4>📐 Venn Diagram Explorer</h4>
+            <p>Visualize set relationships and probability calculations:</p>
+            <div class="prob-viz">
+              <h5>Events A and B</h5>
+              <div class="venn-diagram">
+                <div class="venn-circle a" onclick="toggleEvent('a')">A<br>0.4</div>
+                <div class="venn-circle b" onclick="toggleEvent('b')">B<br>0.5</div>
+                <div class="venn-intersection" id="intersection">A∩B<br>0.2</div>
+              </div>
+              <div style="margin-top: 12px; text-align: center; font-size: 0.9rem; color: #64748b;">
+                P(A∪B) = <span id="unionProb">0.70</span> | P(A|B) = <span id="condProb">0.40</span>
+              </div>
+              <div class="demo-controls">
+                <button class="demo-btn" onclick="setScenario('independent')">Independent</button>
+                <button class="demo-btn" onclick="setScenario('dependent')">Dependent</button>
+                <button class="demo-btn" onclick="setScenario('mutuallyExclusive')">Mutually Exclusive</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Bayes' Theorem</h2>
+
+          <div class="concept-card">
+            <h3>Updating Beliefs</h3>
+            <p>P(H|E) = P(E|H) × P(H) / P(E) - posterior = likelihood × prior / evidence</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Medical Testing Example</h3>
+            <p>Even with 99% accurate tests, false positives can be common if the disease is rare.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Applications in ML</h3>
+            <p>Naive Bayes classifiers, spam filtering, and probabilistic reasoning in AI systems.</p>
+          </div>
+
+          <div class="interactive-demo">
+            <h4>🔬 Bayes' Theorem Calculator</h4>
+            <p>Calculate posterior probabilities for medical testing:</p>
+            <div class="bayes-calc">
+              <div class="bayes-inputs">
+                <div class="bayes-input">
+                  <label>Prior P(Disease)</label>
+                  <input type="number" id="prior" value="0.01" min="0" max="1" step="0.001">
+                </div>
+                <div class="bayes-input">
+                  <label>Sensitivity P(+|Disease)</label>
+                  <input type="number" id="sensitivity" value="0.99" min="0" max="1" step="0.001">
+                </div>
+                <div class="bayes-input">
+                  <label>Specificity P(-|No Disease)</label>
+                  <input type="number" id="specificity" value="0.95" min="0" max="1" step="0.001">
+                </div>
+                <div class="bayes-input">
+                  <label>Test Result</label>
+                  <select id="testResult">
+                    <option value="positive">Positive</option>
+                    <option value="negative">Negative</option>
+                  </select>
+                </div>
+              </div>
+              <div class="bayes-result" id="bayesResult">
+                P(Disease|+) = 0.167
+              </div>
+              <div class="bayes-explanation" id="bayesExplanation">
+                With 1% disease prevalence and 99% sensitivity, a positive test only gives 16.7% chance of actually having the disease!
+              </div>
+              <div class="demo-controls" style="margin-top: 12px;">
+                <button class="demo-btn" onclick="calculateBayes()">Calculate</button>
+                <button class="demo-btn" onclick="resetBayes()">Reset</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Probability Trees</h2>
+
+          <div class="concept-card">
+            <h3>Sequential Events</h3>
+            <p>Probability trees help visualize multi-stage experiments and calculate joint probabilities.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Expected Value</h3>
+            <p>E[X] = Σ xᵢ × P(X = xᵢ) - the long-run average of a random variable.</p>
+          </div>
+
+          <div class="interactive-demo">
+            <h4>🌳 Probability Tree Builder</h4>
+            <p>Build and analyze sequential probability scenarios:</p>
+            <div style="background: white; padding: 16px; border-radius: 8px; margin-top: 12px;">
+              <div style="margin-bottom: 12px; font-size: 0.9rem; color: #64748b;">
+                <strong>Scenario:</strong> Two-stage experiment with different probabilities at each branch.
+              </div>
+              <div class="prob-tree">
+                <div class="tree-node" style="background: #f0f9ff; border-color: #3b82f6;">Start</div>
+                <div class="tree-branch"></div>
+                <div class="tree-level">
+                  <div class="tree-node" onclick="selectBranch('a1')">A₁ (0.6)</div>
+                  <div class="tree-node" onclick="selectBranch('a2')">A₂ (0.4)</div>
+                </div>
+                <div class="tree-branch"></div>
+                <div class="tree-level" id="secondLevel">
+                  <div class="tree-node">B₁ (0.7)</div>
+                  <div class="tree-node">B₂ (0.3)</div>
+                  <div class="tree-node">B₁ (0.4)</div>
+                  <div class="tree-node">B₂ (0.6)</div>
+                </div>
+              </div>
+              <div style="margin-top: 12px; text-align: center; font-size: 0.9rem; color: #64748b;">
+                Selected path probability: <span id="pathProb">0.000</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Monte Carlo Methods</h2>
+
+          <div class="concept-card">
+            <h3>Simulation-Based Probability</h3>
+            <p>Use random sampling to approximate complex probability calculations and integrals.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Applications</h3>
+            <p>Risk analysis, option pricing, physics simulations, and optimization problems.</p>
+          </div>
+
+          <div class="interactive-demo">
+            <h4>🎯 Monte Carlo π Estimation</h4>
+            <p>Estimate π by randomly sampling points in a square:</p>
+            <div class="monte-carlo">
+              <div class="simulation-area" id="simulationArea">
+                <!-- Points will be added here -->
+              </div>
+              <div class="sim-results">
+                <span>Points: <span id="totalPoints">0</span></span>
+                <span>Inside: <span id="insidePoints">0</span></span>
+                <span>π ≈ <span id="piEstimate">0.000</span></span>
+              </div>
+              <div class="demo-controls">
+                <button class="demo-btn" onclick="runMonteCarlo(100)">100 Points</button>
+                <button class="demo-btn" onclick="runMonteCarlo(1000)">1000 Points</button>
+                <button class="demo-btn" onclick="runMonteCarlo(10000)">10,000 Points</button>
+                <button class="demo-btn" onclick="clearSimulation()">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <div class="progress-section">
+          <h3>Your Progress</h3>
+          <div class="progress-item">
+            <div class="label">
+              <span>Basic Probability</span>
+              <span>75%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 75%"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="label">
+              <span>Bayes' Theorem</span>
+              <span>60%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 60%"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="label">
+              <span>Advanced Topics</span>
+              <span>45%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 45%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-section">
+          <h3>Quick Quiz</h3>
+          <div class="quiz-question">
+            <p>If P(A|B) = P(A), then A and B are:</p>
+            <div class="options">
+              <div class="option" onclick="selectOption(this, 0)">Mutually exclusive</div>
+              <div class="option" onclick="selectOption(this, 1)">Independent</div>
+              <div class="option" onclick="selectOption(this, 2)">Dependent</div>
+              <div class="option" onclick="selectOption(this, 3)">Complementary</div>
+            </div>
+          </div>
+          <button class="quiz-btn" onclick="checkQuizAnswer()">Check Answer</button>
+          <div id="quizFeedback" style="margin-top: 12px; font-size: 0.9rem;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedOption = null;
+    let correctAnswer = 1;
+
+    // Venn diagram variables
+    let probA = 0.4;
+    let probB = 0.5;
+    let probIntersection = 0.2;
+
+    function updateVennDiagram() {
+      document.querySelector('.venn-circle.a').innerHTML = `A<br>${probA}`;
+      document.querySelector('.venn-circle.b').innerHTML = `B<br>${probB}`;
+      document.getElementById('intersection').innerHTML = `A∩B<br>${probIntersection}`;
+
+      const unionProb = probA + probB - probIntersection;
+      const condProb = probIntersection / probB;
+
+      document.getElementById('unionProb').textContent = unionProb.toFixed(2);
+      document.getElementById('condProb').textContent = condProb.toFixed(2);
+    }
+
+    function toggleEvent(event) {
+      // This would be more complex in a real implementation
+      // For demo purposes, just show the concept
+    }
+
+    function setScenario(scenario) {
+      switch(scenario) {
+        case 'independent':
+          probA = 0.4;
+          probB = 0.5;
+          probIntersection = 0.2; // 0.4 * 0.5
+          break;
+        case 'dependent':
+          probA = 0.4;
+          probB = 0.5;
+          probIntersection = 0.15; // dependent case
+          break;
+        case 'mutuallyExclusive':
+          probA = 0.4;
+          probB = 0.5;
+          probIntersection = 0.0; // no overlap
+          break;
+      }
+      updateVennDiagram();
+    }
+
+    // Bayes calculator
+    function calculateBayes() {
+      const prior = parseFloat(document.getElementById('prior').value);
+      const sensitivity = parseFloat(document.getElementById('sensitivity').value);
+      const specificity = parseFloat(document.getElementById('specificity').value);
+      const testResult = document.getElementById('testResult').value;
+
+      if (testResult === 'positive') {
+        // P(Disease|+) = P(+|Disease) * P(Disease) / P(+)
+        // P(+) = P(+|Disease)*P(Disease) + P(+|No Disease)*P(No Disease)
+        const probPositive = sensitivity * prior + (1 - specificity) * (1 - prior);
+        const posterior = (sensitivity * prior) / probPositive;
+
+        document.getElementById('bayesResult').textContent = `P(Disease|+) = ${posterior.toFixed(3)}`;
+        document.getElementById('bayesExplanation').textContent =
+          `With ${prior*100}% disease prevalence, a positive test gives ${(posterior*100).toFixed(1)}% chance of actually having the disease.`;
+      } else {
+        // P(Disease|-) = P(-|Disease) * P(Disease) / P(-)
+        const probNegative = (1 - sensitivity) * prior + specificity * (1 - prior);
+        const posterior = ((1 - sensitivity) * prior) / probNegative;
+
+        document.getElementById('bayesResult').textContent = `P(Disease|-) = ${posterior.toFixed(3)}`;
+        document.getElementById('bayesExplanation').textContent =
+          `A negative test reduces the probability to ${(posterior*100).toFixed(1)}%, but there's still a small chance.`;
+      }
+    }
+
+    function resetBayes() {
+      document.getElementById('prior').value = '0.01';
+      document.getElementById('sensitivity').value = '0.99';
+      document.getElementById('specificity').value = '0.95';
+      document.getElementById('testResult').value = 'positive';
+      calculateBayes();
+    }
+
+    // Probability tree
+    let selectedPath = [];
+
+    function selectBranch(branch) {
+      selectedPath = [branch];
+      updateTreeVisualization();
+
+      // Calculate path probability
+      let prob = 0;
+      if (branch === 'a1') {
+        prob = 0.6;
+        // Could extend to second level
+      } else if (branch === 'a2') {
+        prob = 0.4;
+      }
+
+      document.getElementById('pathProb').textContent = prob.toFixed(3);
+    }
+
+    function updateTreeVisualization() {
+      // Highlight selected path
+      const nodes = document.querySelectorAll('.tree-node');
+      nodes.forEach(node => {
+        node.style.borderColor = '#e2e8f0';
+        node.style.background = 'white';
+      });
+
+      if (selectedPath.length > 0) {
+        const selectedNode = document.querySelector(`[onclick="selectBranch('${selectedPath[0]}')"]`);
+        if (selectedNode) {
+          selectedNode.style.borderColor = '#3b82f6';
+          selectedNode.style.background = '#eff6ff';
+        }
+      }
+    }
+
+    // Monte Carlo simulation
+    let totalPoints = 0;
+    let insidePoints = 0;
+
+    function runMonteCarlo(numPoints) {
+      const area = document.getElementById('simulationArea');
+      const width = area.offsetWidth;
+      const height = area.offsetHeight;
+
+      for (let i = 0; i < numPoints; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+
+        // Check if point is inside quarter circle (for π estimation)
+        // Using distance from origin (bottom-left corner)
+        const distance = Math.sqrt(x*x + y*y);
+        const isInside = distance <= width; // quarter circle with radius = width
+
+        const point = document.createElement('div');
+        point.className = `point ${isInside ? 'inside' : 'outside'}`;
+        point.style.left = `${x}px`;
+        point.style.top = `${height - y}px`; // Flip y-axis
+
+        area.appendChild(point);
+
+        totalPoints++;
+        if (isInside) insidePoints++;
+      }
+
+      updateMonteCarloResults();
+    }
+
+    function updateMonteCarloResults() {
+      const piEstimate = (insidePoints / totalPoints) * 4; // π/4 ratio
+      document.getElementById('totalPoints').textContent = totalPoints;
+      document.getElementById('insidePoints').textContent = insidePoints;
+      document.getElementById('piEstimate').textContent = piEstimate.toFixed(3);
+    }
+
+    function clearSimulation() {
+      const area = document.getElementById('simulationArea');
+      area.innerHTML = '';
+      totalPoints = 0;
+      insidePoints = 0;
+      updateMonteCarloResults();
+    }
+
+    function selectOption(element, index) {
+      // Remove selected class from all options
+      document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+      // Add selected class to clicked option
+      element.classList.add('selected');
+      selectedOption = index;
+    }
+
+    function checkQuizAnswer() {
+      const feedback = document.getElementById('quizFeedback');
+      const options = document.querySelectorAll('.option');
+
+      if (selectedOption === null) {
+        feedback.innerHTML = 'Please select an answer first!';
+        feedback.style.color = '#f59e0b';
+        return;
+      }
+
+      options.forEach((opt, index) => {
+        if (index === correctAnswer) {
+          opt.classList.add('correct');
+        } else if (index === selectedOption) {
+          opt.classList.add('incorrect');
+        }
+      });
+
+      if (selectedOption === correctAnswer) {
+        feedback.innerHTML = '🎉 Correct! If P(A|B) = P(A), then knowing B doesn\'t change the probability of A - they\'re independent!';
+        feedback.style.color = '#10b981';
+      } else {
+        feedback.innerHTML = '❌ Not quite. Independent events have P(A|B) = P(A). Mutually exclusive events have P(A∩B) = 0.';
+        feedback.style.color = '#ef4444';
+      }
+    }
+
+    // Initialize
+    updateVennDiagram();
+    calculateBayes();
+  </script>
+</body>
+</html>

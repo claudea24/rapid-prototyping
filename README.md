@@ -1,8 +1,8 @@
 # Claudea's DS Interview Prep — Rapid Prototyping
 
-25 iterations of building a **Data Science Interview Prep Guide** from scratch. Each version (`v01`–`v25`) is a self-contained HTML/CSS/JS prototype that builds on the last.
+11 iterations of building a **Data Science Interview Prep Guide** from scratch. Each version (`v01`–`v11`) is a self-contained HTML/CSS/JS prototype that builds on the last.
 
-The root `index.html` is a gallery that shows all 25 versions side by side with live iframe previews.
+The root `index.html` is a gallery that shows all 11 versions side by side with live iframe previews.
 
 ## The Product
 
@@ -31,7 +31,7 @@ Each topic gets a **cheat sheet** reference section and there is a **quiz** sect
 | **v08** | Interactive Kids Edition | Fun, interactive statistics for kids — hypothesis testing coin flips, confidence interval sliders, A/B testing buttons, CLT histograms. Bright colors, animations, simple explanations |
 | **v09** | Professional Review | Interactive pro-level review for experienced DS professionals — advanced SQL, Python data science, probability theory, ML concepts. Clean interface, assessment quiz, focused content |
 | **v10** | Spaced Repetition System | Intelligent flashcard system with spaced repetition algorithm — review scheduling, progress tracking, mastery analytics, study streaks, and detailed statistics dashboard |
-| v11 | Case Studies Content | Real Casing cheat sheet — product metrics, frameworks, debugging |
+| **v11** | Professional Interactive | Combines v09's professional cleanness (Inter font, subtle grays, blue gradients) with v08's interactive elements (demos, animations, engaging interactions) for optimal learning experience |
 | v12 | Responsive Layout | Mobile-first breakpoints, stacking cards, collapsing nav |
 | v13 | Sidebar Navigation | Fixed sidebar on desktop, hamburger menu on mobile |
 | v14 | Progress Tracking | Checkboxes, localStorage persistence, progress bar |

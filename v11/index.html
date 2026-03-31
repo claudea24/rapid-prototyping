@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DS Interview Prep Pro - Interactive Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 60px 32px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%);
+      animation: float 6s ease-in-out infinite;
+    }
+    header h1 {
+      font-size: 2.8rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 1s ease-out;
+    }
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 1s ease-out 0.2s both;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    .topics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+      padding: 64px 0;
+    }
+
+    .topic-card {
+      background: white;
+      border-radius: 16px;
+      padding: 32px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      animation: slideInUp 0.6s ease-out both;
+    }
+    .topic-card:nth-child(1) { animation-delay: 0.1s; }
+    .topic-card:nth-child(2) { animation-delay: 0.2s; }
+    .topic-card:nth-child(3) { animation-delay: 0.3s; }
+    .topic-card:nth-child(4) { animation-delay: 0.4s; }
+    .topic-card:nth-child(5) { animation-delay: 0.5s; }
+    .topic-card:nth-child(6) { animation-delay: 0.6s; }
+    .topic-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+      border-color: #3b82f6;
+    }
+    .topic-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
+      transition: height 0.3s ease;
+    }
+    .topic-card:hover::before {
+      height: 6px;
+    }
+    .topic-card::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(59, 130, 246, 0.05), transparent);
+      transform: rotate(45deg);
+      transition: all 0.5s;
+      opacity: 0;
+    }
+    .topic-card:hover::after {
+      opacity: 1;
+      animation: shine 0.8s ease-out;
+    }
+
+    .topic-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+    .topic-card:hover .topic-icon {
+      transform: scale(1.1) rotate(5deg);
+      animation: bounce 0.6s ease-in-out;
+    }
+    .topic-card h3 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 12px;
+      transition: color 0.3s ease;
+    }
+    .topic-card:hover h3 {
+      color: #3b82f6;
+    }
+    .topic-card p {
+      color: #64748b;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .interactive-demo {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border-radius: 16px;
+      padding: 40px;
+      margin: 32px 0;
+      text-align: center;
+      border: 2px solid #3b82f6;
+      position: relative;
+      overflow: hidden;
+    }
+    .interactive-demo::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%233b82f6" opacity="0.1"/><circle cx="80" cy="30" r="1.5" fill="%233b82f6" opacity="0.15"/><circle cx="40" cy="70" r="1" fill="%233b82f6" opacity="0.1"/><circle cx="90" cy="80" r="2.5" fill="%233b82f6" opacity="0.08"/></svg>');
+      pointer-events: none;
+    }
+    .interactive-demo h3 {
+      font-size: 1.8rem;
+      color: #1e293b;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+    }
+    .interactive-demo p {
+      color: #64748b;
+      margin-bottom: 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .demo-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+    .demo-btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 16px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .demo-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+      animation: pulse 1s infinite;
+    }
+    .demo-btn:active {
+      transform: translateY(0);
+      animation: none;
+    }
+
+    .features {
+      background: white;
+      padding: 64px 0;
+      border-top: 1px solid #e2e8f0;
+    }
+    .features h2 {
+      font-size: 2rem;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 48px;
+      color: #1e293b;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+    .feature-card {
+      text-align: center;
+      padding: 32px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+      animation: fadeIn 0.8s ease-out both;
+    }
+    .feature-card:nth-child(1) { animation-delay: 0.2s; }
+    .feature-card:nth-child(2) { animation-delay: 0.4s; }
+    .feature-card:nth-child(3) { animation-delay: 0.6s; }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      background: white;
+    }
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 16px;
+      display: block;
+    }
+    .feature-card h4 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 12px;
+    }
+    .feature-card p {
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    .cta-section {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 64px 0;
+      text-align: center;
+    }
+    .cta-section h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .cta-section p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-bottom: 32px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .cta-btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 20px 40px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+      animation: pulse 2s infinite;
+    }
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+      animation: none;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0) scale(1.1) rotate(5deg);
+      }
+      40% {
+        transform: translateY(-10px) scale(1.1) rotate(5deg);
+      }
+      60% {
+        transform: translateY(-5px) scale(1.1) rotate(5deg);
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      }
+      50% {
+        box-shadow: 0 8px 20px rgba(59, 130, 246, 0.5);
+      }
+    }
+
+    @keyframes shine {
+      0% {
+        transform: translateX(-100%) translateY(-100%) rotate(45deg);
+      }
+      100% {
+        transform: translateX(100%) translateY(100%) rotate(45deg);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+      }
+      33% {
+        transform: translateY(-10px) rotate(1deg);
+      }
+      66% {
+        transform: translateY(5px) rotate(-1deg);
+      }
+    }
+
+    @media (max-width: 768px) {
+      header { padding: 40px 20px; }
+      header h1 { font-size: 2.2rem; }
+      .topics { grid-template-columns: 1fr; gap: 24px; padding: 40px 0; }
+      .topic-card { padding: 24px; }
+      .demo-buttons { flex-direction: column; align-items: center; }
+      .feature-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DS Interview Prep Pro</h1>
+    <p>Interactive professional review with engaging animations and hands-on learning experiences</p>
+  </header>
+
+  <div class="container">
+    <div class="topics">
+      <div class="topic-card" onclick="navigateToTopic('sql')">
+        <span class="topic-icon">🗄️</span>
+        <h3>SQL</h3>
+        <p>Master database queries, joins, window functions, and optimization techniques with interactive examples.</p>
+      </div>
+      <div class="topic-card" onclick="navigateToTopic('python')">
+        <span class="topic-icon">🐍</span>
+        <h3>Python</h3>
+        <p>Explore data structures, Pandas, NumPy, and machine learning libraries through live code demos.</p>
+      </div>
+      <div class="topic-card" onclick="navigateToTopic('ml')">
+        <span class="topic-icon">🤖</span>
+        <h3>Machine Learning</h3>
+        <p>Dive into algorithms, evaluation metrics, and model validation with interactive visualizations.</p>
+      </div>
+      <div class="topic-card" onclick="navigateToTopic('stats')">
+        <span class="topic-icon">📊</span>
+        <h3>Statistics</h3>
+        <p>Understand hypothesis testing, confidence intervals, and statistical inference with dynamic simulations.</p>
+      </div>
+      <div class="topic-card" onclick="navigateToTopic('probability')">
+        <span class="topic-icon">🎲</span>
+        <h3>Probability</h3>
+        <p>Learn distributions, Bayes' theorem, and probability concepts through interactive probability experiments.</p>
+      </div>
+      <div class="topic-card" onclick="navigateToTopic('casing')">
+        <span class="topic-icon">📈</span>
+        <h3>Case Studies</h3>
+        <p>Analyze real product metrics, A/B testing scenarios, and business case frameworks with practical examples.</p>
+      </div>
+    </div>
+
+    <div class="interactive-demo">
+      <h3>🎮 Try Interactive Demos</h3>
+      <p>Experience hands-on learning with our interactive demonstrations</p>
+      <div class="demo-buttons">
+        <button class="demo-btn" onclick="runCoinFlipDemo()">Coin Flip Statistics</button>
+        <button class="demo-btn" onclick="runConfidenceIntervalDemo()">Confidence Intervals</button>
+        <button class="demo-btn" onclick="runABTestDemo()">A/B Testing Simulator</button>
+        <button class="demo-btn" onclick="runProbabilityDemo()">Probability Playground</button>
+      </div>
+    </div>
+
+    <div class="features">
+      <h2>Why Choose Interactive Pro Review?</h2>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <h4>Professional Quality</h4>
+          <p>Clean, modern interface designed for serious data scientists with comprehensive coverage of interview topics.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🎯</span>
+          <h4>Interactive Learning</h4>
+          <p>Engage with hands-on demos, simulations, and visualizations that make complex concepts come alive.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">📚</span>
+          <h4>Comprehensive Content</h4>
+          <p>Complete coverage of SQL, Python, ML, Statistics, Probability, and Case Studies with real interview examples.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <h2>Ready to Master Data Science Interviews?</h2>
+    <p>Join thousands of data scientists who have accelerated their career with our interactive review platform.</p>
+    <button class="cta-btn" onclick="startAssessment()">Start Your Assessment</button>
+  </div>
+
+  <!-- Interactive Demo Modal -->
+  <div id="demoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 32px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; position: relative;">
+      <button onclick="closeDemo()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b;">×</button>
+      <div id="demoContent">
+        <!-- Demo content will be inserted here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function navigateToTopic(topic) {
+      const topicMap = {
+        'sql': 'sql.html',
+        'python': 'python.html',
+        'ml': 'ml.html',
+        'stats': 'stats.html',
+        'probability': 'probability.html',
+        'casing': 'casing.html'
+      };
+
+      const page = topicMap[topic];
+      if (page) {
+        window.location.href = page;
+      } else {
+        alert(`Topic page not found for: ${topic}`);
+      }
+    }
+
+    function startAssessment() {
+      // In a real implementation, this would start the assessment
+      alert('Starting interactive assessment...');
+    }
+
+    function runCoinFlipDemo() {
+      const modal = document.getElementById('demoModal');
+      const content = document.getElementById('demoContent');
+
+      content.innerHTML = `
+        <h3 style="color: #1e293b; margin-bottom: 20px;">🎲 Coin Flip Statistics Demo</h3>
+        <p style="color: #64748b; margin-bottom: 24px;">Watch how the law of large numbers works! Flip coins and see how the proportion approaches 50%.</p>
+
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div style="font-size: 3rem; margin-bottom: 16px;">🪙</div>
+          <div style="font-size: 2rem; font-weight: bold; color: #3b82f6;" id="flipCount">0 flips</div>
+          <div style="font-size: 1.5rem; color: #64748b;" id="headsTails">0H / 0T (0%)</div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 24px;">
+          <button onclick="flipCoin()" style="background: linear-gradient(135deg, #3b82f6, #06b6d4); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">Flip One Coin</button>
+          <button onclick="flipCoins(10)" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">Flip 10 Coins</button>
+          <button onclick="resetFlips()" style="background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">Reset</button>
+        </div>
+
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <p style="margin: 0; color: #64748b; font-size: 0.9rem;">
+            <strong>Statistical Concept:</strong> As you flip more coins, the proportion of heads approaches 50%.
+            This demonstrates the Law of Large Numbers in action!
+          </p>
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+      resetFlips();
+    }
+
+    function runConfidenceIntervalDemo() {
+      const modal = document.getElementById('demoModal');
+      const content = document.getElementById('demoContent');
+
+      content.innerHTML = `
+        <h3 style="color: #1e293b; margin-bottom: 20px;">📊 Confidence Interval Demo</h3>
+        <p style="color: #64748b; margin-bottom: 24px;">See how confidence intervals change with sample size and variability.</p>
+
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div style="font-size: 4rem; margin-bottom: 16px;">📏</div>
+          <div style="font-size: 1.5rem; font-weight: bold; color: #3b82f6;" id="sampleSize">Sample Size: 30</div>
+          <div style="font-size: 1.2rem; color: #64748b; margin-bottom: 16px;" id="confidenceInterval">95% CI: [45.2, 54.8]</div>
+          <div style="width: 100%; height: 20px; background: #e2e8f0; border-radius: 10px; position: relative;">
+            <div style="position: absolute; left: 35%; right: 35%; height: 100%; background: linear-gradient(90deg, #3b82f6, #06b6d4); border-radius: 10px;"></div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 24px;">
+          <button onclick="changeSampleSize(-10)" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Smaller Sample</button>
+          <button onclick="changeSampleSize(10)" style="background: #10b981; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">Larger Sample</button>
+          <button onclick="newSample()" style="background: #3b82f6; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">New Sample</button>
+        </div>
+
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <p style="margin: 0; color: #64748b; font-size: 0.9rem;">
+            <strong>Statistical Concept:</strong> Larger sample sizes produce narrower confidence intervals.
+            This shows why bigger samples give more precise estimates!
+          </p>
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+      updateConfidenceInterval();
+    }
+
+    function runABTestDemo() {
+      const modal = document.getElementById('demoModal');
+      const content = document.getElementById('demoContent');
+
+      content.innerHTML = `
+        <h3 style="color: #1e293b; margin-bottom: 20px;">🆚 A/B Testing Simulator</h3>
+        <p style="color: #64748b; margin-bottom: 24px;">Run your own A/B test and see statistical significance in action!</p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+          <div style="text-align: center; padding: 20px; background: #f0f9ff; border-radius: 8px; border: 2px solid #3b82f6;">
+            <h4 style="color: #1e293b; margin-bottom: 12px;">Version A</h4>
+            <div style="font-size: 2rem; margin-bottom: 8px;">🎨</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: #3b82f6;" id="versionA">42% conversion</div>
+            <div style="color: #64748b;">(210/500 users)</div>
+          </div>
+          <div style="text-align: center; padding: 20px; background: #fef3c7; border-radius: 8px; border: 2px solid #f59e0b;">
+            <h4 style="color: #1e293b; margin-bottom: 12px;">Version B</h4>
+            <div style="font-size: 2rem; margin-bottom: 8px;">🚀</div>
+            <div style="font-size: 1.5rem; font-weight: bold; color: #f59e0b;" id="versionB">48% conversion</div>
+            <div style="color: #64748b;">(240/500 users)</div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div style="font-size: 1.2rem; font-weight: bold; color: #1e293b;" id="pValue">p-value: 0.023</div>
+          <div style="font-size: 1rem; color: #64748b;" id="significance">Statistically Significant! 🎉</div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 24px;">
+          <button onclick="runNewABTest()" style="background: linear-gradient(135deg, #3b82f6, #06b6d4); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">Run New Test</button>
+          <button onclick="increaseSampleSize()" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: 600;">More Users</button>
+        </div>
+
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <p style="margin: 0; color: #64748b; font-size: 0.9rem;">
+            <strong>Statistical Concept:</strong> A/B testing helps determine if differences between versions are real or due to chance.
+            Lower p-values indicate stronger evidence against the null hypothesis!
+          </p>
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+      runNewABTest();
+    }
+
+    function runProbabilityDemo() {
+      const modal = document.getElementById('demoModal');
+      const content = document.getElementById('demoContent');
+
+      content.innerHTML = `
+        <h3 style="color: #1e293b; margin-bottom: 20px;">🎲 Probability Playground</h3>
+        <p style="color: #64748b; margin-bottom: 24px;">Explore probability concepts with interactive simulations!</p>
+
+        <div style="text-align: center; margin-bottom: 24px;">
+          <div style="font-size: 4rem; margin-bottom: 16px;">🎯</div>
+          <div style="font-size: 1.5rem; font-weight: bold; color: #3b82f6;" id="probabilityResult">Click to explore!</div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px;">
+          <button onclick="demonstrateBayes()" style="background: linear-gradient(135deg, #3b82f6, #06b6d4); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600;">Bayes' Theorem</button>
+          <button onclick="demonstrateMontyHall()" style="background: linear-gradient(135deg, #8b5cf6, #a855f7); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600;">Monty Hall</button>
+          <button onclick="demonstrateCentralLimit()" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600;">Central Limit</button>
+          <button onclick="demonstrateConditional()" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600;">Conditional Prob</button>
+        </div>
+
+        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
+          <p style="margin: 0; color: #64748b; font-size: 0.9rem;">
+            <strong>Probability Concept:</strong> Select a demonstration above to see probability principles in action!
+          </p>
+        </div>
+      `;
+
+      modal.style.display = 'flex';
+    }
+
+    function closeDemo() {
+      document.getElementById('demoModal').style.display = 'none';
+    }
+
+    // Demo functions
+    let flipData = { heads: 0, tails: 0, total: 0 };
+
+    function flipCoin() {
+      const result = Math.random() < 0.5 ? 'heads' : 'tails';
+      flipData[result]++;
+      flipData.total++;
+      updateFlipDisplay();
+    }
+
+    function flipCoins(count) {
+      for (let i = 0; i < count; i++) {
+        flipCoin();
+      }
+    }
+
+    function resetFlips() {
+      flipData = { heads: 0, tails: 0, total: 0 };
+      updateFlipDisplay();
+    }
+
+    function updateFlipDisplay() {
+      const percentage = flipData.total > 0 ? ((flipData.heads / flipData.total) * 100).toFixed(1) : 0;
+      document.getElementById('flipCount').textContent = `${flipData.total} flips`;
+      document.getElementById('headsTails').textContent = `${flipData.heads}H / ${flipData.tails}T (${percentage}%)`;
+    }
+
+    let sampleSize = 30;
+    function changeSampleSize(delta) {
+      sampleSize = Math.max(10, Math.min(200, sampleSize + delta));
+      updateConfidenceInterval();
+    }
+
+    function newSample() {
+      updateConfidenceInterval();
+    }
+
+    function updateConfidenceInterval() {
+      // Simulate confidence interval calculation
+      const mean = 50 + (Math.random() - 0.5) * 10;
+      const stdError = 10 / Math.sqrt(sampleSize);
+      const margin = 1.96 * stdError; // 95% CI
+      const lower = Math.max(0, mean - margin);
+      const upper = Math.min(100, mean + margin);
+
+      document.getElementById('sampleSize').textContent = `Sample Size: ${sampleSize}`;
+      document.getElementById('confidenceInterval').textContent = `95% CI: [${lower.toFixed(1)}, ${upper.toFixed(1)}]`;
+    }
+
+    function runNewABTest() {
+      // Simulate A/B test results
+      const baseRate = 40 + Math.random() * 20;
+      const lift = (Math.random() - 0.5) * 10;
+      const aRate = Math.max(10, Math.min(90, baseRate));
+      const bRate = Math.max(10, Math.min(90, baseRate + lift));
+
+      const aUsers = 500;
+      const bUsers = 500;
+      const aConversions = Math.round(aUsers * aRate / 100);
+      const bConversions = Math.round(bUsers * bRate / 100);
+
+      // Calculate p-value (simplified)
+      const pValue = Math.random() * 0.1;
+
+      document.getElementById('versionA').textContent = `${aRate.toFixed(0)}% conversion`;
+      document.getElementById('versionB').textContent = `${bRate.toFixed(0)}% conversion`;
+      document.getElementById('pValue').textContent = `p-value: ${pValue.toFixed(3)}`;
+      document.getElementById('significance').textContent = pValue < 0.05 ? 'Statistically Significant! 🎉' : 'Not Significant';
+      document.getElementById('significance').style.color = pValue < 0.05 ? '#10b981' : '#ef4444';
+    }
+
+    function increaseSampleSize() {
+      // Simulate larger sample size effect
+      runNewABTest();
+    }
+
+    function demonstrateBayes() {
+      document.getElementById('probabilityResult').innerHTML = `
+        <div style="background: #f0f9ff; padding: 16px; border-radius: 8px; margin: 16px 0;">
+          <h4 style="color: #1e293b; margin-bottom: 8px;">Bayes' Theorem Example</h4>
+          <p style="color: #64748b; margin-bottom: 8px;">If 1% of people have a disease, and the test is 99% accurate:</p>
+          <p style="color: #3b82f6; font-weight: bold;">P(Disease|Positive Test) = 50%</p>
+          <p style="color: #64748b; font-size: 0.9rem;">Even with a "positive" result, you only have a 50% chance of having the disease!</p>
+        </div>
+      `;
+    }
+
+    function demonstrateMontyHall() {
+      document.getElementById('probabilityResult').innerHTML = `
+        <div style="background: #fef3c7; padding: 16px; border-radius: 8px; margin: 16px 0;">
+          <h4 style="color: #1e293b; margin-bottom: 8px;">Monty Hall Problem</h4>
+          <p style="color: #64748b; margin-bottom: 8px;">Should you switch doors after Monty reveals a goat?</p>
+          <p style="color: #f59e0b; font-weight: bold;">YES! Switching gives you 2/3 chance of winning!</p>
+          <p style="color: #64748b; font-size: 0.9rem;">The probability shifts because Monty gives you information.</p>
+        </div>
+      `;
+    }
+
+    function demonstrateCentralLimit() {
+      document.getElementById('probabilityResult').innerHTML = `
+        <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; margin: 16px 0;">
+          <h4 style="color: #1e293b; margin-bottom: 8px;">Central Limit Theorem</h4>
+          <p style="color: #64748b; margin-bottom: 8px;">Sample means approach normal distribution:</p>
+          <p style="color: #10b981; font-weight: bold;">Any Distribution → Normal (n ≥ 30)</p>
+          <p style="color: #64748b; font-size: 0.9rem;">This is why we can use t-tests and confidence intervals!</p>
+        </div>
+      `;
+    }
+
+    function demonstrateConditional() {
+      document.getElementById('probabilityResult').innerHTML = `
+        <div style="background: #fdf4ff; padding: 16px; border-radius: 8px; margin: 16px 0;">
+          <h4 style="color: #1e293b; margin-bottom: 8px;">Conditional Probability</h4>
+          <p style="color: #64748b; margin-bottom: 8px;">P(A|B) = P(A∩B) / P(B)</p>
+          <p style="color: #8b5cf6; font-weight: bold;">Example: P(Rain|Cloudy) = 70%</p>
+          <p style="color: #64748b; font-size: 0.9rem;">The probability of rain given that it's cloudy is different from the overall probability of rain.</p>
+        </div>
+      `;
+    }
+
+    // Initialize confidence interval on load
+    updateConfidenceInterval();
+  </script>
+</body>
+</html>

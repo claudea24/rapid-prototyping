@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics - DS Interview Prep Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    header p {
+      opacity: 0.9;
+      font-size: 1.1rem;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .nav {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav .back-btn {
+      background: #f1f5f9;
+      color: #64748b;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .nav .back-btn:hover {
+      background: #e2e8f0;
+      color: #1e293b;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 32px;
+    }
+
+    .main-content {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .section {
+      margin-bottom: 40px;
+    }
+    .section h2 {
+      font-size: 1.8rem;
+      color: #1e293b;
+      margin-bottom: 16px;
+      border-bottom: 3px solid #3b82f6;
+      padding-bottom: 8px;
+    }
+
+    .concept-card {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      border-left: 4px solid #3b82f6;
+      transition: all 0.3s ease;
+    }
+    .concept-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .concept-card h3 {
+      color: #1e293b;
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+    }
+    .concept-card p {
+      color: #64748b;
+      line-height: 1.6;
+    }
+
+    .interactive-demo {
+      background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+      border-radius: 12px;
+      padding: 24px;
+      margin: 20px 0;
+      border: 2px solid #3b82f6;
+      position: relative;
+      overflow: hidden;
+    }
+    .interactive-demo::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="%233b82f6" opacity="0.1"/><circle cx="80" cy="30" r="1.5" fill="%233b82f6" opacity="0.15"/><circle cx="40" cy="70" r="1" fill="%233b82f6" opacity="0.1"/><circle cx="90" cy="80" r="2.5" fill="%233b82f6" opacity="0.08"/></svg>');
+      pointer-events: none;
+    }
+    .interactive-demo h4 {
+      color: #1e293b;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .stats-viz {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 16px 0;
+      border: 1px solid #e2e8f0;
+      position: relative;
+      z-index: 1;
+    }
+    .stats-viz h5 {
+      color: #1e293b;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+
+    .histogram {
+      width: 100%;
+      height: 200px;
+      background: #f8fafc;
+      border-radius: 4px;
+      position: relative;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: end;
+      justify-content: space-around;
+      padding: 20px 10px;
+    }
+
+    .bar {
+      background: linear-gradient(180deg, #3b82f6, #06b6d4);
+      border-radius: 2px 2px 0 0;
+      min-height: 10px;
+      width: 30px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .bar:hover {
+      opacity: 0.8;
+    }
+    .bar-label {
+      position: absolute;
+      top: -25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .demo-controls {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      position: relative;
+      z-index: 1;
+      flex-wrap: wrap;
+    }
+    .demo-btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+    .demo-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .probability-calc {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 16px 0;
+      border: 1px solid #e2e8f0;
+    }
+    .calc-inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .calc-input {
+      display: flex;
+      flex-direction: column;
+    }
+    .calc-input label {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 4px;
+    }
+    .calc-input input {
+      padding: 8px;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+    .calc-result {
+      background: #f0f9ff;
+      padding: 12px;
+      border-radius: 6px;
+      border: 1px solid #3b82f6;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .hypothesis-test {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 16px 0;
+      border: 1px solid #e2e8f0;
+    }
+    .test-result {
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+    .test-result.reject {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #ef4444;
+    }
+    .test-result.fail {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #10b981;
+    }
+
+    .sidebar {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      height: fit-content;
+    }
+
+    .progress-section {
+      margin-bottom: 24px;
+    }
+    .progress-section h3 {
+      font-size: 1.2rem;
+      color: #1e293b;
+      margin-bottom: 16px;
+    }
+
+    .progress-item {
+      margin-bottom: 12px;
+    }
+    .progress-item .label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .progress-bar {
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
+      border-radius: 3px;
+      transition: width 0.5s ease;
+    }
+
+    .quiz-section {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .quiz-section h3 {
+      color: #1e293b;
+      margin-bottom: 16px;
+    }
+
+    .quiz-question {
+      margin-bottom: 16px;
+    }
+    .quiz-question p {
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .option {
+      background: white;
+      border: 2px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .option:hover {
+      border-color: #3b82f6;
+      background: #f0f9ff;
+    }
+    .option.selected {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+    .option.correct {
+      border-color: #10b981;
+      background: #f0fdf4;
+    }
+    .option.incorrect {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .quiz-btn {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 12px;
+      transition: all 0.3s ease;
+    }
+    .quiz-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .distribution-comparison {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .dist-card {
+      background: white;
+      border-radius: 6px;
+      padding: 12px;
+      text-align: center;
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s ease;
+    }
+    .dist-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .dist-name {
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+    .dist-desc {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+      .content-grid { grid-template-columns: 1fr; }
+      .container { padding: 16px; }
+      header { padding: 32px 16px; }
+      header h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📊 Statistical Analysis</h1>
+    <p>Master probability, distributions, and hypothesis testing</p>
+  </header>
+
+  <div class="container">
+    <div class="nav">
+      <button class="back-btn" onclick="window.location.href='index.html'">← Back to Topics</button>
+      <div style="font-weight: 500; color: #64748b;">Probability & Inference</div>
+    </div>
+
+    <div class="content-grid">
+      <div class="main-content">
+        <div class="section">
+          <h2>Descriptive Statistics</h2>
+
+          <div class="concept-card">
+            <h3>Measures of Central Tendency</h3>
+            <p>Mean, median, and mode help summarize the center of your data distribution.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Measures of Spread</h3>
+            <p>Variance, standard deviation, and range quantify how spread out your data points are.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Data Visualization</h3>
+            <p>Use histograms, box plots, and scatter plots to understand data distributions and relationships.</p>
+          </div>
+
+          <div class="interactive-demo">
+            <h4>📈 Interactive Histogram</h4>
+            <p>Explore how different data distributions look:</p>
+            <div class="stats-viz">
+              <h5>Sample Data Distribution</h5>
+              <div class="histogram" id="histogram">
+                <!-- Bars will be added here -->
+              </div>
+              <div class="demo-controls">
+                <button class="demo-btn" onclick="showNormalDist()">Normal</button>
+                <button class="demo-btn" onclick="showSkewedDist()">Skewed</button>
+                <button class="demo-btn" onclick="showUniformDist()">Uniform</button>
+                <button class="demo-btn" onclick="showBimodalDist()">Bimodal</button>
+              </div>
+              <div style="margin-top: 12px; font-size: 0.9rem; color: #64748b;">
+                Mean: <span id="mean">0.00</span> | Std Dev: <span id="stddev">1.00</span> | Skewness: <span id="skewness">0.00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Probability Theory</h2>
+
+          <div class="concept-card">
+            <h3>Conditional Probability</h3>
+            <p>P(A|B) = P(A∩B) / P(B) - the probability of A given that B has occurred.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Bayes' Theorem</h3>
+            <p>Update beliefs based on new evidence: P(H|E) = P(E|H) × P(H) / P(E)</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Common Distributions</h3>
+            <p>Normal, binomial, Poisson, and exponential distributions model different types of random phenomena.</p>
+          </div>
+
+          <div class="interactive-demo">
+            <h4>🎲 Probability Calculator</h4>
+            <p>Calculate probabilities for different scenarios:</p>
+            <div class="probability-calc">
+              <div class="calc-inputs">
+                <div class="calc-input">
+                  <label>Total Items (N)</label>
+                  <input type="number" id="totalItems" value="100" min="1">
+                </div>
+                <div class="calc-input">
+                  <label>Success Items (K)</label>
+                  <input type="number" id="successItems" value="20" min="0">
+                </div>
+                <div class="calc-input">
+                  <label>Sample Size (n)</label>
+                  <input type="number" id="sampleSize" value="10" min="1">
+                </div>
+                <div class="calc-input">
+                  <label>Successes Needed (k)</label>
+                  <input type="number" id="successesNeeded" value="3" min="0">
+                </div>
+              </div>
+              <div class="calc-result" id="probResult">
+                P(X = 3) = 0.0000 (Hypergeometric)
+              </div>
+              <div class="demo-controls" style="margin-top: 12px;">
+                <button class="demo-btn" onclick="calculateHypergeometric()">Hypergeometric</button>
+                <button class="demo-btn" onclick="calculateBinomial()">Binomial</button>
+                <button class="demo-btn" onclick="calculatePoisson()">Poisson</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Hypothesis Testing</h2>
+
+          <div class="concept-card">
+            <h3>Null vs Alternative Hypothesis</h3>
+            <p>H₀ assumes no effect, H₁ assumes there is an effect. We collect evidence to reject or fail to reject H₀.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>Type I & Type II Errors</h3>
+            <p>Type I (false positive): Rejecting H₀ when it's true. Type II (false negative): Failing to reject H₀ when it's false.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>p-values & Significance</h3>
+            <p>p-value measures evidence against H₀. Conventionally, p < 0.05 suggests statistical significance.</p>
+          </div>
+
+          <div class="interactive-demo">
+            <h4>🧪 Hypothesis Test Simulator</h4>
+            <p>Test the effect of a new drug on patient recovery:</p>
+            <div class="hypothesis-test">
+              <div style="margin-bottom: 16px;">
+                <strong>Scenario:</strong> Drug A has 75% recovery rate vs 65% for placebo. Test with n=100 patients each group.
+              </div>
+              <div class="calc-inputs" style="grid-template-columns: 1fr;">
+                <div class="calc-input">
+                  <label>Significance Level (α)</label>
+                  <input type="number" id="alpha" value="0.05" min="0.001" max="0.5" step="0.01">
+                </div>
+              </div>
+              <div class="demo-controls">
+                <button class="demo-btn" onclick="runHypothesisTest()">Run Test</button>
+                <button class="demo-btn" onclick="resetHypothesisTest()">Reset</button>
+              </div>
+              <div class="test-result" id="testResult" style="display: none;">
+                <!-- Test results will appear here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Statistical Distributions</h2>
+
+          <div class="concept-card">
+            <h3>Continuous vs Discrete</h3>
+            <p>Discrete distributions have countable outcomes (binomial, Poisson). Continuous have infinite possible values (normal, exponential).</p>
+          </div>
+
+          <div class="interactive-demo">
+            <h4>📊 Distribution Comparison</h4>
+            <p>Compare key statistical distributions:</p>
+            <div style="background: white; padding: 16px; border-radius: 8px; margin-top: 12px;">
+              <div class="distribution-comparison">
+                <div class="dist-card">
+                  <div class="dist-name">Normal</div>
+                  <div class="dist-desc">Bell-shaped, symmetric, mean = median = mode</div>
+                </div>
+                <div class="dist-card">
+                  <div class="dist-name">Binomial</div>
+                  <div class="dist-desc">Fixed trials, success/failure, discrete outcomes</div>
+                </div>
+                <div class="dist-card">
+                  <div class="dist-name">Poisson</div>
+                  <div class="dist-desc">Rare events, rate-based, discrete counts</div>
+                </div>
+                <div class="dist-card">
+                  <div class="dist-name">Exponential</div>
+                  <div class="dist-desc">Time between events, memoryless property</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sidebar">
+        <div class="progress-section">
+          <h3>Your Progress</h3>
+          <div class="progress-item">
+            <div class="label">
+              <span>Descriptive Stats</span>
+              <span>70%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 70%"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="label">
+              <span>Probability</span>
+              <span>55%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 55%"></div>
+            </div>
+          </div>
+          <div class="progress-item">
+            <div class="label">
+              <span>Hypothesis Testing</span>
+              <span>60%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: 60%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-section">
+          <h3>Quick Quiz</h3>
+          <div class="quiz-question">
+            <p>What does a p-value of 0.03 indicate?</p>
+            <div class="options">
+              <div class="option" onclick="selectOption(this, 0)">3% chance the null hypothesis is true</div>
+              <div class="option" onclick="selectOption(this, 1)">97% chance the alternative hypothesis is true</div>
+              <div class="option" onclick="selectOption(this, 2)">3% probability of observing data this extreme under H₀</div>
+              <div class="option" onclick="selectOption(this, 3)">Results are 97% reliable</div>
+            </div>
+          </div>
+          <button class="quiz-btn" onclick="checkQuizAnswer()">Check Answer</button>
+          <div id="quizFeedback" style="margin-top: 12px; font-size: 0.9rem;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let selectedOption = null;
+    let correctAnswer = 2;
+
+    // Histogram demo
+    let currentData = [];
+
+    function generateNormalData(n = 100, mean = 50, std = 15) {
+      const data = [];
+      for (let i = 0; i < n; i++) {
+        // Box-Muller transform for normal distribution
+        const u1 = Math.random();
+        const u2 = Math.random();
+        const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+        data.push(Math.round(mean + z * std));
+      }
+      return data;
+    }
+
+    function generateSkewedData(n = 100) {
+      const data = [];
+      for (let i = 0; i < n; i++) {
+        // Exponential distribution (right-skewed)
+        const u = Math.random();
+        data.push(Math.round(-Math.log(u) * 20 + 10));
+      }
+      return data;
+    }
+
+    function generateUniformData(n = 100, min = 10, max = 90) {
+      const data = [];
+      for (let i = 0; i < n; i++) {
+        data.push(Math.round(Math.random() * (max - min) + min));
+      }
+      return data;
+    }
+
+    function generateBimodalData(n = 100) {
+      const data = [];
+      for (let i = 0; i < n; i++) {
+        // Mix of two normal distributions
+        const useFirst = Math.random() < 0.5;
+        const mean = useFirst ? 30 : 70;
+        const std = 10;
+        const u1 = Math.random();
+        const u2 = Math.random();
+        const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+        data.push(Math.round(mean + z * std));
+      }
+      return data;
+    }
+
+    function updateHistogram(data) {
+      const histogram = document.getElementById('histogram');
+      histogram.innerHTML = '';
+
+      // Create bins (0-100 in steps of 10)
+      const bins = Array(10).fill(0);
+      data.forEach(value => {
+        const binIndex = Math.min(Math.floor(value / 10), 9);
+        bins[binIndex]++;
+      });
+
+      const maxCount = Math.max(...bins);
+
+      bins.forEach((count, index) => {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.height = `${(count / maxCount) * 150}px`;
+        bar.title = `${count} values`;
+
+        const label = document.createElement('div');
+        label.className = 'bar-label';
+        label.textContent = count;
+
+        bar.appendChild(label);
+        histogram.appendChild(bar);
+      });
+
+      // Calculate statistics
+      const mean = (data.reduce((a, b) => a + b, 0) / data.length).toFixed(2);
+      const variance = data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / data.length;
+      const stddev = Math.sqrt(variance).toFixed(2);
+
+      // Calculate skewness (simplified)
+      const skewness = data.reduce((acc, val) => acc + Math.pow((val - mean) / stddev, 3), 0) / data.length;
+      const skewnessVal = skewness.toFixed(2);
+
+      document.getElementById('mean').textContent = mean;
+      document.getElementById('stddev').textContent = stddev;
+      document.getElementById('skewness').textContent = skewnessVal;
+
+      currentData = data;
+    }
+
+    function showNormalDist() {
+      const data = generateNormalData();
+      updateHistogram(data);
+    }
+
+    function showSkewedDist() {
+      const data = generateSkewedData();
+      updateHistogram(data);
+    }
+
+    function showUniformDist() {
+      const data = generateUniformData();
+      updateHistogram(data);
+    }
+
+    function showBimodalDist() {
+      const data = generateBimodalData();
+      updateHistogram(data);
+    }
+
+    // Probability calculator
+    function factorial(n) {
+      if (n <= 1) return 1;
+      return n * factorial(n - 1);
+    }
+
+    function combinations(n, k) {
+      return factorial(n) / (factorial(k) * factorial(n - k));
+    }
+
+    function calculateHypergeometric() {
+      const N = parseInt(document.getElementById('totalItems').value);
+      const K = parseInt(document.getElementById('successItems').value);
+      const n = parseInt(document.getElementById('sampleSize').value);
+      const k = parseInt(document.getElementById('successesNeeded').value);
+
+      if (k > K || n > N || k > n) {
+        document.getElementById('probResult').textContent = 'Invalid parameters';
+        return;
+      }
+
+      const prob = (combinations(K, k) * combinations(N - K, n - k)) / combinations(N, n);
+      document.getElementById('probResult').textContent = `P(X = ${k}) = ${prob.toFixed(4)} (Hypergeometric)`;
+    }
+
+    function calculateBinomial() {
+      const n = parseInt(document.getElementById('sampleSize').value);
+      const k = parseInt(document.getElementById('successesNeeded').value);
+      const p = parseInt(document.getElementById('successItems').value) / parseInt(document.getElementById('totalItems').value);
+
+      if (k > n || p < 0 || p > 1) {
+        document.getElementById('probResult').textContent = 'Invalid parameters';
+        return;
+      }
+
+      const prob = combinations(n, k) * Math.pow(p, k) * Math.pow(1 - p, n - k);
+      document.getElementById('probResult').textContent = `P(X = ${k}) = ${prob.toFixed(4)} (Binomial, p=${p.toFixed(2)})`;
+    }
+
+    function calculatePoisson() {
+      const lambda = parseInt(document.getElementById('successItems').value) / parseInt(document.getElementById('totalItems').value) * parseInt(document.getElementById('sampleSize').value);
+      const k = parseInt(document.getElementById('successesNeeded').value);
+
+      const prob = (Math.pow(lambda, k) * Math.exp(-lambda)) / factorial(k);
+      document.getElementById('probResult').textContent = `P(X = ${k}) = ${prob.toFixed(4)} (Poisson, λ=${lambda.toFixed(2)})`;
+    }
+
+    // Hypothesis testing
+    function runHypothesisTest() {
+      const alpha = parseFloat(document.getElementById('alpha').value);
+      const resultDiv = document.getElementById('testResult');
+
+      // Simulate test results (in reality this would use statistical calculations)
+      const pValue = 0.02; // Simulated p-value
+      const reject = pValue < alpha;
+
+      resultDiv.style.display = 'block';
+      if (reject) {
+        resultDiv.className = 'test-result reject';
+        resultDiv.innerHTML = `🔴 Reject H₀ (p = ${pValue} < α = ${alpha})<br>Evidence suggests the drug is effective!`;
+      } else {
+        resultDiv.className = 'test-result fail';
+        resultDiv.innerHTML = `🟢 Fail to reject H₀ (p = ${pValue} ≥ α = ${alpha})<br>Insufficient evidence of drug effect.`;
+      }
+    }
+
+    function resetHypothesisTest() {
+      document.getElementById('testResult').style.display = 'none';
+      document.getElementById('alpha').value = '0.05';
+    }
+
+    function selectOption(element, index) {
+      // Remove selected class from all options
+      document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+      // Add selected class to clicked option
+      element.classList.add('selected');
+      selectedOption = index;
+    }
+
+    function checkQuizAnswer() {
+      const feedback = document.getElementById('quizFeedback');
+      const options = document.querySelectorAll('.option');
+
+      if (selectedOption === null) {
+        feedback.innerHTML = 'Please select an answer first!';
+        feedback.style.color = '#f59e0b';
+        return;
+      }
+
+      options.forEach((opt, index) => {
+        if (index === correctAnswer) {
+          opt.classList.add('correct');
+        } else if (index === selectedOption) {
+          opt.classList.add('incorrect');
+        }
+      });
+
+      if (selectedOption === correctAnswer) {
+        feedback.innerHTML = '🎉 Correct! p-value measures the probability of observing data as extreme as yours, assuming H₀ is true.';
+        feedback.style.color = '#10b981';
+      } else {
+        feedback.innerHTML = '❌ Not quite. p-value is the probability of the data (or more extreme) under the null hypothesis.';
+        feedback.style.color = '#ef4444';
+      }
+    }
+
+    // Initialize demos
+    showNormalDist();
+  </script>
+</body>
+</html>
