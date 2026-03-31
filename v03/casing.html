@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Case Arena — Claudea's DS Interview Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0b0e14; --surface: #12161f; --surface2: #181d28;
+      --border: #1e2433; --text: #b8c0d0; --text-muted: #5c6478; --white: #e8ecf4;
+      --xp: #facc15; --hp: #ef4444; --mp: #3b82f6;
+      --case: #f472b6;
+      --glow: rgba(250,204,21,0.15);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 30% 40%, rgba(244,114,182,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(250,204,21,0.03) 0%, transparent 50%);
+    }
+    code, .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(11,14,20,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand {
+      font-weight: 700; font-size: 0.95rem; color: var(--xp);
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    nav .brand .sword { font-size: 1.1rem; }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.75rem;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
+    nav .nav-links a.active {
+      background: rgba(244,114,182,0.12); color: var(--case);
+      border: 1px solid rgba(244,114,182,0.25);
+    }
+    nav .nav-links a.battle { color: var(--hp); border: 1px solid rgba(239,68,68,0.3); }
+    nav .nav-links a.battle:hover { background: rgba(239,68,68,0.1); }
+
+    /* ── Header ── */
+    .page-header {
+      padding: 100px 32px 48px; text-align: center; max-width: 700px; margin: 0 auto;
+    }
+    .page-header .floor-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 3px; padding: 6px 16px; border-radius: 20px;
+      background: rgba(244,114,182,0.1); color: var(--case);
+      border: 1px solid rgba(244,114,182,0.2); margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 2.4rem; font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 12px;
+    }
+    .page-header p { color: var(--text-muted); font-size: 1rem; }
+
+    /* ── Cards Section ── */
+    .cards-section {
+      max-width: 900px; margin: 0 auto 48px; padding: 0 32px;
+    }
+    .cards-header {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cards-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .card-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px;
+    }
+
+    /* ── Concept Card ── */
+    .concept-card {
+      position: relative; padding: 24px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 12px;
+      transition: all 0.25s; overflow: hidden;
+    }
+    .concept-card:hover { transform: translateY(-3px); border-color: #2a3040; }
+    .concept-card .card-top {
+      display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;
+    }
+    .concept-card h2 {
+      font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 10px;
+    }
+    .concept-card .rarity {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; padding: 3px 10px; border-radius: 4px; flex-shrink: 0;
+    }
+    .concept-card .rarity.common { background: var(--surface2); color: var(--text-muted); }
+    .concept-card .rarity.rare { background: rgba(244,114,182,0.12); color: var(--case); }
+    .concept-card .rarity.legendary { background: var(--glow); color: var(--xp); }
+    .concept-card .card-body {
+      font-size: 0.8rem; color: var(--text-muted); line-height: 1.65;
+    }
+    .concept-card .card-body ul {
+      list-style: none; padding: 0;
+    }
+    .concept-card .card-body li {
+      padding: 4px 0; padding-left: 16px; position: relative;
+    }
+    .concept-card .card-body li::before {
+      content: '\25B8'; position: absolute; left: 0; color: var(--case); font-size: 0.7rem; top: 5px;
+    }
+
+    /* Rarity: Common = grey border */
+    .concept-card.rarity-common { border-left: 3px solid var(--text-muted); }
+    /* Rarity: Rare = pink border-left */
+    .concept-card.rarity-rare { border-left: 3px solid var(--case); }
+    /* Rarity: Legendary = gold border-left + glow */
+    .concept-card.rarity-legendary {
+      border-left: 3px solid var(--xp);
+      box-shadow: 0 0 20px rgba(250,204,21,0.08), inset 0 0 20px rgba(250,204,21,0.02);
+    }
+
+    /* ── Boss Section ── */
+    .boss-section {
+      max-width: 900px; margin: 0 auto 64px; padding: 0 32px;
+    }
+    .boss-header {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .boss-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .boss-card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+      padding: 32px; margin-bottom: 16px;
+    }
+    .boss-card .boss-title {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 20px;
+    }
+    .boss-card .boss-title .boss-icon { font-size: 1.4rem; }
+    .boss-card .boss-title h3 {
+      font-size: 1.1rem; font-weight: 700; color: var(--white);
+    }
+    .boss-card .boss-title .boss-hp {
+      margin-left: auto; font-size: 0.7rem; color: var(--hp); font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .quiz-question {
+      background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
+      padding: 20px; margin-bottom: 14px;
+    }
+    .quiz-question:last-child { margin-bottom: 0; }
+    .quiz-question .q-label {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--case); margin-bottom: 8px;
+    }
+    .quiz-question .q-text {
+      font-size: 0.92rem; font-weight: 600; color: var(--white); margin-bottom: 14px; line-height: 1.4;
+    }
+    .quiz-question .q-options { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-question .q-option {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: 8px;
+      background: var(--surface); border: 1px solid var(--border);
+      font-size: 0.82rem; color: var(--text); cursor: pointer; transition: all 0.2s;
+    }
+    .quiz-question .q-option:hover { border-color: rgba(244,114,182,0.4); color: var(--white); }
+    .quiz-question .q-option .opt-letter {
+      width: 24px; height: 24px; border-radius: 6px;
+      background: var(--surface2); display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: var(--text-muted); flex-shrink: 0;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .quiz-question .q-option.correct {
+      border-color: #34d399; background: rgba(52,211,153,0.08);
+    }
+    .quiz-question .q-option.correct .opt-letter {
+      background: rgba(52,211,153,0.2); color: #34d399;
+    }
+    .quiz-question .q-option.wrong {
+      border-color: var(--hp); background: rgba(239,68,68,0.08);
+    }
+    .quiz-question .q-option.wrong .opt-letter {
+      background: rgba(239,68,68,0.2); color: var(--hp);
+    }
+    .quiz-question .q-option.disabled { pointer-events: none; }
+    .quiz-question .q-feedback {
+      margin-top: 10px; font-size: 0.78rem; padding: 10px 14px;
+      border-radius: 8px; display: none; line-height: 1.5;
+    }
+    .quiz-question .q-feedback.show { display: block; }
+    .quiz-question .q-feedback.correct-fb {
+      background: rgba(52,211,153,0.08); color: #34d399; border: 1px solid rgba(52,211,153,0.2);
+    }
+    .quiz-question .q-feedback.wrong-fb {
+      background: rgba(239,68,68,0.08); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2);
+    }
+
+    /* ── Score Bar ── */
+    .score-bar {
+      display: flex; align-items: center; justify-content: center; gap: 24px;
+      padding: 16px; font-size: 0.82rem; color: var(--text-muted);
+      background: var(--surface2); border-radius: 10px; margin-top: 20px;
+    }
+    .score-bar .score-val { color: var(--xp); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 32px; font-size: 0.75rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.68rem; padding: 5px 8px; }
+      .page-header { padding: 80px 16px 32px; }
+      .page-header h1 { font-size: 1.8rem; }
+      .card-grid { grid-template-columns: 1fr; }
+      .cards-section, .boss-section { padding: 0 16px; }
+      .boss-card { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand"><span class="sword">&#9876;</span> Claudea's DS Prep</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html" class="active">Casing</a>
+    <a href="quiz.html" class="battle">Battle</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<div class="page-header">
+  <div class="floor-badge">&#128161; 6 floors</div>
+  <h1>The Case Arena</h1>
+  <p>Frame problems, define metrics, size markets, and present your findings to the council.</p>
+</div>
+
+<!-- Concept Cards -->
+<div class="cards-section">
+  <div class="cards-header">Concept Cards</div>
+  <div class="card-grid">
+
+    <!-- Card 1: Product Metrics Framework -->
+    <div class="concept-card rarity-rare" id="case-metrics">
+      <div class="card-top">
+        <h2>Product Metrics Framework</h2>
+        <span class="rarity rare">Rare</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>North Star Metric</li>
+          <li>Acquisition</li>
+          <li>Activation</li>
+          <li>Retention</li>
+          <li>Revenue</li>
+          <li>Referral</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Card 2: Structuring a Case -->
+    <div class="concept-card rarity-legendary" id="case-structure">
+      <div class="card-top">
+        <h2>Structuring a Case</h2>
+        <span class="rarity legendary">Legendary</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Clarify the question</li>
+          <li>Define metrics</li>
+          <li>Hypothesize root causes</li>
+          <li>Analyze data</li>
+          <li>Recommend actions</li>
+          <li>Measure impact</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Card 3: Metric Change Questions -->
+    <div class="concept-card rarity-rare" id="case-metric-change">
+      <div class="card-top">
+        <h2>Metric Change Questions</h2>
+        <span class="rarity rare">Rare</span>
+      </div>
+      <div class="card-body">
+        <p style="margin-bottom: 8px; color: var(--white); font-style: italic;">"Metric X dropped 10%"</p>
+        <ul>
+          <li>Clarify metric definition &amp; timeframe</li>
+          <li>External factors (seasonality, market)</li>
+          <li>Internal factors (launches, bugs)</li>
+          <li>Segment the data</li>
+          <li>Quantify the impact</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Card 4: Market Sizing -->
+    <div class="concept-card rarity-common" id="case-sizing">
+      <div class="card-top">
+        <h2>Market Sizing</h2>
+        <span class="rarity common">Common</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Top-down vs Bottom-up approach</li>
+          <li>State assumptions clearly</li>
+          <li>Use round numbers</li>
+          <li>Sanity check your answer</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Card 5: Experiment Design -->
+    <div class="concept-card rarity-rare" id="case-experiment">
+      <div class="card-top">
+        <h2>Experiment Design</h2>
+        <span class="rarity rare">Rare</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Unit of randomization</li>
+          <li>Experiment duration</li>
+          <li>Guardrail metrics</li>
+          <li>Network effects</li>
+          <li>Novelty effects</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Card 6: Communication Tips -->
+    <div class="concept-card rarity-common" id="case-communication">
+      <div class="card-top">
+        <h2>Communication Tips</h2>
+        <span class="rarity common">Common</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li>Lead with the answer</li>
+          <li>Structure your thoughts</li>
+          <li>Quantify whenever possible</li>
+          <li>Discuss trade-offs</li>
+          <li>Ask clarifying questions</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Floor Boss -->
+<div class="boss-section">
+  <div class="boss-header">Floor Boss</div>
+  <div class="boss-card">
+    <div class="boss-title">
+      <span class="boss-icon">&#128128;</span>
+      <h3>The Case Gatekeeper</h3>
+      <span class="boss-hp" id="bossHP">HP 2/2</span>
+    </div>
+
+    <!-- Q1 -->
+    <div class="quiz-question" id="q1">
+      <div class="q-label">Question 1</div>
+      <div class="q-text">What is a North Star Metric?</div>
+      <div class="q-options">
+        <div class="q-option" onclick="answer(1, 0, this)">
+          <span class="opt-letter">A</span>
+          <span>A metric that tracks daily revenue growth</span>
+        </div>
+        <div class="q-option" onclick="answer(1, 1, this)">
+          <span class="opt-letter">B</span>
+          <span>A single metric that captures the core value a product delivers</span>
+        </div>
+        <div class="q-option" onclick="answer(1, 2, this)">
+          <span class="opt-letter">C</span>
+          <span>The total number of users acquired per quarter</span>
+        </div>
+        <div class="q-option" onclick="answer(1, 3, this)">
+          <span class="opt-letter">D</span>
+          <span>A vanity metric used in investor decks</span>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb1"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-question" id="q2">
+      <div class="q-label">Question 2</div>
+      <div class="q-text">DAU dropped 15%. What is the first thing you should check?</div>
+      <div class="q-options">
+        <div class="q-option" onclick="answer(2, 0, this)">
+          <span class="opt-letter">A</span>
+          <span>Roll back the latest feature release immediately</span>
+        </div>
+        <div class="q-option" onclick="answer(2, 1, this)">
+          <span class="opt-letter">B</span>
+          <span>Check if the tracking or metric definition changed</span>
+        </div>
+        <div class="q-option" onclick="answer(2, 2, this)">
+          <span class="opt-letter">C</span>
+          <span>Segment users by geography</span>
+        </div>
+        <div class="q-option" onclick="answer(2, 3, this)">
+          <span class="opt-letter">D</span>
+          <span>Launch a new marketing campaign</span>
+        </div>
+      </div>
+      <div class="q-feedback" id="fb2"></div>
+    </div>
+
+    <div class="score-bar">
+      <span>Score: <span class="score-val" id="scoreVal">0 / 2</span></span>
+      <span>Boss HP: <span class="score-val" id="bossHPVal">2</span></span>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; The Case Arena &middot; <a href="index.html">Back to Hub</a></p>
+</footer>
+
+<script>
+  const answers = { 1: 1, 2: 1 };
+  const explanations = {
+    1: {
+      correct: "Correct! A North Star Metric is the single metric that best captures the core value your product delivers to customers.",
+      wrong: "Not quite. A North Star Metric is the single metric that best captures the core value your product delivers — not revenue, user count, or vanity metrics."
+    },
+    2: {
+      correct: "Correct! Always verify the data pipeline and metric definition first before investigating product or external causes.",
+      wrong: "Not quite. Before jumping to conclusions, always check if the tracking instrumentation or metric definition changed — the drop might be a data issue, not a real one."
+    }
+  };
+
+  let score = 0;
+  let bossHP = 2;
+  const answered = {};
+
+  function answer(qNum, idx, el) {
+    if (answered[qNum]) return;
+    answered[qNum] = true;
+
+    const parent = el.closest('.quiz-question');
+    const options = parent.querySelectorAll('.q-option');
+    const fb = document.getElementById('fb' + qNum);
+    const isCorrect = idx === answers[qNum];
+
+    options.forEach((opt, i) => {
+      opt.classList.add('disabled');
+      if (i === answers[qNum]) opt.classList.add('correct');
+    });
+
+    if (isCorrect) {
+      score++;
+      bossHP--;
+      fb.textContent = explanations[qNum].correct;
+      fb.className = 'q-feedback show correct-fb';
+    } else {
+      el.classList.add('wrong');
+      fb.textContent = explanations[qNum].wrong;
+      fb.className = 'q-feedback show wrong-fb';
+    }
+
+    document.getElementById('scoreVal').textContent = score + ' / 2';
+    document.getElementById('bossHPVal').textContent = bossHP;
+    document.getElementById('bossHP').textContent = 'HP ' + bossHP + '/2';
+  }
+</script>
+
+</body>
+</html>

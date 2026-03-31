@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Probability Tower — Claudea's DS Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0b0e14; --surface: #12161f; --surface2: #181d28;
+      --border: #1e2433; --text: #b8c0d0; --text-muted: #5c6478; --white: #e8ecf4;
+      --xp: #facc15; --hp: #ef4444; --mp: #3b82f6;
+      --accent: #fb923c;
+      --glow: rgba(250,204,21,0.15);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 30% 20%, rgba(251,146,60,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(250,204,21,0.03) 0%, transparent 50%);
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(11,14,20,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand {
+      font-weight: 700; font-size: 0.95rem; color: var(--xp);
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    nav .brand .sword { font-size: 1.1rem; }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.75rem;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
+    nav .nav-links a.active {
+      color: var(--accent); background: rgba(251,146,60,0.1);
+      border: 1px solid rgba(251,146,60,0.25);
+    }
+    nav .nav-links a.battle { color: var(--hp); border: 1px solid rgba(239,68,68,0.3); }
+    nav .nav-links a.battle:hover { background: rgba(239,68,68,0.1); }
+
+    /* ── Header ── */
+    .page-header {
+      padding: 100px 32px 48px; text-align: center; max-width: 700px; margin: 0 auto;
+    }
+    .page-header .floor-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 3px; padding: 6px 16px; border-radius: 20px;
+      background: rgba(251,146,60,0.1); color: var(--accent);
+      border: 1px solid rgba(251,146,60,0.2); margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 2.4rem; font-weight: 700; color: var(--white); line-height: 1.15; margin-bottom: 12px;
+    }
+    .page-header h1 em { font-style: normal; color: var(--accent); }
+    .page-header p { color: var(--text-muted); font-size: 1rem; }
+
+    /* ── Cards Section ── */
+    .cards-section {
+      max-width: 800px; margin: 0 auto 48px; padding: 0 32px;
+    }
+    .section-label {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .concept-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px; margin-bottom: 16px;
+      transition: all 0.25s; position: relative;
+    }
+    .concept-card:hover { border-color: #2a3040; transform: translateY(-2px); }
+
+    /* Rarity: Common */
+    .concept-card.rarity-common .rarity-tag { color: var(--text-muted); }
+
+    /* Rarity: Rare — orange left border */
+    .concept-card.rarity-rare {
+      border-left: 3px solid var(--accent);
+    }
+    .concept-card.rarity-rare .rarity-tag { color: var(--accent); }
+
+    /* Rarity: Legendary — gold border + glow */
+    .concept-card.rarity-legendary {
+      border-color: rgba(250,204,21,0.3);
+      box-shadow: 0 0 20px rgba(250,204,21,0.06), 0 0 40px rgba(250,204,21,0.03);
+    }
+    .concept-card.rarity-legendary .rarity-tag { color: var(--xp); }
+
+    .card-top {
+      display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px;
+    }
+    .card-top h2 { font-size: 1.15rem; font-weight: 700; color: var(--white); }
+    .rarity-tag {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; padding: 3px 10px; border-radius: 4px;
+      background: var(--surface2); flex-shrink: 0;
+    }
+    .card-body { font-size: 0.85rem; color: var(--text); line-height: 1.7; }
+    .card-body ul { list-style: none; padding: 0; }
+    .card-body ul li { padding: 4px 0; padding-left: 18px; position: relative; }
+    .card-body ul li::before {
+      content: '\25B8'; position: absolute; left: 0; color: var(--accent); font-size: 0.75rem; top: 5px;
+    }
+    .card-body p { margin-bottom: 8px; }
+
+    /* Formula blocks */
+    .formula-block {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px 20px; margin: 14px 0;
+      text-align: center; font-size: 0.9rem; color: var(--accent);
+      line-height: 1.8;
+    }
+    .formula-block .label {
+      display: block; font-size: 0.7rem; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    /* ── Boss Section ── */
+    .boss-section {
+      max-width: 800px; margin: 0 auto 64px; padding: 0 32px;
+    }
+    .boss-label {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--hp); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .boss-label::after { content: ''; flex: 1; height: 1px; background: rgba(239,68,68,0.2); }
+
+    .boss-card {
+      background: var(--surface); border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 12px; padding: 28px; margin-bottom: 16px;
+    }
+    .boss-card h3 {
+      font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 14px;
+    }
+    .boss-options { display: flex; flex-direction: column; gap: 8px; }
+    .boss-option {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; cursor: pointer; transition: all 0.2s; font-size: 0.85rem;
+    }
+    .boss-option:hover { border-color: var(--accent); }
+    .boss-option .opt-marker {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid var(--border); display: flex; align-items: center;
+      justify-content: center; flex-shrink: 0; font-size: 0.65rem;
+      color: transparent; transition: all 0.2s;
+    }
+    .boss-option.selected .opt-marker {
+      border-color: var(--accent); background: var(--accent); color: var(--bg);
+    }
+    .boss-option.correct { border-color: #34d399; background: rgba(52,211,153,0.08); }
+    .boss-option.correct .opt-marker { border-color: #34d399; background: #34d399; color: var(--bg); }
+    .boss-option.wrong { border-color: var(--hp); background: rgba(239,68,68,0.08); }
+    .boss-option.wrong .opt-marker { border-color: var(--hp); background: var(--hp); color: var(--bg); }
+
+    .boss-result {
+      margin-top: 12px; padding: 12px 16px; border-radius: 8px;
+      font-size: 0.82rem; font-weight: 600; display: none;
+    }
+    .boss-result.show { display: block; }
+    .boss-result.victory { background: rgba(52,211,153,0.1); color: #34d399; border: 1px solid rgba(52,211,153,0.2); }
+    .boss-result.defeat { background: rgba(239,68,68,0.1); color: var(--hp); border: 1px solid rgba(239,68,68,0.2); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 32px; font-size: 0.75rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.68rem; padding: 5px 8px; }
+      .page-header { padding: 80px 16px 32px; }
+      .page-header h1 { font-size: 1.8rem; }
+      .cards-section, .boss-section { padding: 0 16px; }
+      .formula-block { font-size: 0.78rem; padding: 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand"><span class="sword">&#9876;</span> Claudea's DS Prep</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html" class="active">Probability</a>
+    <a href="casing.html">Casing</a>
+    <a href="quiz.html" class="battle">Battle</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<div class="page-header">
+  <div class="floor-badge">&#127922; 6 floors</div>
+  <h1>The <em>Probability</em> Tower</h1>
+  <p>Roll the dice with Bayes, climb through distributions, and solve legendary puzzles.</p>
+</div>
+
+<!-- Concept Cards -->
+<div class="cards-section">
+  <div class="section-label">Concept Cards</div>
+
+  <!-- Card 1: Fundamentals -->
+  <div class="concept-card rarity-common" id="prob-fundamentals">
+    <div class="card-top">
+      <h2>Fundamentals</h2>
+      <span class="rarity-tag">Common</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><strong>Addition Rule:</strong> P(A or B) = P(A) + P(B) &minus; P(A and B)</li>
+        <li><strong>Multiplication Rule:</strong> P(A and B) = P(A) &middot; P(B|A)</li>
+        <li><strong>Independence:</strong> Events A and B are independent if P(A and B) = P(A) &middot; P(B)</li>
+        <li><strong>Complement:</strong> P(A') = 1 &minus; P(A)</li>
+        <li><strong>Permutations:</strong> n! / (n&minus;r)! &mdash; order matters</li>
+        <li><strong>Combinations:</strong> n! / [r!(n&minus;r)!] &mdash; order does not matter</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Card 2: Bayes' Theorem -->
+  <div class="concept-card rarity-legendary" id="prob-bayes">
+    <div class="card-top">
+      <h2>Bayes' Theorem</h2>
+      <span class="rarity-tag">Legendary</span>
+    </div>
+    <div class="card-body">
+      <div class="formula-block">
+        <span class="label">Bayes' Theorem</span>
+        P(A|B) = P(B|A) &middot; P(A) / P(B)
+      </div>
+      <div class="formula-block">
+        <span class="label">Intuition</span>
+        Prior &times; Likelihood / Evidence = Posterior
+      </div>
+      <p>Bayes' Theorem lets you update your beliefs given new evidence. It is central to countless DS interview questions.</p>
+      <p><strong>Classic disease test question:</strong> A test is 99% sensitive and 99% specific. If disease prevalence is 1%, what is the probability a positive result is truly positive? Using Bayes: P(Disease|+) = (0.99 &times; 0.01) / [(0.99 &times; 0.01) + (0.01 &times; 0.99)] = 50%. The low prior dramatically reduces the posterior despite high test accuracy.</p>
+    </div>
+  </div>
+
+  <!-- Card 3: Key Distributions -->
+  <div class="concept-card rarity-rare" id="prob-distributions">
+    <div class="card-top">
+      <h2>Key Distributions</h2>
+      <span class="rarity-tag">Rare</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><strong>Bernoulli:</strong> Single trial, success probability p. E[X] = p.</li>
+        <li><strong>Binomial:</strong> n independent Bernoulli trials. E[X] = np, Var = np(1&minus;p).</li>
+        <li><strong>Poisson:</strong> Count of events in fixed interval. E[X] = Var = &lambda;.</li>
+        <li><strong>Geometric:</strong> Trials until first success. E[X] = 1/p.</li>
+        <li><strong>Normal (Gaussian):</strong> Bell curve. Defined by &mu; and &sigma;&sup2;. The 68-95-99.7 rule.</li>
+        <li><strong>Exponential:</strong> Time between Poisson events. E[X] = 1/&lambda;. Memoryless property.</li>
+        <li><strong>Uniform:</strong> Equal probability across [a, b]. E[X] = (a+b)/2.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Card 4: Expected Value & Variance -->
+  <div class="concept-card rarity-rare" id="prob-ev">
+    <div class="card-top">
+      <h2>Expected Value &amp; Variance</h2>
+      <span class="rarity-tag">Rare</span>
+    </div>
+    <div class="card-body">
+      <div class="formula-block">
+        <span class="label">Expected Value</span>
+        E[X] = &sum; x&middot;P(X=x)
+      </div>
+      <div class="formula-block">
+        <span class="label">Variance</span>
+        Var(X) = E[X&sup2;] &minus; (E[X])&sup2;
+      </div>
+      <p><strong>Linearity of Expectation:</strong></p>
+      <ul>
+        <li>E[aX + b] = a&middot;E[X] + b</li>
+        <li>E[X + Y] = E[X] + E[Y] &mdash; always true, even without independence</li>
+        <li>Var(aX + b) = a&sup2;&middot;Var(X)</li>
+        <li>If X, Y independent: Var(X + Y) = Var(X) + Var(Y)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Card 5: Law of Large Numbers -->
+  <div class="concept-card rarity-common" id="prob-lln">
+    <div class="card-top">
+      <h2>Law of Large Numbers</h2>
+      <span class="rarity-tag">Common</span>
+    </div>
+    <div class="card-body">
+      <p>As sample size n increases, the sample mean converges to the population mean. In other words, more data gives you a more accurate estimate of the true value.</p>
+      <p><strong>A/B Testing Connection:</strong> The LLN is why we need sufficient sample sizes in A/B tests. Small samples can show misleading results. As n grows, the observed conversion rate stabilizes around the true rate, making our test conclusions reliable. This is the foundation for power analysis and minimum detectable effect calculations.</p>
+    </div>
+  </div>
+
+  <!-- Card 6: Classic Interview Puzzles -->
+  <div class="concept-card rarity-legendary" id="prob-puzzles">
+    <div class="card-top">
+      <h2>Classic Interview Puzzles</h2>
+      <span class="rarity-tag">Legendary</span>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li><strong>Birthday Problem:</strong> Only 23 people needed for a >50% chance two share a birthday. The key insight: calculate the complement (no shared birthdays) and subtract from 1.</li>
+        <li><strong>Monty Hall Problem:</strong> Always switch doors. Staying gives 1/3, switching gives 2/3. The host's reveal of a goat provides information that shifts the probability.</li>
+        <li><strong>Coupon Collector:</strong> Expected draws to collect all n unique coupons is n&middot;H(n) &asymp; n&middot;ln(n). Each new coupon gets progressively harder to find.</li>
+        <li><strong>Dice Problems:</strong> Expected rolls to see all 6 faces = 6&middot;(1 + 1/2 + 1/3 + 1/4 + 1/5 + 1/6) &asymp; 14.7. A direct application of the coupon collector framework.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Floor Boss -->
+<div class="boss-section">
+  <div class="boss-label">&#9876; Floor Boss</div>
+
+  <!-- Q1 -->
+  <div class="boss-card" id="boss-q1">
+    <h3>Q1: In the Monty Hall problem, should you switch doors?</h3>
+    <div class="boss-options">
+      <div class="boss-option" onclick="answerBoss('boss-q1', 0, 1)">
+        <span class="opt-marker">&#10003;</span>
+        <span>No &mdash; it's 50/50 either way</span>
+      </div>
+      <div class="boss-option" onclick="answerBoss('boss-q1', 1, 1)">
+        <span class="opt-marker">&#10003;</span>
+        <span>Yes &mdash; switching gives you 2/3 probability</span>
+      </div>
+      <div class="boss-option" onclick="answerBoss('boss-q1', 2, 1)">
+        <span class="opt-marker">&#10003;</span>
+        <span>No &mdash; staying gives you 2/3 probability</span>
+      </div>
+    </div>
+    <div class="boss-result" id="boss-q1-result"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="boss-card" id="boss-q2">
+    <h3>Q2: How many people are needed for a >50% chance of a shared birthday?</h3>
+    <div class="boss-options">
+      <div class="boss-option" onclick="answerBoss('boss-q2', 0, 1)">
+        <span class="opt-marker">&#10003;</span>
+        <span>183 &mdash; half of 365</span>
+      </div>
+      <div class="boss-option" onclick="answerBoss('boss-q2', 1, 1)">
+        <span class="opt-marker">&#10003;</span>
+        <span>23 &mdash; surprisingly few due to combinatorial pairs</span>
+      </div>
+      <div class="boss-option" onclick="answerBoss('boss-q2', 2, 1)">
+        <span class="opt-marker">&#10003;</span>
+        <span>50 &mdash; roughly the square root of 365</span>
+      </div>
+    </div>
+    <div class="boss-result" id="boss-q2-result"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; v03 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<script>
+  function answerBoss(cardId, selectedIdx, correctIdx) {
+    const card = document.getElementById(cardId);
+    const options = card.querySelectorAll('.boss-option');
+    const result = document.getElementById(cardId + '-result');
+
+    // Prevent re-answering
+    if (card.dataset.answered) return;
+    card.dataset.answered = 'true';
+
+    options.forEach((opt, i) => {
+      if (i === correctIdx) {
+        opt.classList.add('correct');
+      } else if (i === selectedIdx && selectedIdx !== correctIdx) {
+        opt.classList.add('wrong');
+      }
+      opt.style.pointerEvents = 'none';
+    });
+
+    if (selectedIdx === correctIdx) {
+      result.textContent = 'Victory! +50 XP';
+      result.className = 'boss-result show victory';
+    } else {
+      result.textContent = 'Defeated. Review the concept cards above and try again next time.';
+      result.className = 'boss-result show defeat';
+    }
+  }
+</script>
+
+</body>
+</html>

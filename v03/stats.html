@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Stats Sanctum — Claudea's DS Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0b0e14; --surface: #12161f; --surface2: #181d28;
+      --border: #1e2433; --text: #b8c0d0; --text-muted: #5c6478; --white: #e8ecf4;
+      --xp: #facc15; --hp: #ef4444; --mp: #3b82f6;
+      --accent: #34d399;
+      --glow-gold: rgba(250,204,21,0.15);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 30% 40%, rgba(52,211,153,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(52,211,153,0.03) 0%, transparent 50%);
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(11,14,20,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand {
+      font-weight: 700; font-size: 0.95rem; color: var(--xp);
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    nav .brand .sword { font-size: 1.1rem; }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.75rem;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
+    nav .nav-links a.active {
+      background: rgba(52,211,153,0.1); color: var(--accent);
+      border: 1px solid rgba(52,211,153,0.25);
+    }
+    nav .nav-links a.battle { color: var(--hp); border: 1px solid rgba(239,68,68,0.3); }
+    nav .nav-links a.battle:hover { background: rgba(239,68,68,0.1); }
+
+    /* ── Header ── */
+    .page-header {
+      padding: 100px 32px 40px;
+      text-align: center; max-width: 700px; margin: 0 auto;
+    }
+    .page-header .floor-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 3px; padding: 6px 16px; border-radius: 20px;
+      background: rgba(52,211,153,0.1); color: var(--accent);
+      border: 1px solid rgba(52,211,153,0.2); margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 2.4rem; font-weight: 700; color: var(--white);
+      line-height: 1.15; margin-bottom: 12px;
+    }
+    .page-header h1 em { font-style: normal; color: var(--accent); }
+    .page-header p { color: var(--text-muted); font-size: 1rem; }
+
+    /* ── Cards Section ── */
+    .cards-section {
+      max-width: 900px; margin: 0 auto 48px; padding: 0 32px;
+    }
+    .section-header {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .cards-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;
+    }
+
+    /* ── Concept Card ── */
+    .concept-card {
+      position: relative; padding: 24px;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; transition: all 0.25s; overflow: hidden;
+    }
+    .concept-card:hover { transform: translateY(-3px); border-color: #2a3040; }
+
+    /* Rarity: Common */
+    .concept-card .rarity-tag {
+      display: inline-block; font-size: 0.6rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      padding: 3px 8px; border-radius: 4px; margin-bottom: 12px;
+    }
+    .rarity-common .rarity-tag { background: var(--surface2); color: var(--text-muted); }
+    .rarity-rare { border-left: 3px solid var(--accent); }
+    .rarity-rare .rarity-tag { background: rgba(52,211,153,0.1); color: var(--accent); }
+    .rarity-legendary {
+      border: 1px solid rgba(250,204,21,0.3);
+      box-shadow: 0 0 20px rgba(250,204,21,0.06), inset 0 0 20px rgba(250,204,21,0.02);
+    }
+    .rarity-legendary .rarity-tag { background: var(--glow-gold); color: var(--xp); }
+
+    .concept-card h2 {
+      font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 10px;
+    }
+    .concept-card p, .concept-card ul {
+      font-size: 0.8rem; color: var(--text-muted); line-height: 1.65;
+    }
+    .concept-card ul {
+      list-style: none; padding: 0; margin: 0;
+    }
+    .concept-card ul li {
+      padding: 3px 0; position: relative; padding-left: 14px;
+    }
+    .concept-card ul li::before {
+      content: '\25B8'; position: absolute; left: 0; color: var(--accent); font-size: 0.7rem; top: 4px;
+    }
+    .concept-card .step-list { counter-reset: step; }
+    .concept-card .step-list li { padding-left: 22px; }
+    .concept-card .step-list li::before {
+      counter-increment: step; content: counter(step) '.';
+      position: absolute; left: 0; color: var(--xp); font-weight: 700; font-size: 0.75rem; top: 3px;
+    }
+
+    /* ── Formula Block ── */
+    .formula-block {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 14px 20px; margin: 12px 0;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
+      color: var(--accent); font-weight: 500;
+    }
+
+    /* ── Floor Boss ── */
+    .boss-section {
+      max-width: 900px; margin: 0 auto 48px; padding: 0 32px;
+    }
+    .boss-card {
+      background: linear-gradient(135deg, rgba(52,211,153,0.06), rgba(52,211,153,0.02));
+      border: 1px solid rgba(52,211,153,0.2);
+      border-radius: 14px; padding: 32px; overflow: hidden;
+    }
+    .boss-card h2 {
+      font-size: 1.2rem; font-weight: 700; color: var(--white); margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .boss-card .boss-sub {
+      font-size: 0.8rem; color: var(--text-muted); margin-bottom: 24px;
+    }
+    .boss-question {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px; margin-bottom: 14px;
+    }
+    .boss-question:last-child { margin-bottom: 0; }
+    .boss-question .bq-label {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--accent); margin-bottom: 8px;
+    }
+    .boss-question .bq-text {
+      font-size: 0.9rem; color: var(--white); font-weight: 600; margin-bottom: 12px;
+    }
+    .boss-question .bq-options { display: flex; flex-direction: column; gap: 6px; }
+    .boss-question .bq-option {
+      display: block; padding: 10px 14px; border-radius: 8px;
+      background: var(--surface2); border: 1px solid var(--border);
+      font-size: 0.8rem; color: var(--text); cursor: pointer; transition: all 0.2s;
+      text-align: left; font-family: 'Space Grotesk', sans-serif; width: 100%;
+    }
+    .boss-question .bq-option:hover { border-color: var(--accent); color: var(--white); }
+    .boss-question .bq-option.correct {
+      border-color: var(--accent); background: rgba(52,211,153,0.1); color: var(--accent);
+    }
+    .boss-question .bq-option.wrong {
+      border-color: var(--hp); background: rgba(239,68,68,0.1); color: var(--hp);
+    }
+    .boss-question .bq-option.disabled { pointer-events: none; opacity: 0.6; }
+    .boss-question .bq-option.disabled.correct { opacity: 1; }
+    .boss-question .bq-feedback {
+      margin-top: 10px; font-size: 0.78rem; padding: 8px 12px;
+      border-radius: 6px; display: none;
+    }
+    .boss-question .bq-feedback.show { display: block; }
+    .boss-question .bq-feedback.pass { background: rgba(52,211,153,0.1); color: var(--accent); }
+    .boss-question .bq-feedback.fail { background: rgba(239,68,68,0.1); color: var(--hp); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 32px; font-size: 0.75rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.68rem; padding: 5px 8px; }
+      .page-header { padding: 80px 16px 32px; }
+      .page-header h1 { font-size: 1.8rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .cards-section, .boss-section { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand"><span class="sword">&#9876;</span> Claudea's DS Prep</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html" class="active">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+    <a href="quiz.html" class="battle">Battle</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<div class="page-header">
+  <div class="floor-badge">&#128202; 6 Floors</div>
+  <h1>The <em>Stats</em> Sanctum</h1>
+  <p>Test hypotheses, cast confidence intervals, design experiments, and decode distributions.</p>
+</div>
+
+<!-- Concept Cards -->
+<div class="cards-section">
+  <div class="section-header">Concept Cards</div>
+  <div class="cards-grid">
+
+    <!-- 1. Descriptive Stats [Common] -->
+    <div class="concept-card rarity-common" id="stats-descriptive">
+      <span class="rarity-tag">Common</span>
+      <h2>Descriptive Stats</h2>
+      <p>The fundamental measures that summarize and describe a dataset's characteristics.</p>
+      <ul>
+        <li><strong>Mean</strong> &mdash; arithmetic average of all values</li>
+        <li><strong>Median</strong> &mdash; middle value when data is sorted</li>
+        <li><strong>Mode</strong> &mdash; most frequently occurring value</li>
+        <li><strong>Variance</strong> &mdash; average squared deviation from the mean</li>
+        <li><strong>Std Dev</strong> &mdash; square root of variance; same units as data</li>
+        <li><strong>IQR</strong> &mdash; Q3 &minus; Q1; measures spread of the middle 50%</li>
+      </ul>
+    </div>
+
+    <!-- 2. Hypothesis Testing [Rare] -->
+    <div class="concept-card rarity-rare" id="stats-hypothesis">
+      <span class="rarity-tag">Rare</span>
+      <h2>Hypothesis Testing</h2>
+      <p>A structured framework for making data-driven decisions under uncertainty.</p>
+      <ul>
+        <li><strong>H0 (Null)</strong> &mdash; default assumption; no effect or difference</li>
+        <li><strong>H1 (Alternative)</strong> &mdash; the claim you're testing for</li>
+        <li><strong>p-value</strong> &mdash; probability of observing data at least as extreme, given H0 is true</li>
+        <li><strong>Type I Error</strong> &mdash; rejecting H0 when it's actually true (false positive)</li>
+        <li><strong>Type II Error</strong> &mdash; failing to reject H0 when it's false (false negative)</li>
+        <li><strong>Power</strong> &mdash; 1 &minus; P(Type II); ability to detect a real effect</li>
+      </ul>
+    </div>
+
+    <!-- 3. Common Tests [Common] -->
+    <div class="concept-card rarity-common" id="stats-tests">
+      <span class="rarity-tag">Common</span>
+      <h2>Common Tests</h2>
+      <p>The statistical tests you'll encounter most often in interviews and practice.</p>
+      <ul>
+        <li><strong>z-test</strong> &mdash; known population variance, large n</li>
+        <li><strong>t-test</strong> &mdash; unknown variance, compares one sample mean to a value</li>
+        <li><strong>Paired t-test</strong> &mdash; compares means from the same group at different times</li>
+        <li><strong>Chi-squared</strong> &mdash; tests independence between categorical variables</li>
+        <li><strong>ANOVA</strong> &mdash; compares means across 3+ groups</li>
+        <li><strong>Mann-Whitney</strong> &mdash; non-parametric alternative to the t-test</li>
+      </ul>
+    </div>
+
+    <!-- 4. A/B Testing [Legendary] -->
+    <div class="concept-card rarity-legendary" id="stats-ab">
+      <span class="rarity-tag">Legendary</span>
+      <h2>A/B Testing</h2>
+      <p>The gold standard for measuring causal impact in product experiments.</p>
+      <ul class="step-list">
+        <li>Define the hypothesis and choose a primary metric</li>
+        <li>Calculate sample size for desired power (&ge;80%) and significance (&alpha;=0.05)</li>
+        <li>Randomly assign users to control and treatment groups</li>
+        <li>Run the experiment for the pre-determined duration</li>
+        <li>Analyze results and check for statistical significance</li>
+      </ul>
+      <p style="margin-top: 10px;"><strong>Common pitfalls:</strong> peeking at results early, multiple comparisons without correction, novelty effects, Simpson's paradox, and underpowered tests.</p>
+    </div>
+
+    <!-- 5. Confidence Intervals [Rare] -->
+    <div class="concept-card rarity-rare" id="stats-ci">
+      <span class="rarity-tag">Rare</span>
+      <h2>Confidence Intervals</h2>
+      <p>A range of values that likely contains the true population parameter.</p>
+      <div class="formula-block">CI = x&#772; &plusmn; z * (&sigma; / &radic;n)</div>
+      <p>A 95% CI means that if you repeated the experiment many times, about 95% of the computed intervals would contain the true parameter. The width depends on confidence level, sample size, and variability.</p>
+    </div>
+
+    <!-- 6. Central Limit Theorem [Rare] -->
+    <div class="concept-card rarity-rare" id="stats-clt">
+      <span class="rarity-tag">Rare</span>
+      <h2>Central Limit Theorem</h2>
+      <p>Regardless of the population distribution, the distribution of sample means approaches a normal distribution as the sample size increases (typically n &ge; 30). This is why so many statistical tests assume normality.</p>
+      <div class="formula-block">SE = &sigma; / &radic;n</div>
+      <p>The standard error (SE) decreases as sample size grows, meaning larger samples give more precise estimates of the population mean.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- Floor Boss -->
+<div class="boss-section">
+  <div class="section-header">Floor Boss</div>
+  <div class="boss-card">
+    <h2>&#128128; Floor Boss Challenge</h2>
+    <p class="boss-sub">Defeat the boss to prove your mastery of the Stats Sanctum.</p>
+
+    <!-- Q1 -->
+    <div class="boss-question" id="bossQ1">
+      <div class="bq-label">Question 1</div>
+      <div class="bq-text">A p-value of 0.03 means?</div>
+      <div class="bq-options">
+        <button class="bq-option" onclick="answerBoss('bossQ1', this, 0)">There is a 3% chance the alternative hypothesis is true</button>
+        <button class="bq-option" onclick="answerBoss('bossQ1', this, 1)">There is a 3% probability of observing data this extreme if H0 is true</button>
+        <button class="bq-option" onclick="answerBoss('bossQ1', this, 2)">The experiment has a 3% error rate</button>
+      </div>
+      <div class="bq-feedback"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="boss-question" id="bossQ2">
+      <div class="bq-label">Question 2</div>
+      <div class="bq-text">The Central Limit Theorem states that?</div>
+      <div class="bq-options">
+        <button class="bq-option" onclick="answerBoss('bossQ2', this, 0)">All data must be normally distributed for statistical tests to work</button>
+        <button class="bq-option" onclick="answerBoss('bossQ2', this, 1)">The distribution of sample means approaches normal as n increases</button>
+        <button class="bq-option" onclick="answerBoss('bossQ2', this, 2)">Larger samples always have smaller variance than the population</button>
+      </div>
+      <div class="bq-feedback"></div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; The Stats Sanctum &middot; <a href="index.html">Back to Hub</a></p>
+</footer>
+
+<script>
+  const bossAnswers = {
+    bossQ1: 1,
+    bossQ2: 1
+  };
+
+  function answerBoss(qId, btn, idx) {
+    const question = document.getElementById(qId);
+    const options = question.querySelectorAll('.bq-option');
+    const feedback = question.querySelector('.bq-feedback');
+    const correct = bossAnswers[qId];
+
+    options.forEach((opt, i) => {
+      opt.classList.add('disabled');
+      if (i === correct) opt.classList.add('correct');
+    });
+
+    if (idx === correct) {
+      feedback.textContent = 'Correct! The boss takes damage.';
+      feedback.className = 'bq-feedback show pass';
+    } else {
+      btn.classList.add('wrong');
+      feedback.textContent = 'Incorrect. The boss strikes back!';
+      feedback.className = 'bq-feedback show fail';
+    }
+  }
+</script>
+
+</body>
+</html>

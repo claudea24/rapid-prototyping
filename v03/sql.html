@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The SQL Caverns — Claudea's DS Prep</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #0b0e14;
+            color: #b8c0d0;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% 10%, rgba(96,165,250,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 80% 80%, rgba(250,204,21,0.04) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Nav ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            height: 56px;
+            background: rgba(11,14,20,0.82);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid #1e2433;
+        }
+
+        .nav-brand a {
+            text-decoration: none;
+            color: #facc15;
+            font-weight: 700;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: .45rem;
+        }
+
+        .nav-brand .sword { font-size: 1.2rem; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: .15rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #5c6478;
+            font-size: .85rem;
+            font-weight: 500;
+            padding: .35rem .7rem;
+            border-radius: 6px;
+            transition: color .2s, background .2s;
+        }
+
+        .nav-links a:hover { color: #b8c0d0; }
+
+        .nav-links a.active {
+            color: #e8ecf4;
+            background: #12161f;
+        }
+
+        .nav-links .battle {
+            color: #fca5a5;
+            background: rgba(239,68,68,0.12);
+            margin-left: .3rem;
+        }
+
+        .nav-links .battle:hover {
+            background: rgba(239,68,68,0.22);
+            color: #fecaca;
+        }
+
+        /* ── Main ── */
+        main {
+            position: relative;
+            z-index: 1;
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2.5rem 1.25rem 4rem;
+        }
+
+        /* ── Header ── */
+        .page-header { text-align: center; margin-bottom: 2.5rem; }
+
+        .page-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #e8ecf4;
+            margin-bottom: .5rem;
+        }
+
+        .floor-badge {
+            display: inline-block;
+            font-size: .72rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            background: rgba(96,165,250,0.12);
+            color: #60a5fa;
+            padding: .2rem .65rem;
+            border-radius: 999px;
+            margin-bottom: .75rem;
+        }
+
+        .flavor-text {
+            color: #5c6478;
+            font-size: .92rem;
+            font-style: italic;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        /* ── Section titles ── */
+        .section-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #e8ecf4;
+            margin-bottom: 1.25rem;
+        }
+
+        .section-title .muted { color: #5c6478; font-weight: 400; }
+
+        /* ── Card grid ── */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        /* ── Concept card ── */
+        .card {
+            background: #12161f;
+            border: 1px solid #1e2433;
+            border-top: 3px solid #60a5fa;
+            border-radius: 8px;
+            padding: 1.25rem 1.2rem 1.1rem;
+            position: relative;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .card:hover { border-color: #2a3348; }
+
+        .card .anchor-link {
+            position: absolute;
+            top: 1.2rem;
+            right: 1rem;
+            text-decoration: none;
+            color: #5c6478;
+            font-size: .9rem;
+            opacity: 0;
+            transition: opacity .2s;
+        }
+
+        .card:hover .anchor-link { opacity: 1; }
+
+        .rarity {
+            display: inline-block;
+            font-size: .65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            padding: .15rem .5rem;
+            border-radius: 4px;
+            margin-bottom: .5rem;
+        }
+
+        .rarity-common {
+            color: #5c6478;
+            background: rgba(92,100,120,0.12);
+        }
+
+        .rarity-rare {
+            color: #60a5fa;
+            background: rgba(96,165,250,0.10);
+        }
+
+        .rarity-legendary {
+            color: #facc15;
+            background: rgba(250,204,21,0.10);
+        }
+
+        /* Card rarity left border */
+        .card.common  { border-left: 3px solid #5c6478; }
+        .card.rare    { border-left: 3px solid #60a5fa; }
+        .card.legendary {
+            border-left: 3px solid #facc15;
+            box-shadow: inset 2px 0 12px rgba(250,204,21,0.06), 0 0 18px rgba(250,204,21,0.03);
+        }
+
+        .card h3 {
+            color: #e8ecf4;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: .6rem;
+        }
+
+        .card ol, .card ul {
+            padding-left: 1.15rem;
+            margin-bottom: .25rem;
+        }
+
+        .card li {
+            font-size: .85rem;
+            margin-bottom: .25rem;
+            color: #b8c0d0;
+        }
+
+        .card li strong { color: #e8ecf4; font-weight: 600; }
+
+        .card p { font-size: .85rem; }
+
+        .card code, pre {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .card pre {
+            background: #0b0e14;
+            border: 1px solid #1e2433;
+            border-radius: 6px;
+            padding: .75rem .9rem;
+            font-size: .78rem;
+            line-height: 1.65;
+            overflow-x: auto;
+            margin-top: .5rem;
+        }
+
+        /* Syntax highlighting */
+        .kw  { color: #ff7b72; }
+        .fn  { color: #d2a8ff; }
+        .str { color: #a5d6ff; }
+        .cm  { color: #484f58; font-style: italic; }
+        .num { color: #79c0ff; }
+
+        /* ── Floor Boss ── */
+        .boss-section { margin-top: 1rem; }
+
+        .boss-section .section-title span.skull { margin-right: .35rem; }
+
+        .quiz-list {
+            display: flex;
+            flex-direction: column;
+            gap: .75rem;
+        }
+
+        .quiz-item {
+            background: #12161f;
+            border: 1px solid #1e2433;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+        }
+
+        .quiz-q {
+            font-size: .9rem;
+            color: #e8ecf4;
+            font-weight: 500;
+            margin-bottom: .5rem;
+        }
+
+        .quiz-options { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+        .quiz-btn {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: .8rem;
+            padding: .4rem .85rem;
+            border-radius: 6px;
+            border: 1px solid #1e2433;
+            background: #0b0e14;
+            color: #b8c0d0;
+            cursor: pointer;
+            transition: border-color .2s, color .2s, background .2s;
+        }
+
+        .quiz-btn:hover:not(.chosen) {
+            border-color: #60a5fa;
+            color: #e8ecf4;
+        }
+
+        .quiz-btn.correct {
+            border-color: #34d399;
+            background: rgba(52,211,153,0.10);
+            color: #34d399;
+        }
+
+        .quiz-btn.wrong {
+            border-color: #f87171;
+            background: rgba(248,113,113,0.08);
+            color: #f87171;
+        }
+
+        .quiz-btn.chosen { pointer-events: none; }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #5c6478;
+            font-size: .78rem;
+            border-top: 1px solid #1e2433;
+            margin-top: 2rem;
+        }
+
+        footer a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        footer a:hover { text-decoration: underline; }
+
+        /* ── Responsive ── */
+        @media (max-width: 700px) {
+            .card-grid { grid-template-columns: 1fr; }
+
+            nav { padding: 0 .75rem; }
+
+            .nav-links a { font-size: .78rem; padding: .3rem .45rem; }
+
+            .page-header h1 { font-size: 1.5rem; }
+
+            main { padding: 1.75rem 1rem 3rem; }
+
+            .card pre { font-size: .72rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── Nav ── -->
+<nav>
+    <div class="nav-brand">
+        <a href="index.html"><span class="sword">&#9876;</span> Claudea's DS Prep</a>
+    </div>
+    <ul class="nav-links">
+        <li><a href="sql.html" class="active">SQL</a></li>
+        <li><a href="python.html">Python</a></li>
+        <li><a href="ml.html">ML</a></li>
+        <li><a href="stats.html">Stats</a></li>
+        <li><a href="probability.html">Probability</a></li>
+        <li><a href="casing.html">Casing</a></li>
+        <li><a href="quiz.html" class="battle">Battle</a></li>
+    </ul>
+</nav>
+
+<!-- ── Main ── -->
+<main>
+
+    <!-- Header -->
+    <header class="page-header">
+        <div class="floor-badge">6 Floors &middot; 2 Bosses</div>
+        <h1>The SQL Caverns</h1>
+        <p class="flavor-text">Ancient queries echo through these stone halls. Master the relational arts to descend deeper.</p>
+    </header>
+
+    <!-- Concept Cards -->
+    <h2 class="section-title">Concept Cards <span class="muted">&#8212; Loot collected on this floor</span></h2>
+    <div class="card-grid">
+
+        <!-- 1. Query Execution Order [Rare] -->
+        <div class="card rare" id="sql-execution-order">
+            <a class="anchor-link" href="#sql-execution-order">#</a>
+            <span class="rarity rarity-rare">Rare</span>
+            <h3>Query Execution Order</h3>
+            <ol>
+                <li><strong>FROM</strong> &amp; JOINs</li>
+                <li><strong>WHERE</strong></li>
+                <li><strong>GROUP BY</strong></li>
+                <li><strong>HAVING</strong></li>
+                <li><strong>SELECT</strong></li>
+                <li><strong>ORDER BY</strong></li>
+                <li><strong>LIMIT</strong></li>
+            </ol>
+        </div>
+
+        <!-- 2. JOIN Types [Common] -->
+        <div class="card common" id="sql-joins">
+            <a class="anchor-link" href="#sql-joins">#</a>
+            <span class="rarity rarity-common">Common</span>
+            <h3>JOIN Types</h3>
+            <ul>
+                <li><strong>INNER JOIN</strong> &mdash; matching rows in both tables</li>
+                <li><strong>LEFT JOIN</strong> &mdash; all rows from left + matches</li>
+                <li><strong>RIGHT JOIN</strong> &mdash; all rows from right + matches</li>
+                <li><strong>FULL OUTER JOIN</strong> &mdash; all rows from both</li>
+                <li><strong>CROSS JOIN</strong> &mdash; cartesian product</li>
+                <li><strong>SELF JOIN</strong> &mdash; table joined to itself</li>
+            </ul>
+        </div>
+
+        <!-- 3. Window Functions [Legendary] -->
+        <div class="card legendary" id="sql-window">
+            <a class="anchor-link" href="#sql-window">#</a>
+            <span class="rarity rarity-legendary">Legendary</span>
+            <h3>Window Functions</h3>
+            <p>Compute values across a set of rows related to the current row, without collapsing them.</p>
+<pre><span class="kw">SELECT</span>
+  name,
+  department,
+  salary,
+  <span class="fn">RANK</span>() <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> department
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> dept_rank
+<span class="kw">FROM</span> employees;</pre>
+        </div>
+
+        <!-- 4. Aggregation Gotchas [Rare] -->
+        <div class="card rare" id="sql-aggregation">
+            <a class="anchor-link" href="#sql-aggregation">#</a>
+            <span class="rarity rarity-rare">Rare</span>
+            <h3>Aggregation Gotchas</h3>
+            <ul>
+                <li><strong>COUNT(*)</strong> counts all rows; <strong>COUNT(col)</strong> skips NULLs</li>
+                <li><strong>AVG</strong> ignores NULLs &mdash; denominator shrinks</li>
+                <li>Non-aggregated columns in SELECT must be in <strong>GROUP BY</strong></li>
+                <li><strong>HAVING</strong> filters groups; <strong>WHERE</strong> filters rows</li>
+                <li><strong>DISTINCT</strong> inside aggregates: <code>COUNT(DISTINCT col)</code></li>
+            </ul>
+        </div>
+
+        <!-- 5. CTEs & Subqueries [Rare] -->
+        <div class="card rare" id="sql-ctes">
+            <a class="anchor-link" href="#sql-ctes">#</a>
+            <span class="rarity rarity-rare">Rare</span>
+            <h3>CTEs &amp; Subqueries</h3>
+            <p>CTEs improve readability and can reference prior CTEs.</p>
+<pre><span class="kw">WITH</span> monthly <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id,
+    <span class="fn">DATE_TRUNC</span>(<span class="str">'month'</span>, created_at) <span class="kw">AS</span> mth,
+    <span class="fn">SUM</span>(amount) <span class="kw">AS</span> total
+  <span class="kw">FROM</span> orders
+  <span class="kw">GROUP BY</span> <span class="num">1</span>, <span class="num">2</span>
+)
+<span class="kw">SELECT</span>
+  mth,
+  total,
+  <span class="fn">LAG</span>(total) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> mth) <span class="kw">AS</span> prev
+<span class="kw">FROM</span> monthly;</pre>
+        </div>
+
+        <!-- 6. Performance Tips [Common] -->
+        <div class="card common" id="sql-performance">
+            <a class="anchor-link" href="#sql-performance">#</a>
+            <span class="rarity rarity-common">Common</span>
+            <h3>Performance Tips</h3>
+            <ul>
+                <li>Add <strong>indexes</strong> on columns used in WHERE and JOIN</li>
+                <li>Avoid <strong>SELECT *</strong> &mdash; fetch only needed columns</li>
+                <li>Use <strong>EXISTS</strong> instead of <strong>IN</strong> for large subqueries</li>
+                <li>Filter early with <strong>WHERE</strong> to reduce row counts</li>
+                <li>Check execution plans with <strong>EXPLAIN ANALYZE</strong></li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Floor Boss -->
+    <section class="boss-section">
+        <h2 class="section-title"><span class="skull">&#128128;</span> Floor Boss <span class="muted">&#8212; prove your knowledge</span></h2>
+        <div class="quiz-list">
+
+            <div class="quiz-item">
+                <div class="quiz-q">Q1: What does <code>COUNT(*)</code> count?</div>
+                <div class="quiz-options">
+                    <button class="quiz-btn" data-correct="true">All rows including NULLs</button>
+                    <button class="quiz-btn">Only non-NULL rows</button>
+                    <button class="quiz-btn">Only distinct rows</button>
+                </div>
+            </div>
+
+            <div class="quiz-item">
+                <div class="quiz-q">Q2: Can you use a SELECT alias in WHERE?</div>
+                <div class="quiz-options">
+                    <button class="quiz-btn">Yes, aliases work everywhere</button>
+                    <button class="quiz-btn" data-correct="true">No, WHERE executes before SELECT</button>
+                    <button class="quiz-btn">Only with double quotes</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<!-- ── Footer ── -->
+<footer>
+    Claudea's DS Interview Prep &middot; v03 &middot; <a href="../index.html">Back to Gallery</a>
+</footer>
+
+<script>
+document.querySelectorAll('.quiz-options').forEach(group => {
+    group.addEventListener('click', e => {
+        const btn = e.target.closest('.quiz-btn');
+        if (!btn || btn.classList.contains('chosen')) return;
+
+        // Mark all buttons in this group as chosen to prevent re-clicks
+        group.querySelectorAll('.quiz-btn').forEach(b => b.classList.add('chosen'));
+
+        if (btn.dataset.correct === 'true') {
+            btn.classList.add('correct');
+        } else {
+            btn.classList.add('wrong');
+            // Reveal the correct answer
+            group.querySelector('[data-correct="true"]').classList.add('correct');
+        }
+    });
+});
+</script>
+
+</body>
+</html>

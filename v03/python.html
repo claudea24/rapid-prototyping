@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Python Pit — Claudea's DS Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0b0e14; --surface: #12161f; --surface2: #181d28;
+      --border: #1e2433; --text: #b8c0d0; --text-muted: #5c6478; --white: #e8ecf4;
+      --accent: #facc15; --hp: #ef4444; --mp: #3b82f6;
+      --glow: rgba(250,204,21,0.15);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 30% 40%, rgba(250,204,21,0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 70%, rgba(250,204,21,0.02) 0%, transparent 50%);
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(11,14,20,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand {
+      font-weight: 700; font-size: 0.95rem; color: var(--accent);
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    nav .brand .sword { font-size: 1.1rem; }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.75rem;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
+    nav .nav-links a.active {
+      background: rgba(250,204,21,0.1); color: var(--accent);
+      border: 1px solid rgba(250,204,21,0.25);
+    }
+    nav .nav-links a.battle { color: var(--hp); border: 1px solid rgba(239,68,68,0.3); }
+    nav .nav-links a.battle:hover { background: rgba(239,68,68,0.1); }
+
+    /* ── Header ── */
+    .header {
+      padding: 100px 32px 40px;
+      text-align: center; max-width: 720px; margin: 0 auto;
+    }
+    .header .floor-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 3px; padding: 6px 16px; border-radius: 20px;
+      background: var(--glow); color: var(--accent);
+      border: 1px solid rgba(250,204,21,0.2); margin-bottom: 24px;
+    }
+    .header h1 {
+      font-size: 2.4rem; font-weight: 700; color: var(--white);
+      line-height: 1.15; margin-bottom: 8px;
+    }
+    .header h1 em { font-style: normal; color: var(--accent); }
+    .header .subtitle {
+      font-size: 0.85rem; color: var(--text-muted); margin-bottom: 6px;
+    }
+    .header .flavor {
+      font-size: 0.8rem; color: var(--text-muted); font-style: italic;
+      max-width: 500px; margin: 0 auto;
+    }
+
+    /* ── Concept Cards ── */
+    .cards-section {
+      max-width: 900px; margin: 0 auto 48px; padding: 0 32px;
+    }
+    .cards-header {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cards-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .concept-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 28px; margin-bottom: 20px;
+      transition: all 0.25s; position: relative;
+    }
+    .concept-card:hover { border-color: #2a3040; transform: translateY(-2px); }
+
+    /* Rarity styles */
+    .concept-card.common { border-left: 3px solid #5c6478; }
+    .concept-card.rare { border-left: 3px solid var(--accent); }
+    .concept-card.legendary {
+      border-left: 3px solid var(--accent);
+      box-shadow: 0 0 20px rgba(250,204,21,0.08), inset 0 0 20px rgba(250,204,21,0.02);
+    }
+
+    .card-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 16px;
+    }
+    .card-top h2 {
+      font-size: 1.1rem; font-weight: 700; color: var(--white);
+    }
+    .rarity-tag {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; padding: 3px 10px; border-radius: 4px;
+      flex-shrink: 0; margin-left: 12px;
+    }
+    .rarity-tag.common { background: var(--surface2); color: var(--text-muted); }
+    .rarity-tag.rare { background: rgba(250,204,21,0.1); color: var(--accent); }
+    .rarity-tag.legendary {
+      background: rgba(250,204,21,0.15); color: var(--accent);
+      box-shadow: 0 0 8px rgba(250,204,21,0.2);
+    }
+
+    .card-body p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+
+    /* ── Code blocks ── */
+    pre {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 16px 18px; overflow-x: auto;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+      line-height: 1.7; color: var(--text);
+    }
+    pre + pre { margin-top: 10px; }
+    .kw  { color: #ff7b72; }
+    .fn  { color: #d2a8ff; }
+    .str { color: #a5d6ff; }
+    .cm  { color: #484f58; }
+    .num { color: #79c0ff; }
+
+    /* ── Table inside cards ── */
+    .ds-table {
+      width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.78rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .ds-table th {
+      text-align: left; padding: 8px 12px; font-weight: 600; color: var(--accent);
+      border-bottom: 1px solid var(--border); font-size: 0.72rem;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .ds-table td {
+      padding: 6px 12px; border-bottom: 1px solid var(--border); color: var(--text);
+    }
+    .ds-table tr:last-child td { border-bottom: none; }
+    .ds-table code {
+      font-family: 'JetBrains Mono', monospace; font-size: 0.76rem;
+      background: var(--surface2); padding: 2px 6px; border-radius: 3px;
+    }
+
+    /* ── Boss Section ── */
+    .boss-section {
+      max-width: 900px; margin: 0 auto 48px; padding: 0 32px;
+    }
+    .boss-header {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--hp); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .boss-header::after { content: ''; flex: 1; height: 1px; background: rgba(239,68,68,0.2); }
+
+    .quiz-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px; margin-bottom: 16px;
+    }
+    .quiz-card h3 {
+      font-size: 0.95rem; font-weight: 700; color: var(--white); margin-bottom: 14px;
+    }
+    .quiz-options { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-option {
+      display: block; width: 100%; text-align: left;
+      padding: 12px 16px; font-size: 0.82rem; font-family: 'Space Grotesk', sans-serif;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; color: var(--text); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-option:hover { border-color: var(--accent); color: var(--white); }
+    .quiz-option.correct {
+      border-color: #34d399; background: rgba(52,211,153,0.1); color: #34d399;
+    }
+    .quiz-option.wrong {
+      border-color: var(--hp); background: rgba(239,68,68,0.08); color: var(--hp);
+    }
+    .quiz-option:disabled { cursor: default; opacity: 0.7; }
+    .quiz-option:disabled:hover { border-color: var(--border); color: var(--text); }
+    .quiz-option.correct:disabled, .quiz-option.wrong:disabled { opacity: 1; }
+    .quiz-option.correct:disabled:hover { border-color: #34d399; color: #34d399; }
+    .quiz-option.wrong:disabled:hover { border-color: var(--hp); color: var(--hp); }
+    .quiz-feedback {
+      margin-top: 10px; font-size: 0.8rem; font-weight: 600;
+      display: none;
+    }
+    .quiz-feedback.show { display: block; }
+    .quiz-feedback.win { color: #34d399; }
+    .quiz-feedback.lose { color: var(--hp); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 32px; font-size: 0.75rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    /* ── Mobile ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.68rem; padding: 5px 8px; }
+      .header { padding: 80px 16px 32px; }
+      .header h1 { font-size: 1.8rem; }
+      .cards-section, .boss-section { padding: 0 16px; }
+      .concept-card { padding: 20px; }
+      pre { font-size: 0.72rem; padding: 12px 14px; }
+      .card-top { flex-direction: column; gap: 8px; }
+      .rarity-tag { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand"><span class="sword">&#9876;</span> Claudea's DS Prep</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html" class="active">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+    <a href="quiz.html" class="battle">Battle</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<div class="header">
+  <div class="floor-badge">&#128013; 6 Floors &middot; The Python Pit</div>
+  <h1>The <em>Python</em> Pit</h1>
+  <p class="subtitle">6 floors of data structures, libraries, and patterns</p>
+  <p class="flavor">"Descend carefully, adventurer. The serpents here guard powerful spells &mdash; tame them, and no dataset shall defy you."</p>
+</div>
+
+<!-- Concept Cards -->
+<div class="cards-section">
+  <div class="cards-header">Loot Cards</div>
+
+  <!-- Card 1: Data Structures Complexity -->
+  <div class="concept-card common" id="py-structures">
+    <div class="card-top">
+      <h2>Data Structures Complexity</h2>
+      <span class="rarity-tag common">Common</span>
+    </div>
+    <div class="card-body">
+      <p>Know the time complexity of every built-in structure. Interviewers love these.</p>
+      <table class="ds-table">
+        <thead>
+          <tr><th>Structure</th><th>Access</th><th>Search</th><th>Insert</th><th>Delete</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>list</code></td><td>O(1)</td><td>O(n)</td><td>O(n)</td><td>O(n)</td></tr>
+          <tr><td><code>dict</code></td><td>O(1)</td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td></tr>
+          <tr><td><code>set</code></td><td>&mdash;</td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td></tr>
+          <tr><td><code>deque</code></td><td>O(n)</td><td>O(n)</td><td>O(1)</td><td>O(1)</td></tr>
+          <tr><td><code>heapq</code></td><td>O(1) min</td><td>O(n)</td><td>O(log n)</td><td>O(log n)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Card 2: Pandas Essentials -->
+  <div class="concept-card rare" id="py-pandas">
+    <div class="card-top">
+      <h2>Pandas Essentials</h2>
+      <span class="rarity-tag rare">Rare</span>
+    </div>
+    <div class="card-body">
+      <p>The bread and butter of data manipulation. Master these and you can wrangle anything.</p>
+<pre><span class="cm"># groupby &mdash; aggregate by category</span>
+df.<span class="fn">groupby</span>(<span class="str">'region'</span>)[<span class="str">'sales'</span>].<span class="fn">mean</span>()
+
+<span class="cm"># merge &mdash; SQL-style join</span>
+pd.<span class="fn">merge</span>(left, right, <span class="kw">on</span>=<span class="str">'id'</span>, <span class="kw">how</span>=<span class="str">'left'</span>)
+
+<span class="cm"># pivot_table &mdash; reshape data</span>
+df.<span class="fn">pivot_table</span>(<span class="kw">values</span>=<span class="str">'revenue'</span>, <span class="kw">index</span>=<span class="str">'month'</span>,
+              <span class="kw">columns</span>=<span class="str">'product'</span>, <span class="kw">aggfunc</span>=<span class="str">'sum'</span>)
+
+<span class="cm"># fillna &amp; apply &mdash; clean + transform</span>
+df[<span class="str">'col'</span>].<span class="fn">fillna</span>(<span class="num">0</span>)
+df[<span class="str">'col'</span>].<span class="fn">apply</span>(<span class="kw">lambda</span> x: x ** <span class="num">2</span>)</pre>
+    </div>
+  </div>
+
+  <!-- Card 3: NumPy Patterns -->
+  <div class="concept-card common" id="py-numpy">
+    <div class="card-top">
+      <h2>NumPy Patterns</h2>
+      <span class="rarity-tag common">Common</span>
+    </div>
+    <div class="card-body">
+      <p>Vectorized operations are the key to fast numerical computing. Skip the for-loops.</p>
+<pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.<span class="fn">array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>])
+np.<span class="fn">mean</span>(a)                  <span class="cm"># 3.0</span>
+np.<span class="fn">dot</span>(a, a)                <span class="cm"># 55</span>
+
+<span class="cm"># linear algebra</span>
+M = np.<span class="fn">array</span>([[<span class="num">1</span>,<span class="num">2</span>],[<span class="num">3</span>,<span class="num">4</span>]])
+np.linalg.<span class="fn">inv</span>(M)           <span class="cm"># matrix inverse</span>
+np.linalg.<span class="fn">eig</span>(M)           <span class="cm"># eigenvalues</span>
+
+<span class="cm"># boolean indexing</span>
+a[a > <span class="num">3</span>]                    <span class="cm"># array([4, 5])</span>
+M[M % <span class="num">2</span> == <span class="num">0</span>]              <span class="cm"># array([2, 4])</span></pre>
+    </div>
+  </div>
+
+  <!-- Card 4: Common Coding Patterns -->
+  <div class="concept-card rare" id="py-patterns">
+    <div class="card-top">
+      <h2>Common Coding Patterns</h2>
+      <span class="rarity-tag rare">Rare</span>
+    </div>
+    <div class="card-body">
+      <p>Patterns that show up again and again in DS coding rounds. Know them cold.</p>
+<pre><span class="cm"># Two pointers</span>
+<span class="kw">def</span> <span class="fn">two_sum_sorted</span>(nums, target):
+    l, r = <span class="num">0</span>, <span class="fn">len</span>(nums) - <span class="num">1</span>
+    <span class="kw">while</span> l < r:
+        s = nums[l] + nums[r]
+        <span class="kw">if</span> s == target: <span class="kw">return</span> [l, r]
+        <span class="kw">elif</span> s < target: l += <span class="num">1</span>
+        <span class="kw">else</span>: r -= <span class="num">1</span>
+
+<span class="cm"># Hash map for O(1) lookup</span>
+seen = {}
+<span class="kw">for</span> i, v <span class="kw">in</span> <span class="fn">enumerate</span>(nums):
+    <span class="kw">if</span> target - v <span class="kw">in</span> seen:
+        <span class="kw">return</span> [seen[target - v], i]
+    seen[v] = i
+
+<span class="cm"># Sliding window</span>
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+window = Counter(s[:k])
+<span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(k, <span class="fn">len</span>(s)):
+    window[s[i]] += <span class="num">1</span>
+    window[s[i - k]] -= <span class="num">1</span></pre>
+    </div>
+  </div>
+
+  <!-- Card 5: String & List Tricks -->
+  <div class="concept-card common" id="py-tricks">
+    <div class="card-top">
+      <h2>String &amp; List Tricks</h2>
+      <span class="rarity-tag common">Common</span>
+    </div>
+    <div class="card-body">
+      <p>Pythonic one-liners that speed up your coding and impress interviewers.</p>
+<pre><span class="cm"># List comprehension</span>
+squares = [x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>) <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]
+
+<span class="cm"># zip &mdash; iterate in parallel</span>
+<span class="kw">for</span> name, score <span class="kw">in</span> <span class="fn">zip</span>(names, scores):
+    <span class="fn">print</span>(<span class="kw">f</span><span class="str">"{name}: {score}"</span>)
+
+<span class="cm"># sorted with key</span>
+<span class="fn">sorted</span>(students, <span class="kw">key</span>=<span class="kw">lambda</span> s: s[<span class="num">1</span>], <span class="kw">reverse</span>=<span class="kw">True</span>)
+
+<span class="cm"># dict comprehension</span>
+freq = {ch: s.<span class="fn">count</span>(ch) <span class="kw">for</span> ch <span class="kw">in</span> <span class="fn">set</span>(s)}
+
+<span class="cm"># unpacking</span>
+first, *middle, last = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]</pre>
+    </div>
+  </div>
+
+  <!-- Card 6: Gotchas -->
+  <div class="concept-card legendary" id="py-gotchas">
+    <div class="card-top">
+      <h2>Gotchas</h2>
+      <span class="rarity-tag legendary">Legendary</span>
+    </div>
+    <div class="card-body">
+      <p>These traps have ended many interview runs. Study them or perish.</p>
+<pre><span class="cm"># Mutable default argument &mdash; DANGER</span>
+<span class="kw">def</span> <span class="fn">bad</span>(x=[]):       <span class="cm"># list is shared across calls!</span>
+    x.<span class="fn">append</span>(<span class="num">1</span>)
+    <span class="kw">return</span> x
+<span class="fn">bad</span>()                  <span class="cm"># [1]</span>
+<span class="fn">bad</span>()                  <span class="cm"># [1, 1]  &lt;-- not [1]!</span>
+
+<span class="cm"># Shallow copy trap</span>
+a = [[<span class="num">1</span>, <span class="num">2</span>], [<span class="num">3</span>, <span class="num">4</span>]]
+b = a.<span class="fn">copy</span>()           <span class="cm"># shallow! inner lists shared</span>
+b[<span class="num">0</span>].<span class="fn">append</span>(<span class="num">99</span>)
+<span class="fn">print</span>(a[<span class="num">0</span>])            <span class="cm"># [1, 2, 99] &mdash; surprise!</span>
+
+<span class="cm"># Integer division</span>
+<span class="num">7</span> / <span class="num">2</span>                   <span class="cm"># 3.5  (true division)</span>
+<span class="num">7</span> // <span class="num">2</span>                  <span class="cm"># 3    (floor division)</span>
+-<span class="num">7</span> // <span class="num">2</span>                 <span class="cm"># -4   (floors toward -inf!)</span>
+
+<span class="cm"># is vs ==</span>
+a = [<span class="num">1</span>, <span class="num">2</span>]; b = [<span class="num">1</span>, <span class="num">2</span>]
+a == b                  <span class="cm"># True  (equal values)</span>
+a <span class="kw">is</span> b                  <span class="cm"># False (different objects)</span></pre>
+    </div>
+  </div>
+</div>
+
+<!-- Floor Boss -->
+<div class="boss-section">
+  <div class="boss-header">&#9876; Floor Boss</div>
+
+  <div class="quiz-card" id="boss-q1">
+    <h3>Q1: What is the average time complexity of a <code style="font-family:'JetBrains Mono',monospace;background:var(--surface2);padding:2px 6px;border-radius:3px;">dict</code> lookup in Python?</h3>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="answerQuiz('boss-q1', this, false)">O(n)</button>
+      <button class="quiz-option" onclick="answerQuiz('boss-q1', this, false)">O(log n)</button>
+      <button class="quiz-option" onclick="answerQuiz('boss-q1', this, true)">O(1) average</button>
+      <button class="quiz-option" onclick="answerQuiz('boss-q1', this, false)">O(n log n)</button>
+    </div>
+    <div class="quiz-feedback" id="boss-q1-fb"></div>
+  </div>
+
+  <div class="quiz-card" id="boss-q2">
+    <h3>Q2: Why is <code style="font-family:'JetBrains Mono',monospace;background:var(--surface2);padding:2px 6px;border-radius:3px;">def f(x=[])</code> dangerous?</h3>
+    <div class="quiz-options">
+      <button class="quiz-option" onclick="answerQuiz('boss-q2', this, false)">It raises a SyntaxError</button>
+      <button class="quiz-option" onclick="answerQuiz('boss-q2', this, true)">Default list is shared across calls</button>
+      <button class="quiz-option" onclick="answerQuiz('boss-q2', this, false)">It creates a new list each time</button>
+      <button class="quiz-option" onclick="answerQuiz('boss-q2', this, false)">Lists cannot be function arguments</button>
+    </div>
+    <div class="quiz-feedback" id="boss-q2-fb"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; The Python Pit &middot; <a href="index.html">Back to Hub</a></p>
+</footer>
+
+<script>
+  function answerQuiz(cardId, btn, isCorrect) {
+    const card = document.getElementById(cardId);
+    const buttons = card.querySelectorAll('.quiz-option');
+    const fb = document.getElementById(cardId + '-fb');
+
+    // Disable all buttons
+    buttons.forEach(b => { b.disabled = true; });
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      fb.textContent = '✓ Correct! Boss takes damage.';
+      fb.className = 'quiz-feedback show win';
+    } else {
+      btn.classList.add('wrong');
+      // Highlight correct answer
+      buttons.forEach(b => {
+        if (b.onclick && b.onclick.toString().includes('true')) {
+          b.classList.add('correct');
+        }
+      });
+      fb.textContent = '✗ Defeated! Review the loot cards above.';
+      fb.className = 'quiz-feedback show lose';
+    }
+  }
+
+  // Fix: mark correct answers via data attributes instead of parsing onclick
+  document.querySelectorAll('.quiz-option').forEach(btn => {
+    const onclickStr = btn.getAttribute('onclick');
+    if (onclickStr && onclickStr.includes('true')) {
+      btn.dataset.correct = 'true';
+    }
+  });
+
+  // Override answerQuiz to use data attributes for highlighting
+  function answerQuiz(cardId, btn, isCorrect) {
+    const card = document.getElementById(cardId);
+    const buttons = card.querySelectorAll('.quiz-option');
+    const fb = document.getElementById(cardId + '-fb');
+
+    buttons.forEach(b => { b.disabled = true; });
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      fb.textContent = '\u2713 Correct! Boss takes damage.';
+      fb.className = 'quiz-feedback show win';
+    } else {
+      btn.classList.add('wrong');
+      buttons.forEach(b => {
+        if (b.dataset.correct === 'true') b.classList.add('correct');
+      });
+      fb.textContent = '\u2717 Defeated! Review the loot cards above.';
+      fb.className = 'quiz-feedback show lose';
+    }
+  }
+</script>
+
+</body>
+</html>

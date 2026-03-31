@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The ML Forge — Claudea's DS Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0b0e14; --surface: #12161f; --surface2: #181d28;
+      --border: #1e2433; --text: #b8c0d0; --text-muted: #5c6478; --white: #e8ecf4;
+      --xp: #facc15; --hp: #ef4444; --mp: #3b82f6;
+      --accent: #a78bfa;
+      --glow-accent: rgba(167,139,250,0.15);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--bg); color: var(--text); min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 30% 20%, rgba(167,139,250,0.04) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 60%, rgba(167,139,250,0.03) 0%, transparent 50%);
+    }
+    code, .mono { font-family: 'JetBrains Mono', monospace; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(11,14,20,0.88); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand {
+      font-weight: 700; font-size: 0.95rem; color: var(--xp);
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    nav .brand .sword { font-size: 1.1rem; }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.75rem;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
+    nav .nav-links a.active {
+      background: var(--glow-accent); color: var(--accent);
+      border: 1px solid rgba(167,139,250,0.3);
+    }
+    nav .nav-links a.battle { color: var(--hp); border: 1px solid rgba(239,68,68,0.3); }
+    nav .nav-links a.battle:hover { background: rgba(239,68,68,0.1); }
+
+    /* ── Header ── */
+    .page-header {
+      padding: 100px 32px 48px;
+      text-align: center; max-width: 700px; margin: 0 auto;
+    }
+    .page-header .floor-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 3px; padding: 6px 16px; border-radius: 20px;
+      background: var(--glow-accent); color: var(--accent);
+      border: 1px solid rgba(167,139,250,0.2); margin-bottom: 24px;
+    }
+    .page-header h1 {
+      font-size: 2.4rem; font-weight: 700; color: var(--white);
+      line-height: 1.15; margin-bottom: 12px;
+    }
+    .page-header h1 em { font-style: normal; color: var(--accent); }
+    .page-header p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; }
+
+    /* ── Concept Cards ── */
+    .cards-section {
+      max-width: 900px; margin: 0 auto 48px; padding: 0 32px;
+    }
+    .cards-header {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--text-muted); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cards-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+    .concept-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 12px; padding: 24px; margin-bottom: 16px;
+      transition: all 0.25s; cursor: pointer; position: relative;
+    }
+    .concept-card:hover { border-color: #2a3040; transform: translateY(-2px); }
+
+    /* Rarity: Common */
+    .concept-card.rarity-common .rarity-tag { color: #6b7280; }
+
+    /* Rarity: Rare */
+    .concept-card.rarity-rare { border-left: 3px solid var(--accent); }
+    .concept-card.rarity-rare .rarity-tag { color: var(--accent); }
+
+    /* Rarity: Legendary */
+    .concept-card.rarity-legendary {
+      border-color: rgba(250,204,21,0.3);
+      box-shadow: 0 0 20px rgba(250,204,21,0.06), inset 0 0 20px rgba(250,204,21,0.02);
+    }
+    .concept-card.rarity-legendary:hover { border-color: rgba(250,204,21,0.5); }
+    .concept-card.rarity-legendary .rarity-tag { color: var(--xp); }
+
+    .card-top {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px;
+    }
+    .card-top h2 { font-size: 1.1rem; font-weight: 700; color: var(--white); }
+    .rarity-tag {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; padding: 3px 10px; border-radius: 4px;
+      background: var(--surface2);
+    }
+
+    .card-body { display: none; padding-top: 8px; }
+    .concept-card.open .card-body { display: block; }
+    .card-toggle {
+      font-size: 0.78rem; color: var(--accent); font-weight: 500;
+      display: flex; align-items: center; gap: 4px;
+    }
+    .concept-card.open .card-toggle .arrow { transform: rotate(180deg); }
+    .card-toggle .arrow { transition: transform 0.2s; display: inline-block; }
+
+    .card-body ul {
+      list-style: none; padding: 0; margin: 0;
+    }
+    .card-body ul li {
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+      font-size: 0.82rem; color: var(--text); line-height: 1.6;
+    }
+    .card-body ul li:last-child { border-bottom: none; }
+    .card-body ul li strong { color: var(--white); font-weight: 600; }
+    .card-body ul li code {
+      font-size: 0.75rem; background: var(--surface2); padding: 2px 6px;
+      border-radius: 4px; color: var(--accent);
+    }
+
+    /* ── Floor Boss ── */
+    .boss-section {
+      max-width: 900px; margin: 0 auto 64px; padding: 0 32px;
+    }
+    .boss-header {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--hp); margin-bottom: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .boss-header::after { content: ''; flex: 1; height: 1px; background: rgba(239,68,68,0.2); }
+    .boss-card {
+      background: var(--surface); border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 12px; padding: 28px; margin-bottom: 16px;
+    }
+    .boss-card .boss-label {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--hp); margin-bottom: 12px;
+    }
+    .boss-card .boss-question {
+      font-size: 1rem; font-weight: 600; color: var(--white); margin-bottom: 16px;
+      line-height: 1.5;
+    }
+    .boss-answers { display: flex; flex-direction: column; gap: 8px; }
+    .boss-answer {
+      padding: 12px 16px; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; font-size: 0.82rem; color: var(--text);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .boss-answer:hover { border-color: var(--accent); color: var(--white); }
+    .boss-answer.correct {
+      border-color: #34d399; background: rgba(52,211,153,0.1); color: #34d399;
+    }
+    .boss-answer.wrong {
+      border-color: var(--hp); background: rgba(239,68,68,0.1); color: var(--hp);
+    }
+    .boss-answer.disabled { pointer-events: none; opacity: 0.6; }
+    .boss-answer.disabled.correct { opacity: 1; }
+    .boss-result {
+      margin-top: 12px; font-size: 0.8rem; font-weight: 600; display: none;
+    }
+    .boss-result.show { display: block; }
+    .boss-result.win { color: #34d399; }
+    .boss-result.lose { color: var(--hp); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 32px; font-size: 0.75rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.68rem; padding: 5px 8px; }
+      .page-header { padding: 80px 16px 32px; }
+      .page-header h1 { font-size: 1.8rem; }
+      .cards-section, .boss-section { padding: 0 16px; }
+      .card-top { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand"><span class="sword">&#9876;</span> Claudea's DS Prep</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html" class="active">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+    <a href="quiz.html" class="battle">Battle</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<div class="page-header">
+  <div class="floor-badge">&#129302; 6 floors &middot; The ML Forge</div>
+  <h1>The <em>ML Forge</em></h1>
+  <p>Step into the forge where raw data is smelted into predictive power. Train your algorithms on six floors of supervised learners, unsupervised explorers, and the legendary bias-variance tradeoff.</p>
+</div>
+
+<!-- Concept Cards -->
+<div class="cards-section">
+  <div class="cards-header">Concept Cards</div>
+
+  <!-- Card 1: Supervised Algorithms -->
+  <div class="concept-card rarity-common" id="ml-supervised" onclick="toggleCard(this)">
+    <div class="card-top">
+      <h2>Supervised Algorithms</h2>
+      <span class="rarity-tag">Common</span>
+    </div>
+    <div class="card-toggle"><span class="arrow">&#9660;</span>&nbsp; Expand</div>
+    <div class="card-body">
+      <ul>
+        <li><strong>Linear Regression</strong> &mdash; fits a line to minimize MSE. Assumes linearity, independence, homoscedasticity. Coefficients are interpretable.</li>
+        <li><strong>Logistic Regression</strong> &mdash; sigmoid function maps linear output to <code>[0, 1]</code> probability. Decision boundary is linear. Uses log-loss.</li>
+        <li><strong>Decision Trees</strong> &mdash; recursive splits on features using Gini impurity or information gain. Prone to overfitting without pruning.</li>
+        <li><strong>Random Forest</strong> &mdash; ensemble of bagged trees with random feature subsets. Reduces variance via averaging. Robust to outliers.</li>
+        <li><strong>XGBoost</strong> &mdash; gradient-boosted trees trained sequentially. Each tree corrects residuals of the previous. Regularized (L1/L2).</li>
+        <li><strong>SVM</strong> &mdash; finds the maximum-margin hyperplane. Kernel trick enables non-linear boundaries. <code>C</code> controls margin softness.</li>
+        <li><strong>KNN</strong> &mdash; classifies by majority vote of <code>k</code> nearest neighbors. Lazy learner (no training phase). Sensitive to feature scaling.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Card 2: Unsupervised Algorithms -->
+  <div class="concept-card rarity-common" id="ml-unsupervised" onclick="toggleCard(this)">
+    <div class="card-top">
+      <h2>Unsupervised Algorithms</h2>
+      <span class="rarity-tag">Common</span>
+    </div>
+    <div class="card-toggle"><span class="arrow">&#9660;</span>&nbsp; Expand</div>
+    <div class="card-body">
+      <ul>
+        <li><strong>K-Means</strong> &mdash; iteratively assigns points to nearest centroid, then recomputes centroids. Choose <code>k</code> via elbow method or silhouette score.</li>
+        <li><strong>Hierarchical Clustering</strong> &mdash; agglomerative (bottom-up) or divisive (top-down). Produces a dendrogram. No need to prespecify <code>k</code>.</li>
+        <li><strong>DBSCAN</strong> &mdash; density-based clustering. Finds arbitrary-shaped clusters and identifies outliers as noise. Params: <code>eps</code>, <code>min_samples</code>.</li>
+        <li><strong>PCA</strong> &mdash; projects data onto principal components (directions of max variance). Used for dimensionality reduction. Linear method.</li>
+        <li><strong>t-SNE / UMAP</strong> &mdash; non-linear dimensionality reduction for visualization. t-SNE preserves local structure; UMAP is faster and preserves more global structure.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Card 3: Evaluation Metrics -->
+  <div class="concept-card rarity-rare" id="ml-metrics" onclick="toggleCard(this)">
+    <div class="card-top">
+      <h2>Evaluation Metrics</h2>
+      <span class="rarity-tag">Rare</span>
+    </div>
+    <div class="card-toggle"><span class="arrow">&#9660;</span>&nbsp; Expand</div>
+    <div class="card-body">
+      <ul>
+        <li><strong>Accuracy</strong> &mdash; correct predictions / total. Misleading on imbalanced datasets (e.g., 99% negative class).</li>
+        <li><strong>Precision</strong> &mdash; <code>TP / (TP + FP)</code>. How many predicted positives are actually positive. Prioritize when false positives are costly.</li>
+        <li><strong>Recall</strong> &mdash; <code>TP / (TP + FN)</code>. How many actual positives are found. Prioritize when false negatives are costly (e.g., cancer screening).</li>
+        <li><strong>F1 Score</strong> &mdash; harmonic mean of precision and recall. Balances both when classes are imbalanced.</li>
+        <li><strong>AUC-ROC</strong> &mdash; area under the ROC curve (TPR vs FPR). Threshold-independent measure of model discrimination. 0.5 = random, 1.0 = perfect.</li>
+        <li><strong>RMSE / MAE</strong> &mdash; regression metrics. RMSE penalizes large errors more (squared). MAE is more robust to outliers. Both in original units.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Card 4: Bias-Variance Tradeoff -->
+  <div class="concept-card rarity-legendary" id="ml-bias-variance" onclick="toggleCard(this)">
+    <div class="card-top">
+      <h2>Bias-Variance Tradeoff</h2>
+      <span class="rarity-tag">Legendary</span>
+    </div>
+    <div class="card-toggle"><span class="arrow">&#9660;</span>&nbsp; Expand</div>
+    <div class="card-body">
+      <ul>
+        <li><strong>Bias (Underfitting)</strong> &mdash; error from overly simplistic models that miss patterns. High bias = high training error. Example: linear model on non-linear data.</li>
+        <li><strong>Variance (Overfitting)</strong> &mdash; error from models too sensitive to training noise. High variance = low train error, high test error. Example: deep unpruned tree.</li>
+        <li><strong>The Tradeoff</strong> &mdash; <code>Total Error = Bias&sup2; + Variance + Irreducible Noise</code>. Increasing model complexity lowers bias but raises variance. Sweet spot minimizes total error.</li>
+        <li><strong>L1 Regularization (Lasso)</strong> &mdash; adds <code>|w|</code> penalty. Drives coefficients to zero, performing feature selection. Produces sparse models.</li>
+        <li><strong>L2 Regularization (Ridge)</strong> &mdash; adds <code>w&sup2;</code> penalty. Shrinks coefficients toward zero but never exactly zero. Handles multicollinearity well.</li>
+        <li><strong>Elastic Net</strong> &mdash; combines L1 + L2. Balances sparsity and coefficient shrinkage. Useful when features are correlated.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Card 5: Feature Engineering -->
+  <div class="concept-card rarity-rare" id="ml-features" onclick="toggleCard(this)">
+    <div class="card-top">
+      <h2>Feature Engineering</h2>
+      <span class="rarity-tag">Rare</span>
+    </div>
+    <div class="card-toggle"><span class="arrow">&#9660;</span>&nbsp; Expand</div>
+    <div class="card-body">
+      <ul>
+        <li><strong>One-Hot Encoding</strong> &mdash; creates binary columns for each category. Use for nominal (unordered) features. Watch out for high-cardinality explosion.</li>
+        <li><strong>Label Encoding</strong> &mdash; maps categories to integers. Suitable for ordinal features (e.g., low/medium/high). Tree models handle this well.</li>
+        <li><strong>Scaling</strong> &mdash; StandardScaler (zero mean, unit variance) for Gaussian-like data. MinMaxScaler for bounded ranges. Required by SVM, KNN, and neural nets.</li>
+        <li><strong>Log Transform</strong> &mdash; compresses right-skewed distributions. Useful for features like income, price, or counts. Apply <code>log(x + 1)</code> for zeros.</li>
+        <li><strong>Feature Crosses</strong> &mdash; multiply or combine features to capture interactions. Example: <code>city &times; device_type</code>. Adds non-linearity to linear models.</li>
+        <li><strong>Target Encoding</strong> &mdash; replaces categories with mean of the target variable. Powerful but prone to data leakage; use with cross-validation folds.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Card 6: Cross-Validation -->
+  <div class="concept-card rarity-rare" id="ml-cv" onclick="toggleCard(this)">
+    <div class="card-top">
+      <h2>Cross-Validation</h2>
+      <span class="rarity-tag">Rare</span>
+    </div>
+    <div class="card-toggle"><span class="arrow">&#9660;</span>&nbsp; Expand</div>
+    <div class="card-body">
+      <ul>
+        <li><strong>k-Fold CV</strong> &mdash; splits data into <code>k</code> folds, trains on <code>k-1</code>, validates on the held-out fold. Repeats <code>k</code> times. Standard: <code>k = 5</code> or <code>10</code>.</li>
+        <li><strong>Stratified k-Fold</strong> &mdash; preserves class distribution in each fold. Essential for imbalanced datasets. Default in scikit-learn for classification.</li>
+        <li><strong>Time Series CV</strong> &mdash; expanding or sliding window splits that respect temporal order. Never use future data to predict the past.</li>
+        <li><strong>Data Leakage Warning</strong> &mdash; fitting preprocessing (scaling, encoding, imputation) on the full dataset before splitting leaks test information into training. Always fit transformers inside the CV loop.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- Floor Boss -->
+<div class="boss-section">
+  <div class="boss-header">&#9876; Floor Boss</div>
+
+  <div class="boss-card" id="boss1">
+    <div class="boss-label">Question 1 of 2</div>
+    <div class="boss-question">A Random Forest reduces which component of prediction error compared to a single decision tree?</div>
+    <div class="boss-answers">
+      <div class="boss-answer" onclick="answerBoss('boss1', this, 0)">Bias</div>
+      <div class="boss-answer" onclick="answerBoss('boss1', this, 1)">Variance</div>
+      <div class="boss-answer" onclick="answerBoss('boss1', this, 2)">Irreducible noise</div>
+      <div class="boss-answer" onclick="answerBoss('boss1', this, 3)">Training time</div>
+    </div>
+    <div class="boss-result" id="boss1-result"></div>
+  </div>
+
+  <div class="boss-card" id="boss2">
+    <div class="boss-label">Question 2 of 2</div>
+    <div class="boss-question">If you fit a StandardScaler on the entire dataset before splitting into cross-validation folds, what risk do you introduce?</div>
+    <div class="boss-answers">
+      <div class="boss-answer" onclick="answerBoss('boss2', this, 0)">Underfitting</div>
+      <div class="boss-answer" onclick="answerBoss('boss2', this, 1)">Data leakage</div>
+      <div class="boss-answer" onclick="answerBoss('boss2', this, 2)">Class imbalance</div>
+      <div class="boss-answer" onclick="answerBoss('boss2', this, 3)">Multicollinearity</div>
+    </div>
+    <div class="boss-result" id="boss2-result"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; v03 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<script>
+  // Toggle concept cards open/close
+  function toggleCard(card) {
+    card.classList.toggle('open');
+    const toggle = card.querySelector('.card-toggle');
+    if (card.classList.contains('open')) {
+      toggle.innerHTML = '<span class="arrow" style="transform:rotate(180deg)">&#9660;</span>&nbsp; Collapse';
+    } else {
+      toggle.innerHTML = '<span class="arrow">&#9660;</span>&nbsp; Expand';
+    }
+  }
+
+  // Boss battle answers
+  const bossCorrect = { boss1: 1, boss2: 1 };
+
+  function answerBoss(bossId, el, idx) {
+    const card = document.getElementById(bossId);
+    const answers = card.querySelectorAll('.boss-answer');
+    const result = document.getElementById(bossId + '-result');
+    const correct = bossCorrect[bossId];
+
+    // Disable all answers
+    answers.forEach(a => a.classList.add('disabled'));
+
+    if (idx === correct) {
+      el.classList.add('correct');
+      result.textContent = 'Correct! The boss takes damage!';
+      result.className = 'boss-result show win';
+    } else {
+      el.classList.add('wrong');
+      answers[correct].classList.add('correct');
+      result.textContent = 'Defeated! The correct answer is highlighted above.';
+      result.className = 'boss-result show lose';
+    }
+  }
+</script>
+
+</body>
+</html>
