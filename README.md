@@ -21,8 +21,8 @@ Each topic gets a **cheat sheet** reference section and there is a **quiz** sect
 
 | Version | Name | What Changed |
 |---------|------|-------------|
-| **v01** | Bare Bones | Bare-bone placeholder for all 6 topics (SQL, Python, ML, Stats, Probability, Casing) and sample quizzes with minimal content. No direct links yet. |
-| v02 | Typography & Color | Inter + JetBrains Mono fonts, dark color palette |
+| **v01** | Bare Bones | Single scrolling page covering all 6 topics (SQL, Python, ML, Stats, Probability, Casing) with cheat sheet cards, sample quiz questions, and minimal content |
+| **v02** | Multi-Page Layout | Reorganized into separate pages — home with topic buttons (Strata-style), dedicated pages for each topic + quiz, top nav bar linking to all subpages |
 | v03 | Navigation | Sticky top nav with section links and scroll behavior |
 | v04 | Hero Section | Full-width hero with title, topic pills, intro copy |
 | v05 | SQL Content | Real SQL cheat sheet — query order, JOINs, window functions, CTEs |

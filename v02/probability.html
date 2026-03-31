@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probability – Claudea's DS Interview Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #21262d;
+      --text: #c9d1d9; --text-muted: #8b949e; --text-dim: #484f58; --white: #e6edf3;
+      --green: #4ade80; --blue: #58a6ff; --yellow: #e3b341; --purple: #c084fc;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Nav */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand { font-weight: 800; font-size: 1rem; color: var(--white); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    nav .brand span { color: #4ade80; }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.78rem;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
+    nav .nav-links a.active { color: var(--white); background: var(--surface); }
+    nav .nav-links a.quiz-link { color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+    nav .nav-links a.quiz-link:hover { background: rgba(74,222,128,0.1); }
+
+    /* Container */
+    .container { max-width: 1120px; margin: 0 auto; padding: 40px 32px 64px; }
+
+    /* Section header */
+    .section-header { margin-bottom: 36px; }
+    .section-header .icon-title {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+    }
+    .section-header .icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; background: rgba(251,146,60,0.15);
+    }
+    .section-header h1 { font-size: 2rem; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+    .section-header p { font-size: 0.95rem; color: var(--text-muted); margin-left: 62px; }
+
+    /* Cards grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 28px; position: relative; transition: border-color 0.2s;
+      scroll-margin-top: 72px;
+    }
+    .card:hover { border-color: #3a3a4a; }
+
+    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .card-header h2 { font-size: 1rem; font-weight: 700; color: var(--white); }
+
+    .card .anchor-link {
+      position: absolute; top: 16px; right: 16px;
+      font-size: 0.85rem; color: var(--text-dim); text-decoration: none;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .card:hover .anchor-link { opacity: 1; }
+    .card .anchor-link:hover { color: var(--text-muted); }
+
+    /* Tags */
+    .tag {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 3px 8px; border-radius: 6px;
+    }
+    .tag-key { background: rgba(88,166,255,0.15); color: var(--blue); }
+    .tag-tip { background: rgba(74,222,128,0.15); color: var(--green); }
+    .tag-formula { background: rgba(192,132,252,0.15); color: var(--purple); }
+
+    /* Card content */
+    .card ul { list-style: none; padding: 0; }
+    .card ul li {
+      font-size: 0.85rem; color: var(--text); padding: 4px 0; line-height: 1.5;
+    }
+    .card ul li::before { content: ""; }
+    .card p.note { font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+
+    /* Formula blocks */
+    .formula-block {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+      padding: 12px 16px; font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem; color: var(--purple); text-align: center;
+      margin: 10px 0;
+    }
+
+    /* Code */
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+    .inline-code {
+      background: rgba(110,118,129,0.15); padding: 2px 6px; border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center; padding: 32px; font-size: 0.8rem; color: var(--text-dim);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
+      .container { padding: 24px 16px 48px; }
+      .section-header h1 { font-size: 1.5rem; }
+      .section-header p { margin-left: 0; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="brand"><span>&#9670;</span> Claudea's DS Prep</a>
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html" class="active">Probability</a>
+      <a href="casing.html">Casing</a>
+      <a href="quiz.html" class="quiz-link">Quiz</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="section-header">
+      <div class="icon-title">
+        <div class="icon">&#127922;</div>
+        <h1>Probability</h1>
+      </div>
+      <p>Rules, distributions, and Bayes' theorem</p>
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- Card 1: Fundamentals -->
+      <div class="card" id="prob-fundamentals">
+        <a href="#prob-fundamentals" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Fundamentals</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li>P(A or B) = P(A) + P(B) &minus; P(A and B)</li>
+          <li>P(A and B) = P(A) &middot; P(B|A)</li>
+          <li>Independent: P(A and B) = P(A) &middot; P(B)</li>
+          <li>Complement: P(A') = 1 &minus; P(A)</li>
+          <li>Permutations: n! / (n&minus;r)!</li>
+          <li>Combinations: n! / (r!(n&minus;r)!)</li>
+        </ul>
+      </div>
+
+      <!-- Card 2: Bayes' Theorem -->
+      <div class="card" id="prob-bayes">
+        <a href="#prob-bayes" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Bayes' Theorem</h2>
+          <span class="tag tag-formula">Formula</span>
+        </div>
+        <div class="formula-block">P(A|B) = P(B|A) &middot; P(A) / P(B)</div>
+        <p class="note">Prior &times; Likelihood / Evidence = Posterior</p>
+        <p class="note">Classic interview Q: "A test is 99% accurate. Disease prevalence is 1%. If positive, what's the probability you have it?" Answer: ~50%, not 99%!</p>
+      </div>
+
+      <!-- Card 3: Key Distributions -->
+      <div class="card" id="prob-distributions">
+        <a href="#prob-distributions" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Key Distributions</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>Bernoulli</strong> &mdash; single trial, p success</li>
+          <li><strong>Binomial</strong> &mdash; n trials, count successes</li>
+          <li><strong>Poisson</strong> &mdash; count of events in fixed interval (&lambda;)</li>
+          <li><strong>Geometric</strong> &mdash; trials until first success</li>
+          <li><strong>Normal</strong> &mdash; bell curve, defined by &mu; and &sigma;</li>
+          <li><strong>Exponential</strong> &mdash; time between Poisson events</li>
+          <li><strong>Uniform</strong> &mdash; equal probability over range</li>
+        </ul>
+      </div>
+
+      <!-- Card 4: Expected Value & Variance -->
+      <div class="card" id="prob-ev">
+        <a href="#prob-ev" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Expected Value &amp; Variance</h2>
+          <span class="tag tag-formula">Formula</span>
+        </div>
+        <div class="formula-block">E[X] = &Sigma; x &middot; P(x)</div>
+        <div class="formula-block">Var(X) = E[X&sup2;] &minus; (E[X])&sup2;</div>
+        <ul>
+          <li>E[aX + b] = aE[X] + b</li>
+          <li>Var(aX + b) = a&sup2; Var(X)</li>
+          <li>If independent: Var(X+Y) = Var(X) + Var(Y)</li>
+        </ul>
+      </div>
+
+      <!-- Card 5: Law of Large Numbers -->
+      <div class="card" id="prob-lln">
+        <a href="#prob-lln" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Law of Large Numbers</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <p style="font-size:0.85rem; line-height:1.6;">As sample size grows, the sample mean converges to the population mean. This is why A/B tests work &mdash; given enough data, observed averages reflect truth.</p>
+      </div>
+
+      <!-- Card 6: Classic Interview Puzzles -->
+      <div class="card" id="prob-puzzles">
+        <a href="#prob-puzzles" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Classic Interview Puzzles</h2>
+          <span class="tag tag-tip">Tip</span>
+        </div>
+        <ul>
+          <li><strong>Birthday problem</strong> &mdash; 23 people &rarr; ~50% chance of shared birthday</li>
+          <li><strong>Monty Hall</strong> &mdash; always switch (2/3 vs 1/3)</li>
+          <li><strong>Coupon collector</strong> &mdash; E[n] = n &middot; H(n) for n types</li>
+          <li><strong>Dice problems</strong> &mdash; use complementary counting or E[X]</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>Claudea's DS Interview Prep &middot; v02 &middot; <a href="index.html">Back to All Topics</a></p>
+  </footer>
+
+</body>
+</html>

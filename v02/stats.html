@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics – Claudea's DS Interview Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #21262d;
+      --text: #c9d1d9; --text-muted: #8b949e; --text-dim: #484f58; --white: #e6edf3;
+      --green: #4ade80; --blue: #58a6ff; --yellow: #e3b341; --purple: #c084fc;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Nav */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand { font-weight: 800; font-size: 1rem; color: var(--white); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    nav .brand span { color: #4ade80; }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.78rem;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
+    nav .nav-links a.active { color: var(--white); background: var(--surface); }
+    nav .nav-links a.quiz-link { color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+    nav .nav-links a.quiz-link:hover { background: rgba(74,222,128,0.1); }
+
+    /* Container */
+    .container { max-width: 1120px; margin: 0 auto; padding: 40px 32px 64px; }
+
+    /* Section header */
+    .section-header { margin-bottom: 36px; }
+    .section-header .icon-title {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+    }
+    .section-header .icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; background: rgba(45,212,191,0.15);
+    }
+    .section-header h1 { font-size: 2rem; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+    .section-header p { font-size: 0.95rem; color: var(--text-muted); margin-left: 62px; }
+
+    /* Cards grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 28px; position: relative; transition: border-color 0.2s;
+      scroll-margin-top: 72px;
+    }
+    .card:hover { border-color: #3a3a4a; }
+
+    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .card-header h2 { font-size: 1rem; font-weight: 700; color: var(--white); }
+
+    .card .anchor-link {
+      position: absolute; top: 16px; right: 16px;
+      font-size: 0.85rem; color: var(--text-dim); text-decoration: none;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .card:hover .anchor-link { opacity: 1; }
+    .card .anchor-link:hover { color: var(--text-muted); }
+
+    /* Tags */
+    .tag {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 3px 8px; border-radius: 6px;
+    }
+    .tag-key { background: rgba(88,166,255,0.15); color: var(--blue); }
+    .tag-tip { background: rgba(74,222,128,0.15); color: var(--green); }
+    .tag-warn { background: rgba(227,179,65,0.15); color: var(--yellow); }
+    .tag-formula { background: rgba(192,132,252,0.15); color: var(--purple); }
+
+    /* Card content */
+    .card ul { list-style: none; padding: 0; }
+    .card ul li {
+      font-size: 0.85rem; color: var(--text); padding: 4px 0; line-height: 1.5;
+    }
+    .card ul li::before { content: ""; }
+    .card ol { padding-left: 20px; }
+    .card ol li {
+      font-size: 0.85rem; color: var(--text); padding: 4px 0; line-height: 1.5;
+    }
+    .card p.note { font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+
+    /* Formula block */
+    .formula-block {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+      padding: 12px 16px; font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem; color: var(--purple); text-align: center;
+      margin: 12px 0;
+    }
+
+    /* Code */
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+    .inline-code {
+      background: rgba(110,118,129,0.15); padding: 2px 6px; border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center; padding: 32px; font-size: 0.8rem; color: var(--text-dim);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
+      .container { padding: 24px 16px 48px; }
+      .section-header h1 { font-size: 1.5rem; }
+      .section-header p { margin-left: 0; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="brand"><span>&#9670;</span> Claudea's DS Prep</a>
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html" class="active">Stats</a>
+      <a href="probability.html">Probability</a>
+      <a href="casing.html">Casing</a>
+      <a href="quiz.html" class="quiz-link">Quiz</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="section-header">
+      <div class="icon-title">
+        <div class="icon">&#128202;</div>
+        <h1>Statistics</h1>
+      </div>
+      <p>Hypothesis testing, distributions, and experiment design.</p>
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- Card 1: Descriptive Stats -->
+      <div class="card" id="stats-descriptive">
+        <a href="#stats-descriptive" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Descriptive Stats</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>Mean</strong> &mdash; sensitive to outliers</li>
+          <li><strong>Median</strong> &mdash; robust to outliers, better for skewed data</li>
+          <li><strong>Mode</strong> &mdash; most frequent value</li>
+          <li><strong>Variance</strong> &mdash; avg squared deviation from mean</li>
+          <li><strong>Std Dev</strong> &mdash; sqrt(variance), same units as data</li>
+          <li><strong>IQR</strong> &mdash; Q3 &minus; Q1, used for outlier detection</li>
+        </ul>
+      </div>
+
+      <!-- Card 2: Hypothesis Testing -->
+      <div class="card" id="stats-hypothesis">
+        <a href="#stats-hypothesis" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Hypothesis Testing</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>H0</strong> &mdash; null hypothesis (no effect / no difference)</li>
+          <li><strong>H1</strong> &mdash; alternative hypothesis</li>
+          <li><strong>p-value</strong> &mdash; P(data | H0 true). Reject H0 if p &lt; &alpha;</li>
+          <li><strong>Type I error</strong> &mdash; false positive (reject true H0)</li>
+          <li><strong>Type II error</strong> &mdash; false negative (fail to reject false H0)</li>
+          <li><strong>Power</strong> = 1 &minus; P(Type II) &mdash; probability of detecting real effect</li>
+        </ul>
+      </div>
+
+      <!-- Card 3: Common Tests -->
+      <div class="card" id="stats-tests">
+        <a href="#stats-tests" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Common Tests</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>z-test</strong> &mdash; known population variance, large n</li>
+          <li><strong>t-test</strong> &mdash; unknown variance, small n</li>
+          <li><strong>Paired t-test</strong> &mdash; before/after on same subjects</li>
+          <li><strong>Chi-squared</strong> &mdash; categorical independence</li>
+          <li><strong>ANOVA</strong> &mdash; compare means across 3+ groups</li>
+          <li><strong>Mann-Whitney U</strong> &mdash; non-parametric alternative to t-test</li>
+        </ul>
+      </div>
+
+      <!-- Card 4: A/B Testing -->
+      <div class="card" id="stats-ab">
+        <a href="#stats-ab" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>A/B Testing</h2>
+          <span class="tag tag-tip">Tip</span>
+        </div>
+        <ol>
+          <li>Define metric and hypothesis</li>
+          <li>Calculate sample size (power analysis)</li>
+          <li>Randomize users into control/treatment</li>
+          <li>Run for predetermined duration</li>
+          <li>Analyze with appropriate test</li>
+        </ol>
+        <p class="note"><strong>Pitfalls:</strong> peeking, multiple comparisons, novelty effect, Simpson's paradox</p>
+      </div>
+
+      <!-- Card 5: Confidence Intervals -->
+      <div class="card" id="stats-ci">
+        <a href="#stats-ci" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Confidence Intervals</h2>
+          <span class="tag tag-formula">Formula</span>
+        </div>
+        <div class="formula-block">CI = x&#772; &pm; z &middot; (&sigma; / &radic;n)</div>
+        <p class="note">A 95% CI means: if we repeated sampling, 95% of intervals would contain the true parameter. It does NOT mean 95% probability the parameter is in this interval.</p>
+      </div>
+
+      <!-- Card 6: Central Limit Theorem -->
+      <div class="card" id="stats-clt">
+        <a href="#stats-clt" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Central Limit Theorem</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <p style="font-size:0.85rem; line-height:1.5;">Sample means approach a normal distribution as n increases, regardless of population distribution (given finite variance). Generally applies when n &ge; 30.</p>
+        <div class="formula-block">SE = &sigma; / &radic;n</div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>Claudea's DS Interview Prep &middot; v02 &middot; <a href="index.html">Back to All Topics</a></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies – Claudea's DS Interview Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #21262d;
+      --text: #c9d1d9; --text-muted: #8b949e; --text-dim: #484f58; --white: #e6edf3;
+      --green: #4ade80; --blue: #58a6ff; --yellow: #e3b341;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* Nav */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand { font-weight: 800; font-size: 1rem; color: var(--white); display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    nav .brand span { color: #4ade80; }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.78rem;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
+    nav .nav-links a.active { color: var(--white); background: var(--surface); }
+    nav .nav-links a.quiz-link { color: #4ade80; border: 1px solid rgba(74,222,128,0.3); }
+    nav .nav-links a.quiz-link:hover { background: rgba(74,222,128,0.1); }
+
+    /* Container */
+    .container { max-width: 1120px; margin: 0 auto; padding: 40px 32px 64px; }
+
+    /* Section header */
+    .section-header { margin-bottom: 36px; }
+    .section-header .icon-title {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+    }
+    .section-header .icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; background: rgba(74,222,128,0.15);
+    }
+    .section-header h1 { font-size: 2rem; font-weight: 800; color: var(--white); letter-spacing: -0.5px; }
+    .section-header p { font-size: 0.95rem; color: var(--text-muted); margin-left: 62px; }
+
+    /* Cards grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    /* Card */
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 28px; position: relative; transition: border-color 0.2s;
+      scroll-margin-top: 72px;
+    }
+    .card:hover { border-color: #3a3a4a; }
+
+    .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+    .card-header h2 { font-size: 1rem; font-weight: 700; color: var(--white); }
+
+    .card .anchor-link {
+      position: absolute; top: 16px; right: 16px;
+      font-size: 0.85rem; color: var(--text-dim); text-decoration: none;
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .card:hover .anchor-link { opacity: 1; }
+    .card .anchor-link:hover { color: var(--text-muted); }
+
+    /* Tags */
+    .tag {
+      font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;
+      padding: 3px 8px; border-radius: 6px;
+    }
+    .tag-key { background: rgba(88,166,255,0.15); color: var(--blue); }
+    .tag-tip { background: rgba(74,222,128,0.15); color: var(--green); }
+
+    /* Card content */
+    .card ul { list-style: none; padding: 0; }
+    .card ul li {
+      font-size: 0.85rem; color: var(--text); padding: 4px 0; line-height: 1.5;
+    }
+    .card ul li::before { content: ""; }
+    .card ol { padding-left: 20px; }
+    .card ol li {
+      font-size: 0.85rem; color: var(--text); padding: 4px 0; line-height: 1.5;
+    }
+    .card p.note { font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+    .card p.lead { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; font-style: italic; }
+
+    code { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; }
+    .inline-code {
+      background: rgba(110,118,129,0.15); padding: 2px 6px; border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center; padding: 32px; font-size: 0.8rem; color: var(--text-dim);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
+      .container { padding: 24px 16px 48px; }
+      .section-header h1 { font-size: 1.5rem; }
+      .section-header p { margin-left: 0; }
+      .cards-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html" class="brand"><span>&#9670;</span> Claudea's DS Prep</a>
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Probability</a>
+      <a href="casing.html" class="active">Casing</a>
+      <a href="quiz.html" class="quiz-link">Quiz</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="section-header">
+      <div class="icon-title">
+        <div class="icon">&#128161;</div>
+        <h1>Case Studies</h1>
+      </div>
+      <p>Product sense, metrics, and business frameworks</p>
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- Card 1: Product Metrics Framework -->
+      <div class="card" id="case-metrics">
+        <a href="#case-metrics" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Product Metrics Framework</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>North Star Metric</strong> &mdash; single metric capturing core value</li>
+          <li><strong>Acquisition</strong> &mdash; new users, sign-ups, installs</li>
+          <li><strong>Activation</strong> &mdash; first key action (aha moment)</li>
+          <li><strong>Retention</strong> &mdash; D1, D7, D30 retention rates</li>
+          <li><strong>Revenue</strong> &mdash; ARPU, LTV, conversion rate</li>
+          <li><strong>Referral</strong> &mdash; viral coefficient, NPS</li>
+        </ul>
+      </div>
+
+      <!-- Card 2: Structuring a Case -->
+      <div class="card" id="case-structure">
+        <a href="#case-structure" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Structuring a Case</h2>
+          <span class="tag tag-tip">Tip</span>
+        </div>
+        <ol>
+          <li><strong>Clarify</strong> &mdash; restate the problem, ask questions</li>
+          <li><strong>Define metrics</strong> &mdash; primary + guardrail metrics</li>
+          <li><strong>Hypothesize</strong> &mdash; state expected cause / direction</li>
+          <li><strong>Analyze</strong> &mdash; segment data, test hypotheses</li>
+          <li><strong>Recommend</strong> &mdash; action + expected impact</li>
+          <li><strong>Measure</strong> &mdash; how to validate the recommendation</li>
+        </ol>
+      </div>
+
+      <!-- Card 3: Metric Change Questions -->
+      <div class="card" id="case-metric-change">
+        <a href="#case-metric-change" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Metric Change Questions</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <p class="lead">"Metric X dropped 10%. What happened?"</p>
+        <ol>
+          <li><strong>Clarify</strong> &mdash; which metric, how measured, timeframe?</li>
+          <li><strong>External factors</strong> &mdash; seasonality, competitors, market</li>
+          <li><strong>Internal factors</strong> &mdash; product changes, bugs, deploys</li>
+          <li><strong>Segment</strong> &mdash; by platform, geo, user cohort, channel</li>
+          <li><strong>Quantify</strong> &mdash; how much does each factor explain?</li>
+        </ol>
+      </div>
+
+      <!-- Card 4: Market Sizing -->
+      <div class="card" id="case-sizing">
+        <a href="#case-sizing" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Market Sizing</h2>
+          <span class="tag tag-tip">Tip</span>
+        </div>
+        <p class="note" style="margin-top:0; margin-bottom:12px;">Top-down or bottom-up estimation:</p>
+        <ul>
+          <li><strong>Top-down</strong> &mdash; Total market &rarr; apply filter rates</li>
+          <li><strong>Bottom-up</strong> &mdash; Unit economics &rarr; scale up</li>
+          <li>State assumptions clearly</li>
+          <li>Use round numbers for mental math</li>
+          <li>Sanity-check your answer</li>
+        </ul>
+      </div>
+
+      <!-- Card 5: Experiment Design -->
+      <div class="card" id="case-experiment">
+        <a href="#case-experiment" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Experiment Design</h2>
+          <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>Unit of randomization</strong> &mdash; user, session, page?</li>
+          <li><strong>Duration</strong> &mdash; cover full weekly cycle minimum</li>
+          <li><strong>Guardrail metrics</strong> &mdash; ensure you don't break things</li>
+          <li><strong>Network effects</strong> &mdash; may need cluster randomization</li>
+          <li><strong>Novelty / primacy effects</strong> &mdash; wait for stabilization</li>
+        </ul>
+      </div>
+
+      <!-- Card 6: Communication Tips -->
+      <div class="card" id="case-communication">
+        <a href="#case-communication" class="anchor-link">#</a>
+        <div class="card-header">
+          <h2>Communication Tips</h2>
+          <span class="tag tag-tip">Tip</span>
+        </div>
+        <ul>
+          <li><strong>Lead with the answer</strong> &mdash; conclusion first, then evidence</li>
+          <li><strong>Structure your thoughts</strong> &mdash; "I'll break this into 3 parts..."</li>
+          <li><strong>Quantify everything</strong> &mdash; "~20% of users" not "a lot of users"</li>
+          <li><strong>Acknowledge trade-offs</strong> &mdash; shows maturity</li>
+          <li><strong>Ask clarifying questions</strong> &mdash; never assume</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <footer>
+    <p>Claudea's DS Interview Prep &middot; v02 &middot; <a href="index.html">Back to All Topics</a></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claudea's DS Interview Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0d1117; --surface: #161b22; --border: #21262d;
+      --text: #c9d1d9; --text-muted: #8b949e; --text-dim: #484f58; --white: #e6edf3;
+      --green: #4ade80;
+    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; padding-top: 88px; }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand { font-weight: 800; font-size: 1rem; color: var(--white); display: flex; align-items: center; gap: 8px; }
+    nav .brand span { color: var(--green); }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.78rem;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
+    nav .nav-links a.quiz-link { color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+    nav .nav-links a.quiz-link:hover { background: rgba(74,222,128,0.1); }
+
+    .container { max-width: 720px; width: 100%; text-align: center; }
+
+    .badge {
+      display: inline-block; font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 3px; padding: 5px 14px;
+      border-radius: 20px; background: rgba(74,222,128,0.1);
+      color: var(--green); margin-bottom: 24px; border: 1px solid rgba(74,222,128,0.2);
+    }
+    h1 { font-size: 2.8rem; font-weight: 900; color: var(--white); letter-spacing: -1px; line-height: 1.1; margin-bottom: 12px; }
+    .subtitle { font-size: 1.05rem; color: var(--text-muted); margin-bottom: 48px; }
+
+    .topics-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;
+    }
+    .topic-btn {
+      display: flex; align-items: center; gap: 16px;
+      text-decoration: none; padding: 24px;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      transition: all 0.2s; text-align: left;
+    }
+    .topic-btn:hover { border-color: #3a3a4a; transform: translateY(-2px); }
+    .topic-btn .icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .topic-btn .label h2 { font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 2px; }
+    .topic-btn .label p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.4; }
+    .topic-btn .count {
+      margin-left: auto; font-size: 0.7rem; font-weight: 600; color: var(--text-dim);
+      white-space: nowrap;
+    }
+
+    .icon-sql { background: rgba(96,165,250,0.15); }
+    .icon-python { background: rgba(251,191,36,0.15); }
+    .icon-ml { background: rgba(192,132,252,0.15); }
+    .icon-stats { background: rgba(45,212,191,0.15); }
+    .icon-prob { background: rgba(251,146,60,0.15); }
+    .icon-case { background: rgba(74,222,128,0.15); }
+
+    .quiz-btn {
+      display: block; width: 100%; text-decoration: none;
+      padding: 20px; border-radius: 12px; text-align: center;
+      background: linear-gradient(135deg, rgba(74,222,128,0.1), rgba(45,212,191,0.1));
+      border: 1px solid rgba(74,222,128,0.25);
+      transition: all 0.2s; margin-bottom: 48px;
+    }
+    .quiz-btn:hover { border-color: rgba(74,222,128,0.5); transform: translateY(-2px); }
+    .quiz-btn h2 { font-size: 1.1rem; font-weight: 700; color: var(--green); margin-bottom: 2px; }
+    .quiz-btn p { font-size: 0.82rem; color: var(--text-muted); }
+
+    footer { font-size: 0.8rem; color: var(--text-dim); }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    @media (max-width: 600px) {
+      .topics-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="brand"><span>&#9670;</span> Claudea's DS Prep</div>
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Probability</a>
+      <a href="casing.html">Casing</a>
+      <a href="quiz.html" class="quiz-link">Quiz</a>
+    </div>
+  </nav>
+  <div class="container">
+    <div class="badge">v02 &middot; Multi-Page</div>
+    <h1>Data Science<br>Interview Prep</h1>
+    <p class="subtitle">Pick a topic to review, or jump straight to the quiz.</p>
+
+    <div class="topics-grid">
+      <a href="sql.html" class="topic-btn">
+        <div class="icon icon-sql">&#128450;</div>
+        <div class="label">
+          <h2>SQL</h2>
+          <p>Queries, joins, window functions, CTEs</p>
+        </div>
+        <span class="count">6 cards</span>
+      </a>
+      <a href="python.html" class="topic-btn">
+        <div class="icon icon-python">&#128013;</div>
+        <div class="label">
+          <h2>Python</h2>
+          <p>Data structures, Pandas, NumPy, patterns</p>
+        </div>
+        <span class="count">6 cards</span>
+      </a>
+      <a href="ml.html" class="topic-btn">
+        <div class="icon icon-ml">&#129302;</div>
+        <div class="label">
+          <h2>Machine Learning</h2>
+          <p>Algorithms, metrics, bias-variance</p>
+        </div>
+        <span class="count">6 cards</span>
+      </a>
+      <a href="stats.html" class="topic-btn">
+        <div class="icon icon-stats">&#128202;</div>
+        <div class="label">
+          <h2>Statistics</h2>
+          <p>Hypothesis testing, A/B tests, CLT</p>
+        </div>
+        <span class="count">6 cards</span>
+      </a>
+      <a href="probability.html" class="topic-btn">
+        <div class="icon icon-prob">&#127922;</div>
+        <div class="label">
+          <h2>Probability</h2>
+          <p>Bayes, distributions, expected value</p>
+        </div>
+        <span class="count">6 cards</span>
+      </a>
+      <a href="casing.html" class="topic-btn">
+        <div class="icon icon-case">&#128161;</div>
+        <div class="label">
+          <h2>Case Studies</h2>
+          <p>Product metrics, frameworks, sizing</p>
+        </div>
+        <span class="count">6 cards</span>
+      </a>
+    </div>
+
+    <a href="quiz.html" class="quiz-btn">
+      <h2>Quick Quiz</h2>
+      <p>26 questions across all topics &middot; Test your knowledge</p>
+    </a>
+
+    <footer>
+      <p>Claudea's DS Interview Prep &middot; v02 &middot; <a href="../index.html">Back to Gallery</a></p>
+    </footer>
+  </div>
+</body>
+</html>
