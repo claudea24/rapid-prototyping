@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python — Claudea's DS Prep — Bloom Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=DM+Serif+Display&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fdf8f4; --surface: #ffffff; --surface2: #faf5f0;
+      --border: #f0e6dc; --border-hover: #e8d5c4;
+      --text: #4a3f35; --text-muted: #9b8e82; --text-light: #c4b8ad;
+      --rose: #e8758a; --rose-light: #fdeef1; --rose-dark: #c4566b;
+      --lavender: #9b8fca; --lavender-light: #f0edf8;
+      --mint: #6ec6a0; --mint-light: #e8f7f0;
+      --peach: #f0a868; --peach-light: #fef3e8;
+      --sky: #7eb8d8; --sky-light: #eaf4fa;
+      --blush: #d4849a; --blush-light: #f9eef1;
+      --shadow: 0 2px 12px rgba(74,63,53,0.06);
+      --shadow-hover: 0 8px 24px rgba(74,63,53,0.1);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 60px;
+      background: rgba(253,248,244,0.9); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand {
+      font-family: 'DM Serif Display', serif; font-size: 1.1rem;
+      color: var(--rose); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    nav .brand .flower { font-size: 1.2rem; }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.8rem;
+      padding: 7px 14px; border-radius: 20px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--rose-light); color: var(--rose); }
+    nav .nav-links a.active {
+      background: var(--peach-light); color: var(--peach); font-weight: 600;
+    }
+    nav .nav-links a.quiz-link {
+      color: var(--rose); background: var(--rose-light);
+      border: 1px solid rgba(232,117,138,0.2);
+    }
+    nav .nav-links a.quiz-link:hover { background: var(--rose); color: #fff; }
+
+    /* ── Header ── */
+    .page-header {
+      padding: 110px 32px 48px; text-align: center; max-width: 640px; margin: 0 auto;
+    }
+    .page-header .icon { font-size: 2.6rem; margin-bottom: 12px; display: block; }
+    .page-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.6rem; font-weight: 400; color: var(--text);
+      line-height: 1.2; margin-bottom: 10px;
+    }
+    .page-header p { color: var(--text-muted); font-size: 1rem; line-height: 1.7; }
+
+    /* ── Cards Section ── */
+    .cards-section {
+      max-width: 800px; margin: 0 auto 48px; padding: 0 32px;
+    }
+    .section-label {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--text-light); margin-bottom: 20px;
+      text-align: center;
+    }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; box-shadow: var(--shadow);
+      margin-bottom: 20px; position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; background: var(--peach);
+    }
+    .card-header {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .card-header h2 {
+      font-family: 'DM Serif Display', serif; font-size: 1.15rem;
+      font-weight: 400; color: var(--text);
+    }
+    .tag {
+      display: inline-block; font-size: 0.62rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 10px;
+      border-radius: 20px;
+    }
+    .tag-key { background: var(--sky-light); color: var(--sky); }
+    .tag-tip { background: var(--mint-light); color: var(--mint); }
+    .tag-watch { background: var(--peach-light); color: var(--peach); }
+
+    .card p, .card ul {
+      font-size: 0.85rem; color: var(--text-muted); line-height: 1.7;
+    }
+    .card ul { padding-left: 18px; margin-top: 6px; }
+    .card li { margin-bottom: 4px; }
+
+    /* ── Code Blocks ── */
+    pre {
+      background: #faf5f0; border: 1px solid var(--border);
+      border-radius: 10px; padding: 16px 20px; margin-top: 14px;
+      overflow-x: auto; font-size: 0.8rem; line-height: 1.65;
+    }
+    code {
+      font-family: 'Fira Code', monospace; font-size: 0.8rem;
+    }
+    pre code { color: var(--text); }
+    .kw { color: #c4566b; }
+    .fn { color: #8b6fc0; }
+    .str { color: #5a9ab5; }
+    .cm { color: #c4b8ad; }
+    .num { color: #7eb8d8; }
+
+    /* ── Complexity Table ── */
+    .complexity-table {
+      width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 0.8rem;
+    }
+    .complexity-table th {
+      text-align: left; font-weight: 600; color: var(--text);
+      padding: 8px 12px; border-bottom: 2px solid var(--border);
+      font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
+    }
+    .complexity-table td {
+      padding: 7px 12px; border-bottom: 1px solid var(--border);
+      color: var(--text-muted);
+    }
+    .complexity-table td code {
+      font-family: 'Fira Code', monospace; font-size: 0.75rem;
+      background: var(--surface2); padding: 2px 6px; border-radius: 4px;
+    }
+
+    /* ── Practice Section ── */
+    .practice-section {
+      max-width: 800px; margin: 0 auto 64px; padding: 0 32px;
+    }
+    .practice-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px; box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .practice-card h3 {
+      font-family: 'DM Serif Display', serif; font-size: 1rem;
+      color: var(--text); margin-bottom: 16px;
+    }
+    .question {
+      font-size: 0.88rem; color: var(--text); font-weight: 500;
+      margin-bottom: 12px;
+    }
+    .options {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .option-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 8px 18px; font-size: 0.8rem;
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif; font-weight: 500;
+    }
+    .option-btn:hover { border-color: var(--peach); color: var(--peach); background: var(--peach-light); }
+    .option-btn.correct {
+      background: var(--mint-light); border-color: var(--mint); color: var(--mint);
+    }
+    .option-btn.wrong {
+      background: var(--rose-light); border-color: var(--rose); color: var(--rose);
+    }
+    .option-btn.disabled { pointer-events: none; opacity: 0.7; }
+    .feedback {
+      margin-top: 10px; font-size: 0.8rem; font-weight: 500;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.correct-fb { color: var(--mint); }
+    .feedback.wrong-fb { color: var(--rose); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 32px;
+      font-size: 0.75rem; color: var(--text-light);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--rose); }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.7rem; padding: 5px 10px; }
+      .page-header { padding: 90px 16px 36px; }
+      .page-header h1 { font-size: 2rem; }
+      .cards-section, .practice-section { padding: 0 16px; }
+      .options { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand"><span class="flower">&#10047;</span> Claudea's DS Prep</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html" class="active">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+    <a href="quiz.html" class="quiz-link">Garden Quiz</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<div class="page-header">
+  <span class="icon">&#127801;</span>
+  <h1>Python</h1>
+  <p>Data structures, Pandas, NumPy, and coding patterns</p>
+</div>
+
+<!-- Study Cards -->
+<div class="cards-section">
+  <div class="section-label">Study Cards</div>
+
+  <!-- Card 1: Data Structures Complexity -->
+  <div class="card" id="py-structures">
+    <div class="card-header">
+      <h2>Data Structures Complexity</h2>
+      <span class="tag tag-key">Key</span>
+    </div>
+    <p>Know the time complexity of core Python data structures for interview questions.</p>
+    <table class="complexity-table">
+      <thead>
+        <tr><th>Structure</th><th>Access</th><th>Search</th><th>Insert</th><th>Delete</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>list</code></td><td>O(1)</td><td>O(n)</td><td>O(n)*</td><td>O(n)</td></tr>
+        <tr><td><code>dict</code></td><td>O(1)</td><td>O(1)</td><td>O(1)</td><td>O(1)</td></tr>
+        <tr><td><code>set</code></td><td>&mdash;</td><td>O(1)</td><td>O(1)</td><td>O(1)</td></tr>
+        <tr><td><code>deque</code></td><td>O(n)</td><td>O(n)</td><td>O(1)</td><td>O(1)</td></tr>
+        <tr><td><code>heapq</code></td><td>O(1)&dagger;</td><td>O(n)</td><td>O(log n)</td><td>O(log n)</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:8px;font-size:0.75rem;color:var(--text-light);">* O(1) amortised for <code>append</code>. &dagger; Min element only.</p>
+  </div>
+
+  <!-- Card 2: Pandas Essentials -->
+  <div class="card" id="py-pandas">
+    <div class="card-header">
+      <h2>Pandas Essentials</h2>
+      <span class="tag tag-key">Key</span>
+    </div>
+    <p>The most frequently tested Pandas operations in data science interviews.</p>
+    <pre><code><span class="cm"># groupby &rarr; aggregate</span>
+df.<span class="fn">groupby</span>(<span class="str">'category'</span>)[<span class="str">'revenue'</span>].<span class="fn">agg</span>([<span class="str">'mean'</span>, <span class="str">'sum'</span>])
+
+<span class="cm"># merge (SQL-style join)</span>
+pd.<span class="fn">merge</span>(left, right, <span class="kw">on</span>=<span class="str">'user_id'</span>, <span class="kw">how</span>=<span class="str">'left'</span>)
+
+<span class="cm"># pivot_table</span>
+df.<span class="fn">pivot_table</span>(<span class="kw">values</span>=<span class="str">'sales'</span>, <span class="kw">index</span>=<span class="str">'region'</span>,
+               <span class="kw">columns</span>=<span class="str">'quarter'</span>, <span class="kw">aggfunc</span>=<span class="str">'sum'</span>)
+
+<span class="cm"># fillna &amp; apply</span>
+df[<span class="str">'col'</span>].<span class="fn">fillna</span>(df[<span class="str">'col'</span>].<span class="fn">median</span>(), <span class="kw">inplace</span>=<span class="kw">True</span>)
+df[<span class="str">'label'</span>] = df[<span class="str">'score'</span>].<span class="fn">apply</span>(<span class="kw">lambda</span> x: <span class="str">'high'</span> <span class="kw">if</span> x &gt; <span class="num">0.8</span> <span class="kw">else</span> <span class="str">'low'</span>)</code></pre>
+  </div>
+
+  <!-- Card 3: NumPy Patterns -->
+  <div class="card" id="py-numpy">
+    <div class="card-header">
+      <h2>NumPy Patterns</h2>
+      <span class="tag tag-tip">Tip</span>
+    </div>
+    <p>Vectorised operations are faster than loops. Know these patterns cold.</p>
+    <pre><code><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+a = np.<span class="fn">array</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>])
+a.<span class="fn">mean</span>()          <span class="cm"># 2.5</span>
+a.<span class="fn">reshape</span>(<span class="num">2</span>, <span class="num">2</span>)  <span class="cm"># [[1,2],[3,4]]</span>
+
+<span class="cm"># dot product &amp; linear algebra</span>
+np.<span class="fn">dot</span>(a, a)                <span class="cm"># 30</span>
+np.linalg.<span class="fn">inv</span>(matrix)      <span class="cm"># matrix inverse</span>
+np.linalg.<span class="fn">eig</span>(matrix)      <span class="cm"># eigenvalues</span>
+
+<span class="cm"># boolean indexing</span>
+mask = a &gt; <span class="num">2</span>
+filtered = a[mask]  <span class="cm"># array([3, 4])</span></code></pre>
+  </div>
+
+  <!-- Card 4: Common Coding Patterns -->
+  <div class="card" id="py-patterns">
+    <div class="card-header">
+      <h2>Common Coding Patterns</h2>
+      <span class="tag tag-key">Key</span>
+    </div>
+    <p>Patterns that appear repeatedly in coding interviews.</p>
+    <pre><code><span class="cm"># Two pointers</span>
+<span class="kw">def</span> <span class="fn">two_sum_sorted</span>(nums, target):
+    lo, hi = <span class="num">0</span>, <span class="fn">len</span>(nums) - <span class="num">1</span>
+    <span class="kw">while</span> lo &lt; hi:
+        s = nums[lo] + nums[hi]
+        <span class="kw">if</span> s == target: <span class="kw">return</span> [lo, hi]
+        <span class="kw">elif</span> s &lt; target: lo += <span class="num">1</span>
+        <span class="kw">else</span>: hi -= <span class="num">1</span>
+
+<span class="cm"># Hash map frequency count</span>
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+freq = <span class="fn">Counter</span>(words)
+top_k = freq.<span class="fn">most_common</span>(<span class="num">3</span>)
+
+<span class="cm"># Sliding window</span>
+<span class="kw">def</span> <span class="fn">max_sum_window</span>(arr, k):
+    w = <span class="fn">sum</span>(arr[:k])
+    best = w
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(k, <span class="fn">len</span>(arr)):
+        w += arr[i] - arr[i - k]
+        best = <span class="fn">max</span>(best, w)
+    <span class="kw">return</span> best</code></pre>
+  </div>
+
+  <!-- Card 5: String & List Tricks -->
+  <div class="card" id="py-tricks">
+    <div class="card-header">
+      <h2>String &amp; List Tricks</h2>
+      <span class="tag tag-tip">Tip</span>
+    </div>
+    <p>Pythonic one-liners that save time and impress interviewers.</p>
+    <pre><code><span class="cm"># List comprehension with filter</span>
+evens = [x <span class="kw">for</span> x <span class="kw">in</span> nums <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]
+
+<span class="cm"># zip to pair and iterate</span>
+<span class="kw">for</span> name, score <span class="kw">in</span> <span class="fn">zip</span>(names, scores):
+    <span class="fn">print</span>(<span class="kw">f</span><span class="str">"{name}: {score}"</span>)
+
+<span class="cm"># sorted with key</span>
+<span class="fn">sorted</span>(students, <span class="kw">key</span>=<span class="kw">lambda</span> s: s[<span class="str">'gpa'</span>], <span class="kw">reverse</span>=<span class="kw">True</span>)
+
+<span class="cm"># string join &amp; split</span>
+<span class="str">','</span>.<span class="fn">join</span>([<span class="str">'a'</span>, <span class="str">'b'</span>, <span class="str">'c'</span>])   <span class="cm"># 'a,b,c'</span>
+<span class="str">'a,b,c'</span>.<span class="fn">split</span>(<span class="str">','</span>)          <span class="cm"># ['a', 'b', 'c']</span>
+
+<span class="cm"># enumerate for index + value</span>
+<span class="kw">for</span> i, val <span class="kw">in</span> <span class="fn">enumerate</span>(items):
+    <span class="fn">print</span>(i, val)</code></pre>
+  </div>
+
+  <!-- Card 6: Gotchas -->
+  <div class="card" id="py-gotchas">
+    <div class="card-header">
+      <h2>Gotchas</h2>
+      <span class="tag tag-watch">Watch</span>
+    </div>
+    <p>Common Python pitfalls that trip up even experienced developers.</p>
+    <ul>
+      <li><strong>Mutable default arguments</strong> &mdash; <code>def f(x=[])</code> shares the same list across calls. Use <code>None</code> and create inside the function.</li>
+      <li><strong>Shallow vs deep copy</strong> &mdash; <code>b = a[:]</code> or <code>copy()</code> only copies the top level. Nested objects still share references. Use <code>copy.deepcopy()</code> for nested structures.</li>
+      <li><strong>Integer division</strong> &mdash; <code>//</code> floors toward negative infinity: <code>-7 // 2 == -4</code>, not <code>-3</code>.</li>
+      <li><strong><code>is</code> vs <code>==</code></strong> &mdash; <code>is</code> checks identity (same object in memory), <code>==</code> checks equality (same value). Use <code>==</code> for value comparison.</li>
+    </ul>
+    <pre><code><span class="cm"># Mutable default &mdash; BAD</span>
+<span class="kw">def</span> <span class="fn">append_to</span>(val, lst=[]):
+    lst.<span class="fn">append</span>(val)
+    <span class="kw">return</span> lst
+
+<span class="cm"># GOOD</span>
+<span class="kw">def</span> <span class="fn">append_to</span>(val, lst=<span class="kw">None</span>):
+    <span class="kw">if</span> lst <span class="kw">is</span> <span class="kw">None</span>:
+        lst = []
+    lst.<span class="fn">append</span>(val)
+    <span class="kw">return</span> lst</code></pre>
+  </div>
+</div>
+
+<!-- Practice Questions -->
+<div class="practice-section">
+  <div class="section-label">Practice Questions</div>
+
+  <div class="practice-card" id="q1">
+    <h3>Question 1</h3>
+    <p class="question">Dict lookup time complexity?</p>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(1, this, 1)">O(n)</button>
+      <button class="option-btn" onclick="checkAnswer(1, this, 2)">O(1) average</button>
+      <button class="option-btn" onclick="checkAnswer(1, this, 3)">O(log n)</button>
+    </div>
+    <p class="feedback" id="fb1"></p>
+  </div>
+
+  <div class="practice-card" id="q2">
+    <h3>Question 2</h3>
+    <p class="question">Why is <code>def f(x=[])</code> dangerous?</p>
+    <div class="options">
+      <button class="option-btn" onclick="checkAnswer(2, this, 1)">Default list shared across calls</button>
+      <button class="option-btn" onclick="checkAnswer(2, this, 2)">Raises a TypeError</button>
+      <button class="option-btn" onclick="checkAnswer(2, this, 3)">Creates a new list every call</button>
+    </div>
+    <p class="feedback" id="fb2"></p>
+  </div>
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; v04 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<script>
+  const answers = { 1: 2, 2: 1 };
+
+  function checkAnswer(qNum, btn, choice) {
+    const card = document.getElementById('q' + qNum);
+    const buttons = card.querySelectorAll('.option-btn');
+    const fb = document.getElementById('fb' + qNum);
+    const correct = answers[qNum] === choice;
+
+    buttons.forEach(b => b.classList.add('disabled'));
+
+    if (correct) {
+      btn.classList.add('correct');
+      fb.textContent = 'Correct!';
+      fb.className = 'feedback show correct-fb';
+    } else {
+      btn.classList.add('wrong');
+      buttons[answers[qNum] - 1].classList.add('correct');
+      fb.textContent = 'Not quite — see the highlighted answer.';
+      fb.className = 'feedback show wrong-fb';
+    }
+  }
+</script>
+
+</body>
+</html>

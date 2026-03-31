@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL — Claudea's DS Prep — Bloom Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #fdf8f4;
+            --surface: #ffffff;
+            --border: #f0e6dc;
+            --text: #4a3f35;
+            --muted: #9b8e82;
+            --light: #c4b8ad;
+            --sky: #7eb8d8;
+            --sky-light: #eaf4fa;
+            --rose: #e8758a;
+            --rose-light: #fdf0f2;
+            --lavender: #9b8fca;
+            --mint: #6ec6a0;
+            --mint-light: #edfaf3;
+            --peach: #f0a868;
+            --peach-light: #fef5ec;
+            --shadow: 0 2px 12px rgba(74,63,53,0.06);
+            --radius-card: 16px;
+            --radius-pill: 20px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            background: rgba(253,248,244,0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.15rem;
+            color: var(--rose);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .nav-brand span { font-size: 1.3rem; }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--muted);
+            padding: 6px 14px;
+            border-radius: var(--radius-pill);
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--text);
+            background: rgba(74,63,53,0.04);
+        }
+
+        .nav-links a.active {
+            background: var(--rose-light);
+            color: var(--rose);
+        }
+
+        .nav-links a.quiz-link {
+            background: var(--rose);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .nav-links a.quiz-link:hover {
+            background: #d9667b;
+            color: #fff;
+        }
+
+        /* Header */
+        .page-header {
+            text-align: center;
+            padding: 110px 24px 48px;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .page-header .emoji {
+            font-size: 2.4rem;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .page-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 2.6rem;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 1.05rem;
+        }
+
+        /* Card Grid */
+        .card-grid {
+            max-width: 1120px;
+            margin: 0 auto;
+            padding: 0 24px 32px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            padding: 28px 26px 24px;
+            position: relative;
+        }
+
+        .card::before {
+            content: '';
+            display: block;
+            height: 3px;
+            background: var(--sky);
+            position: absolute;
+            top: 0; left: 0; right: 0;
+        }
+
+        .card-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .card-head h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--text);
+        }
+
+        .card-head h2 a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .card-head h2 a .anchor {
+            opacity: 0;
+            margin-left: 6px;
+            color: var(--light);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.85rem;
+            transition: opacity 0.2s;
+        }
+
+        .card:hover .card-head h2 a .anchor {
+            opacity: 1;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: var(--radius-pill);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            flex-shrink: 0;
+        }
+
+        .tag-key   { background: var(--sky-light);   color: var(--sky); }
+        .tag-tip   { background: var(--mint-light);   color: var(--mint); }
+        .tag-watch { background: var(--peach-light);  color: var(--peach); }
+
+        .card ol, .card ul {
+            padding-left: 20px;
+            margin: 8px 0;
+            color: var(--text);
+            font-size: 0.92rem;
+        }
+
+        .card li { margin-bottom: 5px; }
+
+        .card p {
+            font-size: 0.92rem;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .card p.note {
+            color: var(--muted);
+            font-size: 0.84rem;
+            font-style: italic;
+        }
+
+        /* Code blocks */
+        pre {
+            background: #faf5f0;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 18px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            line-height: 1.7;
+            margin: 10px 0 6px;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82em;
+        }
+
+        .kw  { color: #c4566b; font-weight: 500; }
+        .fn  { color: #8b6fc0; }
+        .str { color: #5a9ab5; }
+        .cm  { color: #c4b8ad; }
+        .num { color: #7eb8d8; }
+
+        /* Practice section */
+        .practice-section {
+            max-width: 720px;
+            margin: 40px auto 0;
+            padding: 0 24px 48px;
+        }
+
+        .practice-section h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.6rem;
+            font-weight: 400;
+            text-align: center;
+            margin-bottom: 28px;
+            color: var(--text);
+        }
+
+        .quiz-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow);
+            padding: 26px;
+            margin-bottom: 20px;
+        }
+
+        .quiz-card .q {
+            font-weight: 600;
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+        }
+
+        .quiz-card .q span {
+            display: inline-block;
+            background: var(--sky-light);
+            color: var(--sky);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 9px;
+            border-radius: var(--radius-pill);
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 12px 18px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-pill);
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover { border-color: var(--light); }
+
+        .option-btn.correct {
+            background: var(--mint-light);
+            border-color: var(--mint);
+            color: #3a7a5b;
+        }
+
+        .option-btn.wrong {
+            background: var(--rose-light);
+            border-color: var(--rose);
+            color: #b5556a;
+        }
+
+        .option-btn.disabled {
+            pointer-events: none;
+            opacity: 0.65;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 32px 24px 40px;
+            color: var(--light);
+            font-size: 0.82rem;
+        }
+
+        footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        footer a:hover { color: var(--rose); }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            nav { padding: 0 14px; height: auto; min-height: 56px; flex-wrap: wrap; gap: 6px; padding-top: 10px; padding-bottom: 10px; }
+            .nav-brand { font-size: 1rem; }
+            .nav-links { gap: 4px; }
+            .nav-links a { font-size: 0.74rem; padding: 5px 10px; }
+            .page-header { padding: 100px 18px 36px; }
+            .page-header h1 { font-size: 2rem; }
+            .card-grid { padding: 0 14px 24px; grid-template-columns: 1fr; }
+            .practice-section { padding: 0 14px 36px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav>
+    <a href="index.html" class="nav-brand"><span>&#10047;</span> Claudea's DS Prep</a>
+    <div class="nav-links">
+        <a href="sql.html" class="active">SQL</a>
+        <a href="python.html">Python</a>
+        <a href="ml.html">ML</a>
+        <a href="stats.html">Stats</a>
+        <a href="probability.html">Probability</a>
+        <a href="casing.html">Casing</a>
+        <a href="quiz.html" class="quiz-link">Garden Quiz</a>
+    </div>
+</nav>
+
+<!-- Header -->
+<div class="page-header">
+    <span class="emoji">&#127800;</span>
+    <h1>SQL</h1>
+    <p>Queries, joins, window functions, and optimization</p>
+</div>
+
+<!-- Concept Cards -->
+<div class="card-grid">
+
+    <!-- 1. Query Execution Order -->
+    <div class="card" id="sql-execution-order">
+        <div class="card-head">
+            <h2><a href="#sql-execution-order">Query Execution Order<span class="anchor">#</span></a></h2>
+            <span class="tag tag-key">Key</span>
+        </div>
+        <p>SQL doesn't execute top-to-bottom. The logical order is:</p>
+        <ol>
+            <li><strong>FROM</strong> &amp; JOINs &mdash; pick tables</li>
+            <li><strong>WHERE</strong> &mdash; filter rows</li>
+            <li><strong>GROUP BY</strong> &mdash; aggregate groups</li>
+            <li><strong>HAVING</strong> &mdash; filter groups</li>
+            <li><strong>SELECT</strong> &mdash; choose columns</li>
+            <li><strong>ORDER BY</strong> &mdash; sort results</li>
+            <li><strong>LIMIT / OFFSET</strong> &mdash; paginate</li>
+        </ol>
+        <p class="note">This is why you can't reference a SELECT alias in WHERE.</p>
+    </div>
+
+    <!-- 2. JOIN Types -->
+    <div class="card" id="sql-joins">
+        <div class="card-head">
+            <h2><a href="#sql-joins">JOIN Types<span class="anchor">#</span></a></h2>
+            <span class="tag tag-key">Key</span>
+        </div>
+        <ul>
+            <li><strong>INNER JOIN</strong> &mdash; only matching rows in both tables</li>
+            <li><strong>LEFT JOIN</strong> &mdash; all rows from left + matches from right</li>
+            <li><strong>RIGHT JOIN</strong> &mdash; all rows from right + matches from left</li>
+            <li><strong>FULL OUTER JOIN</strong> &mdash; all rows from both, NULLs where no match</li>
+            <li><strong>CROSS JOIN</strong> &mdash; Cartesian product of both tables</li>
+            <li><strong>SELF JOIN</strong> &mdash; table joined to itself (e.g., manager hierarchy)</li>
+        </ul>
+        <p class="note">LEFT JOIN is the most common in interviews. Always consider NULL handling.</p>
+    </div>
+
+    <!-- 3. Window Functions -->
+    <div class="card" id="sql-window">
+        <div class="card-head">
+            <h2><a href="#sql-window">Window Functions<span class="anchor">#</span></a></h2>
+            <span class="tag tag-key">Key</span>
+        </div>
+        <p>Compute values across a set of rows related to the current row &mdash; without collapsing groups.</p>
+        <pre><span class="kw">SELECT</span>
+  employee_id,
+  department,
+  salary,
+  <span class="fn">RANK</span>() <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> department
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> dept_rank
+<span class="kw">FROM</span> employees;</pre>
+        <p class="note">RANK() skips positions on ties; DENSE_RANK() does not; ROW_NUMBER() is always unique.</p>
+    </div>
+
+    <!-- 4. Aggregation Gotchas -->
+    <div class="card" id="sql-aggregation">
+        <div class="card-head">
+            <h2><a href="#sql-aggregation">Aggregation Gotchas<span class="anchor">#</span></a></h2>
+            <span class="tag tag-watch">Watch</span>
+        </div>
+        <ol>
+            <li><strong>COUNT(*) vs COUNT(col)</strong> &mdash; <code>COUNT(*)</code> counts all rows; <code>COUNT(col)</code> ignores NULLs</li>
+            <li><strong>SELECT non-aggregated columns</strong> &mdash; every column in SELECT must be in GROUP BY or an aggregate</li>
+            <li><strong>HAVING vs WHERE</strong> &mdash; HAVING filters after grouping; WHERE filters before</li>
+            <li><strong>NULL in aggregates</strong> &mdash; <code>SUM</code>, <code>AVG</code> ignore NULLs; <code>COUNT(*)</code> does not</li>
+            <li><strong>Division by zero</strong> &mdash; guard with <code>NULLIF(denominator, 0)</code></li>
+        </ol>
+    </div>
+
+    <!-- 5. CTEs & Subqueries -->
+    <div class="card" id="sql-ctes">
+        <div class="card-head">
+            <h2><a href="#sql-ctes">CTEs &amp; Subqueries<span class="anchor">#</span></a></h2>
+            <span class="tag tag-tip">Tip</span>
+        </div>
+        <p>CTEs (Common Table Expressions) improve readability over nested subqueries.</p>
+        <pre><span class="kw">WITH</span> monthly_sales <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    user_id,
+    <span class="fn">DATE_TRUNC</span>(<span class="str">'month'</span>, order_date) <span class="kw">AS</span> mth,
+    <span class="fn">SUM</span>(amount) <span class="kw">AS</span> total
+  <span class="kw">FROM</span> orders
+  <span class="kw">GROUP BY</span> user_id, mth
+)
+<span class="kw">SELECT</span>
+  user_id, mth, total,
+  <span class="fn">LAG</span>(total) <span class="kw">OVER</span> (
+    <span class="kw">PARTITION BY</span> user_id <span class="kw">ORDER BY</span> mth
+  ) <span class="kw">AS</span> prev_month
+<span class="kw">FROM</span> monthly_sales;</pre>
+        <p class="note">CTEs can be referenced multiple times; subqueries cannot. Some engines materialize CTEs.</p>
+    </div>
+
+    <!-- 6. Performance Tips -->
+    <div class="card" id="sql-performance">
+        <div class="card-head">
+            <h2><a href="#sql-performance">Performance Tips<span class="anchor">#</span></a></h2>
+            <span class="tag tag-tip">Tip</span>
+        </div>
+        <ol>
+            <li><strong>Index columns</strong> used in WHERE, JOIN, and ORDER BY clauses</li>
+            <li><strong>Avoid SELECT *</strong> &mdash; fetch only the columns you need</li>
+            <li><strong>Use EXPLAIN / EXPLAIN ANALYZE</strong> to inspect the query plan</li>
+            <li><strong>Prefer EXISTS over IN</strong> for correlated subqueries (often faster)</li>
+            <li><strong>Partition large tables</strong> by date or category to reduce scan size</li>
+        </ol>
+        <p class="note">Indexing speeds reads but slows writes &mdash; balance based on workload.</p>
+    </div>
+
+</div>
+
+<!-- Practice -->
+<div class="practice-section">
+    <h2>&#127793; Practice</h2>
+
+    <!-- Q1 -->
+    <div class="quiz-card" id="quiz-q1">
+        <p class="q"><span>Q1</span> What does <code>COUNT(*)</code> count?</p>
+        <div class="options">
+            <button class="option-btn" onclick="checkAnswer(this, true)">All rows, including those with NULLs</button>
+            <button class="option-btn" onclick="checkAnswer(this, false)">Only non-NULL rows</button>
+            <button class="option-btn" onclick="checkAnswer(this, false)">Only distinct values</button>
+        </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-card" id="quiz-q2">
+        <p class="q"><span>Q2</span> Can you use a SELECT alias in the WHERE clause?</p>
+        <div class="options">
+            <button class="option-btn" onclick="checkAnswer(this, false)">Yes, aliases are available everywhere</button>
+            <button class="option-btn" onclick="checkAnswer(this, true)">No, WHERE executes before SELECT</button>
+            <button class="option-btn" onclick="checkAnswer(this, false)">Only in MySQL</button>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    Claudea's DS Interview Prep &middot; v04 &middot; <a href="../index.html">Back to Gallery</a>
+</footer>
+
+<script>
+function checkAnswer(btn, isCorrect) {
+    const card = btn.closest('.quiz-card');
+    const buttons = card.querySelectorAll('.option-btn');
+    buttons.forEach(b => {
+        b.classList.add('disabled');
+    });
+    if (isCorrect) {
+        btn.classList.add('correct');
+    } else {
+        btn.classList.add('wrong');
+        // highlight the correct one
+        buttons.forEach(b => {
+            if (b.getAttribute('onclick').includes('true')) {
+                b.classList.add('correct');
+            }
+        });
+    }
+}
+</script>
+
+</body>
+</html>

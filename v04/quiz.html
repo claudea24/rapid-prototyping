@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garden Quiz &middot; Claudea's DS Prep</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #fdf8f4;
+            --surface: #fff;
+            --border: #f0e6dc;
+            --text: #4a3f35;
+            --muted: #9b8e82;
+            --white: #e8ecf4;
+            --rose: #e8758a;
+            --mint: #6ec6a0;
+            --peach: #f0a868;
+            --lavender: #9b8fca;
+            --sky: #7eb8d8;
+            --blush: #d4849a;
+            --sql: #7eb8d8;
+            --python: #f0a868;
+            --ml: #9b8fca;
+            --statistics: #6ec6a0;
+            --probability: #f0a868;
+            --casing: #d4849a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Nav */
+        nav {
+            position: sticky; top: 0; z-index: 200;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 32px; height: 56px;
+            background: rgba(253,248,244,0.92); backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+        nav .brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1rem; color: var(--rose);
+            display: flex; align-items: center; gap: 8px; text-decoration: none;
+        }
+        nav .brand:hover { opacity: 0.85; }
+        nav .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+        nav .nav-links a {
+            text-decoration: none; color: var(--muted); font-size: 0.78rem;
+            padding: 6px 12px; border-radius: 20px; transition: all 0.2s; font-weight: 500;
+        }
+        nav .nav-links a:hover { background: var(--surface); color: var(--text); }
+        nav .nav-links a.active {
+            color: #fff; background: var(--rose);
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 48px 24px 24px;
+        }
+        .header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 36px;
+            font-weight: 400;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .header h1 .icon { margin-right: 8px; }
+        .header .subtitle {
+            font-size: 16px;
+            color: var(--muted);
+        }
+
+        /* Score */
+        .score-area {
+            text-align: center;
+            padding: 16px 24px 8px;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--rose);
+        }
+
+        /* Filters */
+        .controls {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 16px 24px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 8px 18px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--muted);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--rose);
+            color: var(--text);
+        }
+
+        .filter-btn.active {
+            background: var(--rose);
+            color: #fff;
+            border-color: var(--rose);
+        }
+
+        /* Quiz container */
+        #quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 24px 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: 100%;
+        }
+
+        /* Quiz Card */
+        .quiz-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 2px 12px rgba(74,63,53,0.06);
+            transition: all 0.3s;
+        }
+
+        .quiz-card.hidden { display: none; }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .tag-sql { background: rgba(126,184,216,0.15); color: var(--sql); }
+        .tag-python { background: rgba(240,168,104,0.15); color: var(--python); }
+        .tag-ml { background: rgba(155,143,202,0.15); color: var(--ml); }
+        .tag-statistics { background: rgba(110,198,160,0.15); color: var(--statistics); }
+        .tag-probability { background: rgba(240,168,104,0.15); color: var(--probability); }
+        .tag-casing { background: rgba(212,132,154,0.15); color: var(--casing); }
+
+        .diff-tag { font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 20px; }
+        .diff-easy { background: rgba(110,198,160,0.15); color: var(--mint); }
+        .diff-medium { background: rgba(240,168,104,0.15); color: var(--peach); }
+        .diff-hard { background: rgba(232,117,138,0.15); color: var(--rose); }
+
+        .question-text {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--rose);
+            background: rgba(232,117,138,0.04);
+        }
+
+        .option-btn:disabled { cursor: default; }
+
+        .option-btn.correct {
+            border-color: var(--mint);
+            background: rgba(110,198,160,0.12);
+            color: var(--text);
+        }
+
+        .option-btn.wrong {
+            border-color: var(--rose);
+            background: rgba(232,117,138,0.12);
+            color: var(--text);
+        }
+
+        .explanation {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(155,143,202,0.1);
+            border: 1px solid rgba(155,143,202,0.2);
+            border-radius: 12px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .explanation.show { display: block; }
+        .explanation strong { color: var(--text); }
+
+        /* Completion card */
+        .completion-card {
+            display: none;
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 48px 28px;
+            box-shadow: 0 2px 12px rgba(74,63,53,0.06);
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            width: calc(100% - 48px);
+        }
+
+        .completion-card.show { display: block; }
+
+        .completion-card .flower {
+            font-size: 56px;
+            margin-bottom: 16px;
+        }
+
+        .completion-card h2 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 28px;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .completion-card .final-score {
+            font-size: 20px;
+            color: var(--rose);
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .return-btn {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 20px;
+            background: var(--rose);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .return-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 32px 24px;
+            font-size: 13px;
+            color: var(--muted);
+            border-top: 1px solid var(--border);
+        }
+        footer a {
+            color: var(--rose);
+            text-decoration: none;
+        }
+        footer a:hover { text-decoration: underline; }
+
+        /* Responsive */
+        @media (max-width: 700px) {
+            nav { padding: 0 16px; flex-direction: column; height: auto; padding: 12px 16px; gap: 8px; }
+            nav .nav-links { flex-wrap: wrap; justify-content: center; }
+            .header { padding: 32px 16px 16px; }
+            .header h1 { font-size: 28px; }
+            #quiz-container { padding: 0 16px 32px; }
+            .quiz-card { padding: 20px; }
+            .option-btn { padding: 12px 14px; font-size: 14px; }
+            .completion-card { width: calc(100% - 32px); padding: 36px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="brand">&#10047; Claudea's DS Prep</a>
+        <div class="nav-links">
+            <a href="index.html">sql</a>
+            <a href="index.html">python</a>
+            <a href="index.html">ml</a>
+            <a href="index.html">stats</a>
+            <a href="index.html">probability</a>
+            <a href="index.html">casing</a>
+            <a href="quiz.html" class="active">Garden Quiz</a>
+        </div>
+    </nav>
+
+    <div class="header">
+        <h1><span class="icon">&#127793;</span>Garden Quiz</h1>
+        <p class="subtitle">Test your knowledge across all six topics</p>
+    </div>
+
+    <div class="score-area" id="score-area">
+        Score: <span id="score-display">0</span> / <span id="total-display">26</span>
+    </div>
+
+    <div class="controls">
+        <div class="filters" id="filters">
+            <button class="filter-btn active" data-cat="all">All</button>
+            <button class="filter-btn" data-cat="sql">SQL</button>
+            <button class="filter-btn" data-cat="python">Python</button>
+            <button class="filter-btn" data-cat="ml">ML</button>
+            <button class="filter-btn" data-cat="statistics">Stats</button>
+            <button class="filter-btn" data-cat="probability">Probability</button>
+            <button class="filter-btn" data-cat="casing">Casing</button>
+        </div>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="completion-card" id="completion-card">
+        <div class="flower">&#127804;</div>
+        <h2>Garden Complete!</h2>
+        <p class="final-score" id="final-score-text"></p>
+        <a href="index.html" class="return-btn">Return to Garden</a>
+    </div>
+
+    <footer>
+        Claudea's DS Interview Prep &middot; v04 &middot; <a href="../index.html">Back to Gallery</a>
+    </footer>
+
+    <script>
+        const questions = [
+            { cat:"sql", diff:"easy", q:"What does COUNT(*) count?", opts:["Only non-NULL values","All rows including NULLs","Distinct values only","Only NULL values"], ans:1, explain:"COUNT(*) counts all rows regardless of NULL values. COUNT(column) skips NULLs." },
+            { cat:"sql", diff:"easy", q:"Which clause filters rows BEFORE grouping?", opts:["HAVING","ORDER BY","WHERE","GROUP BY"], ans:2, explain:"WHERE filters individual rows before any grouping. HAVING filters groups after aggregation." },
+            { cat:"sql", diff:"medium", q:"What\u2019s the difference between RANK() and DENSE_RANK()?", opts:["RANK() starts at 0, DENSE_RANK() starts at 1","RANK() skips numbers after ties, DENSE_RANK() doesn\u2019t","They are identical","DENSE_RANK() only works with PARTITION BY"], ans:1, explain:"With values 100, 90, 90, 80: RANK gives 1,2,2,4 (skips 3). DENSE_RANK gives 1,2,2,3 (no gaps)." },
+            { cat:"sql", diff:"medium", q:"Can you use a SELECT alias in the WHERE clause?", opts:["Yes, always","Only in MySQL","No, because WHERE executes before SELECT","Only with subqueries"], ans:2, explain:"SQL execution order: FROM \u2192 WHERE \u2192 GROUP BY \u2192 HAVING \u2192 SELECT \u2192 ORDER BY. WHERE runs before SELECT, so aliases aren\u2019t available yet." },
+            { cat:"sql", diff:"hard", q:"Which is generally more efficient for checking existence in a large table?", opts:["IN with subquery","EXISTS with correlated subquery","CROSS JOIN","LEFT JOIN with IS NOT NULL"], ans:1, explain:"EXISTS can short-circuit \u2014 it stops once it finds one matching row. IN must evaluate the entire subquery result set." },
+            { cat:"python", diff:"easy", q:"What is the time complexity of looking up a key in a Python dict?", opts:["O(n)","O(log n)","O(1) average","O(n log n)"], ans:2, explain:"Python dicts use hash tables. Average-case lookup, insertion, and deletion are all O(1)." },
+            { cat:"python", diff:"easy", q:"What does df.groupby('col')['val'].transform('mean') return?", opts:["A single scalar value","A DataFrame with group means","A Series the same length as df with group means","An error"], ans:2, explain:"transform() returns a Series aligned with the original DataFrame, broadcasting the group-level result back to each row." },
+            { cat:"python", diff:"medium", q:"Why is def f(x=[]) considered dangerous?", opts:["Lists can\u2019t be function arguments","The default list is shared across all calls","It causes a TypeError","Python doesn\u2019t support default arguments"], ans:1, explain:"Mutable default arguments are created once when the function is defined. Every call shares the same list object." },
+            { cat:"python", diff:"medium", q:"What\u2019s the output of: [-1 // 2]?", opts:["0","-1","0.5","-0.5"], ans:1, explain:"Python\u2019s floor division (//) rounds toward negative infinity. -1 / 2 = -0.5, floored to -1." },
+            { cat:"python", diff:"hard", q:"What is the GIL in Python?", opts:["A garbage collection algorithm","A global lock that allows only one thread to execute Python bytecode at a time","A type of generator","A package installer"], ans:1, explain:"The Global Interpreter Lock prevents true parallelism with threads in CPython. Use multiprocessing for CPU-bound tasks." },
+            { cat:"ml", diff:"easy", q:"Random Forest reduces which type of error compared to a single Decision Tree?", opts:["Bias","Variance","Both equally","Neither"], ans:1, explain:"Random Forest is a bagging ensemble. Averaging many uncorrelated trees reduces variance." },
+            { cat:"ml", diff:"medium", q:"When should you use AUC-ROC over accuracy?", opts:["When you have balanced classes","When classes are imbalanced","Only for regression problems","When you need speed"], ans:1, explain:"With imbalanced classes, accuracy is misleading. AUC-ROC evaluates across all thresholds." },
+            { cat:"ml", diff:"medium", q:"L1 (Lasso) regularization tends to produce:", opts:["Dense weight vectors","Sparse weight vectors (some weights exactly 0)","Negative weights only","Identical weights for all features"], ans:1, explain:"L1 adds |w| penalty, pushing weights to exactly zero \u2014 performing feature selection." },
+            { cat:"ml", diff:"hard", q:"What\u2019s the main risk of fitting a scaler on the entire dataset before cross-validation?", opts:["Slower training","Data leakage \u2014 test fold info leaks into training","No risk, it\u2019s best practice","Features won\u2019t be normalized"], ans:1, explain:"Test fold statistics influence training transformation, causing data leakage and overly optimistic estimates." },
+            { cat:"statistics", diff:"easy", q:"A p-value of 0.03 means:", opts:["3% chance the null hypothesis is true","3% probability of seeing this data (or more extreme) if H0 is true","The effect size is 3%","97% chance the alternative is true"], ans:1, explain:"The p-value is P(data or more extreme | H0 true). It is NOT the probability that H0 is true." },
+            { cat:"statistics", diff:"medium", q:"What is a Type II error?", opts:["Rejecting a true null hypothesis","Failing to reject a false null hypothesis","Using the wrong test","Setting alpha too high"], ans:1, explain:"Type I = false positive. Type II = false negative. Power = 1 - P(Type II)." },
+            { cat:"statistics", diff:"medium", q:"The Central Limit Theorem states that:", opts:["All data is normally distributed","Sample means approach normal distribution as n increases","Larger samples are always better","Variance increases with sample size"], ans:1, explain:"Regardless of population distribution, sample means become approximately normal as n grows." },
+            { cat:"statistics", diff:"hard", q:"In an A/B test, you \u2018peek\u2019 at results daily and stop early when p < 0.05. What happens?", opts:["You get more precise results","Your false positive rate inflates well above 5%","Nothing \u2014 p-values are always valid","You reduce Type II error"], ans:1, explain:"Repeated testing inflates Type I error. With daily peeking, false positive rate can exceed 25%." },
+            { cat:"probability", diff:"easy", q:"In the Monty Hall problem, should you switch doors?", opts:["No \u2014 it\u2019s 50/50 after a door opens","Yes \u2014 switching gives 2/3 probability","It doesn\u2019t matter","Only if the host chooses randomly"], ans:1, explain:"Switching wins 2/3 of the time. Initial pick has 1/3 chance." },
+            { cat:"probability", diff:"medium", q:"A test is 99% accurate. Disease prevalence is 1%. If you test positive, what\u2019s the approximate probability you\u2019re sick?", opts:["99%","50%","1%","90%"], ans:1, explain:"By Bayes\u2019 Theorem: P(sick|+) \u2248 50%. Low prevalence drastically reduces positive predictive value." },
+            { cat:"probability", diff:"medium", q:"Events A and B are independent. P(A)=0.3, P(B)=0.5. What is P(A and B)?", opts:["0.8","0.15","0.2","0.35"], ans:1, explain:"For independent events, P(A \u2229 B) = P(A) \u00d7 P(B) = 0.3 \u00d7 0.5 = 0.15." },
+            { cat:"probability", diff:"hard", q:"How many people needed for a >50% chance of a shared birthday?", opts:["50","23","365","183"], ans:1, explain:"With 23 people, C(23,2) = 253 pairs. P(match) > 50%." },
+            { cat:"casing", diff:"easy", q:"What is a \u2018North Star Metric\u2019?", opts:["The highest revenue metric","A single metric that best captures the core value your product delivers","The first metric you track","Customer satisfaction score"], ans:1, explain:"E.g., Airbnb: nights booked, Spotify: time spent listening." },
+            { cat:"casing", diff:"medium", q:"\u2018Daily active users dropped 15% last week.\u2019 What\u2019s the BEST first step?", opts:["Immediately run an A/B test","Check if the metric definition or tracking changed","Build a predictive model","Increase marketing spend"], ans:1, explain:"Verify data correctness first. Tracking bugs are common causes of phantom metric drops." },
+            { cat:"casing", diff:"medium", q:"Which metric would be a good GUARDRAIL metric for a test that tries to increase purchase conversion?", opts:["Click-through rate","Revenue per user","Page load time","Cart abandonment rate"], ans:2, explain:"Page load time is a good guardrail \u2014 don\u2019t break UX while optimizing conversion." },
+            { cat:"casing", diff:"hard", q:"A ride-sharing company sees revenue up 20% but rides are down 5%. What\u2019s most likely?", opts:["A bug in revenue tracking","Price per ride increased (e.g., surge pricing, route changes)","More drivers joined the platform","Users are taking shorter rides"], ans:1, explain:"Revenue = rides \u00d7 price per ride. Price per ride increased ~26%." },
+        ];
+
+        let score = 0;
+        let answered = 0;
+
+        const container = document.getElementById('quiz-container');
+        const scoreDisplay = document.getElementById('score-display');
+        const totalDisplay = document.getElementById('total-display');
+
+        totalDisplay.textContent = questions.length;
+
+        function catLabel(cat) {
+            const labels = { sql:'SQL', python:'Python', ml:'ML', statistics:'Stats', probability:'Probability', casing:'Casing' };
+            return labels[cat] || cat;
+        }
+
+        function diffLabel(diff) {
+            if (diff === 'easy') return { label: 'Beginner', cls: 'diff-easy' };
+            if (diff === 'medium') return { label: 'Intermediate', cls: 'diff-medium' };
+            return { label: 'Advanced', cls: 'diff-hard' };
+        }
+
+        function renderQuiz() {
+            container.innerHTML = '';
+            questions.forEach((item, idx) => {
+                const card = document.createElement('div');
+                card.className = 'quiz-card';
+                card.dataset.cat = item.cat;
+
+                const diff = diffLabel(item.diff);
+
+                let optsHTML = '';
+                item.opts.forEach((opt, oi) => {
+                    optsHTML += '<button class="option-btn" data-qi="' + idx + '" data-oi="' + oi + '">' + opt + '</button>';
+                });
+
+                card.innerHTML =
+                    '<div class="card-header">' +
+                        '<div class="card-tags">' +
+                            '<span class="tag tag-' + item.cat + '">' + catLabel(item.cat) + '</span>' +
+                            '<span class="tag ' + diff.cls + '">' + diff.label + '</span>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="question-text">' + item.q + '</div>' +
+                    '<div class="options">' + optsHTML + '</div>' +
+                    '<div class="explanation" id="explain-' + idx + '"><strong>Explanation:</strong> ' + item.explain + '</div>';
+
+                container.appendChild(card);
+            });
+
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.addEventListener('click', handleAnswer);
+            });
+        }
+
+        function handleAnswer(e) {
+            const btn = e.currentTarget;
+            const qi = parseInt(btn.dataset.qi);
+            const oi = parseInt(btn.dataset.oi);
+            const question = questions[qi];
+
+            const card = btn.closest('.quiz-card');
+            const allBtns = card.querySelectorAll('.option-btn');
+
+            if (btn.disabled) return;
+
+            allBtns.forEach(b => b.disabled = true);
+
+            const correctIdx = question.ans;
+            allBtns[correctIdx].classList.add('correct');
+
+            if (oi === correctIdx) {
+                score++;
+            } else {
+                btn.classList.add('wrong');
+            }
+
+            answered++;
+            scoreDisplay.textContent = score;
+            document.getElementById('explain-' + qi).classList.add('show');
+
+            if (answered >= questions.length) {
+                setTimeout(showCompletion, 600);
+            }
+        }
+
+        function showCompletion() {
+            const pct = Math.round((score / questions.length) * 100);
+            document.getElementById('final-score-text').textContent = 'You scored ' + score + ' / ' + questions.length + ' (' + pct + '%)';
+            document.getElementById('completion-card').classList.add('show');
+            document.getElementById('completion-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Filtering
+        document.getElementById('filters').addEventListener('click', (e) => {
+            if (!e.target.classList.contains('filter-btn')) return;
+
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+
+            const cat = e.target.dataset.cat;
+            document.querySelectorAll('.quiz-card').forEach(card => {
+                if (cat === 'all' || card.dataset.cat === cat) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        });
+
+        renderQuiz();
+    </script>
+
+</body>
+</html>

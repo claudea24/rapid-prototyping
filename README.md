@@ -24,7 +24,7 @@ Each topic gets a **cheat sheet** reference section and there is a **quiz** sect
 | **v01** | Bare Bones | Single scrolling page covering all 6 topics (SQL, Python, ML, Stats, Probability, Casing) with cheat sheet cards, sample quiz questions, and minimal content |
 | **v02** | Multi-Page Layout | Reorganized into separate pages — home with topic buttons (Strata-style), dedicated pages for each topic + quiz, top nav bar linking to all subpages |
 | **v03** | RPG Gamified Layout | Entirely new design — RPG theme with XP bars, skill dungeons, loot-rarity concept cards, daily quests, battle-mode quiz with hearts/streaks |
-| v04 | Hero Section | Full-width hero with title, topic pills, intro copy |
+| **v04** | Bloom — Light Pastel Theme | New mood — light pastel palette (rose, lavender, mint), garden metaphor, DM Serif Display headings, soft shadows, feminine aesthetic |
 | v05 | SQL Content | Real SQL cheat sheet — query order, JOINs, window functions, CTEs |
 | v06 | Python Content | Real Python cheat sheet — data structures, Pandas, NumPy, patterns |
 | v07 | ML Content | Real ML cheat sheet — algorithms, metrics, bias-variance, features |

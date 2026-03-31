@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies — Claudea's DS Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fdf8f4; --surface: #ffffff;
+      --border: #f0e6dc; --border-hover: #e8d5c4;
+      --text: #4a3f35; --text-muted: #9b8e82; --text-light: #c4b8ad;
+      --rose: #e8758a; --rose-light: #fdeef1; --rose-dark: #c4566b;
+      --mint: #6ec6a0; --mint-light: #e8f7f0;
+      --sky: #7eb8d8; --sky-light: #eaf4fa;
+      --blush: #d4849a; --blush-light: #f9eef1;
+      --shadow: 0 2px 12px rgba(74,63,53,0.06);
+      --shadow-hover: 0 8px 24px rgba(74,63,53,0.1);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 60px;
+      background: rgba(253,248,244,0.9); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand {
+      font-family: 'DM Serif Display', serif; font-size: 1.1rem;
+      color: var(--rose); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    nav .brand .flower { font-size: 1.2rem; }
+    nav .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.8rem;
+      padding: 7px 14px; border-radius: 20px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--rose-light); color: var(--rose); }
+    nav .nav-links a.active {
+      background: var(--blush-light); color: var(--blush); font-weight: 600;
+    }
+    nav .nav-links a.quiz-link {
+      color: var(--rose); background: var(--rose-light);
+      border: 1px solid rgba(232,117,138,0.2);
+    }
+    nav .nav-links a.quiz-link:hover { background: var(--rose); color: #fff; }
+
+    /* ── Header ── */
+    .header {
+      padding: 110px 32px 48px; text-align: center; max-width: 640px; margin: 0 auto;
+    }
+    .header .icon { font-size: 2.8rem; margin-bottom: 16px; }
+    .header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.6rem; font-weight: 400; color: var(--text);
+      line-height: 1.2; margin-bottom: 12px;
+    }
+    .header p {
+      color: var(--text-muted); font-size: 1.05rem; line-height: 1.7;
+    }
+
+    /* ── Cards Grid ── */
+    .cards-section {
+      max-width: 960px; margin: 0 auto 56px; padding: 0 32px;
+    }
+    .cards-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-top: 3px solid var(--blush);
+      border-radius: 14px; padding: 28px 24px;
+      box-shadow: var(--shadow); transition: all 0.25s;
+    }
+    .card:hover {
+      box-shadow: var(--shadow-hover); transform: translateY(-2px);
+    }
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .card-header h3 {
+      font-size: 1.05rem; font-weight: 600; color: var(--text);
+    }
+    .tag-key {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; padding: 4px 10px; border-radius: 12px;
+      background: var(--sky-light); color: var(--sky);
+    }
+    .tag-tip {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; padding: 4px 10px; border-radius: 12px;
+      background: var(--mint-light); color: var(--mint);
+    }
+    .card ul, .card ol {
+      margin: 0; padding-left: 20px; color: var(--text-muted);
+      font-size: 0.9rem; line-height: 1.8;
+    }
+    .card p.desc {
+      color: var(--text-muted); font-size: 0.9rem; line-height: 1.7;
+      margin-bottom: 12px;
+    }
+
+    /* ── Practice Section ── */
+    .practice-section {
+      max-width: 640px; margin: 0 auto 64px; padding: 0 32px;
+    }
+    .practice-section h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem; font-weight: 400; color: var(--text);
+      text-align: center; margin-bottom: 28px;
+    }
+    .quiz-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 24px; margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+    .quiz-card .question {
+      font-weight: 600; font-size: 0.95rem; margin-bottom: 14px;
+      color: var(--text);
+    }
+    .quiz-card .options { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-card .option {
+      padding: 12px 16px; border: 1px solid var(--border); border-radius: 10px;
+      cursor: pointer; font-size: 0.88rem; color: var(--text-muted);
+      transition: all 0.2s; background: var(--bg);
+    }
+    .quiz-card .option:hover {
+      border-color: var(--blush); color: var(--blush); background: var(--blush-light);
+    }
+    .quiz-card .option.correct {
+      border-color: var(--mint); background: var(--mint-light); color: #3a8c66;
+      font-weight: 600;
+    }
+    .quiz-card .option.incorrect {
+      border-color: var(--rose); background: var(--rose-light); color: var(--rose-dark);
+    }
+    .quiz-card .option.disabled { pointer-events: none; opacity: 0.7; }
+    .quiz-card .feedback {
+      margin-top: 12px; font-size: 0.85rem; padding: 10px 14px;
+      border-radius: 10px; display: none;
+    }
+    .quiz-card .feedback.show { display: block; }
+    .quiz-card .feedback.correct-fb {
+      background: var(--mint-light); color: #3a8c66;
+    }
+    .quiz-card .feedback.incorrect-fb {
+      background: var(--rose-light); color: var(--rose-dark);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 32px; color: var(--text-light);
+      font-size: 0.8rem; border-top: 1px solid var(--border);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      nav { padding: 0 16px; }
+      nav .nav-links { gap: 2px; }
+      nav .nav-links a { font-size: 0.72rem; padding: 6px 10px; }
+      .header { padding: 100px 20px 36px; }
+      .header h1 { font-size: 2rem; }
+      .cards-section { padding: 0 20px; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .practice-section { padding: 0 20px; }
+    }
+    @media (max-width: 480px) {
+      nav { flex-direction: column; height: auto; padding: 12px 16px; gap: 8px; }
+      nav .nav-links { flex-wrap: wrap; justify-content: center; }
+      .header { padding: 130px 16px 32px; }
+      .header h1 { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="brand">
+      <span class="flower">&#10047;</span> Claudea's DS Prep
+    </a>
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Probability</a>
+      <a href="casing.html" class="active">Casing</a>
+      <a href="index.html#garden" class="quiz-link">Garden Quiz</a>
+    </div>
+  </nav>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="icon">&#129344;</div>
+    <h1>Case Studies</h1>
+    <p>Product sense, metrics, and business frameworks</p>
+  </div>
+
+  <!-- Cards -->
+  <section class="cards-section">
+    <div class="cards-grid">
+
+      <!-- Card 1: Product Metrics Framework -->
+      <div class="card" id="case-metrics">
+        <div class="card-header">
+          <h3>Product Metrics Framework</h3>
+          <span class="tag-key">Key</span>
+        </div>
+        <ul>
+          <li>North Star Metric</li>
+          <li>Acquisition</li>
+          <li>Activation</li>
+          <li>Retention</li>
+          <li>Revenue</li>
+          <li>Referral</li>
+        </ul>
+      </div>
+
+      <!-- Card 2: Structuring a Case -->
+      <div class="card" id="case-structure">
+        <div class="card-header">
+          <h3>Structuring a Case</h3>
+          <span class="tag-tip">Tip</span>
+        </div>
+        <ol>
+          <li>Clarify the question &amp; context</li>
+          <li>Define the goal and success metric</li>
+          <li>Break down into components</li>
+          <li>Prioritize the highest-impact area</li>
+          <li>Propose a solution with trade-offs</li>
+          <li>Summarize and state next steps</li>
+        </ol>
+      </div>
+
+      <!-- Card 3: Metric Change Questions -->
+      <div class="card" id="case-metric-change">
+        <div class="card-header">
+          <h3>Metric Change Questions</h3>
+          <span class="tag-key">Key</span>
+        </div>
+        <p class="desc">"Metric X dropped 10%" — follow these steps:</p>
+        <ol>
+          <li>Clarify the metric definition &amp; check tracking</li>
+          <li>Segment by dimensions (platform, region, user type)</li>
+          <li>Check internal changes (launches, bugs, experiments)</li>
+          <li>Check external factors (seasonality, competitors)</li>
+          <li>Quantify impact and recommend action</li>
+        </ol>
+      </div>
+
+      <!-- Card 4: Market Sizing -->
+      <div class="card" id="case-sizing">
+        <div class="card-header">
+          <h3>Market Sizing</h3>
+          <span class="tag-tip">Tip</span>
+        </div>
+        <ul>
+          <li><strong>Top-down:</strong> Start from total population, narrow down</li>
+          <li><strong>Bottom-up:</strong> Build from unit economics upward</li>
+          <li><strong>Assumptions:</strong> State clearly, keep reasonable</li>
+          <li><strong>Round numbers:</strong> Simplify math, focus on logic</li>
+        </ul>
+      </div>
+
+      <!-- Card 5: Experiment Design -->
+      <div class="card" id="case-experiment">
+        <div class="card-header">
+          <h3>Experiment Design</h3>
+          <span class="tag-key">Key</span>
+        </div>
+        <ul>
+          <li><strong>Randomization:</strong> Proper unit of assignment</li>
+          <li><strong>Duration:</strong> Sufficient for statistical power</li>
+          <li><strong>Guardrails:</strong> Monitor for regressions in key metrics</li>
+          <li><strong>Network effects:</strong> Account for interference between groups</li>
+        </ul>
+      </div>
+
+      <!-- Card 6: Communication Tips -->
+      <div class="card" id="case-communication">
+        <div class="card-header">
+          <h3>Communication Tips</h3>
+          <span class="tag-tip">Tip</span>
+        </div>
+        <ul>
+          <li><strong>Lead with your answer:</strong> State the recommendation first</li>
+          <li><strong>Structure:</strong> Use a clear framework throughout</li>
+          <li><strong>Quantify:</strong> Back up points with numbers</li>
+          <li><strong>Trade-offs:</strong> Acknowledge pros and cons</li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Practice -->
+  <section class="practice-section">
+    <h2>Practice Questions</h2>
+
+    <!-- Q1 -->
+    <div class="quiz-card" data-answer="1">
+      <div class="question">Q1: What is a North Star Metric?</div>
+      <div class="options">
+        <div class="option" data-index="1">A single metric that captures the core value a product delivers to customers</div>
+        <div class="option" data-index="2">The total number of users who sign up each month</div>
+        <div class="option" data-index="3">A metric used only for investor presentations</div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-card" data-answer="1">
+      <div class="question">Q2: DAU dropped 15% — what's the first step?</div>
+      <div class="options">
+        <div class="option" data-index="1">Check if tracking or metric definition changed</div>
+        <div class="option" data-index="2">Immediately launch a new feature to boost engagement</div>
+        <div class="option" data-index="3">Assume it's seasonal and wait a week</div>
+      </div>
+      <div class="feedback"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &#10047; Claudea's DS Prep &mdash; Case Studies &middot; Study smart, bloom bright
+  </footer>
+
+  <script>
+    document.querySelectorAll('.quiz-card').forEach(card => {
+      const correctIndex = parseInt(card.dataset.answer);
+      const feedback = card.querySelector('.feedback');
+
+      card.querySelectorAll('.option').forEach(option => {
+        option.addEventListener('click', () => {
+          // Disable all options in this card
+          card.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
+
+          const selected = parseInt(option.dataset.index);
+          if (selected === correctIndex) {
+            option.classList.add('correct');
+            feedback.textContent = 'Correct! Well done.';
+            feedback.className = 'feedback show correct-fb';
+          } else {
+            option.classList.add('incorrect');
+            // Highlight the correct one
+            card.querySelector(`.option[data-index="${correctIndex}"]`).classList.add('correct');
+            feedback.textContent = 'Not quite — see the highlighted answer above.';
+            feedback.className = 'feedback show incorrect-fb';
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>

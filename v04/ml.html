@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning — Claudea's DS Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700&family=DM+Serif+Display&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fdf8f4; --surface: #ffffff; --surface2: #faf5f0;
+      --border: #f0e6dc; --border-hover: #e8d5c4;
+      --text: #4a3f35; --text-muted: #9b8e82; --text-light: #c4b8ad;
+      --rose: #e8758a; --rose-light: #fdeef1;
+      --lavender: #9b8fca; --lavender-light: #f0edf8;
+      --shadow: 0 2px 12px rgba(74,63,53,0.06);
+      --shadow-hover: 0 8px 24px rgba(74,63,53,0.1);
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 60px;
+      background: rgba(253,248,244,0.9); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand {
+      font-family: 'DM Serif Display', serif; font-size: 1.1rem;
+      color: var(--rose); text-decoration: none;
+      display: flex; align-items: center; gap: 8px;
+    }
+    nav .brand .flower { font-size: 1.2rem; }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.8rem;
+      padding: 7px 14px; border-radius: 20px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--lavender-light); color: var(--lavender); }
+    nav .nav-links a.active {
+      background: var(--lavender-light); color: var(--lavender); font-weight: 600;
+    }
+    nav .nav-links a.quiz-link {
+      color: var(--rose); background: var(--rose-light);
+      border: 1px solid rgba(232,117,138,0.2);
+    }
+    nav .nav-links a.quiz-link:hover { background: var(--rose); color: #fff; }
+
+    /* ── Header ── */
+    .page-header {
+      padding: 110px 32px 48px; text-align: center; max-width: 640px; margin: 0 auto;
+    }
+    .page-header .icon { font-size: 2.4rem; margin-bottom: 12px; display: block; }
+    .page-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.4rem; font-weight: 400; color: var(--text);
+      line-height: 1.2; margin-bottom: 10px;
+    }
+    .page-header p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; }
+
+    /* ── Cards Grid ── */
+    .cards-section {
+      max-width: 900px; margin: 0 auto 56px; padding: 0 32px;
+    }
+    .section-label {
+      font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 2px; color: var(--text-light); margin-bottom: 20px;
+      text-align: center;
+    }
+    .cards-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+    }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px;
+      box-shadow: var(--shadow); position: relative; overflow: hidden;
+      transition: all 0.25s;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+    .card .card-accent {
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: var(--lavender);
+    }
+    .card .card-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      margin-bottom: 14px;
+    }
+    .card h2 {
+      font-family: 'DM Serif Display', serif; font-size: 1.1rem;
+      font-weight: 400; color: var(--text);
+    }
+    .card .badge {
+      font-size: 0.62rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; padding: 3px 10px; border-radius: 12px;
+      flex-shrink: 0; margin-left: 10px;
+    }
+    .badge-key { background: var(--lavender-light); color: var(--lavender); }
+    .badge-tip { background: #e8f7f0; color: #6ec6a0; }
+    .badge-watch { background: #fef3e8; color: #f0a868; }
+    .card .card-body { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; }
+    .card .card-body code {
+      font-family: 'Fira Code', monospace; font-size: 0.75rem;
+      background: var(--surface2); padding: 2px 6px; border-radius: 4px;
+      color: var(--lavender);
+    }
+    .card .card-body ul {
+      list-style: none; padding: 0; margin: 8px 0 0 0;
+    }
+    .card .card-body ul li {
+      padding: 4px 0; padding-left: 16px; position: relative;
+    }
+    .card .card-body ul li::before {
+      content: ''; position: absolute; left: 0; top: 11px;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--lavender); opacity: 0.4;
+    }
+    .card .card-body .sub {
+      font-size: 0.75rem; color: var(--text-light); margin-top: 2px;
+    }
+    .card .card-body strong { color: var(--text); font-weight: 600; }
+    .card .card-body .formula {
+      font-family: 'Fira Code', monospace; font-size: 0.73rem;
+      background: var(--lavender-light); color: var(--lavender);
+      padding: 8px 12px; border-radius: 8px; margin: 10px 0;
+      display: block;
+    }
+
+    /* ── Practice ── */
+    .practice-section {
+      max-width: 640px; margin: 0 auto 64px; padding: 0 32px;
+    }
+    .practice-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px; box-shadow: var(--shadow);
+    }
+    .practice-card h3 {
+      font-family: 'DM Serif Display', serif; font-size: 1.1rem;
+      color: var(--text); margin-bottom: 20px;
+    }
+    .question {
+      padding: 16px 0; border-top: 1px solid var(--border);
+    }
+    .question:first-of-type { border-top: none; padding-top: 0; }
+    .question .q-text {
+      font-size: 0.85rem; color: var(--text); font-weight: 500;
+      margin-bottom: 10px;
+    }
+    .question .options { display: flex; flex-direction: column; gap: 6px; }
+    .question .option {
+      display: block; width: 100%; text-align: left;
+      font-family: 'DM Sans', sans-serif; font-size: 0.8rem;
+      padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: 10px; background: var(--surface);
+      color: var(--text-muted); cursor: pointer; transition: all 0.2s;
+    }
+    .question .option:hover { border-color: var(--lavender); color: var(--text); }
+    .question .option.correct {
+      background: var(--lavender-light); border-color: var(--lavender);
+      color: var(--lavender); font-weight: 600;
+    }
+    .question .option.wrong {
+      background: #fdeef1; border-color: var(--rose); color: var(--rose);
+    }
+    .question .option.disabled { pointer-events: none; }
+    .question .explanation {
+      display: none; margin-top: 10px; font-size: 0.78rem;
+      color: var(--text-muted); line-height: 1.6;
+      padding: 10px 14px; background: var(--lavender-light);
+      border-radius: 10px;
+    }
+    .question .explanation.show { display: block; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 32px;
+      font-size: 0.75rem; color: var(--text-light);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--rose); }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.7rem; padding: 5px 10px; }
+      .page-header { padding: 90px 16px 36px; }
+      .page-header h1 { font-size: 1.8rem; }
+      .cards-grid { grid-template-columns: 1fr; }
+      .cards-section, .practice-section { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="brand"><span class="flower">&#10047;</span> Claudea's DS Prep</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html" class="active">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+    <a href="quiz.html" class="quiz-link">Garden Quiz</a>
+  </div>
+</nav>
+
+<!-- Header -->
+<div class="page-header">
+  <span class="icon">&#127802;</span>
+  <h1>Machine Learning</h1>
+  <p>Algorithms, evaluation metrics, and model selection</p>
+</div>
+
+<!-- Cards -->
+<div class="cards-section">
+  <div class="section-label">Study cards</div>
+  <div class="cards-grid">
+
+    <!-- Card 1: Supervised Algorithms -->
+    <div class="card" id="ml-supervised">
+      <div class="card-accent"></div>
+      <div class="card-header">
+        <h2>Supervised Algorithms</h2>
+        <span class="badge badge-key">Key</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><strong>Linear Regression</strong><div class="sub">Continuous target, assumes linearity</div></li>
+          <li><strong>Logistic Regression</strong><div class="sub">Classification via sigmoid; outputs probabilities</div></li>
+          <li><strong>Decision Trees</strong><div class="sub">Splits on feature thresholds; interpretable but prone to overfit</div></li>
+          <li><strong>Random Forest</strong><div class="sub">Bagged ensemble of trees; reduces variance</div></li>
+          <li><strong>Gradient Boosted Trees</strong><div class="sub">Sequential boosting; XGBoost, LightGBM</div></li>
+          <li><strong>SVM</strong><div class="sub">Maximizes margin; kernel trick for non-linear boundaries</div></li>
+          <li><strong>KNN</strong><div class="sub">Instance-based; classify by majority of k nearest neighbors</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Card 2: Unsupervised Algorithms -->
+    <div class="card" id="ml-unsupervised">
+      <div class="card-accent"></div>
+      <div class="card-header">
+        <h2>Unsupervised Algorithms</h2>
+        <span class="badge badge-key">Key</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><strong>K-Means</strong><div class="sub">Partition into k clusters by centroid distance; choose k via elbow method</div></li>
+          <li><strong>Hierarchical Clustering</strong><div class="sub">Agglomerative (bottom-up) or divisive; produces dendrogram</div></li>
+          <li><strong>DBSCAN</strong><div class="sub">Density-based; finds arbitrary shapes, handles noise as outliers</div></li>
+          <li><strong>PCA</strong><div class="sub">Dimensionality reduction via orthogonal projections that maximize variance</div></li>
+          <li><strong>t-SNE / UMAP</strong><div class="sub">Non-linear embedding for visualization; preserves local structure</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Card 3: Evaluation Metrics -->
+    <div class="card" id="ml-metrics">
+      <div class="card-accent"></div>
+      <div class="card-header">
+        <h2>Evaluation Metrics</h2>
+        <span class="badge badge-key">Key</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><strong>Accuracy</strong><div class="sub">Correct / Total &mdash; misleading on imbalanced data</div></li>
+          <li><strong>Precision</strong><div class="sub">TP / (TP + FP) &mdash; "of predicted positives, how many are correct?"</div></li>
+          <li><strong>Recall</strong><div class="sub">TP / (TP + FN) &mdash; "of actual positives, how many did we catch?"</div></li>
+          <li><strong>F1 Score</strong><div class="sub">Harmonic mean of precision &amp; recall</div></li>
+          <li><strong>AUC-ROC</strong><div class="sub">Area under TPR vs FPR curve; threshold-independent</div></li>
+          <li><strong>RMSE / MAE</strong><div class="sub">Regression error metrics; RMSE penalizes large errors more</div></li>
+        </ul>
+        <span class="formula">F1 = 2 &middot; (P &middot; R) / (P + R)</span>
+      </div>
+    </div>
+
+    <!-- Card 4: Bias-Variance Tradeoff -->
+    <div class="card" id="ml-bias-variance">
+      <div class="card-accent"></div>
+      <div class="card-header">
+        <h2>Bias-Variance Tradeoff</h2>
+        <span class="badge badge-key">Key</span>
+      </div>
+      <div class="card-body">
+        <p><strong>Bias</strong> &mdash; error from overly simple assumptions; model underfits.</p>
+        <p style="margin-top:6px"><strong>Variance</strong> &mdash; error from sensitivity to training data; model overfits.</p>
+        <span class="formula">Total Error = Bias&sup2; + Variance + Noise</span>
+        <p style="margin-top:8px"><strong>Regularization</strong> constrains model complexity:</p>
+        <ul>
+          <li><strong>L1 (Lasso)</strong><div class="sub">Adds |w| penalty; drives coefficients to zero (feature selection)</div></li>
+          <li><strong>L2 (Ridge)</strong><div class="sub">Adds w&sup2; penalty; shrinks coefficients evenly</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Card 5: Feature Engineering -->
+    <div class="card" id="ml-features">
+      <div class="card-accent"></div>
+      <div class="card-header">
+        <h2>Feature Engineering</h2>
+        <span class="badge badge-tip">Tip</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><strong>One-Hot Encoding</strong><div class="sub">Binary columns per category; use <code>drop_first</code> to avoid multicollinearity</div></li>
+          <li><strong>Label Encoding</strong><div class="sub">Integer mapping; suitable for ordinal features or tree models</div></li>
+          <li><strong>Scaling</strong><div class="sub">StandardScaler (z-score) or MinMaxScaler (0-1); required for distance-based models</div></li>
+          <li><strong>Log Transform</strong><div class="sub">Reduces right skew; useful for revenue, counts</div></li>
+          <li><strong>Feature Crosses</strong><div class="sub">Multiply/combine features to capture interactions</div></li>
+          <li><strong>Target Encoding</strong><div class="sub">Replace category with mean of target; use with regularization to avoid leakage</div></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Card 6: Cross-Validation -->
+    <div class="card" id="ml-cv">
+      <div class="card-accent"></div>
+      <div class="card-header">
+        <h2>Cross-Validation</h2>
+        <span class="badge badge-watch">Watch</span>
+      </div>
+      <div class="card-body">
+        <ul>
+          <li><strong>k-Fold CV</strong><div class="sub">Split data into k folds; train on k-1, validate on 1; rotate</div></li>
+          <li><strong>Stratified k-Fold</strong><div class="sub">Preserves class distribution in each fold; essential for imbalanced data</div></li>
+          <li><strong>Time Series CV</strong><div class="sub">Expanding or sliding window; never use future data to predict past</div></li>
+          <li><strong>Data Leakage</strong><div class="sub">Fitting preprocessors (scaler, encoder) on full data before splitting leaks test info into training</div></li>
+        </ul>
+        <span class="formula">Always fit_transform(train) then transform(test)</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Practice -->
+<div class="practice-section">
+  <div class="practice-card">
+    <h3>Practice Questions</h3>
+
+    <!-- Q1 -->
+    <div class="question" id="q1">
+      <div class="q-text">Random Forest primarily reduces which type of error?</div>
+      <div class="options">
+        <button class="option" data-q="q1" data-i="0">Variance</button>
+        <button class="option" data-q="q1" data-i="1">Bias</button>
+        <button class="option" data-q="q1" data-i="2">Irreducible noise</button>
+      </div>
+      <div class="explanation" id="q1-exp">
+        Random Forest uses <strong>bagging</strong> (bootstrap aggregation) to average many decorrelated trees, which reduces <strong>variance</strong> without significantly increasing bias.
+      </div>
+    </div>
+
+    <!-- Q2 -->
+    <div class="question" id="q2">
+      <div class="q-text">What is the risk of fitting a scaler on the full dataset before cross-validation?</div>
+      <div class="options">
+        <button class="option" data-q="q2" data-i="0">Data leakage</button>
+        <button class="option" data-q="q2" data-i="1">Underfitting</button>
+        <button class="option" data-q="q2" data-i="2">High bias</button>
+      </div>
+      <div class="explanation" id="q2-exp">
+        Fitting the scaler on all data lets information from the validation fold leak into training, causing <strong>data leakage</strong>. Always fit on training data only, then transform the validation/test set.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; v04 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<script>
+  // Answers: Q1 = index 0 (Variance), Q2 = index 0 (Data leakage)
+  const answers = { q1: 0, q2: 0 };
+
+  document.querySelectorAll('.option').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const qId = this.dataset.q;
+      const chosen = parseInt(this.dataset.i);
+      const correct = answers[qId];
+      const siblings = this.parentElement.querySelectorAll('.option');
+
+      siblings.forEach(s => s.classList.add('disabled'));
+
+      if (chosen === correct) {
+        this.classList.add('correct');
+      } else {
+        this.classList.add('wrong');
+        siblings[correct].classList.add('correct');
+      }
+
+      document.getElementById(qId + '-exp').classList.add('show');
+    });
+  });
+</script>
+
+</body>
+</html>
