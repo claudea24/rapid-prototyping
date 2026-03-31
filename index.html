@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prototyping Gallery — Claudea's DS Interview Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 56px 32px 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    header .eyebrow {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #4ade80;
+      margin-bottom: 12px;
+    }
+    header h1 {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    header p {
+      margin-top: 10px;
+      font-size: 1.05rem;
+      color: #777;
+      max-width: 700px;
+      line-height: 1.6;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 24px;
+      padding: 16px 32px 64px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background: #141414;
+      border: 1px solid #222;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .card:hover { transform: translateY(-4px); border-color: #444; }
+    .card a { text-decoration: none; color: inherit; display: block; }
+
+    .card .preview {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .card .preview .placeholder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      z-index: 1;
+    }
+    .card .preview .placeholder .num {
+      font-size: 3.2rem;
+      font-weight: 900;
+      color: #1e1e1e;
+      font-variant-numeric: tabular-nums;
+    }
+    .card .preview .placeholder .label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .card .preview iframe {
+      width: 200%;
+      height: 200%;
+      transform: scale(0.5);
+      transform-origin: top left;
+      border: none;
+      pointer-events: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .card .info { padding: 16px 20px; }
+    .card .info .top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card .info h2 { font-size: 0.95rem; font-weight: 600; color: #fff; }
+    .card .info .version-badge {
+      font-size: 0.65rem; font-weight: 700; padding: 3px 10px;
+      border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;
+      white-space: nowrap; flex-shrink: 0;
+      background: #1a1a2a; color: #60a5fa;
+    }
+    .card .info p {
+      margin-top: 6px;
+      font-size: 0.82rem;
+      color: #666;
+      line-height: 1.45;
+    }
+    .card .info .changes {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .card .info .changes span {
+      font-size: 0.68rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #1a1a1a;
+      color: #888;
+    }
+    .card .info .changes span.added { background: #0f1a15; color: #4ade80; }
+    .card .info .changes span.changed { background: #1a1a0f; color: #fbbf24; }
+    .card .info .changes span.removed { background: #1a0f0f; color: #f87171; }
+
+    @media (max-width: 768px) {
+      header { padding: 40px 16px 24px; }
+      header h1 { font-size: 1.8rem; }
+      .gallery { grid-template-columns: 1fr; padding: 8px 16px 48px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="eyebrow">Rapid Prototyping</div>
+    <h1>Claudea's DS Interview Prep Guide</h1>
+    <p>25 iterations of prototyping a data science interview prep website — covering SQL, Python, Machine Learning, Statistics, Probability, and Case Studies. Watch it evolve from v01 to v25.</p>
+  </header>
+
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    const versions = [
+      { v: 1,  title: "Bare Bones",                     desc: "Bare-bone placeholder for all 6 topics (SQL, Python, ML, Stats, Probability, Casing) and sample quizzes with minimal content. No direct links yet.",  changes: ["+6 placeholder sections","+sample quiz","+minimal content"] },
+      { v: 2,  title: "Typography & Color",            desc: "Applied Inter + JetBrains Mono font pairing and a dark color palette.",                        changes: ["+fonts","+dark theme","+color palette"] },
+      { v: 3,  title: "Navigation",                    desc: "Sticky top nav with links to each topic section and quiz.",                                    changes: ["+nav bar","+section anchors","+scroll behavior"] },
+      { v: 4,  title: "Hero Section",                  desc: "Full-width hero with title, topic pills, and brief description.",                              changes: ["+hero","+topic pills","+intro copy"] },
+      { v: 5,  title: "SQL Content",                   desc: "Filled in SQL cheat sheet — query order, JOINs, window functions, CTEs, aggregation.",         changes: ["+SQL content","+code blocks","+syntax highlighting"] },
+      { v: 6,  title: "Python Content",                desc: "Filled in Python cheat sheet — data structures, Pandas, NumPy, coding patterns.",              changes: ["+Python content","+code examples"] },
+      { v: 7,  title: "ML Content",                    desc: "Filled in ML cheat sheet — algorithms, metrics, bias-variance, feature engineering.",          changes: ["+ML content","+concept cards"] },
+      { v: 8,  title: "Statistics Content",            desc: "Filled in Stats cheat sheet — hypothesis testing, CIs, A/B testing, CLT.",                     changes: ["+statistics content","+formulas"] },
+      { v: 9,  title: "Probability Content",           desc: "Filled in Probability cheat sheet — Bayes, distributions, expected value, puzzles.",           changes: ["+probability content","+worked examples"] },
+      { v: 10, title: "Case Studies Content",          desc: "Filled in Casing cheat sheet — product metrics, frameworks, metric debugging.",                changes: ["+casing content","+frameworks"] },
+      { v: 11, title: "Quiz Build-Out",                desc: "Expanded quiz to 25+ real questions across all 6 categories with explanations.",               changes: ["+full question bank","+explanations","+difficulty tags"] },
+      { v: 12, title: "Responsive Layout",             desc: "Mobile-first responsive breakpoints — cards stack, code blocks scroll, nav collapses.",        changes: ["~responsive grid","~mobile nav","~code overflow"] },
+      { v: 13, title: "Sidebar Navigation",            desc: "Replaced top nav with fixed sidebar on desktop; hamburger menu on mobile.",                    changes: ["~nav → sidebar","+hamburger menu","+section indicators"] },
+      { v: 14, title: "Progress Tracking",             desc: "Checkbox-based topic progress with localStorage persistence and progress bar.",                changes: ["+checkboxes","+localStorage","+progress bar"] },
+      { v: 15, title: "Search & Filter",               desc: "Global search bar to filter across topics, concepts, and quiz questions.",                     changes: ["+search","+filter by category","+highlight matches"] },
+      { v: 16, title: "Quiz Timer Mode",               desc: "Added optional timed quiz mode with countdown and speed-based scoring.",                       changes: ["+timer mode","+speed scoring","~quiz UI"] },
+      { v: 17, title: "Tip & Warning Callouts",        desc: "Interview tips, common mistakes, and gotcha callout boxes throughout all sections.",           changes: ["+callout boxes","+interview tips","+warnings"] },
+      { v: 18, title: "Print-Friendly Cheat Sheets",   desc: "Print stylesheet for clean, ink-friendly cheat sheet output.",                                changes: ["+print styles","+@media print","~layout for print"] },
+      { v: 19, title: "Dark/Light Toggle",             desc: "Theme toggle with smooth CSS transition and preference persistence.",                          changes: ["+light theme","+theme toggle","+localStorage"] },
+      { v: 20, title: "Scroll Animations",             desc: "Intersection Observer fade-in and slide-up animations on scroll.",                             changes: ["+scroll animations","+transitions","~visual polish"] },
+      { v: 21, title: "Spaced Repetition",             desc: "Quiz uses spaced repetition — missed questions resurface more often.",                         changes: ["+spaced repetition","+question weighting","~quiz logic"] },
+      { v: 22, title: "Bookmarks & Notes",             desc: "Let users bookmark cards and add personal notes saved to localStorage.",                       changes: ["+bookmarks","+user notes","+localStorage"] },
+      { v: 23, title: "Accessibility Pass",            desc: "ARIA labels, keyboard navigation, focus rings, and WCAG contrast fixes.",                     changes: ["~a11y","+ARIA labels","+focus states","~contrast"] },
+      { v: 24, title: "Content QA",                    desc: "All content reviewed for accuracy, code examples tested, links verified.",                     changes: ["~content review","~bug fixes","~code verification"] },
+      { v: 25, title: "Launch Ready",                  desc: "Meta tags, Open Graph image, favicon, and final visual polish. Production-ready.",             changes: ["+meta tags","+favicon","+OG image","~final polish"] },
+    ];
+
+    const gallery = document.getElementById("gallery");
+
+    versions.forEach(({ v, title, desc, changes }) => {
+      const num = String(v).padStart(2, "0");
+      const folder = `v${num}`;
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      const changeTags = changes.map(c => {
+        let cls = "";
+        if (c.startsWith("+")) cls = "added";
+        else if (c.startsWith("~")) cls = "changed";
+        else if (c.startsWith("-")) cls = "removed";
+        return `<span class="${cls}">${c}</span>`;
+      }).join("");
+
+      card.innerHTML = `
+        <a href="${folder}/index.html">
+          <div class="preview" id="preview-${v}">
+            <div class="placeholder">
+              <span class="num">v${num}</span>
+              <span class="label">prototype</span>
+            </div>
+          </div>
+          <div class="info">
+            <div class="top-row">
+              <h2>v${num} — ${title}</h2>
+              <span class="version-badge">v${num}</span>
+            </div>
+            <p>${desc}</p>
+            <div class="changes">${changeTags}</div>
+          </div>
+        </a>
+      `;
+      gallery.appendChild(card);
+
+      // Live preview via iframe
+      const previewEl = document.getElementById(`preview-${v}`);
+      const iframe = document.createElement("iframe");
+      iframe.src = `${folder}/index.html`;
+      iframe.loading = "lazy";
+      iframe.onload = function () {
+        const ph = previewEl.querySelector(".placeholder");
+        if (ph) ph.style.display = "none";
+      };
+      iframe.onerror = function () { iframe.remove(); };
+      previewEl.appendChild(iframe);
+    });
+  </script>
+</body>
+</html>

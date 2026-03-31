@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claudea's DS Interview Prep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --border: #21262d;
+      --text: #c9d1d9;
+      --text-muted: #8b949e;
+      --text-dim: #484f58;
+      --white: #e6edf3;
+      --accent: #60a5fa;
+      --green: #4ade80;
+      --yellow: #fbbf24;
+      --red: #f87171;
+      --purple: #c084fc;
+      --orange: #fb923c;
+      --teal: #2dd4bf;
+      --sql: #60a5fa;
+      --python: #fbbf24;
+      --ml: #c084fc;
+      --stats: #2dd4bf;
+      --prob: #fb923c;
+      --case: #4ade80;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0 32px; height: 56px;
+      background: rgba(13,17,23,0.92); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    nav .brand {
+      font-weight: 800; font-size: 1rem; color: var(--white);
+      display: flex; align-items: center; gap: 8px;
+    }
+    nav .brand span { color: var(--green); }
+    nav .nav-links { display: flex; gap: 4px; }
+    nav .nav-links a {
+      text-decoration: none; color: var(--text-muted); font-size: 0.78rem;
+      padding: 6px 12px; border-radius: 6px; transition: all 0.2s; font-weight: 500;
+    }
+    nav .nav-links a:hover { background: var(--surface); color: var(--white); }
+    nav .nav-links a.quiz-link { color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+    nav .nav-links a.quiz-link:hover { background: rgba(74,222,128,0.1); }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 100px 32px 60px;
+      max-width: 900px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .hero .badge {
+      display: inline-block; font-size: 0.65rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 3px; padding: 5px 14px;
+      border-radius: 20px; background: rgba(74,222,128,0.1);
+      color: var(--green); margin-bottom: 20px; border: 1px solid rgba(74,222,128,0.2);
+    }
+    .hero h1 {
+      font-size: 2.8rem; font-weight: 900; color: var(--white);
+      letter-spacing: -1px; line-height: 1.1; margin-bottom: 16px;
+    }
+    .hero p { font-size: 1.05rem; color: var(--text-muted); max-width: 560px; margin: 0 auto 32px; }
+    .topic-pills {
+      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    }
+    .topic-pills a {
+      text-decoration: none; font-size: 0.78rem; font-weight: 600;
+      padding: 6px 16px; border-radius: 20px; transition: all 0.2s;
+    }
+    .pill-sql { background: rgba(96,165,250,0.1); color: var(--sql); border: 1px solid rgba(96,165,250,0.2); }
+    .pill-python { background: rgba(251,191,36,0.1); color: var(--python); border: 1px solid rgba(251,191,36,0.2); }
+    .pill-ml { background: rgba(192,132,252,0.1); color: var(--ml); border: 1px solid rgba(192,132,252,0.2); }
+    .pill-stats { background: rgba(45,212,191,0.1); color: var(--stats); border: 1px solid rgba(45,212,191,0.2); }
+    .pill-prob { background: rgba(251,146,60,0.1); color: var(--prob); border: 1px solid rgba(251,146,60,0.2); }
+    .pill-case { background: rgba(74,222,128,0.1); color: var(--case); border: 1px solid rgba(74,222,128,0.2); }
+
+    /* ── Section layout ── */
+    .section {
+      max-width: 1100px; margin: 0 auto; padding: 64px 32px;
+      border-top: 1px solid var(--border);
+    }
+    .section-header {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 32px;
+    }
+    .section-header .icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; flex-shrink: 0;
+    }
+    .section-header h2 { font-size: 1.6rem; font-weight: 800; color: var(--white); }
+    .section-header p { font-size: 0.9rem; color: var(--text-muted); }
+
+    .icon-sql { background: rgba(96,165,250,0.15); }
+    .icon-python { background: rgba(251,191,36,0.15); }
+    .icon-ml { background: rgba(192,132,252,0.15); }
+    .icon-stats { background: rgba(45,212,191,0.15); }
+    .icon-prob { background: rgba(251,146,60,0.15); }
+    .icon-case { background: rgba(74,222,128,0.15); }
+
+    /* ── Cheat sheet grid ── */
+    .cheat-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px; margin-bottom: 32px;
+    }
+    .cheat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px; transition: border-color 0.2s;
+    }
+    .cheat-card:hover { border-color: #3a3a4a; }
+    .cheat-card h3 {
+      font-size: 0.9rem; font-weight: 700; color: var(--white); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cheat-card h3 .tag {
+      font-size: 0.6rem; padding: 2px 7px; border-radius: 4px; font-weight: 600;
+    }
+    .tag-key { background: rgba(96,165,250,0.15); color: var(--accent); }
+    .tag-tip { background: rgba(74,222,128,0.15); color: var(--green); }
+    .tag-warn { background: rgba(251,191,36,0.15); color: var(--yellow); }
+    .tag-formula { background: rgba(192,132,252,0.15); color: var(--purple); }
+
+    .cheat-card p, .cheat-card ul {
+      font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;
+    }
+    .cheat-card ul { margin-left: 16px; }
+    .cheat-card li { margin-bottom: 4px; }
+    .cheat-card strong { color: var(--text); }
+
+    /* ── Code blocks ── */
+    pre {
+      background: #0d1117; border: 1px solid var(--border); border-radius: 6px;
+      padding: 14px 16px; margin: 10px 0 0;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+      line-height: 1.55; color: var(--text); overflow-x: auto;
+    }
+    .kw { color: #ff7b72; } .fn { color: #d2a8ff; } .str { color: #a5d6ff; }
+    .cm { color: #484f58; font-style: italic; } .num { color: #79c0ff; }
+    .op { color: #ff7b72; }
+
+    /* ── Formula blocks ── */
+    .formula {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 12px 16px; margin: 10px 0 0;
+      font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+      color: var(--purple); text-align: center;
+    }
+
+    /* ── Quiz section ── */
+    #quiz { background: var(--surface); border-top: 1px solid var(--border); }
+    #quiz .section { max-width: 800px; }
+
+    .quiz-header {
+      text-align: center; margin-bottom: 40px;
+    }
+    .quiz-header h2 { font-size: 1.8rem; font-weight: 800; color: var(--white); margin-bottom: 8px; }
+    .quiz-header p { color: var(--text-muted); font-size: 0.95rem; }
+
+    .quiz-controls {
+      display: flex; gap: 8px; justify-content: center; margin-bottom: 32px; flex-wrap: wrap;
+    }
+    .quiz-controls button {
+      font-family: inherit; font-size: 0.8rem; font-weight: 600;
+      padding: 8px 18px; border-radius: 8px; border: 1px solid var(--border);
+      background: transparent; color: var(--text-muted); cursor: pointer;
+      transition: all 0.2s;
+    }
+    .quiz-controls button:hover { border-color: #555; color: var(--white); }
+    .quiz-controls button.active { background: var(--white); color: var(--bg); border-color: var(--white); }
+
+    .quiz-score {
+      text-align: center; margin-bottom: 24px;
+      font-size: 0.85rem; color: var(--text-muted);
+    }
+    .quiz-score .score-num { font-size: 1.4rem; font-weight: 800; color: var(--green); }
+
+    .quiz-card {
+      background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+      padding: 28px; margin-bottom: 20px;
+    }
+    .quiz-card .q-meta {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+    }
+    .quiz-card .q-cat {
+      font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.5px; padding: 3px 10px; border-radius: 4px;
+    }
+    .q-cat-sql { background: rgba(96,165,250,0.15); color: var(--sql); }
+    .q-cat-python { background: rgba(251,191,36,0.15); color: var(--python); }
+    .q-cat-ml { background: rgba(192,132,252,0.15); color: var(--ml); }
+    .q-cat-statistics { background: rgba(45,212,191,0.15); color: var(--stats); }
+    .q-cat-probability { background: rgba(251,146,60,0.15); color: var(--prob); }
+    .q-cat-casing { background: rgba(74,222,128,0.15); color: var(--case); }
+    .quiz-card .q-diff { font-size: 0.7rem; font-weight: 600; }
+    .q-easy { color: var(--green); } .q-medium { color: var(--yellow); } .q-hard { color: var(--red); }
+
+    .quiz-card .question {
+      font-size: 1rem; font-weight: 600; color: var(--white); margin-bottom: 16px; line-height: 1.5;
+    }
+    .quiz-card .options { display: flex; flex-direction: column; gap: 8px; }
+    .quiz-card .option {
+      display: block; width: 100%; text-align: left;
+      font-family: inherit; font-size: 0.9rem;
+      padding: 12px 16px; border-radius: 8px;
+      border: 1px solid var(--border); background: transparent;
+      color: var(--text); cursor: pointer; transition: all 0.2s;
+    }
+    .quiz-card .option:hover:not(.selected):not(.disabled) {
+      border-color: #555; background: rgba(255,255,255,0.03);
+    }
+    .quiz-card .option.selected.correct {
+      border-color: var(--green); background: rgba(74,222,128,0.08); color: var(--green);
+    }
+    .quiz-card .option.selected.wrong {
+      border-color: var(--red); background: rgba(248,113,113,0.08); color: var(--red);
+    }
+    .quiz-card .option.show-correct {
+      border-color: var(--green); background: rgba(74,222,128,0.05);
+    }
+    .quiz-card .option.disabled { cursor: default; opacity: 0.6; }
+    .quiz-card .option.disabled.show-correct { opacity: 1; }
+    .quiz-card .option.disabled.selected { opacity: 1; }
+
+    .quiz-card .explanation {
+      margin-top: 16px; padding: 14px 16px;
+      background: rgba(96,165,250,0.06); border: 1px solid rgba(96,165,250,0.15);
+      border-radius: 8px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;
+      display: none;
+    }
+    .quiz-card .explanation.show { display: block; }
+    .quiz-card .explanation strong { color: var(--accent); }
+
+    .quiz-card pre { margin: 8px 0; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; padding: 40px 24px;
+      border-top: 1px solid var(--border);
+      font-size: 0.8rem; color: var(--text-dim);
+    }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 16px; }
+      nav .nav-links a { font-size: 0.7rem; padding: 5px 8px; }
+      .hero { padding: 80px 16px 40px; }
+      .hero h1 { font-size: 2rem; }
+      .section { padding: 48px 16px; }
+      .cheat-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="brand"><span>&#9670;</span> Claudea's DS Prep</div>
+  <div class="nav-links">
+    <a href="#sql">SQL</a>
+    <a href="#python">Python</a>
+    <a href="#ml">ML</a>
+    <a href="#stats">Stats</a>
+    <a href="#prob">Probability</a>
+    <a href="#case">Casing</a>
+    <a href="#quiz" class="quiz-link">Quiz</a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<div class="hero">
+  <div class="badge">v01 &middot; Bare Bones</div>
+  <h1>Data Science<br>Interview Prep</h1>
+  <p>Quick-reference cheat sheets and practice quizzes for the six pillars of data science interviews.</p>
+  <div class="topic-pills">
+    <a href="#sql" class="pill-sql">SQL</a>
+    <a href="#python" class="pill-python">Python</a>
+    <a href="#ml" class="pill-ml">Machine Learning</a>
+    <a href="#stats" class="pill-stats">Statistics</a>
+    <a href="#prob" class="pill-prob">Probability</a>
+    <a href="#case" class="pill-case">Case Studies</a>
+  </div>
+</div>
+
+<!-- ═══════════ SQL ═══════════ -->
+<div class="section" id="sql">
+  <div class="section-header">
+    <div class="icon icon-sql">&#128450;</div>
+    <div>
+      <h2>SQL</h2>
+      <p>Queries, joins, window functions, and optimization</p>
+    </div>
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h3>Query Execution Order <span class="tag tag-key">Key</span></h3>
+      <p>SQL doesn't run in the order you write it:</p>
+      <pre><span class="num">1.</span> <span class="kw">FROM</span> / <span class="kw">JOIN</span>
+<span class="num">2.</span> <span class="kw">WHERE</span>
+<span class="num">3.</span> <span class="kw">GROUP BY</span>
+<span class="num">4.</span> <span class="kw">HAVING</span>
+<span class="num">5.</span> <span class="kw">SELECT</span>
+<span class="num">6.</span> <span class="kw">ORDER BY</span>
+<span class="num">7.</span> <span class="kw">LIMIT</span></pre>
+    </div>
+
+    <div class="cheat-card">
+      <h3>JOIN Types <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>INNER JOIN</strong> — matching rows in both tables</li>
+        <li><strong>LEFT JOIN</strong> — all left rows + matching right</li>
+        <li><strong>RIGHT JOIN</strong> — all right rows + matching left</li>
+        <li><strong>FULL OUTER</strong> — all rows from both sides</li>
+        <li><strong>CROSS JOIN</strong> — cartesian product</li>
+        <li><strong>Self Join</strong> — table joined to itself</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Window Functions <span class="tag tag-key">Key</span></h3>
+      <pre><span class="kw">SELECT</span>
+  name, dept, salary,
+  <span class="fn">RANK</span>() <span class="kw">OVER</span>(
+    <span class="kw">PARTITION BY</span> dept
+    <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>
+  ) <span class="kw">AS</span> dept_rank
+<span class="kw">FROM</span> employees;</pre>
+      <p style="margin-top:10px"><strong>Common:</strong> ROW_NUMBER, RANK, DENSE_RANK, LAG, LEAD, SUM, AVG</p>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Aggregation Gotchas <span class="tag tag-warn">Watch</span></h3>
+      <ul>
+        <li><strong>COUNT(*)</strong> counts all rows incl. NULLs</li>
+        <li><strong>COUNT(col)</strong> skips NULLs</li>
+        <li><strong>WHERE</strong> filters rows, <strong>HAVING</strong> filters groups</li>
+        <li>Can't use aliases in WHERE (runs before SELECT)</li>
+        <li><strong>GROUP BY</strong> — every non-aggregated column in SELECT must be in GROUP BY</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>CTEs &amp; Subqueries <span class="tag tag-tip">Tip</span></h3>
+      <pre><span class="kw">WITH</span> monthly_revenue <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    <span class="fn">DATE_TRUNC</span>(<span class="str">'month'</span>, dt) <span class="kw">AS</span> m,
+    <span class="fn">SUM</span>(amt) <span class="kw">AS</span> rev
+  <span class="kw">FROM</span> orders
+  <span class="kw">GROUP BY</span> <span class="num">1</span>
+)
+<span class="kw">SELECT</span> m, rev,
+  <span class="fn">LAG</span>(rev) <span class="kw">OVER</span>(<span class="kw">ORDER BY</span> m) <span class="kw">AS</span> prev
+<span class="kw">FROM</span> monthly_revenue;</pre>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Performance Tips <span class="tag tag-tip">Tip</span></h3>
+      <ul>
+        <li>Use <strong>EXPLAIN</strong> to see query plan</li>
+        <li>Index columns used in WHERE and JOIN</li>
+        <li>Avoid <strong>SELECT *</strong> in production</li>
+        <li>Filter early with WHERE before JOIN</li>
+        <li>Use EXISTS over IN for large subqueries</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PYTHON ═══════════ -->
+<div class="section" id="python">
+  <div class="section-header">
+    <div class="icon icon-python">&#128013;</div>
+    <div>
+      <h2>Python</h2>
+      <p>Data structures, Pandas, NumPy, and coding patterns</p>
+    </div>
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h3>Data Structures Complexity <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>list</strong> — append O(1), index O(1), search O(n), insert O(n)</li>
+        <li><strong>dict</strong> — get/set O(1) avg, iteration O(n)</li>
+        <li><strong>set</strong> — add/remove/lookup O(1) avg</li>
+        <li><strong>deque</strong> — append/pop both ends O(1)</li>
+        <li><strong>heap</strong> — push/pop O(log n), min O(1)</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Pandas Essentials <span class="tag tag-key">Key</span></h3>
+      <pre>df.<span class="fn">groupby</span>(<span class="str">'col'</span>)[<span class="str">'val'</span>].<span class="fn">agg</span>([<span class="str">'mean'</span>,<span class="str">'sum'</span>])
+df.<span class="fn">merge</span>(df2, <span class="kw">on</span>=<span class="str">'id'</span>, <span class="kw">how</span>=<span class="str">'left'</span>)
+df.<span class="fn">pivot_table</span>(<span class="kw">values</span>=<span class="str">'rev'</span>,
+  <span class="kw">index</span>=<span class="str">'month'</span>, <span class="kw">aggfunc</span>=<span class="str">'sum'</span>)
+df.<span class="fn">fillna</span>(<span class="num">0</span>) | df.<span class="fn">dropna</span>()
+df.<span class="fn">apply</span>(<span class="kw">lambda</span> x: x * <span class="num">2</span>)</pre>
+    </div>
+
+    <div class="cheat-card">
+      <h3>NumPy Patterns <span class="tag tag-tip">Tip</span></h3>
+      <pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+a = np.<span class="fn">array</span>([<span class="num">1</span>,<span class="num">2</span>,<span class="num">3</span>])
+np.<span class="fn">mean</span>(a) | np.<span class="fn">std</span>(a) | np.<span class="fn">median</span>(a)
+np.<span class="fn">dot</span>(a, b)        <span class="cm"># dot product</span>
+np.<span class="fn">linalg.inv</span>(M)   <span class="cm"># matrix inverse</span>
+a[a > <span class="num">2</span>]            <span class="cm"># boolean indexing</span>
+np.<span class="fn">random.normal</span>(<span class="num">0</span>, <span class="num">1</span>, <span class="num">1000</span>)</pre>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Common Coding Patterns <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>Two pointers</strong> — sorted array problems</li>
+        <li><strong>Hash map</strong> — counting, grouping, lookup</li>
+        <li><strong>Sliding window</strong> — subarray/substring</li>
+        <li><strong>Sorting + greedy</strong> — optimization</li>
+        <li><strong>defaultdict / Counter</strong> — frequency counts</li>
+      </ul>
+      <pre><span class="kw">from</span> collections <span class="kw">import</span> Counter
+c = <span class="fn">Counter</span>(words)
+c.<span class="fn">most_common</span>(<span class="num">10</span>)</pre>
+    </div>
+
+    <div class="cheat-card">
+      <h3>String &amp; List Tricks <span class="tag tag-tip">Tip</span></h3>
+      <pre><span class="cm"># List comprehension</span>
+[x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>) <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]
+
+<span class="cm"># Zip two lists</span>
+<span class="fn">dict</span>(<span class="fn">zip</span>(keys, values))
+
+<span class="cm"># Sort by custom key</span>
+<span class="fn">sorted</span>(data, <span class="kw">key</span>=<span class="kw">lambda</span> x: x[<span class="num">1</span>], <span class="kw">reverse</span>=<span class="kw">True</span>)</pre>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Gotchas <span class="tag tag-warn">Watch</span></h3>
+      <ul>
+        <li><strong>Mutable defaults</strong> — never use <code>def f(x=[])</code></li>
+        <li><strong>Shallow copy</strong> — <code>a = b[:]</code> or <code>copy.deepcopy()</code></li>
+        <li><strong>Integer division</strong> — <code>//</code> truncates toward -inf</li>
+        <li><strong>is vs ==</strong> — <code>is</code> checks identity, <code>==</code> checks value</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ MACHINE LEARNING ═══════════ -->
+<div class="section" id="ml">
+  <div class="section-header">
+    <div class="icon icon-ml">&#129302;</div>
+    <div>
+      <h2>Machine Learning</h2>
+      <p>Algorithms, evaluation metrics, and model selection</p>
+    </div>
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h3>Supervised Algorithms <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>Linear Regression</strong> — continuous target, assumes linearity</li>
+        <li><strong>Logistic Regression</strong> — binary classification, outputs probabilities</li>
+        <li><strong>Decision Trees</strong> — interpretable, prone to overfitting</li>
+        <li><strong>Random Forest</strong> — bagging ensemble, reduces variance</li>
+        <li><strong>Gradient Boosting (XGBoost)</strong> — sequential trees, reduces bias</li>
+        <li><strong>SVM</strong> — finds max-margin hyperplane, kernel trick</li>
+        <li><strong>KNN</strong> — instance-based, no training, slow at scale</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Unsupervised Algorithms <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>K-Means</strong> — partition into k clusters by centroid distance</li>
+        <li><strong>Hierarchical</strong> — agglomerative / divisive dendrogram</li>
+        <li><strong>DBSCAN</strong> — density-based, finds arbitrary-shaped clusters</li>
+        <li><strong>PCA</strong> — dimensionality reduction, max variance directions</li>
+        <li><strong>t-SNE / UMAP</strong> — non-linear embedding for visualization</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Evaluation Metrics <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>Accuracy</strong> — (TP+TN) / total &mdash; misleading if imbalanced</li>
+        <li><strong>Precision</strong> — TP / (TP+FP) &mdash; "of predicted positive, how many correct?"</li>
+        <li><strong>Recall</strong> — TP / (TP+FN) &mdash; "of actual positive, how many found?"</li>
+        <li><strong>F1 Score</strong> — harmonic mean of precision & recall</li>
+        <li><strong>AUC-ROC</strong> — area under TPR vs FPR curve</li>
+        <li><strong>RMSE / MAE</strong> — regression error metrics</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Bias-Variance Tradeoff <span class="tag tag-key">Key</span></h3>
+      <p><strong>Bias</strong> = error from wrong assumptions (underfitting).<br>
+         <strong>Variance</strong> = error from sensitivity to training data (overfitting).</p>
+      <ul style="margin-top:8px">
+        <li>High bias → try more features, complex model</li>
+        <li>High variance → more data, regularization, simpler model</li>
+        <li><strong>L1 (Lasso)</strong> → feature selection (sparse)</li>
+        <li><strong>L2 (Ridge)</strong> → shrinks coefficients (stable)</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Feature Engineering <span class="tag tag-tip">Tip</span></h3>
+      <ul>
+        <li><strong>One-hot encoding</strong> — categorical → binary columns</li>
+        <li><strong>Label encoding</strong> — ordinal categories</li>
+        <li><strong>Scaling</strong> — StandardScaler (z-score), MinMaxScaler</li>
+        <li><strong>Log transform</strong> — right-skewed distributions</li>
+        <li><strong>Feature crosses</strong> — interaction terms</li>
+        <li><strong>Target encoding</strong> — category → mean of target (watch leakage!)</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Cross-Validation <span class="tag tag-warn">Watch</span></h3>
+      <ul>
+        <li><strong>k-Fold CV</strong> — split data into k folds, rotate test set</li>
+        <li><strong>Stratified k-Fold</strong> — preserves class distribution</li>
+        <li><strong>Time Series CV</strong> — expanding or sliding window (no future data!)</li>
+        <li><strong>Data leakage</strong> — fit scalers/encoders ONLY on training fold</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ STATISTICS ═══════════ -->
+<div class="section" id="stats">
+  <div class="section-header">
+    <div class="icon icon-stats">&#128202;</div>
+    <div>
+      <h2>Statistics</h2>
+      <p>Hypothesis testing, distributions, and experiment design</p>
+    </div>
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h3>Descriptive Stats <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>Mean</strong> — sensitive to outliers</li>
+        <li><strong>Median</strong> — robust to outliers, better for skewed data</li>
+        <li><strong>Mode</strong> — most frequent value</li>
+        <li><strong>Variance</strong> — avg squared deviation from mean</li>
+        <li><strong>Std Dev</strong> — sqrt(variance), same units as data</li>
+        <li><strong>IQR</strong> — Q3 - Q1, used for outlier detection</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Hypothesis Testing <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>H0</strong> — null hypothesis (no effect / no difference)</li>
+        <li><strong>H1</strong> — alternative hypothesis</li>
+        <li><strong>p-value</strong> — P(data | H0 true). Reject H0 if p &lt; alpha</li>
+        <li><strong>Type I error</strong> — false positive (reject true H0)</li>
+        <li><strong>Type II error</strong> — false negative (fail to reject false H0)</li>
+        <li><strong>Power</strong> = 1 - P(Type II) — probability of detecting real effect</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Common Tests <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>z-test</strong> — known population variance, large n</li>
+        <li><strong>t-test</strong> — unknown variance, small n</li>
+        <li><strong>Paired t-test</strong> — before/after on same subjects</li>
+        <li><strong>Chi-squared</strong> — categorical independence</li>
+        <li><strong>ANOVA</strong> — compare means across 3+ groups</li>
+        <li><strong>Mann-Whitney U</strong> — non-parametric alternative to t-test</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>A/B Testing <span class="tag tag-tip">Tip</span></h3>
+      <ul>
+        <li><strong>1.</strong> Define metric and hypothesis</li>
+        <li><strong>2.</strong> Calculate sample size (power analysis)</li>
+        <li><strong>3.</strong> Randomize users into control/treatment</li>
+        <li><strong>4.</strong> Run for predetermined duration</li>
+        <li><strong>5.</strong> Analyze with appropriate test</li>
+        <li><strong>Pitfalls:</strong> peeking, multiple comparisons, novelty effect, Simpson's paradox</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Confidence Intervals <span class="tag tag-formula">Formula</span></h3>
+      <div class="formula">CI = x&#772; &plusmn; z * (&sigma; / &radic;n)</div>
+      <p style="margin-top:10px">A <strong>95% CI</strong> means: if we repeated sampling, 95% of intervals would contain the true parameter. It does <strong>not</strong> mean 95% probability the parameter is in this interval.</p>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Central Limit Theorem <span class="tag tag-key">Key</span></h3>
+      <p>Sample means approach a <strong>normal distribution</strong> as n increases, regardless of population distribution (given finite variance). Generally applies when <strong>n &ge; 30</strong>.</p>
+      <div class="formula">SE = &sigma; / &radic;n</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PROBABILITY ═══════════ -->
+<div class="section" id="prob">
+  <div class="section-header">
+    <div class="icon icon-prob">&#127922;</div>
+    <div>
+      <h2>Probability</h2>
+      <p>Rules, distributions, and Bayes' theorem</p>
+    </div>
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h3>Fundamentals <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>P(A or B)</strong> = P(A) + P(B) - P(A and B)</li>
+        <li><strong>P(A and B)</strong> = P(A) &middot; P(B|A)</li>
+        <li><strong>Independent:</strong> P(A and B) = P(A) &middot; P(B)</li>
+        <li><strong>Complement:</strong> P(A') = 1 - P(A)</li>
+        <li><strong>Permutations:</strong> n! / (n-r)!</li>
+        <li><strong>Combinations:</strong> n! / (r!(n-r)!)</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Bayes' Theorem <span class="tag tag-formula">Formula</span></h3>
+      <div class="formula">P(A|B) = P(B|A) &middot; P(A) / P(B)</div>
+      <p style="margin-top:10px"><strong>Prior</strong> &times; <strong>Likelihood</strong> / <strong>Evidence</strong> = <strong>Posterior</strong></p>
+      <p>Classic interview Q: "A test is 99% accurate. Disease prevalence is 1%. If positive, what's the probability you have it?" Answer: ~50%, not 99%!</p>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Key Distributions <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>Bernoulli</strong> — single trial, p success</li>
+        <li><strong>Binomial</strong> — n trials, count successes</li>
+        <li><strong>Poisson</strong> — count of events in fixed interval (&lambda;)</li>
+        <li><strong>Geometric</strong> — trials until first success</li>
+        <li><strong>Normal</strong> — bell curve, defined by &mu; and &sigma;</li>
+        <li><strong>Exponential</strong> — time between Poisson events</li>
+        <li><strong>Uniform</strong> — equal probability over range</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Expected Value &amp; Variance <span class="tag tag-formula">Formula</span></h3>
+      <div class="formula">E[X] = &Sigma; x &middot; P(x)</div>
+      <div class="formula" style="margin-top:6px">Var(X) = E[X&sup2;] - (E[X])&sup2;</div>
+      <ul style="margin-top:10px">
+        <li><strong>E[aX + b]</strong> = aE[X] + b</li>
+        <li><strong>Var(aX + b)</strong> = a&sup2; Var(X)</li>
+        <li>If independent: <strong>Var(X+Y)</strong> = Var(X) + Var(Y)</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Law of Large Numbers <span class="tag tag-key">Key</span></h3>
+      <p>As sample size grows, the sample mean converges to the population mean. This is <strong>why</strong> A/B tests work — given enough data, observed averages reflect truth.</p>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Classic Interview Puzzles <span class="tag tag-tip">Tip</span></h3>
+      <ul>
+        <li><strong>Birthday problem</strong> — 23 people → ~50% chance of shared birthday</li>
+        <li><strong>Monty Hall</strong> — always switch (2/3 vs 1/3)</li>
+        <li><strong>Coupon collector</strong> — E[n] = n &middot; H(n) for n types</li>
+        <li><strong>Dice problems</strong> — use complementary counting or E[X]</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ CASE STUDIES ═══════════ -->
+<div class="section" id="case">
+  <div class="section-header">
+    <div class="icon icon-case">&#128161;</div>
+    <div>
+      <h2>Case Studies</h2>
+      <p>Product sense, metrics, and business frameworks</p>
+    </div>
+  </div>
+
+  <div class="cheat-grid">
+    <div class="cheat-card">
+      <h3>Product Metrics Framework <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>North Star Metric</strong> — single metric capturing core value</li>
+        <li><strong>Acquisition</strong> — new users, sign-ups, installs</li>
+        <li><strong>Activation</strong> — first key action (aha moment)</li>
+        <li><strong>Retention</strong> — D1, D7, D30 retention rates</li>
+        <li><strong>Revenue</strong> — ARPU, LTV, conversion rate</li>
+        <li><strong>Referral</strong> — viral coefficient, NPS</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Structuring a Case <span class="tag tag-tip">Tip</span></h3>
+      <ol>
+        <li><strong>Clarify</strong> — restate the problem, ask questions</li>
+        <li><strong>Define metrics</strong> — primary + guardrail metrics</li>
+        <li><strong>Hypothesize</strong> — state expected cause / direction</li>
+        <li><strong>Analyze</strong> — segment data, test hypotheses</li>
+        <li><strong>Recommend</strong> — action + expected impact</li>
+        <li><strong>Measure</strong> — how to validate the recommendation</li>
+      </ol>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Metric Change Questions <span class="tag tag-key">Key</span></h3>
+      <p><em>"Metric X dropped 10%. What happened?"</em></p>
+      <ul>
+        <li><strong>1. Clarify</strong> — which metric, how measured, timeframe?</li>
+        <li><strong>2. External factors</strong> — seasonality, competitors, market</li>
+        <li><strong>3. Internal factors</strong> — product changes, bugs, deploys</li>
+        <li><strong>4. Segment</strong> — by platform, geo, user cohort, channel</li>
+        <li><strong>5. Quantify</strong> — how much does each factor explain?</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Market Sizing <span class="tag tag-tip">Tip</span></h3>
+      <p>Top-down or bottom-up estimation:</p>
+      <ul>
+        <li><strong>Top-down:</strong> Total market → apply filter rates</li>
+        <li><strong>Bottom-up:</strong> Unit economics → scale up</li>
+        <li>State assumptions clearly</li>
+        <li>Use round numbers for mental math</li>
+        <li>Sanity-check your answer</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Experiment Design <span class="tag tag-key">Key</span></h3>
+      <ul>
+        <li><strong>Unit of randomization</strong> — user, session, page?</li>
+        <li><strong>Duration</strong> — cover full weekly cycle minimum</li>
+        <li><strong>Guardrail metrics</strong> — ensure you don't break things</li>
+        <li><strong>Network effects</strong> — may need cluster randomization</li>
+        <li><strong>Novelty / primacy effects</strong> — wait for stabilization</li>
+      </ul>
+    </div>
+
+    <div class="cheat-card">
+      <h3>Communication Tips <span class="tag tag-tip">Tip</span></h3>
+      <ul>
+        <li><strong>Lead with the answer</strong> — conclusion first, then evidence</li>
+        <li><strong>Structure your thoughts</strong> — "I'll break this into 3 parts..."</li>
+        <li><strong>Quantify everything</strong> — "~20% of users" not "a lot of users"</li>
+        <li><strong>Acknowledge trade-offs</strong> — shows maturity</li>
+        <li><strong>Ask clarifying questions</strong> — never assume</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ QUIZ ═══════════ -->
+<div id="quiz">
+  <div class="section">
+    <div class="quiz-header">
+      <h2>Quick Quiz</h2>
+      <p>Test your knowledge across all six topics. Select a category or try all.</p>
+    </div>
+
+    <div class="quiz-controls" id="quizControls">
+      <button class="active" data-cat="all">All</button>
+      <button data-cat="sql">SQL</button>
+      <button data-cat="python">Python</button>
+      <button data-cat="ml">ML</button>
+      <button data-cat="statistics">Stats</button>
+      <button data-cat="probability">Probability</button>
+      <button data-cat="casing">Casing</button>
+    </div>
+
+    <div class="quiz-score">
+      Score: <span class="score-num" id="scoreDisplay">0 / 0</span>
+    </div>
+
+    <div id="quizContainer"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Claudea's DS Interview Prep &middot; v01 &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<script>
+const questions = [
+  // SQL
+  { cat:"sql", diff:"easy", q:"What does COUNT(*) count?", opts:["Only non-NULL values","All rows including NULLs","Distinct values only","Only NULL values"], ans:1, explain:"COUNT(*) counts all rows regardless of NULL values. COUNT(column) skips NULLs." },
+  { cat:"sql", diff:"easy", q:"Which clause filters rows BEFORE grouping?", opts:["HAVING","ORDER BY","WHERE","GROUP BY"], ans:2, explain:"WHERE filters individual rows before any grouping. HAVING filters groups after aggregation." },
+  { cat:"sql", diff:"medium", q:"What's the difference between RANK() and DENSE_RANK()?", opts:["RANK() starts at 0, DENSE_RANK() starts at 1","RANK() skips numbers after ties, DENSE_RANK() doesn't","They are identical","DENSE_RANK() only works with PARTITION BY"], ans:1, explain:"With values 100, 90, 90, 80: RANK gives 1,2,2,4 (skips 3). DENSE_RANK gives 1,2,2,3 (no gaps)." },
+  { cat:"sql", diff:"medium", q:"Can you use a SELECT alias in the WHERE clause?", opts:["Yes, always","Only in MySQL","No, because WHERE executes before SELECT","Only with subqueries"], ans:2, explain:"SQL execution order: FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY. WHERE runs before SELECT, so aliases aren't available yet." },
+  { cat:"sql", diff:"hard", q:"Which is generally more efficient for checking existence in a large table?", opts:["IN with subquery","EXISTS with correlated subquery","CROSS JOIN","LEFT JOIN with IS NOT NULL"], ans:1, explain:"EXISTS can short-circuit — it stops once it finds one matching row. IN must evaluate the entire subquery result set. For large subqueries, EXISTS is typically faster." },
+
+  // Python
+  { cat:"python", diff:"easy", q:"What is the time complexity of looking up a key in a Python dict?", opts:["O(n)","O(log n)","O(1) average","O(n log n)"], ans:2, explain:"Python dicts use hash tables. Average-case lookup, insertion, and deletion are all O(1). Worst case is O(n) due to hash collisions, but this is rare." },
+  { cat:"python", diff:"easy", q:"What does df.groupby('col')['val'].transform('mean') return?", opts:["A single scalar value","A DataFrame with group means","A Series the same length as df with group means","An error"], ans:2, explain:"transform() returns a Series aligned with the original DataFrame, broadcasting the group-level result back to each row. agg() returns the reduced result." },
+  { cat:"python", diff:"medium", q:"Why is def f(x=[]) considered dangerous?", opts:["Lists can't be function arguments","The default list is shared across all calls","It causes a TypeError","Python doesn't support default arguments"], ans:1, explain:"Mutable default arguments are created once when the function is defined. Every call that uses the default shares the same list object, leading to unexpected behavior." },
+  { cat:"python", diff:"medium", q:"What's the output of: [-1 // 2]?", opts:["0","-1","0.5","-0.5"], ans:1, explain:"Python's floor division (//) rounds toward negative infinity. -1 / 2 = -0.5, floored to -1. This differs from languages like C where integer division truncates toward zero." },
+
+  // ML
+  { cat:"ml", diff:"easy", q:"Random Forest reduces which type of error compared to a single Decision Tree?", opts:["Bias","Variance","Both equally","Neither"], ans:1, explain:"Random Forest is a bagging ensemble. Averaging many uncorrelated trees reduces variance (overfitting) while keeping bias roughly the same." },
+  { cat:"ml", diff:"medium", q:"When should you use AUC-ROC over accuracy?", opts:["When you have balanced classes","When classes are imbalanced","Only for regression problems","When you need speed"], ans:1, explain:"With imbalanced classes (e.g., 99% negative), a model predicting all negative gets 99% accuracy but is useless. AUC-ROC evaluates performance across all thresholds and is insensitive to class balance." },
+  { cat:"ml", diff:"medium", q:"L1 (Lasso) regularization tends to produce:", opts:["Dense weight vectors","Sparse weight vectors (some weights exactly 0)","Negative weights only","Identical weights for all features"], ans:1, explain:"L1 regularization adds |w| penalty, which pushes weights to exactly zero, effectively performing feature selection. L2 (Ridge) shrinks weights toward zero but rarely makes them exactly zero." },
+  { cat:"ml", diff:"hard", q:"What's the main risk of fitting a scaler on the entire dataset before cross-validation?", opts:["Slower training","Data leakage — test fold info leaks into training","No risk, it's best practice","Features won't be normalized"], ans:1, explain:"Fitting a scaler on all data means the test fold's statistics influence the training transformation. This causes data leakage and overly optimistic performance estimates. Always fit on training fold only." },
+
+  // Statistics
+  { cat:"statistics", diff:"easy", q:"A p-value of 0.03 means:", opts:["3% chance the null hypothesis is true","3% probability of seeing this data (or more extreme) if H0 is true","The effect size is 3%","97% chance the alternative is true"], ans:1, explain:"The p-value is P(data or more extreme | H0 true). It is NOT the probability that H0 is true — that's a common misconception. It measures evidence against H0." },
+  { cat:"statistics", diff:"medium", q:"What is a Type II error?", opts:["Rejecting a true null hypothesis","Failing to reject a false null hypothesis","Using the wrong test","Setting alpha too high"], ans:1, explain:"Type I = false positive (reject true H0). Type II = false negative (fail to reject false H0). Power = 1 - P(Type II) = probability of correctly detecting a real effect." },
+  { cat:"statistics", diff:"medium", q:"The Central Limit Theorem states that:", opts:["All data is normally distributed","Sample means approach normal distribution as n increases","Larger samples are always better","Variance increases with sample size"], ans:1, explain:"Regardless of the population distribution (given finite variance), the distribution of sample means becomes approximately normal as n grows. Generally n ≥ 30 is sufficient." },
+  { cat:"statistics", diff:"hard", q:"In an A/B test, you 'peek' at results daily and stop early when p < 0.05. What happens?", opts:["You get more precise results","Your false positive rate inflates well above 5%","Nothing — p-values are always valid","You reduce Type II error"], ans:1, explain:"Repeated testing (peeking) inflates the Type I error rate because you're running multiple comparisons. With daily peeking over 2 weeks, your actual false positive rate can exceed 25%. Use sequential testing methods if you need to peek." },
+
+  // Probability
+  { cat:"probability", diff:"easy", q:"In the Monty Hall problem, should you switch doors?", opts:["No — it's 50/50 after a door opens","Yes — switching gives 2/3 probability","It doesn't matter","Only if the host chooses randomly"], ans:1, explain:"Switching wins 2/3 of the time. Your initial pick has 1/3 chance. The host always reveals a goat, so the remaining door has 2/3 chance." },
+  { cat:"probability", diff:"medium", q:"A test is 99% accurate. Disease prevalence is 1%. If you test positive, what's the approximate probability you're sick?", opts:["99%","50%","1%","90%"], ans:1, explain:"By Bayes' Theorem: P(sick|+) = (0.99 × 0.01) / (0.99 × 0.01 + 0.01 × 0.99) = 0.0099 / 0.0198 ≈ 50%. The low prevalence drastically reduces the positive predictive value." },
+  { cat:"probability", diff:"medium", q:"Events A and B are independent. P(A)=0.3, P(B)=0.5. What is P(A and B)?", opts:["0.8","0.15","0.2","0.35"], ans:1, explain:"For independent events, P(A ∩ B) = P(A) × P(B) = 0.3 × 0.5 = 0.15." },
+  { cat:"probability", diff:"hard", q:"How many people needed for a >50% chance of a shared birthday?", opts:["50","23","365","183"], ans:1, explain:"The birthday problem: with 23 people, there are C(23,2) = 253 pairs. P(no match) ≈ (364/365)^253 ≈ 0.4995, so P(match) > 50%. Counter-intuitive because we underestimate the number of pair comparisons." },
+
+  // Casing
+  { cat:"casing", diff:"easy", q:"What is a 'North Star Metric'?", opts:["The highest revenue metric","A single metric that best captures the core value your product delivers","The first metric you track","Customer satisfaction score"], ans:1, explain:"A North Star Metric is the one key measure that best reflects the value customers get from your product. E.g., Airbnb: nights booked, Spotify: time spent listening." },
+  { cat:"casing", diff:"medium", q:"'Daily active users dropped 15% last week.' What's the BEST first step?", opts:["Immediately run an A/B test","Check if the metric definition or tracking changed","Build a predictive model","Increase marketing spend"], ans:1, explain:"Before investigating root causes, verify the data is correct. Tracking bugs, definition changes, or logging failures are common causes of phantom metric drops. Rule these out first." },
+  { cat:"casing", diff:"medium", q:"Which metric would be a good GUARDRAIL metric for a test that tries to increase purchase conversion?", opts:["Click-through rate","Revenue per user","Page load time","Cart abandonment rate"], ans:2, explain:"Guardrail metrics ensure you don't break the user experience while optimizing the primary metric. Page load time is a good guardrail — if your change increases conversion but doubles load time, it's a net negative." },
+  { cat:"casing", diff:"hard", q:"A ride-sharing company sees revenue up 20% but rides are down 5%. What's most likely?", opts:["A bug in revenue tracking","Price per ride increased (e.g., surge pricing, route changes)","More drivers joined the platform","Users are taking shorter rides"], ans:1, explain:"Revenue = rides × price per ride. If rides are down but revenue is up, price per ride must have increased significantly (~26%). This could be from surge pricing, longer trips, price increases, or a shift toward premium tiers." },
+];
+
+let currentFilter = "all";
+let score = 0;
+let answered = 0;
+
+function renderQuiz(cat) {
+  const container = document.getElementById("quizContainer");
+  container.innerHTML = "";
+  score = 0; answered = 0;
+  updateScore();
+
+  const filtered = cat === "all" ? questions : questions.filter(q => q.cat === cat);
+
+  filtered.forEach((q, i) => {
+    const card = document.createElement("div");
+    card.className = "quiz-card";
+    card.innerHTML = `
+      <div class="q-meta">
+        <span class="q-cat q-cat-${q.cat}">${q.cat}</span>
+        <span class="q-diff q-${q.diff}">${q.diff}</span>
+      </div>
+      <div class="question">${i + 1}. ${q.q}</div>
+      <div class="options">
+        ${q.opts.map((opt, j) => `<button class="option" data-idx="${j}">${opt}</button>`).join("")}
+      </div>
+      <div class="explanation"><strong>Explanation:</strong> ${q.explain}</div>
+    `;
+
+    const options = card.querySelectorAll(".option");
+    const explanation = card.querySelector(".explanation");
+
+    options.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (btn.classList.contains("disabled")) return;
+        const idx = parseInt(btn.dataset.idx);
+        answered++;
+
+        options.forEach(b => {
+          b.classList.add("disabled");
+          if (parseInt(b.dataset.idx) === q.ans) b.classList.add("show-correct");
+        });
+
+        btn.classList.add("selected");
+        if (idx === q.ans) {
+          btn.classList.add("correct");
+          score++;
+        } else {
+          btn.classList.add("wrong");
+        }
+        explanation.classList.add("show");
+        updateScore();
+      });
+    });
+
+    container.appendChild(card);
+  });
+}
+
+function updateScore() {
+  document.getElementById("scoreDisplay").textContent = `${score} / ${answered}`;
+}
+
+document.querySelectorAll("#quizControls button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("#quizControls button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    currentFilter = btn.dataset.cat;
+    renderQuiz(currentFilter);
+  });
+});
+
+renderQuiz("all");
+</script>
+
+</body>
+</html>
