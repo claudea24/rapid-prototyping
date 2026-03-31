@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Mastery - DS Interview Prep Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    header p {
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+    .section h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 8px;
+    }
+
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin: 8px;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #64748b;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      background: #475569;
+      transform: translateY(-2px);
+    }
+
+    .interactive-demo {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .interactive-demo h3 {
+      color: #1e293b;
+      margin-bottom: 16px;
+      font-size: 1.2rem;
+    }
+
+    .query-builder {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 16px 0;
+    }
+    .query-builder input, .query-builder select {
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .built-query {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      margin-top: 16px;
+      white-space: pre-wrap;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 24px 0;
+    }
+    .concept-card {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid #3b82f6;
+    }
+    .concept-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    .concept-card p {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .performance-tips {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+    }
+    .performance-tips h4 {
+      color: #92400e;
+      margin-bottom: 8px;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .query-builder { grid-template-columns: 1fr; }
+      .concept-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">← Back to Topics</button>
+
+  <header>
+    <h1>SQL Mastery</h1>
+    <p>Advanced querying techniques for data analysis and optimization</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>Core Concepts</h2>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Window Functions</h3>
+          <p>RANK(), ROW_NUMBER(), LAG(), LEAD() for advanced analytics without self-joins.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Common Table Expressions (CTEs)</h3>
+          <p>WITH clauses for recursive queries and complex multi-step analysis.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Query Optimization</h3>
+          <p>EXPLAIN plans, indexing strategies, and execution order understanding.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Advanced Joins</h3>
+          <p>CROSS JOIN, self-joins, and complex multi-table relationships.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Interactive Query Builder</h2>
+      <div class="interactive-demo">
+        <h3>Build Complex Queries</h3>
+        <p>Construct SQL queries step by step to understand syntax and logic.</p>
+        <div class="query-builder">
+          <div>
+            <label>SELECT columns:</label>
+            <input type="text" id="selectCols" placeholder="column1, column2" value="name, department, salary">
+          </div>
+          <div>
+            <label>FROM table:</label>
+            <input type="text" id="fromTable" placeholder="table_name" value="employees">
+          </div>
+          <div>
+            <label>WHERE condition:</label>
+            <input type="text" id="whereCond" placeholder="condition" value="salary > 50000">
+          </div>
+          <div>
+            <label>GROUP BY:</label>
+            <input type="text" id="groupBy" placeholder="column" value="department">
+          </div>
+          <div>
+            <label>HAVING:</label>
+            <input type="text" id="having" placeholder="condition" value="COUNT(*) > 5">
+          </div>
+          <div>
+            <label>ORDER BY:</label>
+            <input type="text" id="orderBy" placeholder="column DESC" value="salary DESC">
+          </div>
+        </div>
+        <button class="btn" onclick="buildQuery()">Build Query</button>
+        <div class="built-query" id="builtQuery"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Performance Optimization</h2>
+      <div class="performance-tips">
+        <h4>⚡ Key Optimization Strategies</h4>
+        <ul>
+          <li><strong>Indexing:</strong> Create indexes on frequently queried columns</li>
+          <li><strong>Query Structure:</strong> Use WHERE before JOIN, avoid SELECT *</li>
+          <li><strong>Subqueries vs JOINs:</strong> JOINs often perform better than subqueries</li>
+          <li><strong>EXPLAIN:</strong> Always analyze query execution plans</li>
+        </ul>
+      </div>
+
+      <h3>Example: Optimized Query</h3>
+      <div class="code-block">
+-- Before: Slow subquery approach
+SELECT e.name, e.salary,
+       (SELECT AVG(salary) FROM employees WHERE department = e.department) as dept_avg
+FROM employees e
+WHERE e.salary > 100000;
+
+-- After: Optimized with window function
+SELECT name, salary, AVG(salary) OVER (PARTITION BY department) as dept_avg
+FROM employees
+WHERE salary > 100000;
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Common Interview Patterns</h2>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Running Totals</h3>
+          <p>Use window functions: SUM(amount) OVER (ORDER BY date ROWS UNBOUNDED PRECEDING)</p>
+        </div>
+        <div class="concept-card">
+          <h3>Top N per Group</h3>
+          <p>RANK() OVER (PARTITION BY category ORDER BY score DESC) <= N</p>
+        </div>
+        <div class="concept-card">
+          <h3>Cohort Analysis</h3>
+          <p>JOIN on user_id and date ranges for retention analysis</p>
+        </div>
+        <div class="concept-card">
+          <h3>Funnel Analysis</h3>
+          <p>Multiple CTEs to calculate conversion rates at each step</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Practice Scenarios</h2>
+      <div class="interactive-demo">
+        <h3>Scenario: E-commerce Analysis</h3>
+        <p>You have orders, customers, and products tables. Find top 3 products by revenue in each category for Q4 2023.</p>
+        <button class="btn" onclick="showSolution()">Show Solution</button>
+        <div class="built-query" id="scenarioSolution" style="display: none;">
+WITH quarterly_sales AS (
+  SELECT
+    p.category,
+    p.product_name,
+    SUM(o.quantity * o.unit_price) as revenue,
+    ROW_NUMBER() OVER (PARTITION BY p.category ORDER BY SUM(o.quantity * o.unit_price) DESC) as rn
+  FROM orders o
+  JOIN products p ON o.product_id = p.id
+  WHERE o.order_date BETWEEN '2023-10-01' AND '2023-12-31'
+  GROUP BY p.category, p.product_name
+)
+SELECT category, product_name, revenue
+FROM quarterly_sales
+WHERE rn <= 3
+ORDER BY category, revenue DESC;
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function buildQuery() {
+      const select = document.getElementById('selectCols').value;
+      const from = document.getElementById('fromTable').value;
+      const where = document.getElementById('whereCond').value;
+      const groupBy = document.getElementById('groupBy').value;
+      const having = document.getElementById('having').value;
+      const orderBy = document.getElementById('orderBy').value;
+
+      let query = `SELECT ${select}\nFROM ${from}`;
+
+      if (where) query += `\nWHERE ${where}`;
+      if (groupBy) query += `\nGROUP BY ${groupBy}`;
+      if (having) query += `\nHAVING ${having}`;
+      if (orderBy) query += `\nORDER BY ${orderBy}`;
+
+      query += ';';
+
+      document.getElementById('builtQuery').textContent = query;
+    }
+
+    function showSolution() {
+      document.getElementById('scenarioSolution').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

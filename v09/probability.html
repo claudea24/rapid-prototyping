@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probability Theory - DS Interview Prep Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    header p {
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+    .section h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 8px;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 24px 0;
+    }
+    .concept-card {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid #3b82f6;
+    }
+    .concept-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    .concept-card p {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .interactive-demo {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .interactive-demo h3 {
+      color: #1e293b;
+      margin-bottom: 16px;
+      font-size: 1.2rem;
+    }
+
+    .formula {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin: 8px;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #64748b;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      background: #475569;
+      transform: translateY(-2px);
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 24px;
+    }
+    .tab {
+      padding: 12px 24px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .tab.active {
+      border-bottom-color: #3b82f6;
+      color: #3b82f6;
+      font-weight: 600;
+    }
+
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    .quiz-section {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    .quiz-section h4 {
+      color: #92400e;
+      margin-bottom: 12px;
+    }
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .quiz-option {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .quiz-option:hover {
+      background: #f1f5f9;
+    }
+    .quiz-option.correct {
+      background: #dcfce7;
+      border-color: #16a34a;
+    }
+    .quiz-option.incorrect {
+      background: #fef2f2;
+      border-color: #dc2626;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .concept-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">← Back to Topics</button>
+
+  <header>
+    <h1>Probability Theory</h1>
+    <p>Master the foundations of uncertainty and probabilistic reasoning</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>Core Concepts</h2>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Probability Axioms</h3>
+          <p>Three fundamental rules: non-negativity, normalization, and additivity for mutually exclusive events.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Conditional Probability</h3>
+          <p>Probability of A given B: P(A|B) = P(A∩B) / P(B). Foundation for Bayesian reasoning.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Bayes' Theorem</h3>
+          <p>P(H|D) = P(D|H) × P(H) / P(D). Updates beliefs with new evidence.</p>
+        </div>
+        <div class="concept-card">
+          <h3>Independence</h3>
+          <p>Events A and B are independent if P(A∩B) = P(A) × P(B). No influence between events.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Key Distributions</h2>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('discrete')">Discrete</div>
+        <div class="tab" onclick="switchTab('continuous')">Continuous</div>
+      </div>
+
+      <div id="discrete" class="tab-content active">
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h3>Binomial Distribution</h3>
+            <p>For n independent trials with success probability p. PMF: P(X=k) = C(n,k) p^k (1-p)^(n-k)</p>
+          </div>
+          <div class="concept-card">
+            <h3>Poisson Distribution</h3>
+            <p>Models count of events in fixed interval. PMF: P(X=k) = e^(-λ) λ^k / k!</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="continuous" class="tab-content">
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h3>Normal Distribution</h3>
+            <p>Bell-shaped curve, central to CLT. PDF: φ(x) = (1/√(2πσ²)) exp(-(x-μ)²/(2σ²))</p>
+          </div>
+          <div class="concept-card">
+            <h3>Exponential Distribution</h3>
+            <p>Models time between events. PDF: f(x) = λe^(-λx) for x ≥ 0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Interactive Practice</h2>
+      <div class="interactive-demo">
+        <h3>Bayes' Theorem Calculator</h3>
+        <p>Calculate posterior probability given prior and likelihood.</p>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 16px 0;">
+          <div>
+            <label>P(H) - Prior:</label>
+            <input type="number" id="prior" step="0.01" min="0" max="1" value="0.1">
+          </div>
+          <div>
+            <label>P(D|H) - Likelihood:</label>
+            <input type="number" id="likelihood" step="0.01" min="0" max="1" value="0.8">
+          </div>
+          <div>
+            <label>P(D|¬H) - False Positive:</label>
+            <input type="number" id="falsePos" step="0.01" min="0" max="1" value="0.2">
+          </div>
+        </div>
+        <button class="btn" onclick="calculateBayes()">Calculate Posterior</button>
+        <div class="formula" id="bayesResult">P(H|D) = ?</div>
+      </div>
+
+      <div class="interactive-demo">
+        <h3>Distribution Visualizer</h3>
+        <p>Explore different probability distributions interactively.</p>
+        <select id="distSelect" onchange="updateDistribution()">
+          <option value="normal">Normal Distribution</option>
+          <option value="binomial">Binomial Distribution</option>
+          <option value="poisson">Poisson Distribution</option>
+        </select>
+        <div id="distParams" style="margin: 16px 0;">
+          <label>μ (mean): <input type="number" id="mean" value="0" step="0.1"></label>
+          <label>σ (std dev): <input type="number" id="std" value="1" step="0.1" min="0.1"></label>
+        </div>
+        <button class="btn" onclick="generateSample()">Generate Sample</button>
+        <canvas id="distCanvas" width="400" height="200" style="border: 1px solid #e2e8f0; border-radius: 4px; margin-top: 16px;"></canvas>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Common Interview Questions</h2>
+      <div class="quiz-section">
+        <h4>Monty Hall Problem</h4>
+        <p>You have 3 doors: 1 with a car, 2 with goats. You pick door 1. Host opens door 3 (goat). Switch to door 2?</p>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">Stick with door 1 (50% chance)</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">Switch to door 2 (67% chance)</div>
+        </div>
+      </div>
+
+      <div class="quiz-section">
+        <h4>Birthday Problem</h4>
+        <p>How many people needed for 50% chance two share birthday?</p>
+        <div class="quiz-options">
+          <div class="quiz-option" onclick="checkAnswer(this, false)">365/2 = 183</div>
+          <div class="quiz-option" onclick="checkAnswer(this, true)">23 (counterintuitive!)</div>
+          <div class="quiz-option" onclick="checkAnswer(this, false)">50</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    function calculateBayes() {
+      const prior = parseFloat(document.getElementById('prior').value);
+      const likelihood = parseFloat(document.getElementById('likelihood').value);
+      const falsePos = parseFloat(document.getElementById('falsePos').value);
+
+      const marginal = likelihood * prior + falsePos * (1 - prior);
+      const posterior = (likelihood * prior) / marginal;
+
+      document.getElementById('bayesResult').textContent = `P(H|D) = ${posterior.toFixed(3)}`;
+    }
+
+    function updateDistribution() {
+      const dist = document.getElementById('distSelect').value;
+      const params = document.getElementById('distParams');
+
+      if (dist === 'normal') {
+        params.innerHTML = `
+          <label>μ (mean): <input type="number" id="mean" value="0" step="0.1"></label>
+          <label>σ (std dev): <input type="number" id="std" value="1" step="0.1" min="0.1"></label>
+        `;
+      } else if (dist === 'binomial') {
+        params.innerHTML = `
+          <label>n (trials): <input type="number" id="trials" value="10" min="1"></label>
+          <label>p (prob): <input type="number" id="prob" value="0.5" step="0.1" min="0" max="1"></label>
+        `;
+      } else if (dist === 'poisson') {
+        params.innerHTML = `
+          <label>λ (rate): <input type="number" id="rate" value="3" step="0.1" min="0"></label>
+        `;
+      }
+    }
+
+    function generateSample() {
+      const canvas = document.getElementById('distCanvas');
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Simple histogram simulation
+      const data = [];
+      for (let i = 0; i < 1000; i++) {
+        data.push(Math.random() * 4 - 2); // Normal-like distribution
+      }
+
+      const hist = {};
+      data.forEach(val => {
+        const bin = Math.floor(val * 10) / 10;
+        hist[bin] = (hist[bin] || 0) + 1;
+      });
+
+      ctx.fillStyle = '#3b82f6';
+      Object.entries(hist).forEach(([bin, count]) => {
+        const x = (parseFloat(bin) + 2) * 50;
+        const height = count / 10;
+        ctx.fillRect(x, canvas.height - height, 5, height);
+      });
+    }
+
+    function checkAnswer(element, isCorrect) {
+      const options = element.parentElement.querySelectorAll('.quiz-option');
+      options.forEach(opt => {
+        opt.style.pointerEvents = 'none';
+        if (opt === element) {
+          opt.classList.add(isCorrect ? 'correct' : 'incorrect');
+        }
+      });
+    }
+
+    // Initialize
+    updateDistribution();
+  </script>
+</body>
+</html>

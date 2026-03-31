@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python & Data Science - DS Interview Prep Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    header p {
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+    .section h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 8px;
+    }
+
+    .code-block {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 20px;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin: 8px;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #64748b;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      background: #475569;
+      transform: translateY(-2px);
+    }
+
+    .interactive-demo {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .interactive-demo h3 {
+      color: #1e293b;
+      margin-bottom: 16px;
+      font-size: 1.2rem;
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 24px 0;
+    }
+    .concept-card {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid #3b82f6;
+    }
+    .concept-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    .concept-card p {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 24px;
+    }
+    .tab {
+      padding: 12px 24px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    .tab.active {
+      border-bottom-color: #3b82f6;
+      color: #3b82f6;
+      font-weight: 600;
+    }
+
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    .output-area {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      min-height: 100px;
+    }
+
+    .input-group {
+      margin: 12px 0;
+    }
+    .input-group label {
+      display: block;
+      margin-bottom: 4px;
+      font-weight: 500;
+    }
+    .input-group input, .input-group select, .input-group textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .concept-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">← Back to Topics</button>
+
+  <header>
+    <h1>Python & Data Science</h1>
+    <p>Essential Python skills for data manipulation, analysis, and machine learning</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>Core Libraries</h2>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('pandas')">Pandas</div>
+        <div class="tab" onclick="switchTab('numpy')">NumPy</div>
+        <div class="tab" onclick="switchTab('scikit')">Scikit-learn</div>
+      </div>
+
+      <div id="pandas" class="tab-content active">
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h3>DataFrame Operations</h3>
+            <p>df.groupby(), df.merge(), df.pivot_table() for data manipulation</p>
+          </div>
+          <div class="concept-card">
+            <h3>Time Series</h3>
+            <p>pd.to_datetime(), df.resample(), rolling windows for temporal data</p>
+          </div>
+          <div class="concept-card">
+            <h3>Missing Data</h3>
+            <p>df.isnull(), df.fillna(), df.dropna() for data cleaning</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="numpy" class="tab-content">
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h3>Array Operations</h3>
+            <p>Vectorized operations, broadcasting, boolean indexing</p>
+          </div>
+          <div class="concept-card">
+            <h3>Linear Algebra</h3>
+            <p>np.dot(), np.linalg.inv(), matrix decompositions</p>
+          </div>
+          <div class="concept-card">
+            <h3>Random Sampling</h3>
+            <p>np.random.choice(), np.random.normal() for simulations</p>
+          </div>
+        </div>
+      </div>
+
+      <div id="scikit" class="tab-content">
+        <div class="concept-grid">
+          <div class="concept-card">
+            <h3>Preprocessing</h3>
+            <p>StandardScaler, OneHotEncoder, train_test_split</p>
+          </div>
+          <div class="concept-card">
+            <h3>Model Selection</h3>
+            <p>GridSearchCV, cross_val_score, validation curves</p>
+          </div>
+          <div class="concept-card">
+            <h3>Evaluation</h3>
+            <p>classification_report, confusion_matrix, roc_auc_score</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Interactive Code Playground</h2>
+      <div class="interactive-demo">
+        <h3>Python Data Analysis</h3>
+        <p>Experiment with pandas operations on sample data.</p>
+        <div class="input-group">
+          <label>Code to execute:</label>
+          <textarea id="codeInput" rows="8">
+import pandas as pd
+import numpy as np
+
+# Sample data
+data = {
+    'name': ['Alice', 'Bob', 'Charlie', 'Diana'],
+    'age': [25, 30, 35, 28],
+    'salary': [50000, 60000, 70000, 55000],
+    'department': ['Engineering', 'Sales', 'Engineering', 'Marketing']
+}
+df = pd.DataFrame(data)
+
+# Your code here
+result = df.groupby('department')['salary'].mean()
+print(result)
+          </textarea>
+        </div>
+        <button class="btn" onclick="runCode()">Run Code</button>
+        <div class="output-area" id="codeOutput">Output will appear here...</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Common Patterns</h2>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>List Comprehensions</h3>
+          <p>[x**2 for x in range(10) if x % 2 == 0] - concise loops</p>
+        </div>
+        <div class="concept-card">
+          <h3>Lambda Functions</h3>
+          <p>df.apply(lambda x: x**2) - anonymous functions</p>
+        </div>
+        <div class="concept-card">
+          <h3>Context Managers</h3>
+          <p>with open('file.txt') as f: - automatic resource management</p>
+        </div>
+        <div class="concept-card">
+          <h3>Decorators</h3>
+          <p>@timing_decorator - function modifiers</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Interview Scenarios</h2>
+      <div class="interactive-demo">
+        <h3>Scenario: Data Cleaning Challenge</h3>
+        <p>Given a DataFrame with missing values, duplicates, and outliers - write code to clean it.</p>
+        <button class="btn" onclick="showDataCleaningSolution()">Show Solution</button>
+        <div class="code-block" id="dataCleaningSolution" style="display: none;">
+# Data cleaning pipeline
+def clean_data(df):
+    # Remove duplicates
+    df = df.drop_duplicates()
+
+    # Handle missing values
+    numeric_cols = df.select_dtypes(include=[np.number]).columns
+    df[numeric_cols] = df[numeric_cols].fillna(df[numeric_cols].mean())
+
+    categorical_cols = df.select_dtypes(include=['object']).columns
+    df[categorical_cols] = df[categorical_cols].fillna(df[categorical_cols].mode().iloc[0])
+
+    # Remove outliers (IQR method)
+    for col in numeric_cols:
+        Q1 = df[col].quantile(0.25)
+        Q3 = df[col].quantile(0.75)
+        IQR = Q3 - Q1
+        df = df[~((df[col] < (Q1 - 1.5 * IQR)) | (df[col] > (Q3 + 1.5 * IQR)))]
+
+    return df
+
+# Usage
+clean_df = clean_data(raw_df)
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Performance Tips</h2>
+      <ul>
+        <li><strong>Vectorization:</strong> Use numpy/pandas operations instead of loops</li>
+        <li><strong>Memory:</strong> Use dtypes appropriately, chunk large files</li>
+        <li><strong>Indexing:</strong> Set appropriate indexes for faster lookups</li>
+        <li><strong>Profiling:</strong> Use %timeit and cProfile to identify bottlenecks</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+    }
+
+    function runCode() {
+      // Simulate code execution (in real implementation, this would call a Python interpreter)
+      const code = document.getElementById('codeInput').value;
+      let output = '';
+
+      try {
+        // Very basic simulation - in practice, you'd need a Python backend
+        if (code.includes('df.groupby')) {
+          output = 'Engineering    60000.0\nMarketing      55000.0\nSales          60000.0\nName: salary, dtype: float64';
+        } else if (code.includes('print')) {
+          output = 'Hello from simulated Python execution!';
+        } else {
+          output = 'Code executed successfully (simulated)';
+        }
+      } catch (e) {
+        output = 'Error: ' + e.message;
+      }
+
+      document.getElementById('codeOutput').textContent = output;
+    }
+
+    function showDataCleaningSolution() {
+      document.getElementById('dataCleaningSolution').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

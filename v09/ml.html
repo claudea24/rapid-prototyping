@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning Deep Dive - DS Interview Prep Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    header p {
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+    .section h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 8px;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #64748b;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      background: #475569;
+      transform: translateY(-2px);
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 24px 0;
+    }
+    .concept-card {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid #3b82f6;
+    }
+    .concept-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    .concept-card p {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    .interactive-demo {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 24px;
+      margin: 24px 0;
+    }
+    .interactive-demo h3 {
+      color: #1e293b;
+      margin-bottom: 16px;
+      font-size: 1.2rem;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin: 8px;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .concept-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">← Back to Topics</button>
+
+  <header>
+    <h1>Machine Learning Deep Dive</h1>
+    <p>Advanced ML concepts, algorithms, and production considerations</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>Core Algorithms</h2>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Gradient Boosting</h3>
+          <p>XGBoost, LightGBM, CatBoost — ensemble methods for structured data</p>
+        </div>
+        <div class="concept-card">
+          <h3>Deep Learning</h3>
+          <p>Neural networks, CNNs, RNNs, transformers for complex patterns</p>
+        </div>
+        <div class="concept-card">
+          <h3>Unsupervised Learning</h3>
+          <p>K-means, DBSCAN, PCA, t-SNE for clustering and dimensionality reduction</p>
+        </div>
+        <div class="concept-card">
+          <h3>Recommendation Systems</h3>
+          <p>Collaborative filtering, content-based, matrix factorization</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Model Evaluation</h2>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Classification Metrics</h3>
+          <p>Precision, recall, F1-score, AUC-ROC, confusion matrix analysis</p>
+        </div>
+        <div class="concept-card">
+          <h3>Regression Metrics</h3>
+          <p>MSE, RMSE, MAE, R², adjusted R² for continuous predictions</p>
+        </div>
+        <div class="concept-card">
+          <h3>Cross-Validation</h3>
+          <p>K-fold CV, stratified CV, time series split for robust evaluation</p>
+        </div>
+        <div class="concept-card">
+          <h3>Bias-Variance Tradeoff</h3>
+          <p>Overfitting vs underfitting, regularization techniques</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Production ML</h2>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Model Deployment</h3>
+          <p>REST APIs, containerization, model serving, A/B testing in production</p>
+        </div>
+        <div class="concept-card">
+          <h3>MLOps</h3>
+          <p>CI/CD for ML, model versioning, monitoring, drift detection</p>
+        </div>
+        <div class="concept-card">
+          <h3>Scalability</h3>
+          <p>Distributed training, online learning, model compression</p>
+        </div>
+        <div class="concept-card">
+          <h3>Ethics & Fairness</h3>
+          <p>Bias detection, fairness metrics, responsible AI practices</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Interactive Scenario</h2>
+      <div class="interactive-demo">
+        <h3>Model Selection Challenge</h3>
+        <p>You have a dataset with 100k samples, 50 features, and class imbalance. Choose the right approach.</p>
+        <button class="btn" onclick="showRecommendation()">Get Recommendation</button>
+        <div id="recommendation" style="margin-top: 16px; display: none;">
+          <h4>Recommended Approach:</h4>
+          <ul>
+            <li>Handle imbalance: SMOTE or class weights</li>
+            <li>Feature selection: Recursive feature elimination or feature importance</li>
+            <li>Model: Gradient boosting (XGBoost) with hyperparameter tuning</li>
+            <li>Evaluation: Stratified k-fold CV with F1-score and AUC</li>
+            <li>Production: Deploy via REST API with monitoring for drift</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showRecommendation() {
+      document.getElementById('recommendation').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

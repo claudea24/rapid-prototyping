@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistical Inference - DS Interview Prep Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    header p {
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      margin-bottom: 32px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+    }
+    .section h2 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 8px;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #64748b;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      background: #475569;
+      transform: translateY(-2px);
+    }
+
+    .concept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 24px 0;
+    }
+    .concept-card {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 20px;
+      border-left: 4px solid #3b82f6;
+    }
+    .concept-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #1e293b;
+    }
+    .concept-card p {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .concept-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">← Back to Topics</button>
+
+  <header>
+    <h1>Statistical Inference</h1>
+    <p>Hypothesis testing, experimental design, and statistical modeling</p>
+  </header>
+
+  <div class="container">
+    <div class="section">
+      <h2>Hypothesis Testing</h2>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>t-Tests</h3>
+          <p>One-sample, two-sample, paired t-tests for comparing means</p>
+        </div>
+        <div class="concept-card">
+          <h3>ANOVA</h3>
+          <p>Analysis of variance for comparing multiple group means</p>
+        </div>
+        <div class="concept-card">
+          <h3>Chi-Square Tests</h3>
+          <p>Goodness of fit and independence tests for categorical data</p>
+        </div>
+        <div class="concept-card">
+          <h3>Non-parametric Tests</h3>
+          <p>Mann-Whitney U, Kruskal-Wallis for non-normal distributions</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Experimental Design</h2>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>Power Analysis</h3>
+          <p>Sample size calculation, effect size, statistical power</p>
+        </div>
+        <div class="concept-card">
+          <h3>A/B Testing</h3>
+          <p>Randomization, control groups, multiple testing correction</p>
+        </div>
+        <div class="concept-card">
+          <h3>Confounding Variables</h3>
+          <p>Blocking, stratification, randomization to control confounders</p>
+        </div>
+        <div class="concept-card">
+          <h3>Regression Analysis</h3>
+          <p>Linear, logistic, multivariate regression for causal inference</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Key Concepts</h2>
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h3>p-values & Significance</h3>
+          <p>Interpretation, misconceptions, p-hacking prevention</p>
+        </div>
+        <div class="concept-card">
+          <h3>Confidence Intervals</h3>
+          <p>Interpretation, width factors, precision vs power</p>
+        </div>
+        <div class="concept-card">
+          <h3>Type I/II Errors</h3>
+          <p>False positives/negatives, power analysis, error tradeoffs</p>
+        </div>
+        <div class="concept-card">
+          <h3>Central Limit Theorem</h3>
+          <p>Sampling distributions, standard error, inference validity</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

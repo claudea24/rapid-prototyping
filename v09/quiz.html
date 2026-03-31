@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assessment Quiz - DS Interview Prep Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 40px 32px;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    header p {
+      opacity: 0.9;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 32px;
+    }
+
+    .quiz-card {
+      background: white;
+      border-radius: 12px;
+      padding: 32px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 32px;
+    }
+
+    .progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      font-size: 0.9rem;
+      color: #64748b;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 8px;
+      background: #e2e8f0;
+      border-radius: 4px;
+      margin: 0 16px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #06b6d4);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    .question {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #1e293b;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .option {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+    }
+    .option:hover {
+      background: #f1f5f9;
+      border-color: #cbd5e1;
+    }
+    .option.selected {
+      background: #dbeafe;
+      border-color: #3b82f6;
+    }
+    .option.correct {
+      background: #dcfce7;
+      border-color: #16a34a;
+    }
+    .option.incorrect {
+      background: #fef2f2;
+      border-color: #dc2626;
+    }
+
+    .explanation {
+      background: #f8fafc;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 16px;
+      border-left: 4px solid #3b82f6;
+      display: none;
+    }
+    .explanation.correct {
+      border-left-color: #16a34a;
+      background: #f0fdf4;
+    }
+    .explanation.incorrect {
+      border-left-color: #dc2626;
+      background: #fef2f2;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin: 8px;
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: #64748b;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover {
+      background: #475569;
+      transform: translateY(-2px);
+    }
+
+    .results {
+      text-align: center;
+      display: none;
+    }
+    .results h2 {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      color: #1e293b;
+    }
+    .score {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+    }
+    .score.excellent { color: #16a34a; }
+    .score.good { color: #ca8a04; }
+    .score.needs-work { color: #dc2626; }
+
+    .recommendations {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+      text-align: left;
+    }
+    .recommendations h3 {
+      margin-bottom: 16px;
+      color: #1e293b;
+    }
+    .recommendations ul {
+      list-style: none;
+      padding: 0;
+    }
+    .recommendations li {
+      padding: 8px 0;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 768px) {
+      .container { padding: 16px; }
+      .quiz-card { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="back-btn" onclick="location.href='index.html'">← Back to Home</button>
+
+  <header>
+    <h1>DS Interview Assessment</h1>
+    <p>Test your knowledge across key data science topics</p>
+  </header>
+
+  <div class="container">
+    <div class="quiz-card" id="quiz">
+      <div class="progress">
+        <span id="questionNumber">Question 1 of 10</span>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width: 10%"></div>
+        </div>
+        <span id="scoreDisplay">Score: 0/0</span>
+      </div>
+
+      <div class="question" id="questionText">Loading question...</div>
+
+      <div class="options" id="optionsContainer"></div>
+
+      <div class="explanation" id="explanation"></div>
+
+      <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Question</button>
+    </div>
+
+    <div class="results" id="results">
+      <h2>Assessment Complete!</h2>
+      <div class="score" id="finalScore"></div>
+      <div class="recommendations">
+        <h3>Recommended Focus Areas</h3>
+        <ul id="recommendationsList"></ul>
+      </div>
+      <button class="btn" onclick="restartQuiz()">Retake Assessment</button>
+      <a href="index.html" class="btn" style="background: #64748b;">Back to Topics</a>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "What is the primary difference between supervised and unsupervised learning?",
+        options: [
+          "Supervised learning requires labeled data, unsupervised does not",
+          "Supervised learning is faster than unsupervised",
+          "Unsupervised learning always performs better",
+          "They are exactly the same"
+        ],
+        correct: 0,
+        explanation: "Supervised learning uses labeled training data to learn a mapping from inputs to outputs, while unsupervised learning finds patterns in unlabeled data.",
+        topic: "ML"
+      },
+      {
+        question: "In SQL, what does the HAVING clause do?",
+        options: [
+          "Filters rows before grouping",
+          "Filters groups after GROUP BY",
+          "Joins tables together",
+          "Creates new columns"
+        ],
+        correct: 1,
+        explanation: "HAVING filters groups created by GROUP BY, similar to WHERE but for aggregated results.",
+        topic: "SQL"
+      },
+      {
+        question: "What is the Central Limit Theorem?",
+        options: [
+          "The mean of sample means approaches the population mean",
+          "Large samples are always normally distributed",
+          "All distributions become normal with enough data",
+          "Sample variance equals population variance"
+        ],
+        correct: 0,
+        explanation: "The CLT states that the distribution of sample means approaches a normal distribution as sample size increases, regardless of the population distribution.",
+        topic: "Stats"
+      },
+      {
+        question: "In Python, what is the difference between a list and a tuple?",
+        options: [
+          "Lists are mutable, tuples are immutable",
+          "Tuples are faster than lists",
+          "Lists can only store numbers",
+          "There is no difference"
+        ],
+        correct: 0,
+        explanation: "Lists are mutable (can be changed), while tuples are immutable (cannot be modified after creation).",
+        topic: "Python"
+      },
+      {
+        question: "What does p-value represent in hypothesis testing?",
+        options: [
+          "The probability the null hypothesis is true",
+          "The probability of observing the data (or more extreme) assuming H₀ is true",
+          "The probability the alternative hypothesis is true",
+          "The size of the test statistic"
+        ],
+        correct: 1,
+        explanation: "P-value is the probability of observing the test statistic (or more extreme values) assuming the null hypothesis is true.",
+        topic: "Stats"
+      },
+      {
+        question: "What is the purpose of regularization in machine learning?",
+        options: [
+          "To make models faster",
+          "To prevent overfitting by adding penalty terms",
+          "To handle missing data",
+          "To normalize features"
+        ],
+        correct: 1,
+        explanation: "Regularization adds penalty terms to the loss function to prevent overfitting by discouraging complex models.",
+        topic: "ML"
+      },
+      {
+        question: "In probability, what does 'independent events' mean?",
+        options: [
+          "Events cannot occur together",
+          "One event doesn't affect the probability of another",
+          "Events are mutually exclusive",
+          "Events have equal probability"
+        ],
+        correct: 1,
+        explanation: "Independent events have no influence on each other's probabilities. P(A∩B) = P(A) × P(B).",
+        topic: "Probability"
+      },
+      {
+        question: "What metric would you use to evaluate a binary classification model with imbalanced classes?",
+        options: [
+          "Accuracy",
+          "Precision and Recall (or F1-score)",
+          "Mean Squared Error",
+          "R-squared"
+        ],
+        correct: 1,
+        explanation: "Accuracy can be misleading with imbalanced classes. Precision, recall, and F1-score provide better insight into model performance.",
+        topic: "ML"
+      },
+      {
+        question: "In A/B testing, what is the minimum sample size consideration?",
+        options: [
+          "At least 100 users per variant",
+          "Enough to detect meaningful effect size with desired power",
+          "The larger the better, no minimum",
+          "Same size as control group"
+        ],
+        correct: 1,
+        explanation: "Sample size should be calculated based on desired statistical power, significance level, and minimum detectable effect.",
+        topic: "Stats"
+      },
+      {
+        question: "What is the main advantage of using pandas DataFrames over numpy arrays?",
+        options: [
+          "Faster computations",
+          "Labeled axes and heterogeneous data types",
+          "Smaller memory footprint",
+          "Built-in plotting functions"
+        ],
+        correct: 1,
+        explanation: "DataFrames provide labeled rows/columns and can handle mixed data types, making data manipulation more intuitive.",
+        topic: "Python"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedAnswer = null;
+    let topicScores = { SQL: 0, Python: 0, ML: 0, Stats: 0, Probability: 0 };
+
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById('questionText').textContent = q.question;
+      document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1} of ${questions.length}`;
+      document.getElementById('progressFill').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+      document.getElementById('scoreDisplay').textContent = `Score: ${score}/${currentQuestion}`;
+
+      const optionsContainer = document.getElementById('optionsContainer');
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((option, index) => {
+        const optionDiv = document.createElement('div');
+        optionDiv.className = 'option';
+        optionDiv.textContent = option;
+        optionDiv.onclick = () => selectAnswer(index);
+        optionsContainer.appendChild(optionDiv);
+      });
+
+      document.getElementById('explanation').style.display = 'none';
+      document.getElementById('nextBtn').disabled = true;
+      selectedAnswer = null;
+    }
+
+    function selectAnswer(index) {
+      if (selectedAnswer !== null) return;
+
+      selectedAnswer = index;
+      const options = document.querySelectorAll('.option');
+      const q = questions[currentQuestion];
+
+      options.forEach((opt, i) => {
+        if (i === q.correct) {
+          opt.classList.add('correct');
+        } else if (i === index) {
+          opt.classList.add('incorrect');
+        }
+        opt.style.pointerEvents = 'none';
+      });
+
+      if (index === q.correct) {
+        score++;
+        topicScores[q.topic]++;
+      }
+
+      const explanation = document.getElementById('explanation');
+      explanation.textContent = q.explanation;
+      explanation.className = `explanation ${index === q.correct ? 'correct' : 'incorrect'}`;
+      explanation.style.display = 'block';
+
+      document.getElementById('nextBtn').disabled = false;
+    }
+
+    function nextQuestion() {
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz').style.display = 'none';
+      document.getElementById('results').style.display = 'block';
+
+      const percentage = Math.round((score / questions.length) * 100);
+      const finalScore = document.getElementById('finalScore');
+
+      let scoreClass = 'needs-work';
+      if (percentage >= 80) scoreClass = 'excellent';
+      else if (percentage >= 60) scoreClass = 'good';
+
+      finalScore.textContent = `You scored ${score}/${questions.length} (${percentage}%)`;
+      finalScore.className = `score ${scoreClass}`;
+
+      // Generate recommendations
+      const recommendations = [];
+      const topicMax = Math.max(...Object.values(topicScores));
+
+      Object.entries(topicScores).forEach(([topic, topicScore]) => {
+        const topicQuestions = questions.filter(q => q.topic === topic).length;
+        const topicPercentage = Math.round((topicScore / topicQuestions) * 100);
+        if (topicPercentage < 70) {
+          recommendations.push(`${topic}: ${topicScore}/${topicQuestions} (${topicPercentage}%) - Review ${topic.toLowerCase()} concepts`);
+        }
+      });
+
+      if (recommendations.length === 0) {
+        recommendations.push("Great job! You're well-prepared across all topics.");
+      }
+
+      const recList = document.getElementById('recommendationsList');
+      recList.innerHTML = recommendations.map(rec => `<li>${rec}</li>`).join('');
+    }
+
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      selectedAnswer = null;
+      topicScores = { SQL: 0, Python: 0, ML: 0, Stats: 0, Probability: 0 };
+      document.getElementById('quiz').style.display = 'block';
+      document.getElementById('results').style.display = 'none';
+      loadQuestion();
+    }
+
+    loadQuestion();
+  </script>
+</body>
+</html>

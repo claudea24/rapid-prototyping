@@ -29,7 +29,7 @@ Each topic gets a **cheat sheet** reference section and there is a **quiz** sect
 | **v06** | Daily Challenge | Daily quiz format — one topic per day, countdown timer, calendar heatmap, streaks, timed 5-question challenges, tabbed study guide |
 | **v07** | Textbook Edition | Traditional book — burgundy cover, serif font, parchment bg, 6 in-depth chapters with worked examples and analogies, practice exam appendix |
 | **v08** | Interactive Kids Edition | Fun, interactive statistics for kids — hypothesis testing coin flips, confidence interval sliders, A/B testing buttons, CLT histograms. Bright colors, animations, simple explanations |
-| v09 | Probability Content | Real Probability cheat sheet — Bayes, distributions, expected value |
+| **v09** | Professional Review | Interactive pro-level review for experienced DS professionals — advanced SQL, Python data science, probability theory, ML concepts. Clean interface, assessment quiz, focused content |
 | v10 | Case Studies Content | Real Casing cheat sheet — product metrics, frameworks, debugging |
 | v11 | Quiz Build-Out | 25+ real questions with explanations and difficulty tags |
 | v12 | Responsive Layout | Mobile-first breakpoints, stacking cards, collapsing nav |
