@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Quiz - DS Spaced Repetition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #1e293b;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    header p {
+      color: #64748b;
+    }
+
+    .quiz-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .quiz-info .stat {
+      text-align: center;
+    }
+    .quiz-info .number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #667eea;
+    }
+    .quiz-info .label {
+      font-size: 0.8rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .question-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      min-height: 300px;
+    }
+    .question-card .question {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+      line-height: 1.6;
+    }
+    .question-card .topic-tag {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+
+    .options {
+      display: grid;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .option {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    .option:hover {
+      background: #f1f5f9;
+      border-color: #667eea;
+      transform: translateY(-2px);
+    }
+    .option.selected {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-color: #667eea;
+    }
+    .option.correct {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border-color: #10b981;
+    }
+    .option.incorrect {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+      border-color: #ef4444;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+    }
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .explanation {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .explanation.correct {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      border: 1px solid #10b981;
+    }
+    .explanation.incorrect {
+      background: linear-gradient(135deg, #fee2e2, #fecaca);
+      border: 1px solid #ef4444;
+    }
+    .explanation h4 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #1e293b;
+    }
+    .explanation p {
+      color: #475569;
+      line-height: 1.6;
+    }
+
+    .next-btn {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 30px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      display: none;
+    }
+    .next-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    }
+
+    .progress-section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .progress-section h3 {
+      font-size: 1.2rem;
+      color: #1e293b;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .progress-bar {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .control-btn {
+      background: rgba(255,255,255,0.9);
+      color: #64748b;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .control-btn:hover {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .results-screen {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      display: none;
+    }
+    .results-screen h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .results-screen .score {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #667eea;
+      margin-bottom: 30px;
+    }
+    .results-screen .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .results-screen .stat {
+      background: #f8fafc;
+      border-radius: 10px;
+      padding: 15px;
+    }
+    .results-screen .number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #667eea;
+      display: block;
+    }
+    .results-screen .label {
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+      .quiz-info { flex-direction: column; gap: 15px; }
+      .controls { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Knowledge Quiz</h1>
+      <p id="quizType">Test your understanding</p>
+    </header>
+
+    <div class="quiz-info">
+      <div class="stat">
+        <div class="number" id="questionNumber">1</div>
+        <div class="label">Question</div>
+      </div>
+      <div class="stat">
+        <div class="number" id="totalQuestions">10</div>
+        <div class="label">Total</div>
+      </div>
+      <div class="stat">
+        <div class="number" id="quizScore">0</div>
+        <div class="label">Score</div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <h3>Quiz Progress</h3>
+      <div class="progress-bar">
+        <div class="progress-fill" id="quizProgress" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div class="question-card" id="questionCard">
+      <div class="topic-tag" id="topicTag">Loading...</div>
+      <div class="question" id="questionText">Loading question...</div>
+      <div class="options" id="optionsContainer">
+        <!-- Options will be populated by JavaScript -->
+      </div>
+      <button class="submit-btn" id="submitBtn" onclick="submitAnswer()" disabled>Submit Answer</button>
+      <div class="explanation" id="explanation"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next Question</button>
+    </div>
+
+    <div class="controls">
+      <button class="control-btn" onclick="endQuiz()">End Quiz</button>
+      <button class="control-btn" onclick="window.location.href='index.html'">Back to Dashboard</button>
+    </div>
+
+    <div class="results-screen" id="resultsScreen">
+      <h2>Quiz Complete!</h2>
+      <div class="score" id="finalScore">0%</div>
+      <div class="stats">
+        <div class="stat">
+          <span class="number" id="correctAnswers">0</span>
+          <span class="label">Correct</span>
+        </div>
+        <div class="stat">
+          <span class="number" id="totalAnswered">0</span>
+          <span class="label">Total</span>
+        </div>
+        <div class="stat">
+          <span class="number" id="accuracy">0%</span>
+          <span class="label">Accuracy</span>
+        </div>
+      </div>
+      <button class="control-btn" style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; border: none;" onclick="window.location.href='index.html'">Return to Dashboard</button>
+    </div>
+  </div>
+
+  <script>
+    let userData = JSON.parse(localStorage.getItem('dsSpacedRepetition')) || {
+      cards: {},
+      stats: { cardsReviewed: 0, currentStreak: 0, masteredCards: 0, studyTime: 0 }
+    };
+
+    let quizQuestions = [];
+    let currentQuestionIndex = 0;
+    let selectedOption = null;
+    let score = 0;
+    let answeredQuestions = 0;
+
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const topic = urlParams.get('topic');
+    const numQuestions = parseInt(urlParams.get('questions')) || 10;
+
+    function initializeQuiz() {
+      // Generate quiz questions from flashcards
+      if (topic) {
+        // Quiz on specific topic
+        const topicCards = userData.cards[topic] || [];
+        quizQuestions = generateQuizQuestions(topicCards, numQuestions);
+        document.getElementById('quizType').textContent = `Testing ${topic.toUpperCase()} Knowledge`;
+      } else {
+        // Mixed quiz from all topics
+        let allCards = [];
+        Object.keys(userData.cards).forEach(topicKey => {
+          allCards = allCards.concat(userData.cards[topicKey]);
+        });
+        quizQuestions = generateQuizQuestions(allCards, numQuestions);
+        document.getElementById('quizType').textContent = 'Mixed Topic Quiz';
+      }
+
+      document.getElementById('totalQuestions').textContent = quizQuestions.length;
+      loadQuestion();
+    }
+
+    function generateQuizQuestions(cards, count) {
+      if (cards.length === 0) return [];
+
+      const questions = [];
+      const shuffledCards = [...cards].sort(() => Math.random() - 0.5);
+
+      for (let i = 0; i < Math.min(count, shuffledCards.length); i++) {
+        const card = shuffledCards[i];
+        const question = {
+          question: card.q,
+          correctAnswer: card.a,
+          topic: getTopicName(card),
+          options: generateOptions(card, cards)
+        };
+        questions.push(question);
+      }
+
+      return questions;
+    }
+
+    function generateOptions(correctCard, allCards) {
+      const options = [correctCard.a];
+      const otherCards = allCards.filter(c => c !== correctCard);
+
+      // Add 3 incorrect options
+      while (options.length < 4 && otherCards.length > 0) {
+        const randomIndex = Math.floor(Math.random() * otherCards.length);
+        const randomAnswer = otherCards[randomIndex].a;
+        if (!options.includes(randomAnswer)) {
+          options.push(randomAnswer);
+        }
+        otherCards.splice(randomIndex, 1);
+      }
+
+      // If we don't have enough unique answers, add generic ones
+      while (options.length < 4) {
+        const genericAnswers = [
+          "SELECT * FROM table_name",
+          "import pandas as pd",
+          "Mean squared error",
+          "Linear regression",
+          "Primary key constraint",
+          "Overfitting occurs when...",
+          "P(A|B) = P(B|A) * P(A) / P(B)",
+          "Data normalization"
+        ];
+        const randomGeneric = genericAnswers[Math.floor(Math.random() * genericAnswers.length)];
+        if (!options.includes(randomGeneric)) {
+          options.push(randomGeneric);
+        }
+      }
+
+      return options.sort(() => Math.random() - 0.5);
+    }
+
+    function getTopicName(card) {
+      for (const [topicKey, cards] of Object.entries(userData.cards)) {
+        if (cards.includes(card)) {
+          return topicKey;
+        }
+      }
+      return 'Unknown';
+    }
+
+    function loadQuestion() {
+      if (currentQuestionIndex >= quizQuestions.length) {
+        showResults();
+        return;
+      }
+
+      const question = quizQuestions[currentQuestionIndex];
+      selectedOption = null;
+
+      document.getElementById('questionNumber').textContent = currentQuestionIndex + 1;
+      document.getElementById('topicTag').textContent = question.topic.toUpperCase();
+      document.getElementById('questionText').textContent = question.question;
+      document.getElementById('quizScore').textContent = score;
+
+      const optionsContainer = document.getElementById('optionsContainer');
+      optionsContainer.innerHTML = '';
+
+      question.options.forEach((option, index) => {
+        const optionElement = document.createElement('div');
+        optionElement.className = 'option';
+        optionElement.textContent = option;
+        optionElement.onclick = () => selectOption(index);
+        optionsContainer.appendChild(optionElement);
+      });
+
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('explanation').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'none';
+
+      updateProgress();
+    }
+
+    function selectOption(index) {
+      selectedOption = index;
+      document.querySelectorAll('.option').forEach((opt, i) => {
+        opt.classList.toggle('selected', i === index);
+      });
+      document.getElementById('submitBtn').disabled = false;
+    }
+
+    function submitAnswer() {
+      if (selectedOption === null) return;
+
+      const question = quizQuestions[currentQuestionIndex];
+      const options = document.querySelectorAll('.option');
+      const correctIndex = question.options.indexOf(question.correctAnswer);
+
+      options.forEach((opt, i) => {
+        if (i === correctIndex) {
+          opt.classList.add('correct');
+        } else if (i === selectedOption) {
+          opt.classList.add('incorrect');
+        }
+      });
+
+      if (selectedOption === correctIndex) {
+        score++;
+        showExplanation(true, question.correctAnswer);
+      } else {
+        showExplanation(false, question.correctAnswer);
+      }
+
+      answeredQuestions++;
+      document.getElementById('submitBtn').style.display = 'none';
+      document.getElementById('nextBtn').style.display = 'block';
+    }
+
+    function showExplanation(isCorrect, correctAnswer) {
+      const explanation = document.getElementById('explanation');
+      explanation.className = `explanation ${isCorrect ? 'correct' : 'incorrect'}`;
+      explanation.innerHTML = `
+        <h4>${isCorrect ? 'Correct!' : 'Incorrect'}</h4>
+        <p>The correct answer is: <strong>${correctAnswer}</strong></p>
+      `;
+      explanation.style.display = 'block';
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      loadQuestion();
+    }
+
+    function updateProgress() {
+      const progress = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+      document.getElementById('quizProgress').style.width = `${progress}%`;
+    }
+
+    function endQuiz() {
+      showResults();
+    }
+
+    function showResults() {
+      document.getElementById('questionCard').style.display = 'none';
+      document.getElementById('resultsScreen').style.display = 'block';
+
+      const percentage = Math.round((score / answeredQuestions) * 100) || 0;
+      document.getElementById('finalScore').textContent = `${percentage}%`;
+      document.getElementById('correctAnswers').textContent = score;
+      document.getElementById('totalAnswered').textContent = answeredQuestions;
+      document.getElementById('accuracy').textContent = `${percentage}%`;
+
+      // Update user stats
+      userData.stats.quizAttempts = (userData.stats.quizAttempts || 0) + 1;
+      userData.stats.quizAverageScore = Math.round(
+        ((userData.stats.quizAverageScore || 0) * (userData.stats.quizAttempts - 1) + percentage) / userData.stats.quizAttempts
+      );
+      localStorage.setItem('dsSpacedRepetition', JSON.stringify(userData));
+    }
+
+    // Initialize quiz
+    initializeQuiz();
+  </script>
+</body>
+</html>

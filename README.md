@@ -30,8 +30,8 @@ Each topic gets a **cheat sheet** reference section and there is a **quiz** sect
 | **v07** | Textbook Edition | Traditional book — burgundy cover, serif font, parchment bg, 6 in-depth chapters with worked examples and analogies, practice exam appendix |
 | **v08** | Interactive Kids Edition | Fun, interactive statistics for kids — hypothesis testing coin flips, confidence interval sliders, A/B testing buttons, CLT histograms. Bright colors, animations, simple explanations |
 | **v09** | Professional Review | Interactive pro-level review for experienced DS professionals — advanced SQL, Python data science, probability theory, ML concepts. Clean interface, assessment quiz, focused content |
-| v10 | Case Studies Content | Real Casing cheat sheet — product metrics, frameworks, debugging |
-| v11 | Quiz Build-Out | 25+ real questions with explanations and difficulty tags |
+| **v10** | Spaced Repetition System | Intelligent flashcard system with spaced repetition algorithm — review scheduling, progress tracking, mastery analytics, study streaks, and detailed statistics dashboard |
+| v11 | Case Studies Content | Real Casing cheat sheet — product metrics, frameworks, debugging |
 | v12 | Responsive Layout | Mobile-first breakpoints, stacking cards, collapsing nav |
 | v13 | Sidebar Navigation | Fixed sidebar on desktop, hamburger menu on mobile |
 | v14 | Progress Tracking | Checkboxes, localStorage persistence, progress bar |

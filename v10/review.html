@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Session - DS Spaced Repetition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #1e293b;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 30px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      font-size: 2rem;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+    header p {
+      color: #64748b;
+    }
+
+    .session-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 20px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .session-info .stat {
+      text-align: center;
+    }
+    .session-info .number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #667eea;
+    }
+    .session-info .label {
+      font-size: 0.8rem;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .flashcard {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 30px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .flashcard:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    .flashcard.flipped {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+    .flashcard .card-content {
+      font-size: 1.4rem;
+      font-weight: 500;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .flashcard .hint {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-top: 20px;
+    }
+    .flashcard .flip-indicator {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+
+    .answer-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .answer-btn {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 15px 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 120px;
+    }
+    .answer-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    }
+    .answer-btn.good {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    }
+    .answer-btn.good:hover {
+      box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+    }
+    .answer-btn.hard {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+    .answer-btn.hard:hover {
+      box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+    }
+
+    .progress-section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .progress-section h3 {
+      font-size: 1.2rem;
+      color: #1e293b;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+    .progress-bar {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 5px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 5px;
+      transition: width 0.5s ease;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+    .control-btn {
+      background: rgba(255,255,255,0.9);
+      color: #64748b;
+      border: 2px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 12px 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .control-btn:hover {
+      background: #667eea;
+      color: white;
+      border-color: #667eea;
+    }
+
+    .completion-message {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      border-radius: 20px;
+      padding: 40px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      display: none;
+    }
+    .completion-message h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    .completion-message p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+    }
+    .completion-message .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    .completion-message .stat {
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      padding: 15px;
+    }
+    .completion-message .number {
+      font-size: 1.5rem;
+      font-weight: 700;
+      display: block;
+    }
+    .completion-message .label {
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      .answer-buttons { flex-direction: column; align-items: center; }
+      .answer-btn { width: 200px; }
+      .session-info { flex-direction: column; gap: 15px; }
+      .controls { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Study Session</h1>
+      <p id="sessionType">Review your flashcards</p>
+    </header>
+
+    <div class="session-info">
+      <div class="stat">
+        <div class="number" id="cardsRemaining">0</div>
+        <div class="label">Remaining</div>
+      </div>
+      <div class="stat">
+        <div class="number" id="cardsCompleted">0</div>
+        <div class="label">Completed</div>
+      </div>
+      <div class="stat">
+        <div class="number" id="sessionTime">0:00</div>
+        <div class="label">Time</div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <h3>Session Progress</h3>
+      <div class="progress-bar">
+        <div class="progress-fill" id="sessionProgress" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="card-content" id="cardContent">Click to start studying!</div>
+      <div class="hint" id="cardHint"></div>
+      <div class="flip-indicator">Click to flip</div>
+    </div>
+
+    <div class="answer-buttons" id="answerButtons" style="display: none;">
+      <button class="answer-btn" onclick="answerCard('easy')">Easy</button>
+      <button class="answer-btn good" onclick="answerCard('good')">Good</button>
+      <button class="answer-btn hard" onclick="answerCard('hard')">Hard</button>
+    </div>
+
+    <div class="controls">
+      <button class="control-btn" onclick="skipCard()">Skip Card</button>
+      <button class="control-btn" onclick="endSession()">End Session</button>
+      <button class="control-btn" onclick="window.location.href='index.html'">Back to Dashboard</button>
+    </div>
+
+    <div class="completion-message" id="completionMessage">
+      <h2>🎉 Session Complete!</h2>
+      <p>Great job! You've completed your study session.</p>
+      <div class="stats">
+        <div class="stat">
+          <span class="number" id="finalCards">0</span>
+          <span class="label">Cards Studied</span>
+        </div>
+        <div class="stat">
+          <span class="number" id="finalTime">0:00</span>
+          <span class="label">Time Spent</span>
+        </div>
+        <div class="stat">
+          <span class="number" id="finalStreak">0</span>
+          <span class="label">Day Streak</span>
+        </div>
+      </div>
+      <button class="control-btn" style="background: white; color: #10b981; border-color: white;" onclick="window.location.href='index.html'">Return to Dashboard</button>
+    </div>
+  </div>
+
+  <script>
+    let userData = JSON.parse(localStorage.getItem('dsSpacedRepetition')) || {
+      cards: {},
+      stats: { cardsReviewed: 0, currentStreak: 0, masteredCards: 0, studyTime: 0 }
+    };
+
+    let currentCards = [];
+    let currentCardIndex = 0;
+    let sessionStartTime = Date.now();
+    let sessionTimer;
+    let isFlipped = false;
+    let currentCard = null;
+
+    // Get URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    const topic = urlParams.get('topic');
+
+    function initializeSession() {
+      // Load cards based on mode and topic
+      if (topic) {
+        // Study specific topic
+        currentCards = userData.cards[topic] || [];
+        document.getElementById('sessionType').textContent = `Studying ${topic.toUpperCase()}`;
+      } else if (mode === 'new') {
+        // Study new cards across all topics
+        currentCards = [];
+        Object.keys(userData.cards).forEach(topicKey => {
+          const newCards = userData.cards[topicKey].filter(card => card.lastReviewed === null);
+          currentCards = currentCards.concat(newCards);
+        });
+        document.getElementById('sessionType').textContent = 'Learning New Cards';
+      } else {
+        // Review due cards
+        currentCards = [];
+        Object.keys(userData.cards).forEach(topicKey => {
+          const dueCards = userData.cards[topicKey].filter(card => card.nextReview <= Date.now());
+          currentCards = currentCards.concat(dueCards);
+        });
+        document.getElementById('sessionType').textContent = 'Review Due Cards';
+      }
+
+      // Shuffle cards
+      currentCards = shuffleArray(currentCards);
+
+      updateSessionInfo();
+      loadCard();
+
+      // Start session timer
+      sessionTimer = setInterval(updateSessionTime, 1000);
+    }
+
+    function shuffleArray(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function loadCard() {
+      if (currentCardIndex >= currentCards.length) {
+        endSession();
+        return;
+      }
+
+      currentCard = currentCards[currentCardIndex];
+      isFlipped = false;
+
+      document.getElementById('cardContent').textContent = currentCard.q;
+      document.getElementById('cardHint').textContent = '';
+      document.getElementById('flashcard').classList.remove('flipped');
+      document.getElementById('answerButtons').style.display = 'none';
+      document.getElementById('flashcard').style.display = 'flex';
+    }
+
+    function flipCard() {
+      if (!isFlipped) {
+        isFlipped = true;
+        document.getElementById('cardContent').textContent = currentCard.a;
+        document.getElementById('cardHint').textContent = `Topic: ${getTopicName(currentCard)}`;
+        document.getElementById('flashcard').classList.add('flipped');
+        document.getElementById('answerButtons').style.display = 'flex';
+      }
+    }
+
+    function getTopicName(card) {
+      for (const [topicKey, cards] of Object.entries(userData.cards)) {
+        if (cards.includes(card)) {
+          return topicKey.toUpperCase();
+        }
+      }
+      return 'Unknown';
+    }
+
+    function answerCard(difficulty) {
+      if (!currentCard) return;
+
+      // Update card statistics using spaced repetition algorithm
+      const now = Date.now();
+      currentCard.lastReviewed = now;
+      currentCard.repetitions++;
+
+      // Spaced repetition intervals (in days)
+      let interval;
+      if (difficulty === 'easy') {
+        currentCard.ease = Math.min(currentCard.ease + 0.1, 3.0);
+        interval = currentCard.interval * currentCard.ease;
+      } else if (difficulty === 'good') {
+        interval = currentCard.interval * currentCard.ease;
+      } else { // hard
+        currentCard.ease = Math.max(currentCard.ease - 0.2, 1.3);
+        interval = 1; // Reset to 1 day
+      }
+
+      currentCard.interval = Math.max(interval, 1);
+      currentCard.nextReview = now + (interval * 24 * 60 * 60 * 1000);
+
+      // Update user stats
+      userData.stats.cardsReviewed++;
+
+      // Check if mastered (5+ successful reviews)
+      if (currentCard.repetitions >= 5 && !currentCard.mastered) {
+        currentCard.mastered = true;
+        userData.stats.masteredCards++;
+      }
+
+      // Save data
+      localStorage.setItem('dsSpacedRepetition', JSON.stringify(userData));
+
+      // Move to next card
+      currentCardIndex++;
+      updateSessionInfo();
+      loadCard();
+    }
+
+    function skipCard() {
+      currentCardIndex++;
+      updateSessionInfo();
+      loadCard();
+    }
+
+    function updateSessionInfo() {
+      const remaining = currentCards.length - currentCardIndex;
+      const completed = currentCardIndex;
+      const progress = currentCards.length > 0 ? (completed / currentCards.length) * 100 : 0;
+
+      document.getElementById('cardsRemaining').textContent = remaining;
+      document.getElementById('cardsCompleted').textContent = completed;
+      document.getElementById('sessionProgress').style.width = `${progress}%`;
+    }
+
+    function updateSessionTime() {
+      const elapsed = Math.floor((Date.now() - sessionStartTime) / 1000);
+      const minutes = Math.floor(elapsed / 60);
+      const seconds = elapsed % 60;
+      document.getElementById('sessionTime').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function endSession() {
+      clearInterval(sessionTimer);
+
+      // Update study time
+      const sessionDuration = Math.floor((Date.now() - sessionStartTime) / 1000 / 60); // in minutes
+      userData.stats.studyTime += sessionDuration;
+
+      // Update streak
+      const today = new Date().toDateString();
+      const lastStudy = userData.stats.lastStudyDate;
+      if (lastStudy !== today) {
+        if (lastStudy === new Date(Date.now() - 86400000).toDateString()) {
+          userData.stats.currentStreak++;
+        } else {
+          userData.stats.currentStreak = 1;
+        }
+        userData.stats.lastStudyDate = today;
+      }
+
+      localStorage.setItem('dsSpacedRepetition', JSON.stringify(userData));
+
+      // Show completion message
+      document.getElementById('flashcard').style.display = 'none';
+      document.getElementById('answerButtons').style.display = 'none';
+      document.getElementById('completionMessage').style.display = 'block';
+
+      document.getElementById('finalCards').textContent = currentCardIndex;
+      document.getElementById('finalTime').textContent = document.getElementById('sessionTime').textContent;
+      document.getElementById('finalStreak').textContent = userData.stats.currentStreak;
+    }
+
+    // Initialize session
+    initializeSession();
+  </script>
+</body>
+</html>
