@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning — Bright Practice | DS Prep v14</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#7c3aed;--accent-light:#ede9fe;--accent-glow:rgba(124,58,237,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--code-bg:#f8f9fc;--code-text:#1e293b;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header h1 span{color:var(--accent)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    .insight{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:rgba(124,58,237,.03)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:var(--accent-light);padding:1px 5px;border-radius:3px}
+
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+    .kw{color:#9333ea}.fn{color:#2563eb}.str{color:#16a34a}.cm{color:#94a3b8;font-style:italic}.num{color:#0891b2}
+
+    .practice-box{background:var(--green-light);border:1px solid #86efac;border-radius:10px;padding:18px 20px;margin:20px 0}
+    .practice-box .practice-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .practice-box ul{list-style:none;padding:0}
+    .practice-box li{margin-bottom:6px}
+    .practice-box a{font-size:.84rem;color:var(--green);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+    .practice-box a:hover{color:#15803d}
+    .practice-box .source{font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(22,163,74,.1);color:var(--green);text-transform:uppercase;letter-spacing:.5px}
+    .difficulty{font-size:.6rem;font-weight:600;padding:2px 6px;border-radius:4px;margin-left:4px}
+    .difficulty.easy{background:#dcfce7;color:#16a34a}
+    .difficulty.med{background:#fef3c7;color:#d97706}
+    .difficulty.hard{background:#fee2e2;color:#dc2626}
+
+    .worked{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin:16px 0;box-shadow:var(--shadow)}
+    .worked .worked-title{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px}
+    .worked p,.worked li{font-size:.84rem;line-height:1.65;color:var(--text)}
+    .worked ul{padding-left:18px;margin:8px 0}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.nav-links{display:none!important}.page-header,.container{padding-left:16px;padding-right:16px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v14</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html" class="active">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#129302;</div>
+    <h1>Machine Learning — <span>Theory to Practice</span></h1>
+  </div>
+  <p class="intro">Supervised &amp; unsupervised algorithms, evaluation metrics, bias-variance tradeoff, feature engineering, and cross-validation — with real practice questions.</p>
+</div>
+
+<div class="container">
+
+  <!-- 3.1 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">3.1</span> Supervised Learning Algorithms</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Supervised learning uses labeled data to learn a mapping from inputs to outputs. Each algorithm has its own geometric intuition, assumptions, and failure modes.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Algorithm</th><th>Strengths</th><th>Weaknesses</th><th>When to Use</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Linear Regression</strong></td><td>Interpretable, fast, coefficients reveal importance</td><td>Assumes linearity, sensitive to outliers</td><td>Baseline regression; interpretability needed</td></tr>
+          <tr><td><strong>Logistic Regression</strong></td><td>Probabilistic output, interpretable</td><td>Linear decision boundary only</td><td>Binary classification with explainability</td></tr>
+          <tr><td><strong>Decision Tree</strong></td><td>Nonlinear, no scaling, highly interpretable</td><td>High variance, prone to overfitting</td><td>Quick exploration; visual decision path</td></tr>
+          <tr><td><strong>Random Forest</strong></td><td>Low variance, robust, handles missing values</td><td>Less interpretable, slower</td><td>General-purpose; accuracy without tuning</td></tr>
+          <tr><td><strong>Gradient Boosting</strong></td><td>State-of-the-art tabular, flexible loss</td><td>Overfitting risk, slow training</td><td>Competitions and production accuracy</td></tr>
+          <tr><td><strong>SVM</strong></td><td>High-dim spaces, kernel flexibility</td><td>Slow, opaque, hyperparameter-sensitive</td><td>Text classification; small/medium data</td></tr>
+          <tr><td><strong>KNN</strong></td><td>No training, complex boundaries</td><td>Slow inference, curse of dimensionality</td><td>Small datasets; anomaly detection</td></tr>
+        </tbody>
+      </table>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2005-gradient-boosting-vs-random-forest" target="_blank"><span class="source">StrataScratch</span> Gradient Boosting vs Random Forest <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2014-logistic-regression-assumptions" target="_blank"><span class="source">StrataScratch</span> Logistic Regression Assumptions <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2037-decision-tree-splitting-criteria" target="_blank"><span class="source">StrataScratch</span> Decision Tree Splitting Criteria <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.2 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">3.2</span> Unsupervised Learning</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Unsupervised learning discovers structure without labels. <strong>K-Means</strong> iterates between assigning points to nearest centroids and recomputing centroids. <strong>DBSCAN</strong> finds arbitrary-shaped clusters as dense regions separated by low-density areas. <strong>PCA</strong> finds axes of maximum variance for dimensionality reduction.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Algorithm</th><th>Type</th><th>Key Property</th><th>Use When</th></tr></thead>
+        <tbody>
+          <tr><td><strong>K-Means</strong></td><td>Clustering</td><td>Fast, spherical clusters</td><td>Known k, convex clusters</td></tr>
+          <tr><td><strong>Hierarchical</strong></td><td>Clustering</td><td>Dendrogram exploration</td><td>Unknown k, want hierarchy</td></tr>
+          <tr><td><strong>DBSCAN</strong></td><td>Clustering</td><td>Arbitrary shapes, finds outliers</td><td>No k needed, noise expected</td></tr>
+          <tr><td><strong>PCA</strong></td><td>Dim. Reduction</td><td>Linear, fast, deterministic</td><td>Feature reduction, preprocessing</td></tr>
+          <tr><td><strong>t-SNE / UMAP</strong></td><td>Dim. Reduction</td><td>Nonlinear, preserves local structure</td><td>2D visualization only</td></tr>
+        </tbody>
+      </table>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example — Customer Segmentation</div>
+        <p>After standardizing features (AOV, purchase frequency, recency), run K-Means with k=2 to 10. Elbow at k=4 reveals: <strong>Loyal High-Spenders</strong>, <strong>Bargain Hunters</strong>, <strong>Window Shoppers</strong>, and <strong>Churning Customers</strong>. Marketing tailors campaigns to each segment.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2022-k-means-clustering-limitations" target="_blank"><span class="source">StrataScratch</span> K-Means Clustering Limitations <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2018-pca-explained" target="_blank"><span class="source">StrataScratch</span> PCA Explained <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.3 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">3.3</span> Evaluation Metrics</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <table class="comp-table">
+        <thead><tr><th>Metric</th><th>Idea</th><th>Fails When</th><th>Use When</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Accuracy</strong></td><td>(TP+TN) / total</td><td>Imbalanced classes</td><td>Balanced datasets</td></tr>
+          <tr><td><strong>Precision</strong></td><td>TP / (TP+FP)</td><td>&mdash;</td><td>Cost of FP is high (spam filter)</td></tr>
+          <tr><td><strong>Recall</strong></td><td>TP / (TP+FN)</td><td>&mdash;</td><td>Cost of FN is high (disease detection)</td></tr>
+          <tr><td><strong>F1 Score</strong></td><td>Harmonic mean of P &amp; R</td><td>&mdash;</td><td>Need balance of precision and recall</td></tr>
+          <tr><td><strong>AUC-ROC</strong></td><td>Area under TPR vs FPR</td><td>&mdash;</td><td>Comparing models, threshold-independent</td></tr>
+          <tr><td><strong>RMSE</strong></td><td>&radic;(mean squared errors)</td><td>&mdash;</td><td>Penalize large errors (regression)</td></tr>
+          <tr><td><strong>MAE</strong></td><td>Mean absolute errors</td><td>&mdash;</td><td>Treat all errors equally (regression)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Before choosing a metric, always ask: "What is the cost of a false positive versus a false negative?" The answer should drive your metric, threshold, model, and how you present results.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2007-precision-vs-recall" target="_blank"><span class="source">StrataScratch</span> Precision vs Recall Tradeoff <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2011-auc-roc-interpretation" target="_blank"><span class="source">StrataScratch</span> AUC-ROC Interpretation <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.4 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">3.4</span> Bias-Variance Tradeoff</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain"><strong>The Dartboard Analogy:</strong> High bias = darts cluster tightly but away from bullseye (underfitting). High variance = darts scattered around bullseye (overfitting). <strong>Total Error = Bias&sup2; + Variance + Irreducible Noise.</strong></p>
+
+      <table class="comp-table">
+        <thead><tr><th>Scenario</th><th>Bias</th><th>Variance</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Underfitting</td><td>High</td><td>Low</td><td>Poor on train AND test</td><td>More features, complex model</td></tr>
+          <tr><td>Sweet spot</td><td>Low</td><td>Low</td><td>Good on both</td><td>Keep it</td></tr>
+          <tr><td>Overfitting</td><td>Low</td><td>High</td><td>Great train, poor test</td><td>Regularization, more data</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>L1 (Lasso)</strong> adds |coefficients| to loss &mdash; drives some to zero (feature selection). <strong>L2 (Ridge)</strong> adds coefficients&sup2; &mdash; shrinks all toward zero (stability). <strong>Elastic Net</strong> blends both.</p>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2001-bias-variance-tradeoff" target="_blank"><span class="source">StrataScratch</span> Bias-Variance Tradeoff <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2003-l1-vs-l2-regularization" target="_blank"><span class="source">StrataScratch</span> L1 vs L2 Regularization <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.5 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">3.5</span> Feature Engineering</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <table class="comp-table">
+        <thead><tr><th>Technique</th><th>When</th><th>Watch Out</th></tr></thead>
+        <tbody>
+          <tr><td><strong>One-hot encoding</strong></td><td>Nominal categories</td><td>High cardinality &rarr; many columns</td></tr>
+          <tr><td><strong>Label encoding</strong></td><td>Ordinal categories</td><td>Don't use for nominal</td></tr>
+          <tr><td><strong>StandardScaler</strong></td><td>KNN, SVM, logistic, PCA</td><td>Not needed for trees</td></tr>
+          <tr><td><strong>Log transform</strong></td><td>Right-skewed data</td><td>Remember to reverse</td></tr>
+          <tr><td><strong>Target encoding</strong></td><td>High cardinality</td><td>Data leakage risk</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Feature engineering often matters more than model choice. Simple logistic regression on well-crafted features can outperform gradient boosting on raw features.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2015-feature-scaling-importance" target="_blank"><span class="source">StrataScratch</span> Feature Scaling Importance <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2016-handling-categorical-features" target="_blank"><span class="source">StrataScratch</span> Handling Categorical Features <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.6 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">3.6</span> Cross-Validation &amp; Data Leakage</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain"><strong>K-Fold CV:</strong> Split data into k folds. Each iteration: 1 fold test, k&minus;1 train. Every point appears in both roles. <strong>Time Series CV:</strong> Standard k-fold is fatal for time series &mdash; it trains on future data. Use expanding window that respects temporal order.</p>
+
+      <p class="explain"><strong>Data Leakage:</strong> The most insidious form is fitting preprocessing on the full dataset before splitting. If you standardize using the full dataset's mean/std, the model implicitly "knows" the test data. <strong>Rule:</strong> Everything that learns from data must be fit inside the training fold only. Use <code>Pipeline</code>.</p>
+
+      <div class="code-block"><pre><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
+scores = <span class="fn">cross_val_score</span>(model, X, y, cv=<span class="num">5</span>, scoring=<span class="str">'f1'</span>)
+<span class="fn">print</span>(<span class="str">f"Mean F1: </span>{scores.<span class="fn">mean</span>():<span class="num">.3f</span>}<span class="str"> (+/- </span>{scores.<span class="fn">std</span>():<span class="num">.3f</span>}<span class="str">)"</span>)</pre></div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>If performance seems "too good to be true," it almost certainly is. The most common culprit is data leakage. Audit every feature: "Would I have this information at the moment of prediction?"</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2010-cross-validation-techniques" target="_blank"><span class="source">StrataScratch</span> Cross-Validation Techniques <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2012-data-leakage-prevention" target="_blank"><span class="source">StrataScratch</span> Data Leakage Prevention <span class="difficulty hard">Hard</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v14 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+function toggle(el){
+  el.classList.toggle('open');
+  const body=el.nextElementSibling;
+  body.classList.toggle('open');
+}
+</script>
+</body>
+</html>

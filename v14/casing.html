@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies — Bright Practice | DS Prep v14</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#0891b2;--accent-light:#cffafe;--accent-glow:rgba(8,145,178,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--code-bg:#f8f9fc;--code-text:#1e293b;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header h1 span{color:var(--accent)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    .insight{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:rgba(8,145,178,.03)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:var(--accent-light);padding:1px 5px;border-radius:3px}
+
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+
+    .practice-box{background:var(--green-light);border:1px solid #86efac;border-radius:10px;padding:18px 20px;margin:20px 0}
+    .practice-box .practice-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .practice-box ul{list-style:none;padding:0}
+    .practice-box li{margin-bottom:6px}
+    .practice-box a{font-size:.84rem;color:var(--green);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+    .practice-box a:hover{color:#15803d}
+    .practice-box .source{font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(22,163,74,.1);color:var(--green);text-transform:uppercase;letter-spacing:.5px}
+    .difficulty{font-size:.6rem;font-weight:600;padding:2px 6px;border-radius:4px;margin-left:4px}
+    .difficulty.easy{background:#dcfce7;color:#16a34a}
+    .difficulty.med{background:#fef3c7;color:#d97706}
+    .difficulty.hard{background:#fee2e2;color:#dc2626}
+
+    .worked{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin:16px 0;box-shadow:var(--shadow)}
+    .worked .worked-title{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px}
+    .worked p,.worked li{font-size:.84rem;line-height:1.65;color:var(--text)}
+    .worked ul{padding-left:18px;margin:8px 0}
+
+    .steps{display:flex;flex-direction:column;gap:6px;margin:16px 0}
+    .step{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+    .step .step-num{width:28px;height:28px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .step .step-label{font-weight:700;color:var(--heading);font-size:.85rem;min-width:80px}
+    .step .step-desc{font-size:.8rem;color:var(--text-muted)}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.nav-links{display:none!important}.page-header,.container{padding-left:16px;padding-right:16px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v14</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html" class="active">Casing</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#128161;</div>
+    <h1>Case Studies — <span>Thinking Like a Data Scientist</span></h1>
+  </div>
+  <p class="intro">AARRR framework, structured case approach, metric diagnosis, market sizing, experiment design, and communication principles.</p>
+</div>
+
+<div class="container">
+
+  <!-- 6.1 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">6.1</span> Product Metrics (AARRR Framework)</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <table class="comp-table">
+        <thead><tr><th>Stage</th><th>Definition</th><th>Example Metrics</th><th>Why It Matters</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Acquisition</strong></td><td>How users discover product</td><td>Sign-ups, CPA, channel split</td><td>Can't grow without awareness</td></tr>
+          <tr><td><strong>Activation</strong></td><td>First core value experience</td><td>Onboarding %, time to first action</td><td>Multiplies acquisition value</td></tr>
+          <tr><td><strong>Retention</strong></td><td>Do users come back?</td><td>D1/D7/D30, churn, cohort curves</td><td>Most important; compounds</td></tr>
+          <tr><td><strong>Revenue</strong></td><td>How product makes money</td><td>ARPU, LTV, conversion, MRR</td><td>Validates business model</td></tr>
+          <tr><td><strong>Referral</strong></td><td>Do users bring others?</td><td>NPS, viral coefficient</td><td>Free, pre-qualified acquisition</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>North Star Metric:</strong> A single number that captures core value delivered. Airbnb &rarr; nights booked. Spotify &rarr; time spent listening. A good North Star aligns user value with business value.</p>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2050-north-star-metrics" target="_blank"><span class="source">StrataScratch</span> Defining North Star Metrics <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2051-aarrr-framework" target="_blank"><span class="source">StrataScratch</span> AARRR Framework Application <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.2 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">6.2</span> Structuring Your Approach</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-label">Clarify</div><div class="step-desc">Restate the problem. Ask scope questions: which product? platform? segment? time window?</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-label">Define Metrics</div><div class="step-desc">Primary metric + guardrail metrics to prevent unintended harm</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-label">Hypothesize</div><div class="step-desc">State leading hypotheses before touching data</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-label">Analyze</div><div class="step-desc">Segment by cohort, platform, geography, time, feature, traffic source</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-label">Recommend</div><div class="step-desc">Concrete action + expected impact estimate</div></div>
+        <div class="step"><div class="step-num">6</div><div class="step-label">Measure</div><div class="step-desc">How will you validate? What experiment? Which metric?</div></div>
+      </div>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example &mdash; "WAU Dropped 15% Last Week"</div>
+        <p><strong>Clarify:</strong> 15% WoW? All platforms? <strong>Hypothesize:</strong> (a) Product bug, (b) Seasonal/external, (c) Marketing ended. <strong>Analyze:</strong> Segment by platform &rarr; drop is iOS only &rarr; app version v4.7 &rarr; crash spike. <strong>Recommend:</strong> Hotfix + re-engagement push. Estimate recovery of ~12 of 15 lost points.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2052-metric-drop-investigation" target="_blank"><span class="source">StrataScratch</span> Investigating a Metric Drop <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2053-case-study-framework" target="_blank"><span class="source">StrataScratch</span> Case Study Framework <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.3 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">6.3</span> Diagnosing Metric Changes</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Investigation framework: (1) <strong>Data problem?</strong> Check logging pipeline. (2) <strong>External factor?</strong> Holidays, competitors, news. (3) <strong>Internal change?</strong> Feature release, UI redesign, pricing. (4) <strong>Segment to isolate.</strong> (5) <strong>Quantify the contribution.</strong></p>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example &mdash; "Revenue Up 20% but Rides Down 5%"</div>
+        <p><strong>Decomposition:</strong> Revenue = Rides &times; Revenue per Ride. 1.20 = 0.95 &times; X &rarr; Revenue per ride up ~26%.</p>
+        <p><strong>Hypotheses:</strong> Price increase? Mix shift toward longer/premium rides? New surge pricing? Next: segment by ride type, geography, time of day.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2054-revenue-metric-decomposition" target="_blank"><span class="source">StrataScratch</span> Revenue Metric Decomposition <span class="difficulty hard">Hard</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2055-metric-diagnosis" target="_blank"><span class="source">StrataScratch</span> Metric Change Diagnosis <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.4 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">6.4</span> Market Sizing</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <table class="comp-table">
+        <thead><tr><th>Approach</th><th>Start With</th><th>Structure</th><th>Strength</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Top-Down</strong></td><td>Large known number</td><td>TAM &rarr; filter &rarr; target</td><td>Fast, macro-level</td></tr>
+          <tr><td><strong>Bottom-Up</strong></td><td>Single unit</td><td>Unit economics &rarr; scale</td><td>More grounded, concrete</td></tr>
+        </tbody>
+      </table>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example &mdash; Piano Tuners in Chicago</div>
+        <ul>
+          <li>Chicago metro: ~3.5M households, ~5% own a piano = 175,000 + 10,000 institutional = <strong>185,000 pianos</strong></li>
+          <li>~1 tuning/year = 185,000 tunings/year</li>
+          <li>Tuner: 8hr/day &times; 5 days &times; 50 weeks = 2,000 hrs, 2 hrs/tuning = 1,000 tunings/year</li>
+          <li>185,000 / 1,000 = <strong>~185 piano tuners</strong> (actual: 100&ndash;300)</li>
+        </ul>
+      </div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Interviewers care about structure and assumptions, not the exact number. A clearly reasoned estimate off by 2x beats a lucky guess with no justification.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2056-market-sizing" target="_blank"><span class="source">StrataScratch</span> Market Sizing Practice <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2057-fermi-estimation" target="_blank"><span class="source">StrataScratch</span> Fermi Estimation <span class="difficulty hard">Hard</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.5 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">6.5</span> Experiment Design</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <table class="comp-table">
+        <thead><tr><th>Decision</th><th>Options</th><th>Default</th><th>Watch Out</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Randomization unit</strong></td><td>User, session, page</td><td>User-level</td><td>Network effects &rarr; cluster randomization</td></tr>
+          <tr><td><strong>Duration</strong></td><td>Days to weeks</td><td>&ge; 1 full weekly cycle</td><td>Day-of-week effects, pay cycles</td></tr>
+          <tr><td><strong>Guardrails</strong></td><td>AOV, support tickets, load time</td><td>Always include several</td><td>Must not degrade even if primary improves</td></tr>
+          <tr><td><strong>Network effects</strong></td><td>Standard vs. cluster</td><td>Standard (if independent)</td><td>Social/marketplace &rarr; cluster</td></tr>
+          <tr><td><strong>Novelty/primacy</strong></td><td>Short vs. long test</td><td>Run 2&ndash;4 weeks</td><td>Initial lift may fade</td></tr>
+        </tbody>
+      </table>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example &mdash; New Checkout Flow (4 &rarr; 2 Steps)</div>
+        <p><strong>Unit:</strong> User-level. <strong>Primary:</strong> Checkout completion rate. <strong>Guardrails:</strong> AOV, 14-day return rate, support contacts. <strong>Sample size:</strong> Detect 2-point lift (65% &rarr; 67%), &alpha;=0.05, power=0.80. Need ~4,400/arm. At 2,000 users/day = round to 14 days (2 weekly cycles + novelty fade).</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2058-experiment-design" target="_blank"><span class="source">StrataScratch</span> Experiment Design <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2059-network-effects-experiments" target="_blank"><span class="source">StrataScratch</span> Handling Network Effects <span class="difficulty hard">Hard</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6.6 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">6.6</span> Communicating Your Analysis</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain"><strong>Pyramid Principle:</strong> Lead with the answer, then supporting evidence. "The drop was caused by an iOS v4.7 bug. Here's how I found that."</p>
+
+      <p class="explain"><strong>Signal your structure:</strong> "I'll approach this in three parts: clarify the metric, investigate causes, recommend an action." <strong>Quantify everything:</strong> Not "affected a lot of users" but "affected ~120,000 users, ~8% of MAU." <strong>Acknowledge trade-offs:</strong> "Rolling out the hotfix recovers engagement but delays the redesign by 2 sprints."</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The best technical answer, poorly communicated, loses to a decent answer well communicated. Analysis only creates value if someone understands it well enough to act on it.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2060-data-presentation" target="_blank"><span class="source">StrataScratch</span> Data Presentation Best Practices <span class="difficulty easy">Easy</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2061-stakeholder-communication" target="_blank"><span class="source">StrataScratch</span> Stakeholder Communication <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v14 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+function toggle(el){
+  el.classList.toggle('open');
+  const body=el.nextElementSibling;
+  body.classList.toggle('open');
+}
+</script>
+</body>
+</html>

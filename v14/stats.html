@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics — Bright Practice | DS Prep v14</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#059669;--accent-light:#d1fae5;--accent-glow:rgba(5,150,105,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--code-bg:#f8f9fc;--code-text:#1e293b;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header h1 span{color:var(--accent)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    .insight{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:rgba(5,150,105,.03)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:var(--accent-light);padding:1px 5px;border-radius:3px}
+
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+
+    .practice-box{background:var(--green-light);border:1px solid #86efac;border-radius:10px;padding:18px 20px;margin:20px 0}
+    .practice-box .practice-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .practice-box ul{list-style:none;padding:0}
+    .practice-box li{margin-bottom:6px}
+    .practice-box a{font-size:.84rem;color:var(--green);text-decoration:none;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+    .practice-box a:hover{color:#15803d}
+    .practice-box .source{font-size:.65rem;font-weight:700;padding:2px 6px;border-radius:4px;background:rgba(22,163,74,.1);color:var(--green);text-transform:uppercase;letter-spacing:.5px}
+    .difficulty{font-size:.6rem;font-weight:600;padding:2px 6px;border-radius:4px;margin-left:4px}
+    .difficulty.easy{background:#dcfce7;color:#16a34a}
+    .difficulty.med{background:#fef3c7;color:#d97706}
+    .difficulty.hard{background:#fee2e2;color:#dc2626}
+
+    .worked{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;margin:16px 0;box-shadow:var(--shadow)}
+    .worked .worked-title{font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);margin-bottom:10px}
+    .worked p,.worked li{font-size:.84rem;line-height:1.65;color:var(--text)}
+    .worked ul{padding-left:18px;margin:8px 0}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.nav-links{display:none!important}.page-header,.container{padding-left:16px;padding-right:16px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v14</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html" class="active">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#128202;</div>
+    <h1>Statistics — <span>The Foundation of Inference</span></h1>
+  </div>
+  <p class="intro">Descriptive statistics, hypothesis testing, common tests, confidence intervals, A/B testing, and the Central Limit Theorem.</p>
+</div>
+
+<div class="container">
+
+  <!-- 4.1 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">4.1</span> Descriptive Statistics</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <table class="comp-table">
+        <thead><tr><th>Measure</th><th>What It Tells You</th><th>Sensitive To</th><th>When to Use</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Mean</strong></td><td>Average value</td><td>Outliers, skew</td><td>Symmetric data</td></tr>
+          <tr><td><strong>Median</strong></td><td>Middle value</td><td>Nothing (robust)</td><td>Skewed data, outliers present</td></tr>
+          <tr><td><strong>Mode</strong></td><td>Most frequent</td><td>&mdash;</td><td>Categorical data</td></tr>
+          <tr><td><strong>Variance</strong></td><td>Spread (squared units)</td><td>Outliers</td><td>Mathematical properties needed</td></tr>
+          <tr><td><strong>Std Dev</strong></td><td>Spread (same units)</td><td>Outliers</td><td>Reporting spread</td></tr>
+          <tr><td><strong>IQR</strong></td><td>Middle 50% spread</td><td>Nothing (robust)</td><td>Outlier detection</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Always ask "is my data skewed?" If yes, prefer median and IQR over mean and standard deviation.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2040-mean-vs-median" target="_blank"><span class="source">StrataScratch</span> When to Use Mean vs Median <span class="difficulty easy">Easy</span></a></li>
+          <li><a href="https://platform.stratascratch.com/coding/10284-popularity-percentage" target="_blank"><span class="source">StrataScratch</span> Popularity Percentage <span class="difficulty hard">Hard</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.2 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">4.2</span> Hypothesis Testing</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">The framework: (1) Formulate H&#8320; and H&#8321;, (2) Choose &alpha; (usually 0.05), (3) Collect data, (4) Compute test statistic, (5) Compare to critical value or compute p-value, (6) Reject or fail to reject H&#8320;.</p>
+
+      <p class="explain">The <strong>p-value</strong> is the probability of observing data at least as extreme as what you got, <strong>assuming H&#8320; is true</strong>. It does NOT mean the probability that H&#8320; is true.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Error</th><th>Name</th><th>Analogy</th><th>Probability</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Type I</strong></td><td>False Positive</td><td>Convicting an innocent person</td><td>&alpha; (usually 0.05)</td></tr>
+          <tr><td><strong>Type II</strong></td><td>False Negative</td><td>Acquitting a guilty person</td><td>&beta;</td></tr>
+          <tr><td><strong>Power</strong></td><td>Correct Rejection</td><td>Catching the guilty</td><td>1 &minus; &beta; (target &ge; 0.80)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="worked">
+        <div class="worked-title">Worked Example — Testing a New Feature</div>
+        <p>Baseline conversion: 12%. H&#8320;: conversion = 12%. H&#8321;: conversion > 12%. Sample: 2,000 users, observed 13.8%. z = 2.48, p = 0.0066. Since p < 0.05, reject H&#8320; &mdash; the new flow significantly increases conversions.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2025-type-i-vs-type-ii-errors" target="_blank"><span class="source">StrataScratch</span> Type I vs Type II Errors <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2026-p-value-interpretation" target="_blank"><span class="source">StrataScratch</span> P-Value Interpretation <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.3 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">4.3</span> Common Statistical Tests</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <table class="comp-table">
+        <thead><tr><th>Test</th><th>When</th><th>Assumes</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><strong>z-test</strong></td><td>Large n, &sigma; known</td><td>Normality</td><td>Rare in practice</td></tr>
+          <tr><td><strong>t-test</strong></td><td>Unknown &sigma;, any sample size</td><td>Normality</td><td>Comparing two group means</td></tr>
+          <tr><td><strong>Paired t-test</strong></td><td>Same subjects, before/after</td><td>Paired differences normal</td><td>Pre/post treatment</td></tr>
+          <tr><td><strong>Chi-squared</strong></td><td>Two categorical variables</td><td>Expected counts &ge; 5</td><td>Independence testing</td></tr>
+          <tr><td><strong>ANOVA</strong></td><td>3+ groups</td><td>Normality, equal variance</td><td>Comparing multiple group means</td></tr>
+          <tr><td><strong>Mann-Whitney U</strong></td><td>Non-parametric</td><td>&mdash;</td><td>When normality is violated</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>Decision Flowchart:</strong> Is outcome categorical? &rarr; Chi-squared. Continuous with 3+ groups? &rarr; ANOVA. Two groups, paired? &rarr; Paired t-test. Normal? &rarr; Independent t-test. Not normal? &rarr; Mann-Whitney U.</p>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2027-choosing-statistical-tests" target="_blank"><span class="source">StrataScratch</span> Choosing the Right Statistical Test <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2028-chi-squared-test-application" target="_blank"><span class="source">StrataScratch</span> Chi-Squared Test Application <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.4 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">4.4</span> Confidence Intervals</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="code-block"><pre>CI = x&#772; &plusmn; z* &times; (&sigma; / &radic;n)
+
+z* = 1.645 (90%)  |  1.96 (95%)  |  2.576 (99%)</pre></div>
+
+      <p class="explain"><strong>Correct interpretation:</strong> If we repeated the sampling procedure 100 times, approximately 95 of those intervals would contain the true parameter. Confidence is in the <strong>procedure</strong>, not the single interval.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Factor</th><th>Effect on Width</th><th>Can You Control?</th></tr></thead>
+        <tbody>
+          <tr><td>Sample size n</td><td>Larger &rarr; narrower (via &radic;n)</td><td>Yes &mdash; run bigger study</td></tr>
+          <tr><td>Variability &sigma;</td><td>More &rarr; wider</td><td>No (inherent to data)</td></tr>
+          <tr><td>Confidence level</td><td>99% wider than 95%</td><td>Yes (trade-off with precision)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2029-confidence-interval-interpretation" target="_blank"><span class="source">StrataScratch</span> Confidence Interval Interpretation <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2030-sample-size-determination" target="_blank"><span class="source">StrataScratch</span> Sample Size Determination <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.5 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">4.5</span> A/B Testing</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">The full process: (1) Define metric, (2) Power analysis for sample size, (3) Randomize, (4) Run for fixed duration, (5) Analyze, (6) Measure impact.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Pitfall</th><th>What Goes Wrong</th><th>The Fix</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Peeking</strong></td><td>Checking daily inflates FP rate from 5% to ~30%</td><td>Decide duration in advance; use sequential testing</td></tr>
+          <tr><td><strong>Multiple comparisons</strong></td><td>10 metrics &rarr; ~40% chance of spurious significance</td><td>Bonferroni correction: &alpha;/number of tests</td></tr>
+          <tr><td><strong>Novelty effect</strong></td><td>Lift fades as newness wears off</td><td>Run long enough for novelty to fade</td></tr>
+          <tr><td><strong>Simpson's paradox</strong></td><td>Overall positive masks negative in subgroups</td><td>Segment by key dimensions</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The hardest part of A/B testing isn't the statistics &mdash; it's defining the right metric. Spend as much time debating the metric as analyzing results.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2031-ab-test-design" target="_blank"><span class="source">StrataScratch</span> A/B Test Design <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2032-multiple-testing-correction" target="_blank"><span class="source">StrataScratch</span> Multiple Testing Correction <span class="difficulty hard">Hard</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2033-simpsons-paradox" target="_blank"><span class="source">StrataScratch</span> Simpson's Paradox <span class="difficulty hard">Hard</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.6 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">4.6</span> The Central Limit Theorem</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Take <strong>any</strong> population with finite mean &mu; and standard deviation &sigma;. Draw random samples of size n. As n grows, the distribution of sample means approaches a <strong>normal distribution</strong> with mean = &mu; and SE = &sigma; / &radic;n.</p>
+
+      <p class="explain"><strong>The Intuition:</strong> Roll a single die &mdash; uniform distribution. Roll 30 dice and average &mdash; bell curve centered at 3.5. Works for any starting distribution. Rule of thumb: n &ge; 30 is usually sufficient.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The Law of Large Numbers tells us sample means converge to the true mean. The CLT tells us <strong>how</strong> &mdash; normally, with SE = &sigma;/&radic;n. Together, they form the foundation of statistical inference.</p>
+      </div>
+
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice Problems</div>
+        <ul>
+          <li><a href="https://platform.stratascratch.com/technical/2034-central-limit-theorem" target="_blank"><span class="source">StrataScratch</span> Central Limit Theorem Application <span class="difficulty med">Medium</span></a></li>
+          <li><a href="https://platform.stratascratch.com/technical/2035-law-of-large-numbers" target="_blank"><span class="source">StrataScratch</span> Law of Large Numbers vs CLT <span class="difficulty med">Medium</span></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v14 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+function toggle(el){
+  el.classList.toggle('open');
+  const body=el.nextElementSibling;
+  body.classList.toggle('open');
+}
+</script>
+</body>
+</html>
