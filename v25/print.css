@@ -1,0 +1,31 @@
+/* ===== v25 Print Stylesheet ===== */
+@media print {
+  * { box-shadow: none !important; text-shadow: none !important; }
+  body { background: #fff !important; color: #000 !important; font-size: 10pt; line-height: 1.5; }
+  nav, footer, .search-overlay, .stopwatch, .mode-toggle, .cta-wrap, .retake-wrap, .narrative-tabs, .topic-tabs, .company-select, .quick-links, .candidate-options, .reveal-btn, .sandbox-actions, .diag-banner, .focus-zone, button, .icon-btn, .back { display: none !important; }
+  .hero { padding: 10px 0; }
+  .hero .badge { background: #000 !important; color: #fff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .hero h1 span { -webkit-text-fill-color: #000 !important; color: #000 !important; }
+  .section-wrap { padding: 0; max-width: 100%; }
+  .learn-section { break-inside: avoid; border: 1px solid #ccc; margin-bottom: 12px; }
+  .learn-section .ls-body { display: block !important; }
+  .learn-section .ls-header .toggle-icon { display: none; }
+  .review-card { break-inside: avoid; border: 1px solid #ccc; margin-bottom: 8px; }
+  .topic-card { break-inside: avoid; border: 1px solid #ccc; }
+  .grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  pre { background: #f5f5f5 !important; color: #000 !important; border: 1px solid #ccc; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .content-table th { background: #eee !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .insight-box { background: #f5f5f5 !important; border-left: 3px solid #333; }
+  .story-text { background: #f9f9f9 !important; border-left: 3px solid #333; }
+  .bubble { break-inside: avoid; border: 1px solid #ccc; }
+  .bubble.reveal { display: block !important; }
+  .sandbox textarea { display: none; }
+  a { color: #000 !important; text-decoration: none; }
+  a[href]::after { content: " (" attr(href) ")"; font-size: 8pt; color: #666; }
+  nav a[href]::after, .topic-card a[href]::after { content: none; }
+  h1 { font-size: 18pt; }
+  h2 { font-size: 14pt; }
+  h3 { font-size: 12pt; }
+  .skip-link{display:none!important}
+  @page { margin: 1.5cm; }
+}

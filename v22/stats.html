@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics Story — Story + Company | DS Prep v22</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('ds-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')})()</script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v22</a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html" class="active">Stats</a>
+      <a href="probability.html">Prob</a>
+      <a href="casing.html">Case</a>
+    </div>
+    <button class="search-trigger" onclick="openSearch()">&#128269; <kbd>&#8984;K</kbd></button>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--stats-light)">&#128202;</div>
+    <h1>The Statistics Story &mdash; <span>2 Scenes</span></h1>
+  </div>
+  <p class="intro">Hypothesis testing, confidence intervals, A/B testing, and CLT through company narratives.</p>
+</div>
+
+<div class="container">
+
+  <div class="company-tabs">
+    <button class="company-tab active" data-company="meta" onclick="switchCompany('meta')">Meta</button>
+    <button class="company-tab" data-company="google" onclick="switchCompany('google')">Google</button>
+    <button class="company-tab" data-company="amazon" onclick="switchCompany('amazon')">Amazon</button>
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="section" id="scene1">
+    <div class="section-head open" onclick="toggle(this)">
+      <h2><span class="num">Scene 1</span> Hypothesis Testing + Confidence Intervals</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body open">
+
+      <div class="story-text" data-company="meta">The A/B Experiment for a new Facebook onboarding flow is showing a 1.8% lift in conversion. Your PM asks: "Is this real or just noise?" You need to formalize the question as a hypothesis test.</div>
+      <div class="story-text" data-company="google" style="display:none">The Experiment Platform team asks you to validate a new search ranking algorithm. Initial results show a 0.5% improvement in click-through rate. "Run the stats," the tech lead says. "We don't ship unless p < 0.05."</div>
+      <div class="story-text" data-company="amazon" style="display:none">The Prime Experiment team launched a new checkout flow for Prime members. Conversion moved from 68% to 69.2%. "Is that statistically significant with our sample size?" the VP of Product asks.</div>
+
+      <div class="challenge-timer" id="timer1">
+        <span class="timer-label">Scene Timer</span>
+        <span class="timer-display" id="timerDisplay1">00:00</span>
+        <button class="start-btn" onclick="toggleTimer(1)">Start</button>
+        <button class="reset-btn" onclick="resetTimer(1)">Reset</button>
+      </div>
+
+      <p class="explain">The hypothesis testing framework has six steps: (1) Formulate H0 and H1, (2) Choose significance level alpha (usually 0.05), (3) Collect data, (4) Compute test statistic, (5) Compare to critical value or compute p-value, (6) Conclude: reject or fail to reject H0.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Error</th><th>Name</th><th>Analogy</th><th>Probability</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Type I</strong></td><td>False Positive</td><td>Convicting an innocent person</td><td>&alpha; (usually 0.05)</td></tr>
+          <tr><td><strong>Type II</strong></td><td>False Negative</td><td>Acquitting a guilty person</td><td>&beta;</td></tr>
+          <tr><td><strong>Power</strong></td><td>Correct Rejection</td><td>Catching the guilty</td><td>1 &minus; &beta; (target &ge; 0.80)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The p-value is the probability of observing data at least as extreme as yours, <strong>assuming H0 is true</strong>. It does NOT mean the probability that H0 is true. It does NOT mean the probability the result is due to chance.</p>
+      </div>
+
+      <h3 style="margin:24px 0 12px;font-size:1rem;color:var(--heading)">Confidence Intervals</h3>
+
+      <p class="explain">A 95% confidence interval means: if you repeated the experiment many times, 95% of the computed intervals would contain the true parameter. It does NOT mean there's a 95% probability the true value is in this particular interval.</p>
+
+      <p class="explain">Width of a CI depends on: <strong>confidence level</strong> (higher = wider), <strong>sample size</strong> (larger = narrower), and <strong>variability</strong> (more variance = wider). Doubling precision requires quadrupling sample size.</p>
+
+      <div class="practice">
+        <div class="practice-label">Practice Exercise</div>
+        <p>A new feature has baseline conversion 12%. You observe 13.8% in a sample of 2,000 users. Calculate the z-statistic and determine if the result is significant at alpha = 0.05.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="section" id="scene2">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 2</span> A/B Testing + CLT</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="story-text" data-company="meta">Your Facebook experiment shows significance on Day 3, but the experimentation team says "Don't peek!" Why does checking results early inflate your false positive rate? You need to understand the peeking problem and proper A/B methodology.</div>
+      <div class="story-text" data-company="google" style="display:none">Google's experiment platform runs thousands of A/B tests simultaneously. "How do we handle the multiple comparisons problem?" your interviewer asks. "If we test 100 hypotheses, we expect 5 false positives at alpha = 0.05."</div>
+      <div class="story-text" data-company="amazon" style="display:none">The Prime experiment results look great, but the VP asks: "How do we know this isn't just a novelty effect? And what about network effects &mdash; Prime users interact with non-Prime users." Time to think about A/B testing pitfalls.</div>
+
+      <div class="challenge-timer" id="timer2">
+        <span class="timer-label">Scene Timer</span>
+        <span class="timer-display" id="timerDisplay2">00:00</span>
+        <button class="start-btn" onclick="toggleTimer(2)">Start</button>
+        <button class="reset-btn" onclick="resetTimer(2)">Reset</button>
+      </div>
+
+      <table class="comp-table">
+        <thead><tr><th>A/B Testing Pitfall</th><th>Problem</th><th>Solution</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Peeking</strong></td><td>Checking results early inflates false positive rate</td><td>Pre-commit to sample size; use sequential testing</td></tr>
+          <tr><td><strong>Multiple Comparisons</strong></td><td>Testing many metrics inflates Type I error</td><td>Bonferroni correction; designate primary metric</td></tr>
+          <tr><td><strong>Novelty Effect</strong></td><td>Users engage more just because something is new</td><td>Run test long enough for novelty to wear off</td></tr>
+          <tr><td><strong>Network Effects</strong></td><td>Control and treatment users interact</td><td>Cluster randomization (by geography, social graph)</td></tr>
+          <tr><td><strong>Simpson's Paradox</strong></td><td>Trend reverses when data is segmented</td><td>Always segment by key covariates</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin:24px 0 12px;font-size:1rem;color:var(--heading)">Central Limit Theorem</h3>
+
+      <p class="explain">The CLT states that the sampling distribution of the sample mean approaches a normal distribution as sample size increases, <strong>regardless</strong> of the population's shape. This is why we can use z-tests and t-tests even for non-normal data.</p>
+
+      <p class="explain">Standard Error = &sigma; / &radic;n. As n increases, the sampling distribution gets narrower. This is why larger samples give more precise estimates and narrower confidence intervals.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The CLT is the foundation that makes most statistical inference work in practice. Even if individual user session times are heavily right-skewed, the <em>average</em> session time across 10,000 users will be approximately normally distributed.</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-label">Practice Exercise</div>
+        <p>You run an A/B test with 10,000 users per group. Control conversion = 5.0%, treatment = 5.5%. Calculate the standard error for the difference in proportions and the z-statistic.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v22 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="Search topics, sections, companies..." autocomplete="off">
+      <span class="esc-hint">ESC</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="search.js"></script>
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+function toggleTheme(){var d=document.documentElement;if(d.getAttribute('data-theme')==='dark'){d.removeAttribute('data-theme');localStorage.setItem('ds-theme','light')}else{d.setAttribute('data-theme','dark');localStorage.setItem('ds-theme','dark')}}
+function switchCompany(company){document.querySelectorAll('.company-tab').forEach(b=>b.classList.remove('active'));document.querySelector(`.company-tab[data-company="${company}"]`).classList.add('active');document.querySelectorAll('[data-company]').forEach(el=>{if(el.classList.contains('company-tab'))return;el.style.display=el.getAttribute('data-company')===company?'':'none'})}
+
+const timers={};
+function formatTime(ms){const min=Math.floor(ms/60000);const sec=Math.floor((ms%60000)/1000);return String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
+function toggleTimer(n){if(!timers[n])timers[n]={time:0,interval:null,running:false};const t=timers[n];const btn=document.querySelector('#timer'+n+' .start-btn');if(t.running){clearInterval(t.interval);t.running=false;btn.textContent='Resume'}else{t.interval=setInterval(()=>{t.time+=100;document.getElementById('timerDisplay'+n).textContent=formatTime(t.time)},100);t.running=true;btn.textContent='Pause'}}
+function resetTimer(n){if(!timers[n])timers[n]={time:0,interval:null,running:false};clearInterval(timers[n].interval);timers[n]={time:0,interval:null,running:false};document.getElementById('timerDisplay'+n).textContent='00:00';document.querySelector('#timer'+n+' .start-btn').textContent='Start'}
+</script>
+</body>
+</html>

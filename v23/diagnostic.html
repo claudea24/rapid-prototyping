@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnostic Quiz — DS Prep v23</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v23</a>
+  <div class="nav-right">
+    <a href="index.html" class="back">Back</a>
+  </div>
+</nav>
+
+<div class="quiz-container" id="quiz-container">
+  <div class="quiz-progress">
+    <span class="qp-text" id="qp-text">Q 1 / 18</span>
+    <div class="qp-bar"><div class="qp-fill" id="qp-fill" style="width:5.56%"></div></div>
+  </div>
+  <div class="quiz-card" id="quiz-card">
+    <div class="q-topic" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="challenge-timer" id="timer0">
+      <span class="timer-display" id="timerDisplay0">00:00</span>
+      <button class="start-btn" onclick="toggleTimer(0)">Start</button>
+      <button onclick="resetTimer(0)">Reset</button>
+    </div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <button class="quiz-next" id="quiz-next" onclick="nextQuestion()">Next &rarr;</button>
+  </div>
+</div>
+
+<div class="quiz-summary" id="quiz-summary" style="display:none;">
+  <h2>Diagnostic Complete!</h2>
+  <div class="summary-score" id="summary-score">0%</div>
+  <div class="summary-time" id="summary-time"></div>
+  <div class="summary-grid" id="summary-grid"></div>
+  <a href="index.html" class="go-btn">View Dashboard &rarr;</a>
+</div>
+
+<script>
+const QUESTIONS = [
+  // SQL
+  { topic:'sql', topicLabel:'SQL', cls:'ib',
+    text:'What is the correct logical execution order of a SQL query?',
+    options:['SELECT \u2192 FROM \u2192 WHERE \u2192 GROUP BY \u2192 ORDER BY','FROM \u2192 WHERE \u2192 GROUP BY \u2192 HAVING \u2192 SELECT \u2192 ORDER BY \u2192 LIMIT','FROM \u2192 SELECT \u2192 WHERE \u2192 GROUP BY \u2192 ORDER BY','SELECT \u2192 FROM \u2192 GROUP BY \u2192 WHERE \u2192 HAVING'],
+    answer:1 },
+  { topic:'sql', topicLabel:'SQL', cls:'ib',
+    text:'Which JOIN type preserves all rows from the left table even if there is no match?',
+    options:['INNER JOIN','RIGHT JOIN','LEFT JOIN','CROSS JOIN'],
+    answer:2 },
+  { topic:'sql', topicLabel:'SQL', cls:'ib',
+    text:'RANK() vs DENSE_RANK() \u2014 which one skips rank values after ties?',
+    options:['DENSE_RANK()','RANK()','Both skip values','Neither skips values'],
+    answer:1 },
+
+  // Python
+  { topic:'python', topicLabel:'Python', cls:'ip',
+    text:'What is the average time complexity of a membership test (x in s) for a Python set?',
+    options:['O(n)','O(log n)','O(1)','O(n log n)'],
+    answer:2 },
+  { topic:'python', topicLabel:'Python', cls:'ip',
+    text:'What happens when you define def f(x=[])?',
+    options:['A new list is created each call','The default list is shared across calls (mutable default gotcha)','It raises a SyntaxError','x is always None'],
+    answer:1 },
+  { topic:'python', topicLabel:'Python', cls:'ip',
+    text:'In NumPy, what does the @ operator do?',
+    options:['Element-wise multiplication','Matrix multiplication','Array concatenation','Broadcasting'],
+    answer:1 },
+
+  // ML
+  { topic:'ml', topicLabel:'Machine Learning', cls:'im',
+    text:'A model with high bias is likely suffering from:',
+    options:['Overfitting','Underfitting','Data leakage','Class imbalance'],
+    answer:1 },
+  { topic:'ml', topicLabel:'Machine Learning', cls:'im',
+    text:'A fraud detection model achieves 99.5% accuracy. Is this necessarily a good model?',
+    options:['Yes, 99.5% is excellent','No \u2014 class imbalance means accuracy is misleading','Yes, if the dataset is large enough','It depends on the algorithm used'],
+    answer:1 },
+  { topic:'ml', topicLabel:'Machine Learning', cls:'im',
+    text:'What causes data leakage in a machine learning pipeline?',
+    options:['Using too many features','Information from the test set leaking into training','Training for too many epochs','Using regularization'],
+    answer:1 },
+
+  // Stats
+  { topic:'stats', topicLabel:'Statistics', cls:'is',
+    text:'A p-value represents the probability of\u2026',
+    options:['The hypothesis being true','The data being correct','Observing data this extreme, given that H\u2080 is true','The experiment being valid'],
+    answer:2 },
+  { topic:'stats', topicLabel:'Statistics', cls:'is',
+    text:'Peeking at an A/B test daily (checking results repeatedly) does what to the false positive rate?',
+    options:['Keeps it at 5%','Reduces it','Inflates it (potentially to ~30% or more)','Has no effect'],
+    answer:2 },
+  { topic:'stats', topicLabel:'Statistics', cls:'is',
+    text:'A 95% confidence interval means\u2026',
+    options:['There is a 95% chance the true value is in this specific interval','95% of similarly constructed intervals would contain the true value','The result is 95% accurate','We are 95% sure our data is correct'],
+    answer:1 },
+
+  // Probability
+  { topic:'probability', topicLabel:'Probability', cls:'ir',
+    text:'A test is 99% accurate. Disease prevalence is 1%. You test positive. What is P(disease | positive)?',
+    options:['99%','About 50%','About 1%','About 90%'],
+    answer:1 },
+  { topic:'probability', topicLabel:'Probability', cls:'ir',
+    text:'In the Monty Hall problem, should you switch or stay?',
+    options:['Stay \u2014 1/2 chance either way','Switch \u2014 2/3 chance of winning','It does not matter','Stay \u2014 2/3 chance of winning'],
+    answer:1 },
+  { topic:'probability', topicLabel:'Probability', cls:'ir',
+    text:'What is the expected value of a single roll of a fair six-sided die?',
+    options:['3','3.5','4','3.67'],
+    answer:1 },
+
+  // Casing
+  { topic:'casing', topicLabel:'Case Studies', cls:'ic',
+    text:'In the AARRR pirate metrics framework, what does AARRR stand for?',
+    options:['Awareness, Action, Retention, Revenue, Referral','Acquisition, Activation, Retention, Revenue, Referral','Acquisition, Analysis, Retention, Revenue, Reach','Awareness, Activation, Reach, Revenue, Referral'],
+    answer:1 },
+  { topic:'casing', topicLabel:'Case Studies', cls:'ic',
+    text:'A key product metric suddenly drops 15%. What should be your FIRST step?',
+    options:['Launch an A/B test to fix it','Check if it is a data or instrumentation problem','Redesign the feature','Alert the executive team'],
+    answer:1 },
+  { topic:'casing', topicLabel:'Case Studies', cls:'ic',
+    text:'What is commonly considered the North Star metric for Airbnb?',
+    options:['Monthly active users','Revenue per user','Nights booked','Number of listings'],
+    answer:2 }
+];
+
+let current = 0;
+let answered = false;
+const scores = { sql:0, python:0, ml:0, stats:0, probability:0, casing:0 };
+const answers = [];
+const questionTimes = [];
+
+// Stopwatch
+const timers = {};
+function formatTime(ms) {
+  const min = Math.floor(ms / 60000);
+  const sec = Math.floor((ms % 60000) / 1000);
+  return String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+}
+function toggleTimer(n) {
+  if (!timers[n]) timers[n] = { time: 0, interval: null, running: false };
+  const t = timers[n];
+  const btn = document.querySelector('#timer' + n + ' .start-btn');
+  if (t.running) {
+    clearInterval(t.interval); t.running = false; btn.textContent = 'Resume'; btn.classList.remove('running');
+  } else {
+    t.interval = setInterval(function() { t.time += 100; document.getElementById('timerDisplay' + n).textContent = formatTime(t.time); }, 100);
+    t.running = true; btn.textContent = 'Pause'; btn.classList.add('running');
+  }
+}
+function resetTimer(n) {
+  if (!timers[n]) timers[n] = { time: 0, interval: null, running: false };
+  clearInterval(timers[n].interval);
+  timers[n] = { time: 0, interval: null, running: false };
+  document.getElementById('timerDisplay' + n).textContent = '00:00';
+  var btn = document.querySelector('#timer' + n + ' .start-btn');
+  btn.textContent = 'Start'; btn.classList.remove('running');
+}
+function pauseTimer(n) {
+  if (!timers[n] || !timers[n].running) return;
+  clearInterval(timers[n].interval);
+  timers[n].running = false;
+  var btn = document.querySelector('#timer' + n + ' .start-btn');
+  btn.textContent = 'Resume'; btn.classList.remove('running');
+}
+function getTimerValue(n) {
+  return timers[n] ? timers[n].time : 0;
+}
+
+function renderQuestion() {
+  var q = QUESTIONS[current];
+  document.getElementById('qp-text').textContent = 'Q ' + (current+1) + ' / 18';
+  document.getElementById('qp-fill').style.width = ((current+1)/18*100) + '%';
+  document.getElementById('q-topic').className = 'q-topic ' + q.cls;
+  document.getElementById('q-topic').textContent = q.topicLabel;
+  document.getElementById('q-text').textContent = q.text;
+
+  // Reset timer for this question
+  resetTimer(0);
+
+  var opts = document.getElementById('quiz-options');
+  opts.innerHTML = '';
+  var letters = ['A','B','C','D'];
+  q.options.forEach(function(opt, i) {
+    var div = document.createElement('div');
+    div.className = 'quiz-option';
+    div.innerHTML = '<div class="opt-letter">' + letters[i] + '</div><span>' + opt + '</span>';
+    div.onclick = function() { selectOption(i); };
+    opts.appendChild(div);
+  });
+
+  document.getElementById('quiz-next').classList.remove('show');
+  answered = false;
+}
+
+function selectOption(idx) {
+  if (answered) return;
+  answered = true;
+  var q = QUESTIONS[current];
+  var opts = document.querySelectorAll('.quiz-option');
+
+  // Auto-pause stopwatch
+  pauseTimer(0);
+  var timeSpent = getTimerValue(0);
+  questionTimes.push(timeSpent);
+
+  opts.forEach(function(el, i) {
+    if (i === q.answer) el.classList.add('correct');
+    else if (i === idx && idx !== q.answer) el.classList.add('wrong');
+    el.style.pointerEvents = 'none';
+  });
+
+  if (idx === q.answer) scores[q.topic]++;
+  answers.push({ topic:q.topic, question:current, correct: idx === q.answer, time: timeSpent });
+
+  var nextBtn = document.getElementById('quiz-next');
+  nextBtn.textContent = current < 17 ? 'Next \u2192' : 'See Results';
+  nextBtn.classList.add('show');
+}
+
+function nextQuestion() {
+  if (current >= 17) {
+    // Save to localStorage
+    localStorage.setItem('ds-v23-diagnostic', JSON.stringify({
+      scores: scores,
+      answers: answers,
+      questionTimes: questionTimes,
+      timestamp: Date.now()
+    }));
+    showSummary();
+    return;
+  }
+  current++;
+  renderQuestion();
+}
+
+function showSummary() {
+  document.getElementById('quiz-container').style.display = 'none';
+  document.getElementById('quiz-summary').style.display = '';
+
+  var totalCorrect = Object.values(scores).reduce(function(a,b){return a+b;}, 0);
+  var pct = Math.round((totalCorrect / 18) * 100);
+  document.getElementById('summary-score').textContent = pct + '% (' + totalCorrect + '/18)';
+
+  // Average time per question
+  var totalTime = questionTimes.reduce(function(a,b){return a+b;}, 0);
+  var avgTime = questionTimes.length > 0 ? totalTime / questionTimes.length : 0;
+  document.getElementById('summary-time').textContent = 'Avg time per question: ' + formatTime(avgTime);
+
+  var topicNames = { sql:'SQL', python:'Python', ml:'Machine Learning', stats:'Statistics', probability:'Probability', casing:'Case Studies' };
+  var grid = document.getElementById('summary-grid');
+  grid.innerHTML = '';
+  Object.keys(scores).forEach(function(key) {
+    var div = document.createElement('div');
+    div.className = 'summary-topic';
+    div.innerHTML = '<span class="st-score">' + scores[key] + '/3</span><span class="st-name">' + topicNames[key] + '</span>';
+    grid.appendChild(div);
+  });
+}
+
+renderQuestion();
+</script>
+</body>
+</html>

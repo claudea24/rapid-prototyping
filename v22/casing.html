@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies Story — Story + Company | DS Prep v22</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('ds-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')})()</script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v22</a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Prob</a>
+      <a href="casing.html" class="active">Case</a>
+    </div>
+    <button class="search-trigger" onclick="openSearch()">&#128269; <kbd>&#8984;K</kbd></button>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--case-light)">&#128161;</div>
+    <h1>The Case Studies Story &mdash; <span>2 Scenes</span></h1>
+  </div>
+  <p class="intro">AARRR metrics, metric diagnosis, market sizing, and communication through company narratives.</p>
+</div>
+
+<div class="container">
+
+  <div class="company-tabs">
+    <button class="company-tab active" data-company="meta" onclick="switchCompany('meta')">Meta</button>
+    <button class="company-tab" data-company="google" onclick="switchCompany('google')">Google</button>
+    <button class="company-tab" data-company="amazon" onclick="switchCompany('amazon')">Amazon</button>
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="section" id="scene1">
+    <div class="section-head open" onclick="toggle(this)">
+      <h2><span class="num">Scene 1</span> AARRR + Metric Diagnosis</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body open">
+
+      <div class="story-text" data-company="meta">The Product Review at Meta: "Facebook Groups DAU dropped 15% last week. Walk me through how you'd investigate." Your interviewer wants you to use the AARRR framework to structure your analysis before touching any data.</div>
+      <div class="story-text" data-company="google" style="display:none">The Growth Case at Google: "YouTube Shorts engagement is flat despite a 20% increase in content creators. Diagnose the problem." You need to decompose the metric using the pirate framework and segment methodically.</div>
+      <div class="story-text" data-company="amazon" style="display:none">The Metrics Review at Amazon: "Prime Video watch time dropped 8% month-over-month. The content library grew. What's going on?" Your interviewer expects structured thinking, not guessing.</div>
+
+      <div class="challenge-timer" id="timer1">
+        <span class="timer-label">Scene Timer</span>
+        <span class="timer-display" id="timerDisplay1">00:00</span>
+        <button class="start-btn" onclick="toggleTimer(1)">Start</button>
+        <button class="reset-btn" onclick="resetTimer(1)">Reset</button>
+      </div>
+
+      <table class="comp-table">
+        <thead><tr><th>Stage</th><th>Definition</th><th>Example Metrics</th><th>Why It Matters</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Acquisition</strong></td><td>How users discover product</td><td>Sign-ups, CPA, channel split</td><td>Can't grow without awareness</td></tr>
+          <tr><td><strong>Activation</strong></td><td>First core value experience</td><td>Onboarding %, time to first action</td><td>Multiplies acquisition value</td></tr>
+          <tr><td><strong>Retention</strong></td><td>Do users come back?</td><td>D1/D7/D30, churn, cohort curves</td><td>Most important; compounds</td></tr>
+          <tr><td><strong>Revenue</strong></td><td>How product makes money</td><td>ARPU, LTV, conversion, MRR</td><td>Validates business model</td></tr>
+          <tr><td><strong>Referral</strong></td><td>Do users bring others?</td><td>NPS, viral coefficient</td><td>Free, pre-qualified acquisition</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin:24px 0 12px;font-size:1rem;color:var(--heading)">Diagnosing Metric Changes: The 6-Step Framework</h3>
+
+      <p class="explain"><strong>1. Clarify</strong> &mdash; Restate the problem. Which product? Which platform? What time window?<br>
+      <strong>2. Define Metrics</strong> &mdash; Primary metric + guardrail metrics.<br>
+      <strong>3. Hypothesize</strong> &mdash; State hypotheses before touching data.<br>
+      <strong>4. Analyze</strong> &mdash; Segment by platform, cohort, geography, time.<br>
+      <strong>5. Recommend</strong> &mdash; Concrete action + expected impact estimate.<br>
+      <strong>6. Measure</strong> &mdash; How will you validate? What experiment?</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Always check "is it a data problem?" first. Did a schema migration break tracking? Is there a processing delay? Data problems are embarrassingly common &mdash; rule them out before investigating product changes.</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-label">Practice Exercise</div>
+        <p>"Your app's DAU dropped 10% last Tuesday." Walk through the 6-step framework. List 3 specific hypotheses and describe how you'd validate each one.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="section" id="scene2">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 2</span> Market Sizing + Communication</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="story-text" data-company="meta">Your Meta interviewer asks: "How many Instagram Reels are uploaded per day in the US?" Then: "Now present your findings to a VP who has 2 minutes. What do you say first?" This tests both estimation and communication.</div>
+      <div class="story-text" data-company="google" style="display:none">Your Google growth case: "How many piano tuners are there in Chicago?" The classic Fermi estimation. Then: "The VP of Search wants to know if we should launch a piano-tuning marketplace. Make your case in 60 seconds."</div>
+      <div class="story-text" data-company="amazon" style="display:none">Your Amazon metrics review: "How many packages does Amazon deliver per day in the US?" Then: "The SVP asks why last-mile delivery costs went up 5%. Structure your answer using the pyramid principle."</div>
+
+      <div class="challenge-timer" id="timer2">
+        <span class="timer-label">Scene Timer</span>
+        <span class="timer-display" id="timerDisplay2">00:00</span>
+        <button class="start-btn" onclick="toggleTimer(2)">Start</button>
+        <button class="reset-btn" onclick="resetTimer(2)">Reset</button>
+      </div>
+
+      <h3 style="margin:0 0 12px;font-size:1rem;color:var(--heading)">Market Sizing: Two Approaches</h3>
+
+      <table class="comp-table">
+        <thead><tr><th>Approach</th><th>Method</th><th>Best For</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Top-Down</strong></td><td>Start from total market, narrow by percentages</td><td>Broad markets with known population data</td></tr>
+          <tr><td><strong>Bottom-Up</strong></td><td>Start from a unit and multiply up</td><td>Specific products, local markets</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>Example (bottom-up):</strong> Piano tuners in Chicago. ~2.5M households. ~5% have pianos = 125K pianos. Each tuned ~once/year = 125K tunings/year. Each tuning takes ~2 hours + travel = 4 tunings/day per tuner. 250 working days = 1,000 tunings/tuner/year. Answer: 125K / 1,000 = ~125 piano tuners.</p>
+
+      <h3 style="margin:24px 0 12px;font-size:1rem;color:var(--heading)">Communicating Your Analysis</h3>
+
+      <p class="explain"><strong>The Pyramid Principle:</strong> Lead with the answer, then provide supporting evidence. Executives want the conclusion first, details second. Structure: (1) Bottom line, (2) 2&ndash;3 supporting points, (3) Data if asked.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Principle</th><th>What It Means</th><th>Example</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Lead with the answer</strong></td><td>State your conclusion first</td><td>"The drop is caused by an iOS crash bug."</td></tr>
+          <tr><td><strong>Quantify everything</strong></td><td>Attach numbers to claims</td><td>"Affecting 22% of iOS users since Tuesday."</td></tr>
+          <tr><td><strong>Present trade-offs</strong></td><td>Show you considered alternatives</td><td>"Hotfix costs 2 eng-days; waiting costs $50K/day."</td></tr>
+          <tr><td><strong>Close with next steps</strong></td><td>End with a clear recommendation</td><td>"I recommend the hotfix. I'll track recovery daily."</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>In market sizing, being within 2&ndash;5x of the actual answer is "correct." The interviewer cares about your approach: did you structure it clearly? Did you state and sanity-check your assumptions? Did you arrive at a reasonable number?</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-label">Practice Exercise</div>
+        <p>Estimate the number of Uber rides per day in New York City using a bottom-up approach. State your assumptions clearly and sanity-check the final number.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v22 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="Search topics, sections, companies..." autocomplete="off">
+      <span class="esc-hint">ESC</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="search.js"></script>
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+function toggleTheme(){var d=document.documentElement;if(d.getAttribute('data-theme')==='dark'){d.removeAttribute('data-theme');localStorage.setItem('ds-theme','light')}else{d.setAttribute('data-theme','dark');localStorage.setItem('ds-theme','dark')}}
+function switchCompany(company){document.querySelectorAll('.company-tab').forEach(b=>b.classList.remove('active'));document.querySelector(`.company-tab[data-company="${company}"]`).classList.add('active');document.querySelectorAll('[data-company]').forEach(el=>{if(el.classList.contains('company-tab'))return;el.style.display=el.getAttribute('data-company')===company?'':'none'})}
+
+const timers={};
+function formatTime(ms){const min=Math.floor(ms/60000);const sec=Math.floor((ms%60000)/1000);return String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
+function toggleTimer(n){if(!timers[n])timers[n]={time:0,interval:null,running:false};const t=timers[n];const btn=document.querySelector('#timer'+n+' .start-btn');if(t.running){clearInterval(t.interval);t.running=false;btn.textContent='Resume'}else{t.interval=setInterval(()=>{t.time+=100;document.getElementById('timerDisplay'+n).textContent=formatTime(t.time)},100);t.running=true;btn.textContent='Pause'}}
+function resetTimer(n){if(!timers[n])timers[n]={time:0,interval:null,running:false};clearInterval(timers[n].interval);timers[n]={time:0,interval:null,running:false};document.getElementById('timerDisplay'+n).textContent='00:00';document.querySelector('#timer'+n+' .start-btn').textContent='Start'}
+</script>
+</body>
+</html>

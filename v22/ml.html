@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML Story — Story + Company | DS Prep v22</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('ds-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')})()</script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v22</a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html">Python</a>
+      <a href="ml.html" class="active">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Prob</a>
+      <a href="casing.html">Case</a>
+    </div>
+    <button class="search-trigger" onclick="openSearch()">&#128269; <kbd>&#8984;K</kbd></button>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--ml-light)">&#129302;</div>
+    <h1>The ML Story &mdash; <span>2 Scenes</span></h1>
+  </div>
+  <p class="intro">Algorithms, evaluation, bias-variance, and feature engineering through company narratives.</p>
+</div>
+
+<div class="container">
+
+  <div class="company-tabs">
+    <button class="company-tab active" data-company="meta" onclick="switchCompany('meta')">Meta</button>
+    <button class="company-tab" data-company="google" onclick="switchCompany('google')">Google</button>
+    <button class="company-tab" data-company="amazon" onclick="switchCompany('amazon')">Amazon</button>
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="section" id="scene1">
+    <div class="section-head open" onclick="toggle(this)">
+      <h2><span class="num">Scene 1</span> Algorithms + Evaluation</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body open">
+
+      <div class="story-text" data-company="meta">The Engagement Model for Instagram stories is underperforming. The team tried logistic regression but it's too simple &mdash; the relationship is clearly nonlinear. Your interviewer asks: "Walk me through the algorithm options and how you'd evaluate them."</div>
+      <div class="story-text" data-company="google" style="display:none">The Spam Classifier for Gmail is flagging legitimate emails. The current model optimizes for accuracy, but with 99.5% non-spam, that metric is meaningless. Your interviewer asks: "What algorithm would you choose and which metric actually matters?"</div>
+      <div class="story-text" data-company="amazon" style="display:none">The Recommendation Engine's click-through rate has plateaued. The current random forest was never tuned. Your interviewer asks: "How would you compare algorithms and what metrics would you track?"</div>
+
+      <div class="challenge-timer" id="timer1">
+        <span class="timer-label">Scene Timer</span>
+        <span class="timer-display" id="timerDisplay1">00:00</span>
+        <button class="start-btn" onclick="toggleTimer(1)">Start</button>
+        <button class="reset-btn" onclick="resetTimer(1)">Reset</button>
+      </div>
+
+      <table class="comp-table">
+        <thead><tr><th>Algorithm</th><th>Strengths</th><th>Weaknesses</th><th>When to Use</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Linear Regression</strong></td><td>Interpretable, fast</td><td>Assumes linearity, sensitive to outliers</td><td>Baseline; interpretability paramount</td></tr>
+          <tr><td><strong>Logistic Regression</strong></td><td>Probabilistic output, interpretable</td><td>Linear decision boundary only</td><td>Binary classification with explainability</td></tr>
+          <tr><td><strong>Decision Tree</strong></td><td>Nonlinear, no scaling needed</td><td>High variance, overfitting</td><td>Quick exploration, visual decision paths</td></tr>
+          <tr><td><strong>Random Forest</strong></td><td>Low variance, robust</td><td>Less interpretable, slower</td><td>General-purpose accuracy</td></tr>
+          <tr><td><strong>Gradient Boosting</strong></td><td>State-of-the-art on tabular data</td><td>Overfitting risk, slow</td><td>When accuracy is king</td></tr>
+          <tr><td><strong>KNN</strong></td><td>No training, complex boundaries</td><td>Slow inference, curse of dimensionality</td><td>Small datasets, prototyping</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin:24px 0 12px;font-size:1rem;color:var(--heading)">Evaluation Metrics</h3>
+
+      <table class="comp-table">
+        <thead><tr><th>Metric</th><th>Formula Idea</th><th>Fails When</th><th>Use When</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Accuracy</strong></td><td>(TP+TN) / total</td><td>Imbalanced classes</td><td>Balanced datasets</td></tr>
+          <tr><td><strong>Precision</strong></td><td>TP / (TP+FP)</td><td>&mdash;</td><td>Cost of FP is high (spam filter)</td></tr>
+          <tr><td><strong>Recall</strong></td><td>TP / (TP+FN)</td><td>&mdash;</td><td>Cost of FN is high (disease detection)</td></tr>
+          <tr><td><strong>F1 Score</strong></td><td>Harmonic mean of P &amp; R</td><td>&mdash;</td><td>Balance precision and recall</td></tr>
+          <tr><td><strong>AUC-ROC</strong></td><td>Area under TPR vs FPR curve</td><td>&mdash;</td><td>Threshold-independent comparison</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Accuracy is dangerously misleading with imbalanced data. A fraud detector predicting "not fraud" for everything achieves 99.5% accuracy but catches zero fraud. Always ask: what is the cost of false positives vs. false negatives?</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-label">Practice Exercise</div>
+        <p>Your model has precision = 0.95 and recall = 0.60. Compute the F1 score. Then explain: would you prioritize improving precision or recall for a phishing email detector?</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="section" id="scene2">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 2</span> Bias-Variance + Feature Engineering</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="story-text" data-company="meta">Your engagement model's training accuracy is 98% but test accuracy is 72%. Classic overfitting. The interviewer asks: "Explain the bias-variance tradeoff and how you'd fix this."</div>
+      <div class="story-text" data-company="google" style="display:none">The spam classifier performs perfectly on training data but poorly on new emails. Your Google interviewer asks: "What's happening here? Walk me through bias, variance, and your feature engineering approach."</div>
+      <div class="story-text" data-company="amazon" style="display:none">The recommendation engine's accuracy varies wildly across product categories. Some categories overfit, others underfit. "How do you diagnose and fix this?" the Amazon interviewer asks.</div>
+
+      <div class="challenge-timer" id="timer2">
+        <span class="timer-label">Scene Timer</span>
+        <span class="timer-display" id="timerDisplay2">00:00</span>
+        <button class="start-btn" onclick="toggleTimer(2)">Start</button>
+        <button class="reset-btn" onclick="resetTimer(2)">Reset</button>
+      </div>
+
+      <p class="explain"><strong>Bias</strong> is the error from overly simplistic assumptions &mdash; the model can't capture the true pattern (underfitting). <strong>Variance</strong> is the error from sensitivity to training data fluctuations &mdash; the model memorizes noise (overfitting). The goal is finding the sweet spot.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Problem</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td><strong>High Bias</strong> (underfitting)</td><td>Both train and test error are high</td><td>More complex model, more features, less regularization</td></tr>
+          <tr><td><strong>High Variance</strong> (overfitting)</td><td>Low train error, high test error</td><td>More data, regularization (L1/L2), simpler model, dropout</td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="margin:24px 0 12px;font-size:1rem;color:var(--heading)">Feature Engineering</h3>
+
+      <table class="comp-table">
+        <thead><tr><th>Technique</th><th>What It Does</th><th>When to Use</th></tr></thead>
+        <tbody>
+          <tr><td><strong>One-Hot Encoding</strong></td><td>Converts categories to binary columns</td><td>Nominal categories, low cardinality</td></tr>
+          <tr><td><strong>Standard Scaling</strong></td><td>Zero mean, unit variance</td><td>Distance-based models (KNN, SVM)</td></tr>
+          <tr><td><strong>Log Transform</strong></td><td>Compresses right-skewed distributions</td><td>Revenue, prices, counts</td></tr>
+          <tr><td><strong>Target Encoding</strong></td><td>Replaces category with mean of target</td><td>High-cardinality categories</td></tr>
+          <tr><td><strong>Interaction Features</strong></td><td>Multiplies/combines features</td><td>When relationships are multiplicative</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Regularization adds a penalty for complexity: <strong>L1 (Lasso)</strong> drives some coefficients to exactly zero (feature selection), while <strong>L2 (Ridge)</strong> shrinks all coefficients toward zero (smooth, stable). Use L1 when you suspect many features are irrelevant; L2 when all features matter but need dampening.</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-label">Practice Exercise</div>
+        <p>You have a feature "city" with 500 unique values. Explain why one-hot encoding would be problematic and propose two alternatives.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v22 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="Search topics, sections, companies..." autocomplete="off">
+      <span class="esc-hint">ESC</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="search.js"></script>
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+function toggleTheme(){var d=document.documentElement;if(d.getAttribute('data-theme')==='dark'){d.removeAttribute('data-theme');localStorage.setItem('ds-theme','light')}else{d.setAttribute('data-theme','dark');localStorage.setItem('ds-theme','dark')}}
+function switchCompany(company){document.querySelectorAll('.company-tab').forEach(b=>b.classList.remove('active'));document.querySelector(`.company-tab[data-company="${company}"]`).classList.add('active');document.querySelectorAll('[data-company]').forEach(el=>{if(el.classList.contains('company-tab'))return;el.style.display=el.getAttribute('data-company')===company?'':'none'})}
+
+const timers={};
+function formatTime(ms){const min=Math.floor(ms/60000);const sec=Math.floor((ms%60000)/1000);return String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
+function toggleTimer(n){if(!timers[n])timers[n]={time:0,interval:null,running:false};const t=timers[n];const btn=document.querySelector('#timer'+n+' .start-btn');if(t.running){clearInterval(t.interval);t.running=false;btn.textContent='Resume'}else{t.interval=setInterval(()=>{t.time+=100;document.getElementById('timerDisplay'+n).textContent=formatTime(t.time)},100);t.running=true;btn.textContent='Pause'}}
+function resetTimer(n){if(!timers[n])timers[n]={time:0,interval:null,running:false};clearInterval(timers[n].interval);timers[n]={time:0,interval:null,running:false};document.getElementById('timerDisplay'+n).textContent='00:00';document.querySelector('#timer'+n+' .start-btn').textContent='Start'}
+</script>
+</body>
+</html>

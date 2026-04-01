@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Data Science Interview Prep — master SQL, Python, ML, Statistics, Probability, and Case Studies with narrative scenarios, coding playground, mock interviews, and personalized diagnostics.">
+  <meta property="og:title" content="DS Interview Prep — Launch Ready">
+  <meta property="og:description" content="25 iterations of prototyping the ultimate data science interview prep tool.">
+  <meta property="og:image" content="og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+  <title>Mock Interview — DS Prep v25</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      document.body&&document.body.classList.add('no-fouc');
+      var t=localStorage.getItem('ds-v25-theme');
+      if(t==='dark')document.documentElement.setAttribute('data-theme','dark');
+    })();
+  </script>
+</head>
+<body class="no-fouc">
+<a href="#main" class="skip-link">Skip to content</a>
+<nav role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v25</a>
+  <button class="icon-btn" id="search-trigger" title="Search (Cmd+K)" aria-label="Search">&#128269;</button>
+  <button class="icon-btn" id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark/light theme">&#9790;</button>
+  <button class="icon-btn" onclick="window.print()" title="Print" aria-label="Print cheat sheet">&#128424;</button>
+  <a href="index.html" class="back">&larr; Dashboard</a>
+</nav>
+
+<div class="hero" id="main">
+  <div class="badge">Mock Interview</div>
+  <h1>Practice With <span>Real Questions</span></h1>
+  <p>18 questions across 6 topics. Conversational format with model answers.</p>
+</div>
+
+<div class="section-wrap">
+  <div class="topic-tabs" id="topic-tabs">
+    <button class="active" data-tab="sql">SQL</button>
+    <button data-tab="python">Python</button>
+    <button data-tab="ml">ML</button>
+    <button data-tab="stats">Stats</button>
+    <button data-tab="probability">Probability</button>
+    <button data-tab="casing">Casing</button>
+  </div>
+  <div id="interview-content"></div>
+</div>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="Search topics, questions... (Cmd+K)">
+    <div class="search-results"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v25 &middot; <a href="index.html">Dashboard</a></p>
+</footer>
+
+<script src="search.js"></script>
+<script>
+const MOCK = {
+  sql: [
+    { q:'Walk me through the logical execution order of a SQL query.',
+      companies:['meta','google','amazon'],
+      options:['SELECT, FROM, WHERE, GROUP BY','FROM, WHERE, GROUP BY, HAVING, SELECT, ORDER BY, LIMIT','FROM, SELECT, WHERE, ORDER BY'],
+      followUp:'Why can\'t you use a SELECT alias in the WHERE clause?',
+      answer:'The engine processes FROM first (identify tables), then WHERE (filter rows), GROUP BY (collapse groups), HAVING (filter groups), SELECT (compute expressions/aliases), ORDER BY, and LIMIT. You cannot reference a SELECT alias in WHERE because WHERE runs before SELECT evaluates the alias. Use HAVING for post-aggregation filters or wrap in a CTE.' },
+    { q:'Explain the difference between ROW_NUMBER, RANK, and DENSE_RANK.',
+      companies:['meta','google'],
+      options:['They are identical','ROW_NUMBER is unique; RANK has gaps; DENSE_RANK has no gaps','Only RANK works with PARTITION BY'],
+      followUp:'When would you choose ROW_NUMBER over DENSE_RANK?',
+      answer:'ROW_NUMBER assigns unique sequential integers (breaks ties arbitrarily) - use for deduplication or top-1-per-group. RANK gives tied rows the same value but skips subsequent ranks (1,1,3). DENSE_RANK gives ties the same value with no gaps (1,1,2). Choose ROW_NUMBER when you need exactly one row per partition; DENSE_RANK when you want consecutive ranking labels.' },
+    { q:'You have a query running slowly on a 100M row table. How do you optimize it?',
+      companies:['amazon','google'],
+      options:['Add SELECT *','Add indexes on filter/join columns and use EXPLAIN','Use more subqueries'],
+      followUp:'What does EXPLAIN ANALYZE show you?',
+      answer:'First, run EXPLAIN ANALYZE to see the query plan. Look for full table scans on large tables - add indexes on columns used in WHERE and JOIN. Replace SELECT * with specific columns. Push filters as early as possible (before joins). Prefer EXISTS over IN for large subqueries. For very large tables, consider partitioning. The goal: reduce the data the engine reads at each step.' }
+  ],
+  python: [
+    { q:'Compare Python lists, dicts, and sets. When would you use each?',
+      companies:['meta','google','amazon'],
+      options:['Always use lists','Lists for ordered data; dicts for key-value; sets for membership/dedup','Dicts are slower than lists for everything'],
+      followUp:'How does this choice affect Big-O complexity?',
+      answer:'Lists: ordered, O(1) index access, O(n) search. Use for sequences where order matters. Dicts: O(1) avg lookup/insert via hashing. Use for key-value mapping, counting, caching. Sets: O(1) avg membership test. Use for dedup, intersection, checking "have I seen this?" Choosing set over list for membership checks turns O(n) into O(1).' },
+    { q:'Solve Two Sum: given an array and target, return indices of two numbers that sum to target.',
+      companies:['meta','google','amazon'],
+      options:['Nested loops O(n^2)','Hash map: store complement, single pass O(n)','Sort and binary search O(n log n)'],
+      followUp:'Walk me through the hash map approach step by step.',
+      answer:'Create an empty dict (seen). For each element at index i, compute complement = target - nums[i]. If complement is in seen, return [seen[complement], i]. Otherwise, store seen[nums[i]] = i. Single pass, O(n) time, O(n) space. The key insight: replace the inner search loop with a dictionary lookup.' },
+    { q:'What happens with mutable default arguments in Python?',
+      companies:['meta','google'],
+      options:['A new list is created each call','The default is shared across all calls','Python raises an error'],
+      followUp:'How do you fix this pattern?',
+      answer:'Default values are evaluated once at function definition, not each call. A mutable default (like a list) is shared across all calls - items accumulate. Fix: use None as sentinel, then create a new list inside the function body: def f(x, lst=None): if lst is None: lst = []; lst.append(x); return lst.' }
+  ],
+  ml: [
+    { q:'You are building a prediction model for tabular data. Walk me through your model selection process.',
+      companies:['meta','amazon','google'],
+      options:['Always use deep learning','Start simple (logistic/linear), then tree ensembles, evaluate with CV','Pick the most complex model'],
+      followUp:'Why start with a simple model?',
+      answer:'Start with a baseline (logistic regression / linear). It is fast, interpretable, and sets a performance floor. Then try Random Forest (robust, handles nonlinearity, little tuning). Then gradient boosting (XGBoost/LightGBM) for maximum accuracy. Always evaluate with cross-validation. The simple model often wins on interpretability and may be "good enough." Feature engineering often matters more than model complexity.' },
+    { q:'Explain precision vs recall. When would you prioritize each?',
+      companies:['meta','google','amazon'],
+      options:['They measure the same thing','Precision = of flagged, how many correct. Recall = of actual positives, how many caught.','Precision is always more important'],
+      followUp:'Give a real example where you would sacrifice precision for recall.',
+      answer:'Precision = TP/(TP+FP): "of everything I flagged, how much is correct?" Recall = TP/(TP+FN): "of all actual positives, how many did I catch?" Prioritize precision when FP is costly (spam filter - don\'t block real email). Prioritize recall when FN is costly (cancer screening - don\'t miss a case). F1 balances both. A fraud model predicting "no fraud" always has 99.5% accuracy but 0% recall.' },
+    { q:'What is data leakage and how do you prevent it?',
+      companies:['amazon','google'],
+      options:['When data is lost','When information from the future or test set leaks into training','When the database has a memory leak'],
+      followUp:'Give an example of feature leakage vs. train-test leakage.',
+      answer:'Data leakage: the model sees information it would not have at prediction time. Two types: (1) Feature leakage - a feature encodes the target (e.g., "treatment_outcome" to predict disease). (2) Train-test leakage - preprocessing (scaling, imputation) fitted on full data before splitting. Prevention: always fit transformers inside CV folds using Pipelines. Ask for every feature: "Would I have this at prediction time?" If too-good-to-be-true, suspect leakage.' }
+  ],
+  stats: [
+    { q:'Explain what a p-value actually means. What does it NOT mean?',
+      companies:['meta','google','amazon'],
+      options:['Probability that H0 is true','Probability of data this extreme assuming H0 is true','Probability the result is real'],
+      followUp:'If p = 0.03, can you say there is a 3% chance the null is true?',
+      answer:'The p-value is P(data this extreme | H0 is true). It is NOT P(H0 is true | data). It is NOT the probability the result is "due to chance." A p-value of 0.03 means: IF there were truly no effect, we would see results this extreme only 3% of the time. To get P(H0|data) you would need Bayes theorem with a prior on H0 - frequentist statistics does not provide this.' },
+    { q:'Design an A/B test for a new checkout flow. Walk me through the full process.',
+      companies:['meta','amazon','google'],
+      options:['Just ship it and see what happens','Define metric, power analysis, randomize, run fixed duration, analyze','Test on 10 users for a day'],
+      followUp:'What are the key pitfalls?',
+      answer:'1) Define primary metric (checkout completion rate) and guardrails (AOV, return rate). 2) Power analysis: current 65%, want to detect 2pp lift, alpha=0.05, power=0.80 - need ~4400/arm. 3) User-level randomization. 4) Run 2+ weeks (no peeking). 5) Analyze with z-test. Pitfalls: peeking inflates FP from 5% to ~30%; multiple comparisons need Bonferroni; novelty effects fade; Simpson\'s paradox hides in segments.' },
+    { q:'Explain the Central Limit Theorem and why it matters for data science.',
+      companies:['google','meta'],
+      options:['Large datasets are always normal','Sample means approach normal distribution regardless of population shape','Only works for normal populations'],
+      followUp:'How large does n need to be?',
+      answer:'The CLT states: for any population with finite mean and variance, the distribution of sample means approaches normal as n grows, with mean = population mean and SE = sigma/sqrt(n). This is why confidence intervals and hypothesis tests work - they assume normality of the sample mean, not the data. Rule of thumb: n >= 30 for mildly skewed data, more for heavily skewed. The entire edifice of A/B testing rests on CLT.' }
+  ],
+  probability: [
+    { q:'A disease affects 1% of people. A test is 99% accurate (sensitivity and specificity). You test positive. What is the probability you have the disease?',
+      companies:['meta','google','amazon'],
+      options:['99%','~50%','1%'],
+      followUp:'Why is it so much lower than 99%?',
+      answer:'Using Bayes: P(D|+) = P(+|D)*P(D) / P(+). P(+) = 0.99*0.01 + 0.01*0.99 = 0.0198. P(D|+) = 0.0099/0.0198 = 50%. In 10,000 people: 100 sick (99 test positive), 9,900 healthy (99 false positives). Of 198 positives, only 99 are truly sick. The low base rate (1%) dominates - even a 99% accurate test produces equal numbers of true and false positives when the condition is rare.' },
+    { q:'Explain the Monty Hall problem. Should you switch doors?',
+      companies:['google','meta'],
+      options:['It does not matter','Yes - switching wins 2/3','No - staying wins 2/3'],
+      followUp:'Why does switching double your odds?',
+      answer:'Yes, always switch. Your initial pick has 1/3 probability. The other two doors collectively have 2/3. When the host (who knows what is behind each door) reveals a goat, the remaining door inherits the full 2/3. Switching wins whenever your initial pick was wrong (2 out of 3 scenarios). Staying only wins if you picked correctly initially (1 out of 3). The host\'s action is not random - he always reveals a goat, which is why the probabilities do not split evenly.' },
+    { q:'You pay $5 to roll a fair die. Roll 6: win $20. Roll 4-5: win $10. Otherwise: $0. Should you play?',
+      companies:['amazon','meta'],
+      options:['No, expected value is negative','Yes, E[profit] = $1.67','Cannot determine'],
+      followUp:'How did you compute the expected value?',
+      answer:'E[winnings] = (1/6)*20 + (2/6)*10 + (3/6)*0 = 3.33 + 3.33 + 0 = 6.67. E[profit] = 6.67 - 5 = $1.67. Since expected profit is positive, you should play. Key: linearity of expectation lets you decompose complex scenarios into simple pieces. E[aX+bY] = aE[X]+bE[Y] works even for dependent variables.' }
+  ],
+  casing: [
+    { q:'You are a DS at a ride-sharing company. WAU dropped 15% last week. Walk me through your investigation.',
+      companies:['meta','amazon','google'],
+      options:['Immediately build a predictive model','Structured: data check, external factors, internal changes, segment','Launch an A/B test to fix it'],
+      followUp:'You find the drop is concentrated on iOS. What next?',
+      answer:'Step 1: Rule out data issues (logging pipeline, schema changes). Step 2: Check external factors (holiday, competitor, news). Step 3: Check internal changes (deploy, experiment, pricing). Step 4: Segment by platform, geo, cohort, version. If iOS-concentrated: check app version - was there a recent deploy? Check crash logs. Recommendation: "The drop is caused by iOS v4.7 crash bug. Hotfix + re-engagement push to affected users. Estimate recovery of ~12 of 15 lost points within one week." Measure: track iOS WAU daily, monitor crash rates.' },
+    { q:'Estimate the number of piano tuners in Chicago.',
+      companies:['google','amazon'],
+      options:['100','Use bottom-up: pianos * tunings / tuner capacity = ~185','1,000'],
+      followUp:'Which assumptions is your estimate most sensitive to?',
+      answer:'Bottom-up: Chicago ~3.5M households, ~5% own piano = 175K + 10K institutional = 185K pianos. Each tuned ~1x/year = 185K tunings. A tuner: 8hr/day, 2hr/tuning = 4/day * 250 days = 1,000/year. 185K / 1K = ~185 tuners. Most sensitive to: piano ownership rate (3% vs 7% changes answer significantly) and tuning frequency. The interviewer cares about structure and explicit assumptions, not the exact number.' },
+    { q:'What should be Spotify\'s North Star metric?',
+      companies:['meta','google','amazon'],
+      options:['Total revenue','Time spent listening','Number of playlists created'],
+      followUp:'What makes a good North Star metric?',
+      answer:'Time spent listening. It captures core user value (enjoying music), correlates with retention and satisfaction, and aligns user success with business success (engaged listeners convert to premium, reduce churn). A good North Star: (1) reflects core value delivery, (2) leads revenue (not lags), (3) is actionable by teams, (4) if it grows while users are unhappy or business is losing money, it is wrong. Revenue alone is a lagging indicator; playlists created is too narrow.' }
+  ]
+};
+
+let activeTab = 'sql';
+let mockTimers = {};
+
+function renderMock(){
+  const questions = MOCK[activeTab];
+  document.getElementById('interview-content').innerHTML = questions.map((item,i)=>{
+    const id = activeTab+'-'+i;
+    const badges = item.companies.map(c=>`<span class="co-badge co-${c}">${c.charAt(0).toUpperCase()+c.slice(1)}</span>`).join('');
+    return `
+    <div class="interview-block" id="${id}">
+      <div class="stopwatch" id="msw-${id}">&#9201; <span class="sw-display">00:00</span>
+        <button onclick="toggleMockTimer('${id}')" title="Start/pause">&#9654;</button>
+        <button onclick="resetMockTimer('${id}')" title="Reset">&#8635;</button>
+      </div>
+      ${badges}
+      <div class="bubble interviewer">${item.q}</div>
+      <div class="candidate-options" id="opts-${id}">
+        ${item.options.map((o,j)=>`<button onclick="selectOpt('${id}',this)">${o}</button>`).join('')}
+      </div>
+      <div class="bubble interviewer" style="font-size:.82rem;color:var(--text2);">Follow-up: ${item.followUp}</div>
+      <button class="reveal-btn" onclick="revealAnswer('${id}')">Reveal Model Answer</button>
+      <div class="bubble reveal" id="reveal-${id}" style="display:none;">${item.answer}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleMockTimer(id){
+  if(mockTimers[id] && mockTimers[id].running){
+    clearInterval(mockTimers[id].interval);
+    mockTimers[id].running = false;
+  } else {
+    if(!mockTimers[id]) mockTimers[id] = { elapsed:0, running:false };
+    mockTimers[id].running = true;
+    const start = Date.now() - mockTimers[id].elapsed;
+    mockTimers[id].interval = setInterval(()=>{
+      mockTimers[id].elapsed = Date.now() - start;
+      const s = Math.floor(mockTimers[id].elapsed/1000);
+      const m = Math.floor(s/60);
+      const el = document.querySelector('#msw-'+id+' .sw-display');
+      if(el) el.textContent = (m<10?'0'+m:m)+':'+(s%60<10?'0'+s%60:s%60);
+    },1000);
+  }
+}
+function resetMockTimer(id){
+  if(mockTimers[id]){ clearInterval(mockTimers[id].interval); mockTimers[id]={elapsed:0,running:false}; }
+  const el = document.querySelector('#msw-'+id+' .sw-display');
+  if(el) el.textContent = '00:00';
+}
+function selectOpt(id,btn){
+  btn.closest('.candidate-options').querySelectorAll('button').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+function revealAnswer(id){
+  document.getElementById('reveal-'+id).style.display='';
+}
+
+// Tab switching
+document.getElementById('topic-tabs').addEventListener('click', e=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#topic-tabs button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeTab = e.target.dataset.tab;
+  renderMock();
+});
+
+// Theme
+document.getElementById('theme-toggle').addEventListener('click', ()=>{
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', isDark?'':'dark');
+  localStorage.setItem('ds-v25-theme', isDark?'light':'dark');
+});
+
+document.body.classList.remove('no-fouc');
+document.body.classList.add('ready');
+renderMock();
+</script>
+</body>
+</html>

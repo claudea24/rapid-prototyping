@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Data Science Interview Prep — master SQL, Python, ML, Statistics, Probability, and Case Studies with narrative scenarios, coding playground, mock interviews, and personalized diagnostics.">
+  <meta property="og:title" content="DS Interview Prep — Launch Ready">
+  <meta property="og:description" content="25 iterations of prototyping the ultimate data science interview prep tool.">
+  <meta property="og:image" content="og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+  <title>Python — DS Prep v25</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      document.body&&document.body.classList.add('no-fouc');
+      var t=localStorage.getItem('ds-v25-theme');
+      if(t==='dark')document.documentElement.setAttribute('data-theme','dark');
+    })();
+  </script>
+</head>
+<body class="no-fouc">
+<a href="#main" class="skip-link">Skip to content</a>
+<nav role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v25</a>
+  <div class="company-select">
+    <button data-co="all" class="active">All</button>
+    <button data-co="meta">Meta</button>
+    <button data-co="google">Google</button>
+    <button data-co="amazon">Amazon</button>
+  </div>
+  <button class="icon-btn" id="search-trigger" title="Search (Cmd+K)" aria-label="Search">&#128269;</button>
+  <button class="icon-btn" id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark/light theme">&#9790;</button>
+  <button class="icon-btn" onclick="window.print()" title="Print" aria-label="Print cheat sheet">&#128424;</button>
+  <a href="index.html" class="back">&larr; Dashboard</a>
+</nav>
+
+<div class="hero" id="main">
+  <div class="badge">Python</div>
+  <h1>The Analyst's <span>Toolkit</span></h1>
+  <p>Data structures, Pandas, coding patterns, and gotchas.</p>
+</div>
+
+<div class="section-wrap">
+  <div id="diag-banner"></div>
+
+  <div class="narrative-tabs" id="narrative-tabs">
+    <button class="active" data-co="all">General</button>
+    <button data-co="meta">Meta</button>
+    <button data-co="google">Google</button>
+    <button data-co="amazon">Amazon</button>
+  </div>
+  <div id="story-area"></div>
+
+  <div class="mode-toggle" id="mode-toggle">
+    <button class="active" data-mode="learn">Learn</button>
+    <button data-mode="review">Review</button>
+  </div>
+
+  <!-- Learn Mode -->
+  <div id="learn-content">
+    <div class="learn-section open" id="s-ds">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128230; Data Structures &amp; Complexity <span class="focus-badge" id="focus-ds" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p>Choosing the right data structure is often the difference between a solution that passes and one that times out.</p>
+        <table class="content-table">
+          <tr><th>Structure</th><th>Lookup</th><th>Insert</th><th>Best Use</th></tr>
+          <tr><td><code>list</code></td><td>O(1) index</td><td>O(1) end</td><td>Ordered sequences, stacks</td></tr>
+          <tr><td><code>dict</code></td><td>O(1) avg</td><td>O(1) avg</td><td>Key-value mapping, counting</td></tr>
+          <tr><td><code>set</code></td><td>O(1) avg</td><td>O(1) avg</td><td>Membership tests, dedup</td></tr>
+          <tr><td><code>deque</code></td><td>O(n)</td><td>O(1) both ends</td><td>BFS, sliding windows</td></tr>
+          <tr><td><code>heapq</code></td><td>O(1) min</td><td>O(log n)</td><td>Top-k, priority scheduling</td></tr>
+        </table>
+        <div class="insight-box"><strong>Key Insight:</strong> Checking duplicates with nested loops is O(n&sup2;). Pour into a set and compare lengths: O(n). The right container can change your complexity class.</div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-pandas">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128202; Pandas &amp; Data Manipulation <span class="focus-badge" id="focus-pandas" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p>The golden rule of Pandas: <em>if you are writing a for-loop over rows, you are almost certainly doing it wrong.</em></p>
+        <table class="content-table">
+          <tr><th>Operation</th><th>Method</th><th>What It Does</th></tr>
+          <tr><td>GroupBy</td><td><code>df.groupby('col').agg()</code></td><td>Split-apply-combine</td></tr>
+          <tr><td>Merge</td><td><code>df.merge(df2, on='id', how='left')</code></td><td>SQL-style joins</td></tr>
+          <tr><td>Pivot</td><td><code>df.pivot_table(values, index, aggfunc)</code></td><td>Long to wide format</td></tr>
+          <tr><td>Missing data</td><td><code>df.fillna(0) / df.dropna()</code></td><td>Handle NULLs</td></tr>
+        </table>
+        <pre><code>summary = df.groupby('region')['revenue'].agg(
+    total_revenue='sum',
+    avg_order='mean',
+    num_transactions='count'
+)</code></pre>
+        <div class="insight-box"><strong>Tip:</strong> Use named aggregations with <code>.agg()</code> instead of calling <code>.sum()</code> and <code>.mean()</code> separately and merging back.</div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-patterns">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#127919; Coding Patterns <span class="focus-badge" id="focus-patterns" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <table class="content-table">
+          <tr><th>Pattern</th><th>When</th><th>Complexity</th></tr>
+          <tr><td>Two Pointers</td><td>Sorted array problems</td><td>O(n)</td></tr>
+          <tr><td>Sliding Window</td><td>Subarray/substring</td><td>O(n)</td></tr>
+          <tr><td>Hash Map</td><td>Counting, lookup, grouping</td><td>O(n)</td></tr>
+          <tr><td>Sort + Greedy</td><td>Optimization</td><td>O(n log n)</td></tr>
+        </table>
+        <pre><code># Two Sum — O(n) hash map approach
+def two_sum(nums, target):
+    seen = {}  # value -> index
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in seen:
+            return [seen[complement], i]
+        seen[num] = i</code></pre>
+        <div class="insight-box"><strong>Key Insight:</strong> The hash map pattern is the single most important tool in coding interviews. Whenever a brute-force uses a nested loop where the inner loop is <em>searching</em>, replace it with a dictionary lookup.</div>
+
+        <div class="sandbox">
+          <h4>Exercise: Two Sum</h4>
+          <div class="stopwatch" id="sw-ex1">&#9201; <span class="sw-display">00:00</span>
+            <button onclick="toggleTimer('ex1')">&#9654;</button>
+            <button onclick="resetTimer('ex1')">&#8635;</button>
+          </div>
+          <p class="sandbox-desc">Implement Two Sum using a hash map. Return indices of two numbers summing to target.</p>
+          <textarea id="ed-ex1">def two_sum(nums, target):
+    # Your code here
+    pass
+
+print(two_sum([2, 7, 11, 15], 9))</textarea>
+          <div class="sandbox-actions">
+            <button onclick="document.getElementById('sol-ex1').classList.add('show')">&#9989; Solution</button>
+          </div>
+          <div class="result-area" id="sol-ex1">def two_sum(nums, target):
+    seen = {}
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in seen:
+            return [seen[complement], i]
+        seen[num] = i
+
+print(two_sum([2, 7, 11, 15], 9))  # [0, 1]</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-gotchas">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#9888; Python Gotchas <span class="focus-badge" id="focus-gotchas" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <table class="content-table">
+          <tr><th>Gotcha</th><th>What Happens</th><th>Fix</th></tr>
+          <tr><td>Mutable defaults</td><td><code>def f(x=[])</code>: list shared across calls</td><td>Use <code>None</code> sentinel</td></tr>
+          <tr><td>Shallow copy</td><td>Inner objects still shared</td><td><code>copy.deepcopy()</code></td></tr>
+          <tr><td>Floor division</td><td><code>-7 // 2 = -4</code> (rounds toward minus infinity)</td><td><code>int(a/b)</code> for truncation</td></tr>
+          <tr><td><code>is</code> vs <code>==</code></td><td><code>is</code> checks identity, <code>==</code> checks value</td><td>Use <code>is</code> only for <code>None</code></td></tr>
+        </table>
+        <pre><code># Mutable default — the bug
+def append_to(item, target=[]):
+    target.append(item)
+    return target
+
+print(append_to(1))   # [1]
+print(append_to(2))   # [1, 2] — SAME list!
+
+# The fix
+def append_to(item, target=None):
+    if target is None:
+        target = []
+    target.append(item)
+    return target</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Mode -->
+  <div id="review-content" style="display:none;">
+    <div class="review-card">
+      <h4>Data Structures</h4>
+      <ul>
+        <li><code>list</code>: O(1) index, O(1) append, O(n) search</li>
+        <li><code>dict/set</code>: O(1) avg for all ops — use for lookup-heavy tasks</li>
+        <li><code>deque</code>: O(1) both ends — BFS, sliding window</li>
+        <li><code>heapq</code>: O(log n) push/pop — top-k problems</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Pandas Essentials</h4>
+      <ul>
+        <li><code>groupby().agg()</code> for split-apply-combine</li>
+        <li><code>merge(how='left')</code> for SQL-style joins</li>
+        <li>Never loop over rows — vectorize or groupby</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Coding Patterns</h4>
+      <ul>
+        <li><strong>Hash map:</strong> replace inner search loop with dict lookup</li>
+        <li><strong>Two pointers:</strong> sorted array pair problems, O(n)</li>
+        <li><strong>Sliding window:</strong> subarray/substring, O(n)</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Gotchas</h4>
+      <ul>
+        <li>Mutable defaults shared across calls — use <code>None</code></li>
+        <li>Shallow copy shares inner objects — use <code>deepcopy</code></li>
+        <li><code>is</code> checks identity, <code>==</code> checks value</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="Search topics, questions... (Cmd+K)">
+    <div class="search-results"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v25 &middot; <a href="index.html">Dashboard</a></p>
+</footer>
+
+<script src="search.js"></script>
+<script>
+const STORIES = {
+  all: '<div class="story-text"><strong>The Analyst\'s Toolkit.</strong> Python sits at the intersection of readability, ecosystem breadth, and community momentum. From cleaning CSVs to training neural networks, it provides a single thread tying the entire analytical workflow together.</div>',
+  meta: '<div class="story-text"><strong>Python at Meta.</strong> Meta\'s data scientists use Python daily for ad ranking feature engineering, Pandas for A/B test analysis, and NumPy for feed algorithm prototyping. Expect questions on data structures, Pandas operations, and optimization patterns.</div>',
+  google: '<div class="story-text"><strong>Python for Google Scale.</strong> Google interviews test algorithmic thinking in Python. Expect Two Sum, sliding window, and hash map patterns alongside Pandas proficiency for data manipulation and analysis tasks.</div>',
+  amazon: '<div class="story-text"><strong>Python &amp; AWS Lambda.</strong> Amazon data scientists use Python with Lambda, Pandas for supply chain analytics, and coding patterns for recommendation algorithms. Expect data structure questions and Pandas manipulation exercises.</div>'
+};
+
+let activeCo = 'all';
+function renderStory(){ document.getElementById('story-area').innerHTML = STORIES[activeCo] || STORIES.all; }
+document.getElementById('narrative-tabs').addEventListener('click', e=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#narrative-tabs button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeCo = e.target.dataset.co;
+  renderStory();
+});
+document.querySelectorAll('nav .company-select button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav .company-select button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCo = btn.dataset.co;
+    document.querySelectorAll('#narrative-tabs button').forEach(b=>b.classList.remove('active'));
+    const match = document.querySelector('#narrative-tabs button[data-co="'+activeCo+'"]');
+    if(match) match.classList.add('active');
+    renderStory();
+  });
+});
+renderStory();
+
+// Diagnostic banner
+(function(){
+  const raw = localStorage.getItem('ds-v25-diagnostic');
+  if(!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    const s = d.python || {score:0,total:3};
+    const pct = s.total>0 ? (s.score/s.total)*100 : 0;
+    let lvl, cls;
+    if(pct>=80){ lvl='Strong'; cls='strong'; }
+    else if(pct>=40){ lvl='Review'; cls='review'; }
+    else { lvl='Weak'; cls='weak'; }
+    document.getElementById('diag-banner').innerHTML = `<div class="diag-banner ${cls}">${lvl}: ${s.score}/${s.total} correct on diagnostic</div>`;
+    if(cls==='weak') document.querySelectorAll('.focus-badge').forEach(b=>b.style.display='inline');
+  } catch(e){}
+})();
+
+// Mode toggle
+document.querySelectorAll('#mode-toggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#mode-toggle button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const mode = btn.dataset.mode;
+    document.getElementById('learn-content').style.display = mode==='learn'?'':'none';
+    document.getElementById('review-content').style.display = mode==='review'?'':'none';
+  });
+});
+
+function toggleSection(header){ header.closest('.learn-section').classList.toggle('open'); }
+
+let timers = {};
+function toggleTimer(id){
+  if(timers[id]&&timers[id].running){clearInterval(timers[id].iv);timers[id].running=false;}
+  else{
+    if(!timers[id])timers[id]={elapsed:0,running:false};
+    timers[id].running=true;
+    const start=Date.now()-timers[id].elapsed;
+    timers[id].iv=setInterval(()=>{
+      timers[id].elapsed=Date.now()-start;
+      const s=Math.floor(timers[id].elapsed/1000),m=Math.floor(s/60);
+      const el=document.querySelector('#sw-'+id+' .sw-display');
+      if(el) el.textContent=(m<10?'0'+m:m)+':'+(s%60<10?'0'+s%60:s%60);
+    },1000);
+  }
+}
+function resetTimer(id){
+  if(timers[id]){clearInterval(timers[id].iv);timers[id]={elapsed:0,running:false};}
+  const el=document.querySelector('#sw-'+id+' .sw-display');
+  if(el) el.textContent='00:00';
+}
+
+document.getElementById('theme-toggle').addEventListener('click', ()=>{
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', isDark?'':'dark');
+  localStorage.setItem('ds-v25-theme', isDark?'light':'dark');
+});
+
+document.body.classList.remove('no-fouc');
+document.body.classList.add('ready');
+</script>
+</body>
+</html>

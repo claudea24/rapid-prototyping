@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies — DS Prep v24</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      document.body&&document.body.classList.add('no-fouc');
+      var t=localStorage.getItem('ds-v24-theme');
+      if(t==='dark')document.documentElement.setAttribute('data-theme','dark');
+    })();
+  </script>
+</head>
+<body class="no-fouc">
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v24</a>
+  <div class="company-select">
+    <button data-co="all" class="active">All</button>
+    <button data-co="meta">Meta</button>
+    <button data-co="google">Google</button>
+    <button data-co="amazon">Amazon</button>
+  </div>
+  <button class="icon-btn" id="search-trigger" title="Search (Cmd+K)">&#128269;</button>
+  <button class="icon-btn" id="theme-toggle" title="Toggle dark mode">&#9790;</button>
+  <button class="icon-btn" onclick="window.print()" title="Print">&#128424;</button>
+  <a href="index.html" class="back">&larr; Dashboard</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">Case Studies</div>
+  <h1>Thinking Like a <span>Data Scientist</span></h1>
+  <p>Product metrics, metric investigation, market sizing, and experiment design.</p>
+</div>
+
+<div class="section-wrap">
+  <div id="diag-banner"></div>
+
+  <div class="narrative-tabs" id="narrative-tabs">
+    <button class="active" data-co="all">General</button>
+    <button data-co="meta">Meta</button>
+    <button data-co="google">Google</button>
+    <button data-co="amazon">Amazon</button>
+  </div>
+  <div id="story-area"></div>
+
+  <div class="mode-toggle" id="mode-toggle">
+    <button class="active" data-mode="learn">Learn</button>
+    <button data-mode="review">Review</button>
+  </div>
+
+  <!-- Learn Mode -->
+  <div id="learn-content">
+    <div class="learn-section open" id="s-metrics">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128202; Product Metrics (AARRR) <span class="focus-badge" id="focus-metrics" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <table class="content-table">
+          <tr><th>Stage</th><th>Definition</th><th>Example Metrics</th><th>Why It Matters</th></tr>
+          <tr><td><strong>Acquisition</strong></td><td>How users discover product</td><td>Sign-ups, CPA, channel split</td><td>Cannot grow without awareness</td></tr>
+          <tr><td><strong>Activation</strong></td><td>First core value experience</td><td>Onboarding %, time to action</td><td>Multiplies acquisition value</td></tr>
+          <tr><td><strong>Retention</strong></td><td>Do users come back?</td><td>D1/D7/D30, churn, cohorts</td><td>Most important; compounds</td></tr>
+          <tr><td><strong>Revenue</strong></td><td>How product makes money</td><td>ARPU, LTV, MRR</td><td>Validates business model</td></tr>
+          <tr><td><strong>Referral</strong></td><td>Do users bring others?</td><td>NPS, viral coefficient</td><td>Free, pre-qualified acquisition</td></tr>
+        </table>
+        <p><strong>North Star Metric:</strong> A single number capturing core value. Must align user and business success.</p>
+        <table class="content-table">
+          <tr><th>Company</th><th>North Star</th><th>Why</th></tr>
+          <tr><td>Airbnb</td><td>Nights booked</td><td>Value for guests and hosts</td></tr>
+          <tr><td>Spotify</td><td>Time spent listening</td><td>Engagement proxy for satisfaction</td></tr>
+          <tr><td>Facebook</td><td>Daily active users</td><td>Habitual use drives monetization</td></tr>
+        </table>
+        <div class="insight-box"><strong>Key Insight:</strong> A good North Star aligns user value with business value. If it grows while users are unhappy, it is the wrong metric.</div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-diagnose">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128269; Diagnosing Metric Changes <span class="focus-badge" id="focus-diag" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p><strong>The 6-Step Framework:</strong></p>
+        <ol style="padding-left:18px;margin-bottom:16px;font-size:.9rem;">
+          <li><strong>Clarify</strong> — Restate the problem. Ask scope questions.</li>
+          <li><strong>Define Metrics</strong> — Primary metric + guardrails.</li>
+          <li><strong>Hypothesize</strong> — State hypotheses before touching data.</li>
+          <li><strong>Analyze</strong> — Segment by cohort, platform, geo, time.</li>
+          <li><strong>Recommend</strong> — Concrete action + expected impact.</li>
+          <li><strong>Measure</strong> — How will you validate? What experiment?</li>
+        </ol>
+        <p><strong>Investigation order:</strong> (1) Data pipeline issue? (2) External factor? (3) Internal change? (4) Segment to isolate. (5) Quantify contribution.</p>
+        <pre><code>// Example: Revenue up 20% but rides down 5%
+Revenue = Rides x Revenue_per_Ride
+1.20 = 0.95 x X  →  X ≈ 1.263
+Revenue per ride up ~26%
+
+Hypotheses: price increase, mix shift to
+longer rides, new premium tier launch.</code></pre>
+        <div class="insight-box"><strong>Key Insight:</strong> Rule out data pipeline issues first — they are embarrassingly common and waste investigation time if not caught early.</div>
+
+        <div class="sandbox">
+          <h4>Exercise: Metric Drop Investigation</h4>
+          <div class="stopwatch" id="sw-ex1">&#9201; <span class="sw-display">00:00</span>
+            <button onclick="toggleTimer('ex1')">&#9654;</button>
+            <button onclick="resetTimer('ex1')">&#8635;</button>
+          </div>
+          <p class="sandbox-desc">DAU dropped 10% week-over-week for a social media app. Walk through your investigation framework.</p>
+          <textarea id="ed-ex1">Step 1: Clarify...
+Step 2: Define metrics...
+Step 3: Hypothesize...
+Step 4: Analyze...
+Step 5: Recommend...
+Step 6: Measure...</textarea>
+          <div class="sandbox-actions">
+            <button onclick="document.getElementById('sol-ex1').classList.add('show')">&#9989; Model Answer</button>
+          </div>
+          <div class="result-area" id="sol-ex1">1. Clarify: Is this all platforms? Global? Compared to prior week or seasonal baseline?
+2. Metrics: Primary = DAU. Guardrails = session length, revenue per user.
+3. Hypothesize: (a) Data logging issue, (b) App crash on specific platform/version, (c) Holiday/external event, (d) Marketing campaign ended.
+4. Analyze: Segment by platform → if iOS-only, check app version → crash logs spike in v5.2. Segment by geo → if global, less likely external.
+5. Recommend: "Drop caused by iOS v5.2 crash. Hotfix + re-engagement push to affected users. Estimate recovery of ~8 of 10 lost points within one week."
+6. Measure: Track iOS DAU daily. Monitor crash rate, App Store rating as leading indicators.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-market">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128176; Market Sizing <span class="focus-badge" id="focus-market" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <table class="content-table">
+          <tr><th>Approach</th><th>Start With</th><th>Structure</th><th>Strength</th></tr>
+          <tr><td><strong>Top-Down</strong></td><td>Large known number</td><td>TAM → filter → target</td><td>Fast, macro-level</td></tr>
+          <tr><td><strong>Bottom-Up</strong></td><td>Single unit</td><td>Unit economics → scale</td><td>Grounded, concrete</td></tr>
+        </table>
+        <p><strong>Piano Tuners in Chicago (bottom-up):</strong></p>
+        <ul style="padding-left:18px;font-size:.88rem;">
+          <li>3.5M households * 5% piano = 175K + 10K institutional = 185K pianos</li>
+          <li>1 tuning/year = 185K tunings</li>
+          <li>Tuner capacity: 4 tunings/day * 250 days = 1,000/year</li>
+          <li>185K / 1K = ~185 tuners (actual: 100-300)</li>
+        </ul>
+        <div class="insight-box"><strong>Key Insight:</strong> Interviewers care about structure and explicit assumptions, not the exact number. A clearly reasoned estimate off by 2x beats a lucky guess with no justification.</div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-experiment">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#9878; Experiment Design <span class="focus-badge" id="focus-exp" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <table class="content-table">
+          <tr><th>Decision</th><th>Default</th><th>Watch Out</th></tr>
+          <tr><td>Randomization unit</td><td>User-level</td><td>Network effects → cluster</td></tr>
+          <tr><td>Duration</td><td>1+ full weekly cycle</td><td>Day-of-week effects</td></tr>
+          <tr><td>Guardrails</td><td>Always include several</td><td>Must not degrade</td></tr>
+          <tr><td>Novelty effects</td><td>Run 2-4 weeks</td><td>Initial lift may fade</td></tr>
+        </table>
+        <p><strong>Example — New Checkout Flow:</strong> Primary metric = completion rate. Guardrails = AOV, return rate, support contacts. Power analysis: detect 2pp lift at alpha=0.05, power=0.80. Run 14 days minimum.</p>
+        <div class="insight-box"><strong>Communication tip:</strong> Lead with the answer (Pyramid Principle). State conclusion first, then evidence. Quantify everything. Acknowledge trade-offs proactively.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Mode -->
+  <div id="review-content" style="display:none;">
+    <div class="review-card">
+      <h4>AARRR Framework</h4>
+      <ul>
+        <li>Acquisition → Activation → Retention → Revenue → Referral</li>
+        <li>Retention is most important (compounds)</li>
+        <li>North Star: aligns user value + business value</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Metric Investigation</h4>
+      <ul>
+        <li>Clarify → Define Metrics → Hypothesize → Analyze → Recommend → Measure</li>
+        <li>Check data pipeline first</li>
+        <li>Segment by platform, geo, cohort, version</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Market Sizing</h4>
+      <ul>
+        <li>Top-down: large number → filters</li>
+        <li>Bottom-up: single unit → scale</li>
+        <li>State assumptions explicitly, flag sensitivity</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Experiment Design</h4>
+      <ul>
+        <li>User-level randomization (default)</li>
+        <li>Always set guardrail metrics</li>
+        <li>Run 2+ weeks, no peeking</li>
+        <li>Lead with the answer (Pyramid Principle)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="Search topics, questions... (Cmd+K)">
+    <div class="search-results"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v24 &middot; <a href="index.html">Dashboard</a></p>
+</footer>
+
+<script src="search.js"></script>
+<script>
+const STORIES = {
+  all: '<div class="story-text"><strong>Thinking Like a Data Scientist.</strong> Case studies test whether you can apply technical knowledge to real business problems. Structured thinking, clear communication, and business judgment matter as much as the analysis.</div>',
+  meta: '<div class="story-text"><strong>Product Sense @ Meta.</strong> Meta interviews heavily weight "product sense" — your ability to define metrics, investigate drops, and design experiments for products used by billions. Expect WAU drop scenarios, north star metric discussions, and engagement optimization cases.</div>',
+  google: '<div class="story-text"><strong>Business Cases @ Google.</strong> Google tests structured problem-solving and quantitative reasoning. Expect market sizing exercises, metric investigation for Search or YouTube, and experiment design for feature launches at massive scale.</div>',
+  amazon: '<div class="story-text"><strong>Leadership Principles Cases.</strong> Amazon case studies tie directly to Leadership Principles. "Customer Obsession" drives metric choices, "Bias for Action" shapes recommendations, and "Dive Deep" means your analysis must segment thoroughly. Expect supply chain and marketplace scenarios.</div>'
+};
+
+let activeCo = 'all';
+function renderStory(){ document.getElementById('story-area').innerHTML = STORIES[activeCo] || STORIES.all; }
+document.getElementById('narrative-tabs').addEventListener('click', e=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#narrative-tabs button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeCo = e.target.dataset.co;
+  renderStory();
+});
+document.querySelectorAll('nav .company-select button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav .company-select button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCo = btn.dataset.co;
+    document.querySelectorAll('#narrative-tabs button').forEach(b=>b.classList.remove('active'));
+    const match = document.querySelector('#narrative-tabs button[data-co="'+activeCo+'"]');
+    if(match) match.classList.add('active');
+    renderStory();
+  });
+});
+renderStory();
+
+(function(){
+  const raw = localStorage.getItem('ds-v24-diagnostic');
+  if(!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    const s = d.casing || {score:0,total:3};
+    const pct = s.total>0 ? (s.score/s.total)*100 : 0;
+    let lvl, cls;
+    if(pct>=80){ lvl='Strong'; cls='strong'; }
+    else if(pct>=40){ lvl='Review'; cls='review'; }
+    else { lvl='Weak'; cls='weak'; }
+    document.getElementById('diag-banner').innerHTML = `<div class="diag-banner ${cls}">${lvl}: ${s.score}/${s.total} correct on diagnostic</div>`;
+    if(cls==='weak') document.querySelectorAll('.focus-badge').forEach(b=>b.style.display='inline');
+  } catch(e){}
+})();
+
+document.querySelectorAll('#mode-toggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#mode-toggle button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const mode = btn.dataset.mode;
+    document.getElementById('learn-content').style.display = mode==='learn'?'':'none';
+    document.getElementById('review-content').style.display = mode==='review'?'':'none';
+  });
+});
+
+function toggleSection(header){ header.closest('.learn-section').classList.toggle('open'); }
+
+let timers = {};
+function toggleTimer(id){
+  if(timers[id]&&timers[id].running){clearInterval(timers[id].iv);timers[id].running=false;}
+  else{
+    if(!timers[id])timers[id]={elapsed:0,running:false};
+    timers[id].running=true;
+    const start=Date.now()-timers[id].elapsed;
+    timers[id].iv=setInterval(()=>{
+      timers[id].elapsed=Date.now()-start;
+      const s=Math.floor(timers[id].elapsed/1000),m=Math.floor(s/60);
+      const el=document.querySelector('#sw-'+id+' .sw-display');
+      if(el) el.textContent=(m<10?'0'+m:m)+':'+(s%60<10?'0'+s%60:s%60);
+    },1000);
+  }
+}
+function resetTimer(id){
+  if(timers[id]){clearInterval(timers[id].iv);timers[id]={elapsed:0,running:false};}
+  const el=document.querySelector('#sw-'+id+' .sw-display');
+  if(el) el.textContent='00:00';
+}
+
+document.getElementById('theme-toggle').addEventListener('click', ()=>{
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', isDark?'':'dark');
+  localStorage.setItem('ds-v24-theme', isDark?'light':'dark');
+});
+
+document.body.classList.remove('no-fouc');
+document.body.classList.add('ready');
+</script>
+</body>
+</html>

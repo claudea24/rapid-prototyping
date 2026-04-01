@@ -1,0 +1,16 @@
+@media print {
+  @page { margin: 1.5cm; size: A4; }
+  body { background: #fff !important; color: #000 !important; font-size: 9pt; }
+  nav, .mode-toggle, .print-btn, footer, .learn-only, .mastery-banner, .focus-badge, .challenge-timer { display: none !important; }
+  .review-card { break-inside: avoid; border: 1px solid #ccc !important; }
+  .review-card.weak-section { border-left: 3px solid #999 !important; }
+  code { color: #333 !important; background: #eee !important; }
+  table { border: 1px solid #333 !important; }
+  th { background: #eee !important; color: #000 !important; }
+  td { color: #000 !important; }
+  h1, h2, h3 { color: #000 !important; }
+  a { color: #000 !important; text-decoration: none !important; }
+  .page-header { padding-top: 0 !important; }
+  .review-grid { gap: 8px !important; }
+  .hero { padding-top: 10px !important; }
+}

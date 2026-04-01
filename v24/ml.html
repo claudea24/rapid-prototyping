@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning — DS Prep v24</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      document.body&&document.body.classList.add('no-fouc');
+      var t=localStorage.getItem('ds-v24-theme');
+      if(t==='dark')document.documentElement.setAttribute('data-theme','dark');
+    })();
+  </script>
+</head>
+<body class="no-fouc">
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v24</a>
+  <div class="company-select">
+    <button data-co="all" class="active">All</button>
+    <button data-co="meta">Meta</button>
+    <button data-co="google">Google</button>
+    <button data-co="amazon">Amazon</button>
+  </div>
+  <button class="icon-btn" id="search-trigger" title="Search (Cmd+K)">&#128269;</button>
+  <button class="icon-btn" id="theme-toggle" title="Toggle dark mode">&#9790;</button>
+  <button class="icon-btn" onclick="window.print()" title="Print">&#128424;</button>
+  <a href="index.html" class="back">&larr; Dashboard</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">Machine Learning</div>
+  <h1>From Theory to <span>Practice</span></h1>
+  <p>Algorithms, evaluation metrics, bias-variance tradeoff, and data leakage.</p>
+</div>
+
+<div class="section-wrap">
+  <div id="diag-banner"></div>
+
+  <div class="narrative-tabs" id="narrative-tabs">
+    <button class="active" data-co="all">General</button>
+    <button data-co="meta">Meta</button>
+    <button data-co="google">Google</button>
+    <button data-co="amazon">Amazon</button>
+  </div>
+  <div id="story-area"></div>
+
+  <div class="mode-toggle" id="mode-toggle">
+    <button class="active" data-mode="learn">Learn</button>
+    <button data-mode="review">Review</button>
+  </div>
+
+  <!-- Learn Mode -->
+  <div id="learn-content">
+    <div class="learn-section open" id="s-supervised">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#129302; Supervised Learning Algorithms <span class="focus-badge" id="focus-sup" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <table class="content-table">
+          <tr><th>Algorithm</th><th>Strengths</th><th>Weaknesses</th><th>When to Use</th></tr>
+          <tr><td><strong>Linear Reg.</strong></td><td>Interpretable, fast</td><td>Assumes linearity</td><td>Baseline, interpretability</td></tr>
+          <tr><td><strong>Logistic Reg.</strong></td><td>Probabilistic, interpretable</td><td>Linear boundary</td><td>Binary classification + explainability</td></tr>
+          <tr><td><strong>Decision Tree</strong></td><td>Nonlinear, no scaling</td><td>High variance, overfits</td><td>Exploration, visual paths</td></tr>
+          <tr><td><strong>Random Forest</strong></td><td>Low variance, robust</td><td>Less interpretable</td><td>General-purpose accuracy</td></tr>
+          <tr><td><strong>Gradient Boosting</strong></td><td>State-of-the-art tabular</td><td>Overfitting risk</td><td>Competitions, production accuracy</td></tr>
+          <tr><td><strong>SVM</strong></td><td>High-dim, kernel trick</td><td>Slow, opaque</td><td>Text classification, small data</td></tr>
+          <tr><td><strong>KNN</strong></td><td>No training, flexible</td><td>Slow inference, curse of dim</td><td>Small data, prototyping</td></tr>
+        </table>
+        <div class="insight-box"><strong>Key Insight:</strong> Start simple (logistic/linear), then try Random Forest, then gradient boosting. Feature engineering often matters more than model complexity.</div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-metrics">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128202; Evaluation Metrics <span class="focus-badge" id="focus-metrics" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <table class="content-table">
+          <tr><th>Metric</th><th>Formula Idea</th><th>Use When</th></tr>
+          <tr><td><strong>Accuracy</strong></td><td>(TP+TN) / total</td><td>Balanced datasets only</td></tr>
+          <tr><td><strong>Precision</strong></td><td>TP / (TP+FP)</td><td>Cost of FP is high (spam filter)</td></tr>
+          <tr><td><strong>Recall</strong></td><td>TP / (TP+FN)</td><td>Cost of FN is high (disease)</td></tr>
+          <tr><td><strong>F1</strong></td><td>Harmonic mean of P &amp; R</td><td>Balance P and R</td></tr>
+          <tr><td><strong>AUC-ROC</strong></td><td>Area under TPR vs FPR</td><td>Comparing models, threshold-free</td></tr>
+          <tr><td><strong>RMSE</strong></td><td>Root mean squared error</td><td>Penalize large errors</td></tr>
+          <tr><td><strong>MAE</strong></td><td>Mean absolute error</td><td>Treat all errors equally</td></tr>
+        </table>
+        <div class="insight-box"><strong>Key Insight:</strong> Before choosing a metric, ask: "What is the cost of a false positive versus a false negative?" A fraud model predicting "not fraud" always has 99.5% accuracy but 0% recall.</div>
+
+        <div class="sandbox">
+          <h4>Exercise: Choose the Right Metric</h4>
+          <div class="stopwatch" id="sw-ex1">&#9201; <span class="sw-display">00:00</span>
+            <button onclick="toggleTimer('ex1')">&#9654;</button>
+            <button onclick="resetTimer('ex1')">&#8635;</button>
+          </div>
+          <p class="sandbox-desc">You are building a cancer screening model. Should you optimize for precision, recall, or accuracy? Why?</p>
+          <textarea id="ed-ex1">Your answer here...</textarea>
+          <div class="sandbox-actions">
+            <button onclick="document.getElementById('sol-ex1').classList.add('show')">&#9989; Answer</button>
+          </div>
+          <div class="result-area" id="sol-ex1">Recall. Missing a cancer case (false negative) is far more costly than a false alarm (false positive). Optimizing for recall ensures we catch as many actual cases as possible, even at the cost of some false positives that can be resolved with follow-up tests.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-bv">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#127919; Bias-Variance Tradeoff <span class="focus-badge" id="focus-bv" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p><strong>Total Error = Bias&sup2; + Variance + Irreducible Noise</strong></p>
+        <table class="content-table">
+          <tr><th>Scenario</th><th>Bias</th><th>Variance</th><th>Symptom</th><th>Fix</th></tr>
+          <tr><td>Underfitting</td><td>High</td><td>Low</td><td>Poor on train AND test</td><td>More features, complex model</td></tr>
+          <tr><td>Sweet spot</td><td>Low</td><td>Low</td><td>Good on both</td><td>Keep it</td></tr>
+          <tr><td>Overfitting</td><td>Low</td><td>High</td><td>Great train, poor test</td><td>Regularization, more data</td></tr>
+        </table>
+        <p><strong>L1 (Lasso):</strong> Drives coefficients to zero (feature selection). <strong>L2 (Ridge):</strong> Shrinks all coefficients (stability). <strong>Elastic Net:</strong> Both.</p>
+        <div class="insight-box"><strong>Dartboard Analogy:</strong> High bias = darts clustered away from bullseye. High variance = darts scattered widely. Sweet spot = tight cluster on bullseye.</div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-cv">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128275; Cross-Validation &amp; Data Leakage <span class="focus-badge" id="focus-cv" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p><strong>K-Fold CV:</strong> Split into k folds, rotate test fold. Every point appears in both roles. 5- or 10-fold is standard.</p>
+        <p><strong>Time Series CV:</strong> Standard k-fold is fatal for time series (trains on future). Use expanding window that respects temporal order.</p>
+        <p><strong>Data Leakage:</strong> The model sees info it would not have at prediction time. Most common: fitting preprocessing on full data before splitting.</p>
+        <pre><code>from sklearn.model_selection import cross_val_score
+from sklearn.pipeline import Pipeline
+
+# Pipeline ensures scaler fits inside each fold
+pipe = Pipeline([('scaler', StandardScaler()), ('model', LogisticRegression())])
+scores = cross_val_score(pipe, X, y, cv=5, scoring='f1')
+print(f"Mean F1: {scores.mean():.3f}")</code></pre>
+        <div class="insight-box"><strong>Key Insight:</strong> If performance seems "too good to be true," it almost certainly is. The most common culprit is data leakage. Audit every feature: "Would I have this at prediction time?"</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Mode -->
+  <div id="review-content" style="display:none;">
+    <div class="review-card">
+      <h4>Algorithm Selection</h4>
+      <ul>
+        <li>Start simple: logistic/linear regression (baseline)</li>
+        <li>Random Forest: robust, handles nonlinearity, little tuning</li>
+        <li>Gradient Boosting (XGBoost/LightGBM): best tabular accuracy</li>
+        <li>Feature engineering often matters more than model choice</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Metrics Quick Reference</h4>
+      <ul>
+        <li><strong>Precision:</strong> Of flagged, how many correct? (spam filter)</li>
+        <li><strong>Recall:</strong> Of actual positives, how many caught? (cancer screening)</li>
+        <li><strong>F1:</strong> Harmonic mean — punishes extreme imbalance</li>
+        <li><strong>AUC-ROC:</strong> Threshold-independent comparison</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Bias-Variance</h4>
+      <ul>
+        <li>Underfitting: high bias, low variance (too simple)</li>
+        <li>Overfitting: low bias, high variance (too complex)</li>
+        <li>L1 = sparsity (feature selection), L2 = stability</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Data Leakage</h4>
+      <ul>
+        <li>Fit all preprocessing inside CV folds (use Pipeline)</li>
+        <li>Time series: never train on future data</li>
+        <li>Ask: "Would I have this feature at prediction time?"</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="Search topics, questions... (Cmd+K)">
+    <div class="search-results"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v24 &middot; <a href="index.html">Dashboard</a></p>
+</footer>
+
+<script src="search.js"></script>
+<script>
+const STORIES = {
+  all: '<div class="story-text"><strong>From Theory to Practice.</strong> Supervised learning is the most widely used family of ML techniques. The premise is simple: labeled data, learn a mapping that generalizes. What makes it rich is the variety of approaches, each with its own intuitions and failure modes.</div>',
+  meta: '<div class="story-text"><strong>ML at Meta.</strong> Meta\'s ML powers ad ranking, feed personalization, and content moderation. Interviews focus on model selection for billion-user scale, precision/recall tradeoffs for harmful content detection, and feature engineering for engagement prediction.</div>',
+  google: '<div class="story-text"><strong>ML at Google.</strong> Google interviews test fundamental understanding of algorithms, the bias-variance tradeoff, and evaluation metrics. Expect questions on model selection for search ranking, recommendation systems, and proper cross-validation for time-dependent data.</div>',
+  amazon: '<div class="story-text"><strong>ML at Amazon.</strong> Amazon DS roles emphasize demand forecasting, recommendation engines, and fraud detection. Interviews test gradient boosting for tabular data, handling data leakage in supply chain features, and metric selection for operational ML systems.</div>'
+};
+
+let activeCo = 'all';
+function renderStory(){ document.getElementById('story-area').innerHTML = STORIES[activeCo] || STORIES.all; }
+document.getElementById('narrative-tabs').addEventListener('click', e=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#narrative-tabs button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeCo = e.target.dataset.co;
+  renderStory();
+});
+document.querySelectorAll('nav .company-select button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav .company-select button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCo = btn.dataset.co;
+    document.querySelectorAll('#narrative-tabs button').forEach(b=>b.classList.remove('active'));
+    const match = document.querySelector('#narrative-tabs button[data-co="'+activeCo+'"]');
+    if(match) match.classList.add('active');
+    renderStory();
+  });
+});
+renderStory();
+
+(function(){
+  const raw = localStorage.getItem('ds-v24-diagnostic');
+  if(!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    const s = d.ml || {score:0,total:3};
+    const pct = s.total>0 ? (s.score/s.total)*100 : 0;
+    let lvl, cls;
+    if(pct>=80){ lvl='Strong'; cls='strong'; }
+    else if(pct>=40){ lvl='Review'; cls='review'; }
+    else { lvl='Weak'; cls='weak'; }
+    document.getElementById('diag-banner').innerHTML = `<div class="diag-banner ${cls}">${lvl}: ${s.score}/${s.total} correct on diagnostic</div>`;
+    if(cls==='weak') document.querySelectorAll('.focus-badge').forEach(b=>b.style.display='inline');
+  } catch(e){}
+})();
+
+document.querySelectorAll('#mode-toggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#mode-toggle button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const mode = btn.dataset.mode;
+    document.getElementById('learn-content').style.display = mode==='learn'?'':'none';
+    document.getElementById('review-content').style.display = mode==='review'?'':'none';
+  });
+});
+
+function toggleSection(header){ header.closest('.learn-section').classList.toggle('open'); }
+
+let timers = {};
+function toggleTimer(id){
+  if(timers[id]&&timers[id].running){clearInterval(timers[id].iv);timers[id].running=false;}
+  else{
+    if(!timers[id])timers[id]={elapsed:0,running:false};
+    timers[id].running=true;
+    const start=Date.now()-timers[id].elapsed;
+    timers[id].iv=setInterval(()=>{
+      timers[id].elapsed=Date.now()-start;
+      const s=Math.floor(timers[id].elapsed/1000),m=Math.floor(s/60);
+      const el=document.querySelector('#sw-'+id+' .sw-display');
+      if(el) el.textContent=(m<10?'0'+m:m)+':'+(s%60<10?'0'+s%60:s%60);
+    },1000);
+  }
+}
+function resetTimer(id){
+  if(timers[id]){clearInterval(timers[id].iv);timers[id]={elapsed:0,running:false};}
+  const el=document.querySelector('#sw-'+id+' .sw-display');
+  if(el) el.textContent='00:00';
+}
+
+document.getElementById('theme-toggle').addEventListener('click', ()=>{
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', isDark?'':'dark');
+  localStorage.setItem('ds-v24-theme', isDark?'light':'dark');
+});
+
+document.body.classList.remove('no-fouc');
+document.body.classList.add('ready');
+</script>
+</body>
+</html>

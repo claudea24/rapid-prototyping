@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Data Science Interview Prep — master SQL, Python, ML, Statistics, Probability, and Case Studies with narrative scenarios, coding playground, mock interviews, and personalized diagnostics.">
+  <meta property="og:title" content="DS Interview Prep — Launch Ready">
+  <meta property="og:description" content="25 iterations of prototyping the ultimate data science interview prep tool.">
+  <meta property="og:image" content="og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+  <title>Coding Playground — DS Prep v25</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      document.body&&document.body.classList.add('no-fouc');
+      var t=localStorage.getItem('ds-v25-theme');
+      if(t==='dark')document.documentElement.setAttribute('data-theme','dark');
+    })();
+  </script>
+</head>
+<body class="no-fouc">
+<a href="#main" class="skip-link">Skip to content</a>
+<nav role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v25</a>
+  <button class="icon-btn" id="search-trigger" title="Search (Cmd+K)" aria-label="Search">&#128269;</button>
+  <button class="icon-btn" id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark/light theme">&#9790;</button>
+  <button class="icon-btn" onclick="window.print()" title="Print" aria-label="Print cheat sheet">&#128424;</button>
+  <a href="index.html" class="back">&larr; Dashboard</a>
+</nav>
+
+<div class="hero" id="main">
+  <div class="badge">Coding Playground</div>
+  <h1>Write, Test, <span>Learn</span></h1>
+  <p>8 challenges — 4 SQL, 4 Python. Each with hints, solutions, and a timer.</p>
+</div>
+
+<div class="section-wrap">
+  <div class="topic-tabs" id="lang-tabs">
+    <button class="active" data-tab="sql">SQL (4)</button>
+    <button data-tab="python">Python (4)</button>
+  </div>
+  <div id="challenges"></div>
+</div>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="Search topics, questions... (Cmd+K)">
+    <div class="search-results"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v25 &middot; <a href="index.html">Dashboard</a></p>
+</footer>
+
+<script src="search.js"></script>
+<script>
+const CHALLENGES = {
+  sql: [
+    { title:'Fix the Query', diff:'easy', desc:'This query tries to filter on a SELECT alias. Fix it so it runs correctly.',
+      starter:`SELECT customer_id,\n       SUM(amount) AS total_spent\nFROM   orders\nWHERE  total_spent > 1000\nGROUP BY customer_id;`,
+      hint:'Remember: WHERE runs before SELECT. Use HAVING for post-aggregation filters.',
+      solution:`SELECT customer_id,\n       SUM(amount) AS total_spent\nFROM   orders\nGROUP BY customer_id\nHAVING SUM(amount) > 1000;` },
+    { title:'LEFT JOIN Pattern', diff:'easy', desc:'Write a query to find all employees who are NOT assigned to any department. Use employees (emp_id, name, dept_id) and departments (dept_id, dept_name).',
+      starter:`-- Find employees with no department\nSELECT ...\nFROM   employees e\n...`,
+      hint:'LEFT JOIN departments, then filter WHERE dept_id IS NULL on the right table.',
+      solution:`SELECT e.name\nFROM   employees e\nLEFT JOIN departments d\n  ON e.dept_id = d.dept_id\nWHERE  d.dept_id IS NULL;` },
+    { title:'Window Function — Top 3 per Department', diff:'medium', desc:'Return the top 3 highest-paid employees in each department. Table: employees (name, department, salary).',
+      starter:`-- Top 3 salaries per department\nSELECT ...\nFROM   (\n  SELECT ...\n  FROM employees\n) ranked\nWHERE ...;`,
+      hint:'Use ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC), then filter WHERE rn <= 3.',
+      solution:`SELECT name, department, salary\nFROM (\n  SELECT name, department, salary,\n    ROW_NUMBER() OVER (\n      PARTITION BY department\n      ORDER BY salary DESC\n    ) AS rn\n  FROM employees\n) ranked\nWHERE rn <= 3;` },
+    { title:'CTE — Month-over-Month Growth', diff:'hard', desc:'Calculate each month\'s revenue and its percentage change from the prior month. Table: orders (order_date, amount).',
+      starter:`-- Month-over-month revenue growth\nWITH monthly AS (\n  ...\n)\nSELECT ...\nFROM monthly;`,
+      hint:'First CTE: DATE_TRUNC + SUM. Second CTE: LAG(revenue) OVER (ORDER BY month). Final SELECT: compute pct_change.',
+      solution:`WITH monthly AS (\n  SELECT DATE_TRUNC('month', order_date) AS month,\n         SUM(amount) AS revenue\n  FROM   orders\n  GROUP BY 1\n),\nwith_prior AS (\n  SELECT month, revenue,\n    LAG(revenue) OVER (ORDER BY month) AS prev\n  FROM monthly\n)\nSELECT month, revenue, prev,\n  ROUND(100.0*(revenue - prev)/prev, 1) AS pct_change\nFROM with_prior\nORDER BY month;` }
+  ],
+  python: [
+    { title:'Set Dedup', diff:'easy', desc:'Given a list with duplicates, return a list of unique elements preserving order.',
+      starter:`def dedup(items):\n    # Your code here\n    pass\n\nprint(dedup([3, 1, 2, 1, 3, 4, 2]))`,
+      hint:'Use a set to track seen items. Iterate and add to result only if not in seen.',
+      solution:`def dedup(items):\n    seen = set()\n    result = []\n    for x in items:\n        if x not in seen:\n            seen.add(x)\n            result.append(x)\n    return result\n\nprint(dedup([3, 1, 2, 1, 3, 4, 2]))\n# [3, 1, 2, 4]` },
+    { title:'GroupBy Revenue', diff:'easy', desc:'Use Pandas to compute total and average revenue per region.',
+      starter:`import pandas as pd\n\ndf = pd.DataFrame({\n    'region': ['East','West','East','West','East'],\n    'revenue': [120, 340, 210, 150, 95]\n})\n\n# Compute total and avg revenue per region\nsummary = ...\nprint(summary)`,
+      hint:'Use df.groupby("region")["revenue"].agg(total="sum", avg="mean")',
+      solution:`import pandas as pd\n\ndf = pd.DataFrame({\n    'region': ['East','West','East','West','East'],\n    'revenue': [120, 340, 210, 150, 95]\n})\n\nsummary = df.groupby('region')['revenue'].agg(\n    total='sum',\n    avg='mean'\n)\nprint(summary)\n# region  total    avg\n# East     425  141.67\n# West     490  245.00` },
+    { title:'Two Sum — Hash Map', diff:'medium', desc:'Implement the O(n) hash map solution for Two Sum. Return indices of two numbers summing to target.',
+      starter:`def two_sum(nums, target):\n    # Your code here\n    pass\n\nprint(two_sum([2, 7, 11, 15], 9))  # [0, 1]`,
+      hint:'Create a dict "seen". For each num, check if (target - num) is in seen. If yes, return indices.',
+      solution:`def two_sum(nums, target):\n    seen = {}  # value -> index\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n\nprint(two_sum([2, 7, 11, 15], 9))  # [0, 1]` },
+    { title:'Mutable Default Fix', diff:'hard', desc:'This function has the mutable default argument bug. Fix it and explain why.',
+      starter:`def append_to(item, target=[]):\n    target.append(item)\n    return target\n\nprint(append_to(1))  # Expected: [1]\nprint(append_to(2))  # Expected: [2] but gets [1, 2]!`,
+      hint:'Use None as the default, then create a new list inside the function if target is None.',
+      solution:`def append_to(item, target=None):\n    if target is None:\n        target = []\n    target.append(item)\n    return target\n\nprint(append_to(1))  # [1]\nprint(append_to(2))  # [2]\n\n# Default arguments are evaluated ONCE at\n# function definition. The mutable list is\n# shared across calls. Using None as sentinel\n# ensures a fresh list each time.` }
+  ]
+};
+
+let activeLang = 'sql';
+let pgTimers = {};
+
+function renderChallenges(){
+  const items = CHALLENGES[activeLang];
+  document.getElementById('challenges').innerHTML = items.map((c,i)=>{
+    const id = activeLang+'-'+i;
+    const diffCls = c.diff==='easy'?'diff-easy':c.diff==='medium'?'diff-medium':'diff-hard';
+    return `
+    <div class="sandbox" id="ch-${id}">
+      <h4>${c.title} <span class="difficulty ${diffCls}">${c.diff}</span></h4>
+      <div class="stopwatch" id="psw-${id}">&#9201; <span class="sw-display">00:00</span>
+        <button onclick="togglePgTimer('${id}')" title="Start/pause">&#9654;</button>
+        <button onclick="resetPgTimer('${id}')" title="Reset">&#8635;</button>
+      </div>
+      <p class="sandbox-desc">${c.desc}</p>
+      <textarea id="editor-${id}">${c.starter}</textarea>
+      <div class="sandbox-actions">
+        <button onclick="showHint('${id}')">&#128161; Hint</button>
+        <button onclick="showSolution('${id}')">&#9989; Solution</button>
+      </div>
+      <div class="result-area" id="hint-${id}"></div>
+      <div class="result-area" id="sol-${id}"></div>
+    </div>`;
+  }).join('');
+}
+
+function togglePgTimer(id){
+  if(pgTimers[id] && pgTimers[id].running){
+    clearInterval(pgTimers[id].interval);
+    pgTimers[id].running = false;
+  } else {
+    if(!pgTimers[id]) pgTimers[id] = { elapsed:0, running:false };
+    pgTimers[id].running = true;
+    const start = Date.now() - pgTimers[id].elapsed;
+    pgTimers[id].interval = setInterval(()=>{
+      pgTimers[id].elapsed = Date.now() - start;
+      const s = Math.floor(pgTimers[id].elapsed/1000);
+      const m = Math.floor(s/60);
+      const el = document.querySelector('#psw-'+id+' .sw-display');
+      if(el) el.textContent = (m<10?'0'+m:m)+':'+(s%60<10?'0'+s%60:s%60);
+    },1000);
+  }
+}
+function resetPgTimer(id){
+  if(pgTimers[id]){ clearInterval(pgTimers[id].interval); pgTimers[id]={elapsed:0,running:false}; }
+  const el = document.querySelector('#psw-'+id+' .sw-display');
+  if(el) el.textContent = '00:00';
+}
+function showHint(id){
+  const idx = parseInt(id.split('-')[1]);
+  const items = CHALLENGES[id.split('-')[0]];
+  const el = document.getElementById('hint-'+id);
+  el.textContent = items[idx].hint;
+  el.classList.add('show');
+}
+function showSolution(id){
+  const idx = parseInt(id.split('-')[1]);
+  const items = CHALLENGES[id.split('-')[0]];
+  const el = document.getElementById('sol-'+id);
+  el.textContent = items[idx].solution;
+  el.classList.add('show');
+}
+
+document.getElementById('lang-tabs').addEventListener('click', e=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#lang-tabs button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeLang = e.target.dataset.tab;
+  renderChallenges();
+});
+
+document.getElementById('theme-toggle').addEventListener('click', ()=>{
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', isDark?'':'dark');
+  localStorage.setItem('ds-v25-theme', isDark?'light':'dark');
+});
+
+document.body.classList.remove('no-fouc');
+document.body.classList.add('ready');
+renderChallenges();
+</script>
+</body>
+</html>

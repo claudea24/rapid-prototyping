@@ -18,14 +18,15 @@
     nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
     nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
 
-    .stopwatch-bar{position:sticky;top:56px;z-index:150;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;justify-content:center;gap:16px}
-    .stopwatch-display{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--heading);letter-spacing:2px;min-width:90px;text-align:center}
-    .stopwatch-bar button{font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;padding:6px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
-    .stopwatch-bar button:hover{border-color:var(--accent);color:var(--accent)}
-    .stopwatch-bar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-    .stopwatch-bar button.primary:hover{background:#a16207}
-    .stopwatch-bar button.reset{color:var(--rose);border-color:var(--rose-light)}
-    .stopwatch-bar button.reset:hover{background:var(--rose-light)}
+    .challenge-timer{display:flex;align-items:center;gap:10px;padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;margin-bottom:14px}
+    .challenge-timer .timer-display{font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--heading);letter-spacing:1px;min-width:60px}
+    .challenge-timer button{font-family:'Inter',sans-serif;font-size:.68rem;font-weight:700;padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:all .15s;text-transform:uppercase;letter-spacing:.5px}
+    .challenge-timer button:hover{border-color:var(--accent);color:var(--accent)}
+    .challenge-timer button.start-btn{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .challenge-timer button.start-btn:hover{background:#1d4ed8}
+    .challenge-timer button.reset-btn{color:var(--rose);border-color:var(--rose-light)}
+    .challenge-timer button.reset-btn:hover{background:var(--rose-light)}
+    .challenge-timer .timer-label{font-size:.72rem;color:var(--text-muted);font-weight:600}
 
     .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
     .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
@@ -68,8 +69,8 @@
 
     @media(max-width:700px){
       nav{padding:0 16px}
-      .stopwatch-bar{padding:8px 16px;gap:10px;flex-wrap:wrap}
-      .stopwatch-display{font-size:1.2rem}
+      .challenge-timer{flex-wrap:wrap}
+      .challenge-timer .timer-display{font-size:.95rem}
       .page-header{padding:24px 16px 8px}
       .page-header .intro{margin-left:0}
       .container{padding:16px 16px 48px}
@@ -90,18 +91,13 @@
   </div>
 </nav>
 
-<div class="stopwatch-bar">
-  <button class="primary" id="toggleBtn" onclick="toggleStopwatch()">Start</button>
-  <span class="stopwatch-display" id="stopwatchDisplay">00:00</span>
-  <button class="reset" onclick="resetStopwatch()">Reset</button>
-</div>
 
 <div class="page-header">
   <div class="top">
     <div class="icon" style="background:var(--accent-light)">&#128013;</div>
     <h1>Python Playground</h1>
   </div>
-  <p class="intro">5 hands-on Python challenges covering data structures, Pandas, NumPy, and common interview gotchas.</p>
+  <p class="intro">5 hands-on Python challenges covering data structures, Pandas, NumPy, and common interview gotchas. Each challenge has its own timer.</p>
 </div>
 
 <div class="container">
@@ -112,6 +108,7 @@
       <h3>Challenge 1 — Deduplicate</h3>
       <span class="difficulty easy">Easy</span>
     </div>
+    <div class="challenge-timer" id="timer1"><span class="timer-label">Time:</span><span class="timer-display" id="timerDisplay1">00:00</span><button class="start-btn" onclick="toggleTimer(1)">Start</button><button class="reset-btn" onclick="resetTimer(1)">Reset</button></div>
     <p class="problem">Use a <code>set</code> to remove duplicates from a list while preserving the original order. Input: <code>[3, 1, 4, 1, 5, 9, 2, 6, 5, 3]</code></p>
     <div class="sandbox">
       <textarea id="editor1">nums = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3]
@@ -152,6 +149,7 @@ print(result)  # [3, 1, 4, 5, 9, 2, 6]</div>
       <h3>Challenge 2 — GroupBy Revenue</h3>
       <span class="difficulty easy">Easy</span>
     </div>
+    <div class="challenge-timer" id="timer2"><span class="timer-label">Time:</span><span class="timer-display" id="timerDisplay2">00:00</span><button class="start-btn" onclick="toggleTimer(2)">Start</button><button class="reset-btn" onclick="resetTimer(2)">Reset</button></div>
     <p class="problem">Use Pandas <code>groupby</code> + <code>agg</code> to calculate total revenue and average order size per region.</p>
     <div class="sandbox">
       <textarea id="editor2">import pandas as pd
@@ -202,6 +200,7 @@ print(result)
       <h3>Challenge 3 — Matrix Multiply</h3>
       <span class="difficulty medium">Medium</span>
     </div>
+    <div class="challenge-timer" id="timer3"><span class="timer-label">Time:</span><span class="timer-display" id="timerDisplay3">00:00</span><button class="start-btn" onclick="toggleTimer(3)">Start</button><button class="reset-btn" onclick="resetTimer(3)">Reset</button></div>
     <p class="problem">Use NumPy's <code>@</code> operator to compute OLS regression coefficients. Given X (with intercept) and y, calculate <code>(X'X)^{-1} X'y</code>.</p>
     <div class="sandbox">
       <textarea id="editor3">import numpy as np
@@ -254,6 +253,7 @@ beta2 = np.linalg.lstsq(X, y, rcond=None)[0]</div>
       <h3>Challenge 4 — Two Sum</h3>
       <span class="difficulty medium">Medium</span>
     </div>
+    <div class="challenge-timer" id="timer4"><span class="timer-label">Time:</span><span class="timer-display" id="timerDisplay4">00:00</span><button class="start-btn" onclick="toggleTimer(4)">Start</button><button class="reset-btn" onclick="resetTimer(4)">Reset</button></div>
     <p class="problem">Given a list of integers and a target, return the indices of two numbers that add up to the target. Use a hash map for O(n) time.</p>
     <div class="sandbox">
       <textarea id="editor4">def two_sum(nums, target):
@@ -296,6 +296,7 @@ print(two_sum([3, 3], 6))          # [0, 1]</div>
       <h3>Challenge 5 — Mutable Trap</h3>
       <span class="difficulty hard">Hard</span>
     </div>
+    <div class="challenge-timer" id="timer5"><span class="timer-label">Time:</span><span class="timer-display" id="timerDisplay5">00:00</span><button class="start-btn" onclick="toggleTimer(5)">Start</button><button class="reset-btn" onclick="resetTimer(5)">Reset</button></div>
     <p class="problem">This function has a classic Python bug: mutable default argument. Each call to <code>append_to</code> accumulates items because the default list is shared. Fix it.</p>
     <div class="sandbox">
       <textarea id="editor5"># BUG: mutable default argument
@@ -342,38 +343,35 @@ print(append_to(3))  # [3]
 </footer>
 
 <script>
-  let stopwatchTime = 0;
-  let stopwatchInterval = null;
-  let running = false;
-
+  const timers = {};
   function formatTime(ms) {
     const min = Math.floor(ms / 60000);
     const sec = Math.floor((ms % 60000) / 1000);
     return String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
   }
-
-  function toggleStopwatch() {
-    const btn = document.getElementById('toggleBtn');
-    if (running) {
-      clearInterval(stopwatchInterval);
-      running = false;
-      btn.textContent = 'Start';
+  function toggleTimer(n) {
+    if (!timers[n]) timers[n] = { time: 0, interval: null, running: false };
+    const t = timers[n];
+    const btn = document.querySelector('#timer' + n + ' .start-btn');
+    if (t.running) {
+      clearInterval(t.interval);
+      t.running = false;
+      btn.textContent = 'Resume';
     } else {
-      stopwatchInterval = setInterval(() => {
-        stopwatchTime += 100;
-        document.getElementById('stopwatchDisplay').textContent = formatTime(stopwatchTime);
+      t.interval = setInterval(() => {
+        t.time += 100;
+        document.getElementById('timerDisplay' + n).textContent = formatTime(t.time);
       }, 100);
-      running = true;
+      t.running = true;
       btn.textContent = 'Pause';
     }
   }
-
-  function resetStopwatch() {
-    clearInterval(stopwatchInterval);
-    running = false;
-    stopwatchTime = 0;
-    document.getElementById('stopwatchDisplay').textContent = '00:00';
-    document.getElementById('toggleBtn').textContent = 'Start';
+  function resetTimer(n) {
+    if (!timers[n]) timers[n] = { time: 0, interval: null, running: false };
+    clearInterval(timers[n].interval);
+    timers[n] = { time: 0, interval: null, running: false };
+    document.getElementById('timerDisplay' + n).textContent = '00:00';
+    document.querySelector('#timer' + n + ' .start-btn').textContent = 'Start';
   }
 
   function checkChallenge(n) {
@@ -387,8 +385,10 @@ print(append_to(3))  # [3]
   }
 
   function markDone(n) {
+    if (timers[n] && timers[n].running) toggleTimer(n);
     const el = document.getElementById('done' + n);
-    el.textContent = 'Completed at ' + formatTime(stopwatchTime);
+    const time = timers[n] ? formatTime(timers[n].time) : '00:00';
+    el.textContent = '\u2713 Done in ' + time;
     el.classList.add('show');
   }
 </script>

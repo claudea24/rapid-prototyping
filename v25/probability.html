@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Data Science Interview Prep — master SQL, Python, ML, Statistics, Probability, and Case Studies with narrative scenarios, coding playground, mock interviews, and personalized diagnostics.">
+  <meta property="og:title" content="DS Interview Prep — Launch Ready">
+  <meta property="og:description" content="25 iterations of prototyping the ultimate data science interview prep tool.">
+  <meta property="og:image" content="og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📊</text></svg>">
+  <title>Probability — DS Prep v25</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      document.body&&document.body.classList.add('no-fouc');
+      var t=localStorage.getItem('ds-v25-theme');
+      if(t==='dark')document.documentElement.setAttribute('data-theme','dark');
+    })();
+  </script>
+</head>
+<body class="no-fouc">
+<a href="#main" class="skip-link">Skip to content</a>
+<nav role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v25</a>
+  <div class="company-select">
+    <button data-co="all" class="active">All</button>
+    <button data-co="meta">Meta</button>
+    <button data-co="google">Google</button>
+    <button data-co="amazon">Amazon</button>
+  </div>
+  <button class="icon-btn" id="search-trigger" title="Search (Cmd+K)" aria-label="Search">&#128269;</button>
+  <button class="icon-btn" id="theme-toggle" title="Toggle dark mode" aria-label="Toggle dark/light theme">&#9790;</button>
+  <button class="icon-btn" onclick="window.print()" title="Print" aria-label="Print cheat sheet">&#128424;</button>
+  <a href="index.html" class="back">&larr; Dashboard</a>
+</nav>
+
+<div class="hero" id="main">
+  <div class="badge">Probability</div>
+  <h1>Reasoning Under <span>Uncertainty</span></h1>
+  <p>Bayes' theorem, distributions, expected value, and classic puzzles.</p>
+</div>
+
+<div class="section-wrap">
+  <div id="diag-banner"></div>
+
+  <div class="narrative-tabs" id="narrative-tabs">
+    <button class="active" data-co="all">General</button>
+    <button data-co="meta">Meta</button>
+    <button data-co="google">Google</button>
+    <button data-co="amazon">Amazon</button>
+  </div>
+  <div id="story-area"></div>
+
+  <div class="mode-toggle" id="mode-toggle">
+    <button class="active" data-mode="learn">Learn</button>
+    <button data-mode="review">Review</button>
+  </div>
+
+  <!-- Learn Mode -->
+  <div id="learn-content">
+    <div class="learn-section open" id="s-bayes">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128300; Bayes' Theorem &amp; Conditional Probability <span class="focus-badge" id="focus-bayes" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p><strong>Bayes' Theorem:</strong> P(A|B) = P(B|A) * P(A) / P(B)</p>
+        <p>In words: <strong>Posterior = (Likelihood x Prior) / Evidence</strong></p>
+        <table class="content-table">
+          <tr><th>Term</th><th>Meaning</th></tr>
+          <tr><td>Prior P(A)</td><td>Belief before seeing data</td></tr>
+          <tr><td>Likelihood P(B|A)</td><td>Probability of data under hypothesis</td></tr>
+          <tr><td>Evidence P(B)</td><td>Overall probability of data</td></tr>
+          <tr><td>Posterior P(A|B)</td><td>Updated belief after data</td></tr>
+        </table>
+        <p><strong>The Medical Test Problem:</strong> Disease affects 1%. Test is 99% accurate. You test positive. P(disease) = ?</p>
+        <pre><code>P(+) = P(+|D)*P(D) + P(+|D')*P(D')
+     = 0.99 * 0.01 + 0.01 * 0.99
+     = 0.0198
+
+P(D|+) = 0.0099 / 0.0198 = 50%</code></pre>
+        <div class="insight-box"><strong>Why 50%, not 99%?</strong> In 10,000 people: 100 sick (99 test positive), 9,900 healthy (99 false positives). Of 198 positives, only 99 are truly sick. The base rate (1%) dominates.</div>
+
+        <div class="sandbox">
+          <h4>Exercise: Bayes Calculation</h4>
+          <div class="stopwatch" id="sw-ex1">&#9201; <span class="sw-display">00:00</span>
+            <button onclick="toggleTimer('ex1')">&#9654;</button>
+            <button onclick="resetTimer('ex1')">&#8635;</button>
+          </div>
+          <p class="sandbox-desc">A spam filter has 95% sensitivity and 98% specificity. 20% of emails are spam. An email is flagged. What is P(spam)?</p>
+          <textarea id="ed-ex1">Your calculation here...</textarea>
+          <div class="sandbox-actions">
+            <button onclick="document.getElementById('sol-ex1').classList.add('show')">&#9989; Solution</button>
+          </div>
+          <div class="result-area" id="sol-ex1">P(flag|spam) = 0.95, P(flag|not spam) = 0.02, P(spam) = 0.20
+
+P(flag) = 0.95*0.20 + 0.02*0.80 = 0.19 + 0.016 = 0.206
+
+P(spam|flag) = 0.19 / 0.206 = 92.2%
+
+Higher than the medical test because the base rate (20%) is much higher than 1%.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-distributions">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#127922; Key Distributions <span class="focus-badge" id="focus-dist" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <table class="content-table">
+          <tr><th>Distribution</th><th>Type</th><th>Parameters</th><th>Mean</th><th>Models</th></tr>
+          <tr><td><strong>Bernoulli</strong></td><td>Discrete</td><td>p</td><td>p</td><td>Single yes/no trial</td></tr>
+          <tr><td><strong>Binomial</strong></td><td>Discrete</td><td>n, p</td><td>np</td><td>Successes in n trials</td></tr>
+          <tr><td><strong>Poisson</strong></td><td>Discrete</td><td>lambda</td><td>lambda</td><td>Events in fixed interval</td></tr>
+          <tr><td><strong>Geometric</strong></td><td>Discrete</td><td>p</td><td>1/p</td><td>Trials until first success</td></tr>
+          <tr><td><strong>Normal</strong></td><td>Continuous</td><td>mu, sigma</td><td>mu</td><td>Bell curve</td></tr>
+          <tr><td><strong>Exponential</strong></td><td>Continuous</td><td>lambda</td><td>1/lambda</td><td>Time between events</td></tr>
+        </table>
+        <div class="insight-box"><strong>The 68-95-99.7 Rule:</strong> For normal distributions, ~68% within 1 SD, ~95% within 2 SD, ~99.7% within 3 SD of the mean.</div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-ev">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#127919; Expected Value &amp; Variance <span class="focus-badge" id="focus-ev" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p><strong>E[X]</strong> = sum of x * P(X=x) — the long-run average.</p>
+        <p><strong>Linearity:</strong> E[aX + bY] = aE[X] + bE[Y] — works even when X, Y are dependent!</p>
+        <p><strong>Variance:</strong> Var(X) = E[X&sup2;] - (E[X])&sup2;</p>
+        <pre><code>// Die game: Pay $5. Roll 6 → $20, Roll 4-5 → $10, else → $0.
+E[winnings] = (1/6)*20 + (2/6)*10 + (3/6)*0
+            = 3.33 + 3.33 + 0 = $6.67
+E[profit]   = 6.67 - 5 = $1.67  → Play!</code></pre>
+        <div class="insight-box"><strong>Key Insight:</strong> Linearity of expectation is incredibly powerful. You can decompose complex expected values into simple pieces without worrying about dependencies between variables.</div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-puzzles">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#129513; Classic Interview Puzzles <span class="focus-badge" id="focus-puzzles" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p><strong>Birthday Problem:</strong> 23 people for a 50%+ chance of a shared birthday. C(23,2) = 253 pairs, each with 1/365 chance.</p>
+        <p><strong>Monty Hall:</strong> 3 doors, 1 car. You pick, host reveals a goat. Always switch — wins 2/3.</p>
+        <table class="content-table">
+          <tr><th>Scenario</th><th>Stay</th><th>Switch</th></tr>
+          <tr><td>Car behind your door (1/3)</td><td>Win</td><td>Lose</td></tr>
+          <tr><td>Car behind door 2 (1/3)</td><td>Lose</td><td>Win</td></tr>
+          <tr><td>Car behind door 3 (1/3)</td><td>Lose</td><td>Win</td></tr>
+        </table>
+        <p><strong>Coupon Collector:</strong> E[boxes for all n coupons] = n * H(n) where H(n) is the harmonic number. For n=50, about 225 boxes.</p>
+        <div class="insight-box"><strong>Approach:</strong> "At least one..." problems are almost always easier as 1 - P(nobody). Complement counting is your friend.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Mode -->
+  <div id="review-content" style="display:none;">
+    <div class="review-card">
+      <h4>Bayes' Theorem</h4>
+      <ul>
+        <li>P(A|B) = P(B|A) * P(A) / P(B)</li>
+        <li>Base rate dominates with rare events</li>
+        <li>Medical test: 1% prevalence + 99% accuracy = only 50% PPV</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Distributions</h4>
+      <ul>
+        <li>Binomial: n trials, count successes</li>
+        <li>Poisson: events per interval (lambda)</li>
+        <li>Normal: 68-95-99.7 rule</li>
+        <li>Exponential: memoryless, time between events</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Expected Value</h4>
+      <ul>
+        <li>E[aX + bY] = aE[X] + bE[Y] (even dependent!)</li>
+        <li>Var(X+Y) = Var(X) + Var(Y) only if independent</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>Puzzles</h4>
+      <ul>
+        <li>Birthday: 23 people for 50%+</li>
+        <li>Monty Hall: always switch (2/3 win)</li>
+        <li>"At least one" = 1 - P(none)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="Search topics, questions... (Cmd+K)">
+    <div class="search-results"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v25 &middot; <a href="index.html">Dashboard</a></p>
+</footer>
+
+<script src="search.js"></script>
+<script>
+const STORIES = {
+  all: '<div class="story-text"><strong>Reasoning Under Uncertainty.</strong> Probability is the mathematical language of uncertainty. Every confidence interval, every p-value, every Bayesian model rests on its foundation.</div>',
+  meta: '<div class="story-text"><strong>Probability for Feed Ranking.</strong> Meta uses probabilistic models for predicting engagement (P(click), P(share)). Understanding Bayes\' theorem is essential for content ranking algorithms and ad auction systems.</div>',
+  google: '<div class="story-text"><strong>Probability for Ad Auctions.</strong> Google\'s ad system is fundamentally probabilistic. Interviews test conditional probability, expected value calculations for auction design, and Bayesian reasoning for quality scoring.</div>',
+  amazon: '<div class="story-text"><strong>Probability for Demand.</strong> Amazon uses probabilistic forecasting for inventory management. Understanding distributions (Poisson for orders, exponential for inter-arrival times) and expected value for supply chain optimization is critical.</div>'
+};
+
+let activeCo = 'all';
+function renderStory(){ document.getElementById('story-area').innerHTML = STORIES[activeCo] || STORIES.all; }
+document.getElementById('narrative-tabs').addEventListener('click', e=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#narrative-tabs button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeCo = e.target.dataset.co;
+  renderStory();
+});
+document.querySelectorAll('nav .company-select button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav .company-select button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCo = btn.dataset.co;
+    document.querySelectorAll('#narrative-tabs button').forEach(b=>b.classList.remove('active'));
+    const match = document.querySelector('#narrative-tabs button[data-co="'+activeCo+'"]');
+    if(match) match.classList.add('active');
+    renderStory();
+  });
+});
+renderStory();
+
+(function(){
+  const raw = localStorage.getItem('ds-v25-diagnostic');
+  if(!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    const s = d.probability || {score:0,total:3};
+    const pct = s.total>0 ? (s.score/s.total)*100 : 0;
+    let lvl, cls;
+    if(pct>=80){ lvl='Strong'; cls='strong'; }
+    else if(pct>=40){ lvl='Review'; cls='review'; }
+    else { lvl='Weak'; cls='weak'; }
+    document.getElementById('diag-banner').innerHTML = `<div class="diag-banner ${cls}">${lvl}: ${s.score}/${s.total} correct on diagnostic</div>`;
+    if(cls==='weak') document.querySelectorAll('.focus-badge').forEach(b=>b.style.display='inline');
+  } catch(e){}
+})();
+
+document.querySelectorAll('#mode-toggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#mode-toggle button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const mode = btn.dataset.mode;
+    document.getElementById('learn-content').style.display = mode==='learn'?'':'none';
+    document.getElementById('review-content').style.display = mode==='review'?'':'none';
+  });
+});
+
+function toggleSection(header){ header.closest('.learn-section').classList.toggle('open'); }
+
+let timers = {};
+function toggleTimer(id){
+  if(timers[id]&&timers[id].running){clearInterval(timers[id].iv);timers[id].running=false;}
+  else{
+    if(!timers[id])timers[id]={elapsed:0,running:false};
+    timers[id].running=true;
+    const start=Date.now()-timers[id].elapsed;
+    timers[id].iv=setInterval(()=>{
+      timers[id].elapsed=Date.now()-start;
+      const s=Math.floor(timers[id].elapsed/1000),m=Math.floor(s/60);
+      const el=document.querySelector('#sw-'+id+' .sw-display');
+      if(el) el.textContent=(m<10?'0'+m:m)+':'+(s%60<10?'0'+s%60:s%60);
+    },1000);
+  }
+}
+function resetTimer(id){
+  if(timers[id]){clearInterval(timers[id].iv);timers[id]={elapsed:0,running:false};}
+  const el=document.querySelector('#sw-'+id+' .sw-display');
+  if(el) el.textContent='00:00';
+}
+
+document.getElementById('theme-toggle').addEventListener('click', ()=>{
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', isDark?'':'dark');
+  localStorage.setItem('ds-v25-theme', isDark?'light':'dark');
+});
+
+document.body.classList.remove('no-fouc');
+document.body.classList.add('ready');
+</script>
+</body>
+</html>

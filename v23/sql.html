@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL — DS Prep v23</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="review-mode">
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v23</a>
+  <div class="nav-right">
+    <button class="print-btn" onclick="window.print()">&#128424; Print</button>
+    <a href="index.html" class="back">Dashboard</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="badge ib">SQL</div>
+  <h1>SQL Cheat Sheet</h1>
+  <p>Execution order, joins, window functions, CTEs, aggregation rules, and optimization.</p>
+</div>
+
+<div class="banner-wrap" id="banner-wrap"></div>
+
+<div class="mode-toggle">
+  <button onclick="setMode('learn')" id="learn-btn">Learn</button>
+  <button class="active" onclick="setMode('review')" id="review-btn">Review</button>
+</div>
+
+<div class="review-grid">
+
+  <!-- Card 1: Execution Order -->
+  <div class="review-card" data-section="execution-order">
+    <h3><span class="card-num ib">1</span> Execution Order</h3>
+    <div class="formula">FROM &rarr; WHERE &rarr; GROUP BY &rarr; HAVING &rarr; SELECT &rarr; ORDER BY &rarr; LIMIT</div>
+    <p class="warning">&#9888;&#65039; Can't use SELECT aliases in WHERE (evaluated before SELECT)</p>
+    <div class="learn-only">
+      <h4>Why This Matters</h4>
+      <p>SQL doesn't execute in the order you write it. Understanding execution order prevents common mistakes like referencing aliases too early or filtering aggregates in WHERE instead of HAVING.</p>
+      <pre>-- This FAILS: alias not available in WHERE
+SELECT salary * 1.1 AS new_salary
+FROM employees
+WHERE new_salary > 100000;
+
+-- This WORKS: use the expression directly
+SELECT salary * 1.1 AS new_salary
+FROM employees
+WHERE salary * 1.1 > 100000;</pre>
+      <div class="example-box">
+        <h5>Key Insight</h5>
+        <p>ORDER BY is the one place you CAN use SELECT aliases, because it runs after SELECT.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Joins -->
+  <div class="review-card" data-section="joins">
+    <h3><span class="card-num ib">2</span> Joins Cheat Sheet</h3>
+    <table>
+      <tr><th>JOIN</th><th>Keeps</th><th>NULLs</th></tr>
+      <tr><td>INNER</td><td>Matches only</td><td>None</td></tr>
+      <tr><td>LEFT</td><td>All left + matches</td><td>Right cols NULL</td></tr>
+      <tr><td>RIGHT</td><td>All right + matches</td><td>Left cols NULL</td></tr>
+      <tr><td>FULL OUTER</td><td>Everything</td><td>Both sides NULL</td></tr>
+      <tr><td>CROSS</td><td>Cartesian product</td><td>None</td></tr>
+    </table>
+    <div class="learn-only">
+      <h4>When to Use Each</h4>
+      <p><strong>INNER JOIN</strong> when you only want rows that exist in both tables. <strong>LEFT JOIN</strong> when you need all records from the primary table even if there's no match. <strong>FULL OUTER</strong> for reconciliation queries where you need to find mismatches in both directions.</p>
+      <pre>-- Find customers with no orders (LEFT JOIN + NULL check)
+SELECT c.name
+FROM customers c
+LEFT JOIN orders o ON c.id = o.customer_id
+WHERE o.id IS NULL;</pre>
+    </div>
+  </div>
+
+  <!-- Card 3: Window Functions -->
+  <div class="review-card" data-section="window-functions">
+    <h3><span class="card-num ib">3</span> Window Functions</h3>
+    <table>
+      <tr><th>Function</th><th>Behavior</th><th>Use For</th></tr>
+      <tr><td><code>ROW_NUMBER</code></td><td>Unique sequential</td><td>Dedup, top-N</td></tr>
+      <tr><td><code>RANK</code></td><td>Ties + gaps (1,1,3)</td><td>Competition ranking</td></tr>
+      <tr><td><code>DENSE_RANK</code></td><td>Ties, no gaps (1,1,2)</td><td>Consecutive ranking</td></tr>
+    </table>
+    <div class="learn-only">
+      <h4>Window Function Anatomy</h4>
+      <pre>function_name() OVER (
+  PARTITION BY col    -- group rows
+  ORDER BY col        -- sort within group
+  ROWS BETWEEN ...    -- frame (optional)
+)</pre>
+      <h4>Common Patterns</h4>
+      <pre>-- Running total
+SUM(amount) OVER (ORDER BY date ROWS UNBOUNDED PRECEDING)
+
+-- Moving average (3-day)
+AVG(value) OVER (ORDER BY date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)
+
+-- Dedup: keep latest per user
+WITH ranked AS (
+  SELECT *, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY created_at DESC) AS rn
+  FROM events
+)
+SELECT * FROM ranked WHERE rn = 1;</pre>
+    </div>
+  </div>
+
+  <!-- Card 4: Aggregation Rules -->
+  <div class="review-card" data-section="aggregation">
+    <h3><span class="card-num ib">4</span> Aggregation Rules</h3>
+    <ul>
+      <li><strong>WHERE</strong> = before grouping (no aggregates allowed)</li>
+      <li><strong>HAVING</strong> = after grouping (can use aggregates)</li>
+      <li><code>COUNT(*)</code> counts NULLs, <code>COUNT(col)</code> skips NULLs</li>
+      <li>Every non-aggregated SELECT column must be in GROUP BY</li>
+    </ul>
+    <div class="learn-only">
+      <h4>WHERE vs HAVING</h4>
+      <pre>-- WHERE filters rows BEFORE grouping
+SELECT department, AVG(salary)
+FROM employees
+WHERE hire_date > '2020-01-01'   -- filter individual rows
+GROUP BY department
+HAVING AVG(salary) > 80000;      -- filter groups</pre>
+      <h4>COUNT Nuances</h4>
+      <pre>-- These return DIFFERENT results if col has NULLs:
+SELECT COUNT(*)    FROM t;  -- counts all rows
+SELECT COUNT(col)  FROM t;  -- counts non-NULL only
+SELECT COUNT(DISTINCT col) FROM t;  -- unique non-NULL</pre>
+    </div>
+  </div>
+
+  <!-- Card 5: CTE Pattern -->
+  <div class="review-card" data-section="cte">
+    <h3><span class="card-num ib">5</span> CTE Pattern</h3>
+    <div class="formula">WITH step1 AS (
+  SELECT ...
+),
+step2 AS (
+  SELECT ... FROM step1
+)
+SELECT * FROM step2;</div>
+    <div class="learn-only">
+      <h4>Why CTEs Over Subqueries</h4>
+      <p>CTEs make complex queries readable by breaking them into named steps. They're evaluated once and referenced by name, like temporary views.</p>
+      <pre>-- Multi-step analysis with CTEs
+WITH daily_revenue AS (
+  SELECT DATE(order_time) AS day, SUM(amount) AS rev
+  FROM orders GROUP BY 1
+),
+with_growth AS (
+  SELECT day, rev,
+         LAG(rev) OVER (ORDER BY day) AS prev_rev,
+         ROUND(100.0 * (rev - LAG(rev) OVER (ORDER BY day))
+               / LAG(rev) OVER (ORDER BY day), 1) AS growth_pct
+  FROM daily_revenue
+)
+SELECT * FROM with_growth WHERE growth_pct > 10;</pre>
+    </div>
+  </div>
+
+  <!-- Card 6: Optimization -->
+  <div class="review-card" data-section="optimization">
+    <h3><span class="card-num ib">6</span> Optimization Checklist</h3>
+    <div class="checklist">
+      <span>EXPLAIN ANALYZE</span>
+      <span>Index filter/join cols</span>
+      <span>No SELECT *</span>
+      <span>Filter early</span>
+      <span>EXISTS &gt; IN</span>
+      <span>Avoid functions on indexed cols</span>
+    </div>
+    <div class="learn-only">
+      <h4>Reading EXPLAIN Output</h4>
+      <p>Look for <strong>Seq Scan</strong> on large tables (might need index), <strong>Nested Loop</strong> with large tables (consider Hash Join), and high <strong>actual rows</strong> vs <strong>estimated rows</strong> (stale statistics).</p>
+      <h4>EXISTS vs IN</h4>
+      <pre>-- EXISTS stops at first match (faster for large subqueries)
+SELECT * FROM orders o
+WHERE EXISTS (SELECT 1 FROM vip_customers v WHERE v.id = o.customer_id);
+
+-- IN materializes the full subquery list first
+SELECT * FROM orders
+WHERE customer_id IN (SELECT id FROM vip_customers);</pre>
+    </div>
+  </div>
+
+</div>
+
+<footer>SQL &mdash; DS Prep v23</footer>
+
+<script>
+function setMode(mode) {
+  var btns = document.querySelectorAll('.mode-toggle button');
+  if (mode === 'review') {
+    document.body.classList.add('review-mode');
+    btns[0].classList.remove('active');
+    btns[1].classList.add('active');
+  } else {
+    document.body.classList.remove('review-mode');
+    btns[0].classList.add('active');
+    btns[1].classList.remove('active');
+  }
+  localStorage.setItem('ds-v23-mode', mode);
+}
+
+function initPage() {
+  var raw = localStorage.getItem('ds-v23-diagnostic');
+  if (!raw) return;
+  var data = JSON.parse(raw);
+  var score = data.scores.sql || 0;
+  var total = 3;
+  var pct = Math.round((score / total) * 100);
+  var level, cls;
+  if (pct >= 80) { level = 'Strong'; cls = 'banner-strong'; }
+  else if (pct >= 40) { level = 'Review'; cls = 'banner-review'; }
+  else { level = 'Weak'; cls = 'banner-weak'; }
+
+  var banner = document.getElementById('banner-wrap');
+  banner.innerHTML = '<div class="mastery-banner ' + cls + '">' +
+    score + '/3 correct &mdash; ' + level +
+    (level === 'Weak' ? ' &mdash; Focus on this topic!' : level === 'Strong' ? ' &mdash; Quick review recommended.' : ' &mdash; Some gaps to fill.') +
+    '</div>';
+
+  // Default mode based on mastery
+  var savedMode = localStorage.getItem('ds-v23-mode');
+  if (!savedMode) {
+    savedMode = (level === 'Strong') ? 'review' : 'learn';
+  }
+  setMode(savedMode);
+
+  // Mark weak sections with FOCUS badge and red border
+  if (level === 'Weak') {
+    // Mark specific cards related to missed questions
+    var cards = document.querySelectorAll('.review-card');
+    cards.forEach(function(card) {
+      card.classList.add('weak-section');
+      var h3 = card.querySelector('h3');
+      if (h3 && !h3.querySelector('.focus-badge')) {
+        h3.innerHTML += '<span class="focus-badge">FOCUS</span>';
+      }
+    });
+  }
+}
+initPage();
+</script>
+</body>
+</html>

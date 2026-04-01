@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python Story — Story + Company | DS Prep v22</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>(function(){var t=localStorage.getItem('ds-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')})()</script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v22</a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="sql.html">SQL</a>
+      <a href="python.html" class="active">Python</a>
+      <a href="ml.html">ML</a>
+      <a href="stats.html">Stats</a>
+      <a href="probability.html">Prob</a>
+      <a href="casing.html">Case</a>
+    </div>
+    <button class="search-trigger" onclick="openSearch()">&#128269; <kbd>&#8984;K</kbd></button>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--python-light)">&#128013;</div>
+    <h1>The Python Story &mdash; <span>2 Scenes</span></h1>
+  </div>
+  <p class="intro">Data structures, Pandas, and coding patterns through company-specific narratives.</p>
+</div>
+
+<div class="container">
+
+  <div class="company-tabs">
+    <button class="company-tab active" data-company="meta" onclick="switchCompany('meta')">Meta</button>
+    <button class="company-tab" data-company="google" onclick="switchCompany('google')">Google</button>
+    <button class="company-tab" data-company="amazon" onclick="switchCompany('amazon')">Amazon</button>
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="section" id="scene1">
+    <div class="section-head open" onclick="toggle(this)">
+      <h2><span class="num">Scene 1</span> Data Structures + Pandas</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body open">
+
+      <div class="story-text" data-company="meta">The Feed Pipeline is backed up. Millions of posts need ranking, and your predecessor's code is timing out. You open the script and see nested for-loops over a list where a dict lookup would be O(1). Time to fix the data structures.</div>
+      <div class="story-text" data-company="google" style="display:none">The MapReduce job is failing on large inputs. The bottleneck? A quadratic algorithm in the mapper that checks membership in a list instead of a set. Before rewriting, you need to understand when each data structure shines.</div>
+      <div class="story-text" data-company="amazon" style="display:none">The data pipeline for fulfillment reports crashes on peak days. You trace it to a function that appends to the front of a list millions of times. A deque would fix this instantly.</div>
+
+      <div class="challenge-timer" id="timer1">
+        <span class="timer-label">Scene Timer</span>
+        <span class="timer-display" id="timerDisplay1">00:00</span>
+        <button class="start-btn" onclick="toggleTimer(1)">Start</button>
+        <button class="reset-btn" onclick="resetTimer(1)">Reset</button>
+      </div>
+
+      <table class="comp-table">
+        <thead><tr><th>Structure</th><th>Lookup</th><th>Insert</th><th>Delete</th><th>Best Use Case</th></tr></thead>
+        <tbody>
+          <tr><td><code>list</code></td><td>O(1) index</td><td>O(1) end / O(n) front</td><td>O(n)</td><td>Ordered sequences, stacks</td></tr>
+          <tr><td><code>dict</code></td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td><td>Key-value mapping, counting</td></tr>
+          <tr><td><code>set</code></td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td><td>Membership tests, dedup</td></tr>
+          <tr><td><code>deque</code></td><td>O(n)</td><td>O(1) both ends</td><td>O(1) both ends</td><td>BFS, sliding windows</td></tr>
+          <tr><td><code>heapq</code></td><td>O(1) min</td><td>O(log n)</td><td>O(log n)</td><td>Top-k, priority scheduling</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Choosing the right data structure can turn an O(n&sup2;) solution into O(n). Checking for duplicates: O(n&sup2;) with nested loops, O(n) with a <code>set</code>. When a solution feels slow, ask: "Am I using the right container?"</p>
+      </div>
+
+      <h3 style="margin:24px 0 12px;font-size:1rem;color:var(--heading)">Pandas: GroupBy &amp; Merge</h3>
+
+      <p class="explain">The <code>groupby</code> operation follows split-apply-combine: partition the DataFrame by keys, apply a function to each group, and stitch results back together. <code>pd.merge()</code> mirrors SQL joins &mdash; always verify row count after a merge to catch unexpected many-to-many duplicates.</p>
+
+      <div class="code-block"><pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+summary = df.groupby(<span class="str">'region'</span>)[<span class="str">'revenue'</span>].agg(
+    total_revenue=<span class="str">'sum'</span>,
+    avg_order=<span class="str">'mean'</span>,
+    num_transactions=<span class="str">'count'</span>
+)
+
+<span class="cm"># Merge: SQL-style joins in Pandas</span>
+merged = pd.merge(orders, customers, on=<span class="str">'customer_id'</span>, how=<span class="str">'left'</span>)</pre></div>
+
+      <div class="practice">
+        <div class="practice-label">Practice Exercise</div>
+        <p>Given a DataFrame with columns <code>user_id</code>, <code>session_date</code>, <code>duration</code>, write a GroupBy to compute per-user average session duration and total sessions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="section" id="scene2">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 2</span> Coding Patterns</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+
+      <div class="story-text" data-company="meta">The interview panel gives you a coding problem: given a list of user interactions, find the longest streak of consecutive daily logins. The brute-force approach times out. You need the sliding window pattern.</div>
+      <div class="story-text" data-company="google" style="display:none">Your Google interviewer presents: "Given a stream of search queries, find the two most similar queries in O(n) time." You reach for the hash map pattern to compare efficiently.</div>
+      <div class="story-text" data-company="amazon" style="display:none">Amazon's coding round: "Given a list of package weights, find two packages that sum to exactly the truck capacity." This is the classic two-pointer / hash map problem.</div>
+
+      <div class="challenge-timer" id="timer2">
+        <span class="timer-label">Scene Timer</span>
+        <span class="timer-display" id="timerDisplay2">00:00</span>
+        <button class="start-btn" onclick="toggleTimer(2)">Start</button>
+        <button class="reset-btn" onclick="resetTimer(2)">Reset</button>
+      </div>
+
+      <table class="comp-table">
+        <thead><tr><th>Pattern</th><th>When To Use</th><th>Complexity</th><th>Classic Problem</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Hash Map</strong></td><td>Need O(1) lookup by value</td><td>O(n) time, O(n) space</td><td>Two Sum</td></tr>
+          <tr><td><strong>Two Pointers</strong></td><td>Sorted array, pair finding</td><td>O(n) time, O(1) space</td><td>Container With Most Water</td></tr>
+          <tr><td><strong>Sliding Window</strong></td><td>Contiguous subarray/substring</td><td>O(n) time</td><td>Max sum subarray of size k</td></tr>
+          <tr><td><strong>Greedy</strong></td><td>Local optimal = global optimal</td><td>Varies</td><td>Activity selection</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block"><pre><span class="cm"># Two Sum with hash map: O(n)</span>
+<span class="kw">def</span> <span class="fn">two_sum</span>(nums, target):
+    seen = {}
+    <span class="kw">for</span> i, n <span class="kw">in</span> <span class="fn">enumerate</span>(nums):
+        complement = target - n
+        <span class="kw">if</span> complement <span class="kw">in</span> seen:
+            <span class="kw">return</span> [seen[complement], i]
+        seen[n] = i
+    <span class="kw">return</span> []</pre></div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Most coding interview problems reduce to one of these four patterns. Before coding, identify the pattern first. "Is there a sorted structure I can exploit?" &rarr; two pointers. "Do I need fast lookups?" &rarr; hash map. "Contiguous subarray?" &rarr; sliding window.</p>
+      </div>
+
+      <h3 style="margin:24px 0 12px;font-size:1rem;color:var(--heading)">Python Gotchas</h3>
+
+      <table class="comp-table">
+        <thead><tr><th>Gotcha</th><th>What Happens</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Mutable default args</td><td><code>def f(x=[])</code> shares the same list across calls</td><td>Use <code>None</code>, assign inside</td></tr>
+          <tr><td>Shallow vs deep copy</td><td><code>b = a[:]</code> copies the list but not nested objects</td><td>Use <code>copy.deepcopy()</code></td></tr>
+          <tr><td><code>is</code> vs <code>==</code></td><td><code>is</code> checks identity, <code>==</code> checks equality</td><td>Use <code>==</code> for value comparison</td></tr>
+          <tr><td>Floor division</td><td><code>-7 // 2 = -4</code> in Python (rounds toward negative infinity)</td><td>Use <code>int(-7 / 2)</code> for truncation</td></tr>
+        </tbody>
+      </table>
+
+      <div class="practice">
+        <div class="practice-label">Practice Exercise</div>
+        <p>Implement the sliding window pattern: given a list of integers and an integer <code>k</code>, find the maximum sum of any contiguous subarray of length <code>k</code>.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v22 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<!-- Search Modal -->
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="Search topics, sections, companies..." autocomplete="off">
+      <span class="esc-hint">ESC</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="search.js"></script>
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+function toggleTheme(){var d=document.documentElement;if(d.getAttribute('data-theme')==='dark'){d.removeAttribute('data-theme');localStorage.setItem('ds-theme','light')}else{d.setAttribute('data-theme','dark');localStorage.setItem('ds-theme','dark')}}
+function switchCompany(company){document.querySelectorAll('.company-tab').forEach(b=>b.classList.remove('active'));document.querySelector(`.company-tab[data-company="${company}"]`).classList.add('active');document.querySelectorAll('[data-company]').forEach(el=>{if(el.classList.contains('company-tab'))return;el.style.display=el.getAttribute('data-company')===company?'':'none'})}
+
+const timers={};
+function formatTime(ms){const min=Math.floor(ms/60000);const sec=Math.floor((ms%60000)/1000);return String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
+function toggleTimer(n){if(!timers[n])timers[n]={time:0,interval:null,running:false};const t=timers[n];const btn=document.querySelector('#timer'+n+' .start-btn');if(t.running){clearInterval(t.interval);t.running=false;btn.textContent='Resume'}else{t.interval=setInterval(()=>{t.time+=100;document.getElementById('timerDisplay'+n).textContent=formatTime(t.time)},100);t.running=true;btn.textContent='Pause'}}
+function resetTimer(n){if(!timers[n])timers[n]={time:0,interval:null,running:false};clearInterval(timers[n].interval);timers[n]={time:0,interval:null,running:false};document.getElementById('timerDisplay'+n).textContent='00:00';document.querySelector('#timer'+n+' .start-btn').textContent='Start'}
+</script>
+</body>
+</html>

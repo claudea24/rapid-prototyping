@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies — DS Prep v23</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="review-mode">
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v23</a>
+  <div class="nav-right">
+    <button class="print-btn" onclick="window.print()">&#128424; Print</button>
+    <a href="index.html" class="back">Dashboard</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="badge ic">Case Studies</div>
+  <h1>Case Studies Cheat Sheet</h1>
+  <p>AARRR, frameworks, metric debugging, market sizing, and experiment design.</p>
+</div>
+
+<div class="banner-wrap" id="banner-wrap"></div>
+
+<div class="mode-toggle">
+  <button onclick="setMode('learn')" id="learn-btn">Learn</button>
+  <button class="active" onclick="setMode('review')" id="review-btn">Review</button>
+</div>
+
+<div class="review-grid">
+
+  <!-- Card 1: AARRR -->
+  <div class="review-card" data-section="aarrr">
+    <h3><span class="card-num ic">1</span> AARRR Pirate Metrics</h3>
+    <div class="formula">Acquisition &rarr; Activation &rarr; Retention &rarr; Revenue &rarr; Referral</div>
+    <table>
+      <tr><th>Stage</th><th>Question</th><th>Example Metric</th></tr>
+      <tr><td>Acquisition</td><td>How do users find us?</td><td>Signups, CAC</td></tr>
+      <tr><td>Activation</td><td>Great first experience?</td><td>Onboarding completion</td></tr>
+      <tr><td>Retention</td><td>Do they come back?</td><td>D7/D30 retention</td></tr>
+      <tr><td>Revenue</td><td>Do they pay?</td><td>ARPU, LTV</td></tr>
+      <tr><td>Referral</td><td>Do they tell others?</td><td>Viral coefficient</td></tr>
+    </table>
+    <div class="learn-only">
+      <h4>Using AARRR in Interviews</h4>
+      <p>When asked "how would you measure success for product X?", walk through each AARRR stage. This shows structured thinking. Focus on the stage most relevant to the company's current challenge (early-stage = acquisition, mature = retention/revenue).</p>
+    </div>
+  </div>
+
+  <!-- Card 2: Framework -->
+  <div class="review-card" data-section="framework">
+    <h3><span class="card-num ic">2</span> Case Framework</h3>
+    <div class="formula">Clarify &rarr; Metrics &rarr; Hypothesize &rarr; Analyze &rarr; Recommend &rarr; Measure</div>
+    <ul>
+      <li><strong>Clarify</strong>: restate, ask about scope, users, time</li>
+      <li><strong>Metrics</strong>: pick primary + counter-metrics</li>
+      <li><strong>Hypothesize</strong>: 3-4 possible explanations</li>
+      <li><strong>Analyze</strong>: segment, compare, quantify</li>
+      <li><strong>Recommend</strong>: action + expected impact</li>
+      <li><strong>Measure</strong>: how to validate the recommendation</li>
+    </ul>
+    <div class="learn-only">
+      <h4>Example: "Engagement dropped 10% this week"</h4>
+      <p><strong>Clarify</strong>: Which metric? Which platform? Which user segment? <strong>Metrics</strong>: DAU, session length, actions per session. <strong>Hypothesize</strong>: (1) Bug/outage, (2) Seasonal, (3) Product change, (4) External event. <strong>Analyze</strong>: Check by platform, country, new vs returning, day-by-day. <strong>Recommend</strong>: If it's a bug, hotfix + post-mortem. If seasonal, adjust targets.</p>
+    </div>
+  </div>
+
+  <!-- Card 3: Metric Debug -->
+  <div class="review-card" data-section="metric-debug">
+    <h3><span class="card-num ic">3</span> Metric Debugging</h3>
+    <ul>
+      <li><strong>Data problem?</strong> Logging broken, definition changed</li>
+      <li><strong>External?</strong> Seasonality, competitor, news event</li>
+      <li><strong>Internal?</strong> Product change, bug, infra issue</li>
+      <li><strong>Segment</strong>: platform, geo, cohort, new/existing</li>
+      <li><strong>Quantify</strong>: how much does each factor explain?</li>
+    </ul>
+    <div class="learn-only">
+      <h4>Debugging Checklist</h4>
+      <p>Always start with data quality. In interviews, saying "first I'd check if the data is correct" shows maturity. Then external factors (you can't control these). Then internal factors (you can act on these). Always segment to isolate the root cause.</p>
+      <div class="example-box">
+        <h5>Pro Tip</h5>
+        <p>Decompose the metric: Revenue = Users x Conversion x ARPU. If revenue dropped, which component changed? This narrows your investigation immediately.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 4: Market Sizing -->
+  <div class="review-card" data-section="market-sizing">
+    <h3><span class="card-num ic">4</span> Market Sizing</h3>
+    <table>
+      <tr><th>Approach</th><th>Method</th><th>Best For</th></tr>
+      <tr><td>Top-down</td><td>TAM &rarr; filter %</td><td>Known market data</td></tr>
+      <tr><td>Bottom-up</td><td>Unit &rarr; scale up</td><td>Novel products</td></tr>
+    </table>
+    <ul>
+      <li>State assumptions explicitly</li>
+      <li>Round numbers for mental math</li>
+      <li>Sanity check: does the answer make sense?</li>
+    </ul>
+    <div class="learn-only">
+      <h4>Example: "How many piano tuners in Chicago?"</h4>
+      <p><strong>Bottom-up</strong>: Chicago pop ~3M. ~1M households. ~10% have pianos = 100K pianos. Tuned 1x/year. Tuning takes ~2hrs (including travel). A tuner works ~250 days x 4 tunings/day = 1000/year. 100K / 1000 = ~100 piano tuners.</p>
+      <div class="example-box">
+        <h5>Framework</h5>
+        <p>Population &rarr; Relevant segment &rarr; Usage frequency &rarr; Supply capacity &rarr; Answer. Always show your work and reasoning, not just the number.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 5: Experiment Design -->
+  <div class="review-card" data-section="experiment-design">
+    <h3><span class="card-num ic">5</span> Experiment Design</h3>
+    <ul>
+      <li><strong>Randomization</strong>: user-level (not session)</li>
+      <li><strong>Duration</strong>: at least 1 week (capture weekly cycles)</li>
+      <li><strong>Guardrails</strong>: revenue, latency, crash rate</li>
+      <li><strong>Watch for</strong>: novelty effects, network effects</li>
+      <li><strong>No peeking</strong>: pre-commit to analysis time</li>
+    </ul>
+    <div class="learn-only">
+      <h4>When A/B Testing Doesn't Work</h4>
+      <p><strong>Network effects</strong>: social features where treatment affects control (use cluster randomization). <strong>Two-sided markets</strong>: changing supply affects demand. <strong>Long-term effects</strong>: short test misses retention impact (use holdout groups). <strong>Small sample</strong>: not enough power (use Bayesian methods or proxy metrics).</p>
+      <h4>Power Analysis</h4>
+      <p>Before running: determine minimum detectable effect (MDE), baseline rate, significance level (&alpha;=0.05), and desired power (0.80). Calculate required sample size. If it takes too long to collect, consider a more sensitive metric.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>Case Studies &mdash; DS Prep v23</footer>
+
+<script>
+function setMode(mode) {
+  var btns = document.querySelectorAll('.mode-toggle button');
+  if (mode === 'review') {
+    document.body.classList.add('review-mode');
+    btns[0].classList.remove('active');
+    btns[1].classList.add('active');
+  } else {
+    document.body.classList.remove('review-mode');
+    btns[0].classList.add('active');
+    btns[1].classList.remove('active');
+  }
+  localStorage.setItem('ds-v23-mode', mode);
+}
+
+function initPage() {
+  var raw = localStorage.getItem('ds-v23-diagnostic');
+  if (!raw) return;
+  var data = JSON.parse(raw);
+  var score = data.scores.casing || 0;
+  var total = 3;
+  var pct = Math.round((score / total) * 100);
+  var level, cls;
+  if (pct >= 80) { level = 'Strong'; cls = 'banner-strong'; }
+  else if (pct >= 40) { level = 'Review'; cls = 'banner-review'; }
+  else { level = 'Weak'; cls = 'banner-weak'; }
+
+  var banner = document.getElementById('banner-wrap');
+  banner.innerHTML = '<div class="mastery-banner ' + cls + '">' +
+    score + '/3 correct &mdash; ' + level +
+    (level === 'Weak' ? ' &mdash; Focus on this topic!' : level === 'Strong' ? ' &mdash; Quick review recommended.' : ' &mdash; Some gaps to fill.') +
+    '</div>';
+
+  var savedMode = localStorage.getItem('ds-v23-mode');
+  if (!savedMode) {
+    savedMode = (level === 'Strong') ? 'review' : 'learn';
+  }
+  setMode(savedMode);
+
+  if (level === 'Weak') {
+    var cards = document.querySelectorAll('.review-card');
+    cards.forEach(function(card) {
+      card.classList.add('weak-section');
+      var h3 = card.querySelector('h3');
+      if (h3 && !h3.querySelector('.focus-badge')) {
+        h3.innerHTML += '<span class="focus-badge">FOCUS</span>';
+      }
+    });
+  }
+}
+initPage();
+</script>
+</body>
+</html>

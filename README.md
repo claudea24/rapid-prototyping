@@ -63,14 +63,14 @@ Test meaningful features on a v13+v14 hybrid base — interactive sandboxes meet
 
 ### Phase 4: Fine-Tune (v22–v25)
 
-Polish and harden — ship it.
+Combine the winners and ship.
 
 | Version | Name | What Changed |
 |---------|------|-------------|
-| **v22** | Bookmarks & Notes | Star weak spots, jot sticky notes, build a custom review list saved to localStorage |
-| **v23** | Accessibility Pass | ARIA labels, keyboard navigation, focus rings, WCAG contrast fixes |
-| **v24** | Content QA | All content reviewed for accuracy, code examples tested, links verified |
-| **v25** | Launch Ready | Meta tags, Open Graph image, favicon, final visual polish. Ship it |
+| **v22** | Story + Company | Narrative learning filtered by target company (Meta/Google/Amazon scenarios) + dark/light toggle + Cmd+K search |
+| **v23** | Weak Spot + Review | Diagnostic quiz finds gaps → condensed cheat sheets for strong areas, deep dives for weak ones. Learn/review toggle + print |
+| **v24** | All Winners | The mega version — story mode + company playbook + diagnostics + coding playground + mock interviews + search + print |
+| **v25** | Launch Ready | Production-ready: meta tags, favicon, mobile-optimized, accessible, content QA'd, polished. Ship it |
 
 ## Structure
 

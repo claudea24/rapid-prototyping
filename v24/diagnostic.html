@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnostic — DS Prep v24</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      document.body&&document.body.classList.add('no-fouc');
+      var t=localStorage.getItem('ds-v24-theme');
+      if(t==='dark')document.documentElement.setAttribute('data-theme','dark');
+    })();
+  </script>
+</head>
+<body class="no-fouc">
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v24</a>
+  <button class="icon-btn" id="theme-toggle" title="Toggle dark mode">&#9790;</button>
+  <a href="index.html" class="back">&larr; Dashboard</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">Diagnostic</div>
+  <h1>Find Your <span>Blind Spots</span></h1>
+  <p>18 questions &middot; 3 per topic &middot; Results saved locally</p>
+</div>
+
+<div class="section-wrap">
+  <div class="diag-progress" id="progress"></div>
+  <div id="quiz-area"></div>
+  <div id="results" style="display:none;"></div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v24 &middot; <a href="index.html">Dashboard</a></p>
+</footer>
+
+<script>
+const Q = [
+  // SQL (3)
+  { topic:'sql', q:'In standard SQL, which clause is evaluated FIRST?', opts:['SELECT','FROM','WHERE','GROUP BY'], ans:1, explain:'FROM is step 1 in logical execution order.' },
+  { topic:'sql', q:'Which window function assigns the same rank to ties and leaves NO gaps?', opts:['ROW_NUMBER()','RANK()','DENSE_RANK()','NTILE()'], ans:2, explain:'DENSE_RANK gives ties the same rank with no gaps.' },
+  { topic:'sql', q:'You cannot reference a SELECT alias in the WHERE clause because:', opts:['It is a syntax error','WHERE runs before SELECT','Aliases are read-only','The optimizer forbids it'], ans:1, explain:'WHERE is evaluated at step 2, SELECT at step 5.' },
+  // Python (3)
+  { topic:'python', q:'What is the average-case time complexity of checking membership in a Python set?', opts:['O(n)','O(log n)','O(1)','O(n log n)'], ans:2, explain:'Sets use hash tables — O(1) average lookup.' },
+  { topic:'python', q:'What does this print? def f(x, lst=[]): lst.append(x); return lst; f(1); print(f(2))', opts:['[2]','[1, 2]','Error','[1]'], ans:1, explain:'Mutable default argument is shared across calls.' },
+  { topic:'python', q:'The hash map approach to Two Sum runs in:', opts:['O(n^2) time','O(n) time, O(n) space','O(n log n) time','O(1) space'], ans:1, explain:'Single pass with dict lookup = O(n) time, O(n) space.' },
+  // ML (3)
+  { topic:'ml', q:'Random Forest reduces overfitting primarily through:', opts:['L2 regularization','Bagging + feature subsampling','Gradient descent','Pruning'], ans:1, explain:'Bagging decorrelates trees, reducing variance.' },
+  { topic:'ml', q:'A fraud model says "not fraud" for everything. Accuracy is 99.5%. What is recall?', opts:['99.5%','0%','50%','100%'], ans:1, explain:'Recall = TP/(TP+FN). With 0 true positives, recall is 0%.' },
+  { topic:'ml', q:'Fitting a scaler on the full dataset before train/test split causes:', opts:['Underfitting','Data leakage','Feature explosion','Nothing wrong'], ans:1, explain:'Test statistics leak into preprocessing = data leakage.' },
+  // Stats (3)
+  { topic:'stats', q:'A p-value of 0.03 means:', opts:['3% chance H0 is true','3% chance result is due to chance','If H0 true, 3% chance of data this extreme','The effect size is 3%'], ans:2, explain:'P-value is P(data | H0), not P(H0 | data).' },
+  { topic:'stats', q:'Checking your A/B test daily and stopping when p < 0.05 is called:', opts:['Power analysis','Peeking (inflates false positive rate)','Bonferroni correction','Sequential testing'], ans:1, explain:'Peeking inflates FP rate from 5% to ~30%.' },
+  { topic:'stats', q:'The Central Limit Theorem says sample means are approximately:', opts:['Uniform','Exponential','Normal','Poisson'], ans:2, explain:'CLT: sample means approach normal distribution as n grows.' },
+  // Probability (3)
+  { topic:'probability', q:'A disease affects 1%. A 99%-accurate test is positive. P(disease)?', opts:['99%','~50%','1%','~95%'], ans:1, explain:'Base rate dominance via Bayes theorem gives ~50%.' },
+  { topic:'probability', q:'In the Monty Hall problem, switching wins with probability:', opts:['1/2','1/3','2/3','1/4'], ans:2, explain:'Switching wins 2/3 of the time.' },
+  { topic:'probability', q:'E[aX + bY] = aE[X] + bE[Y] works even when X and Y are:', opts:['Independent only','Normally distributed','Dependent','Identically distributed'], ans:2, explain:'Linearity of expectation holds regardless of dependence.' },
+  // Casing (3)
+  { topic:'casing', q:'WAU drops 15%. Your FIRST investigation step should be:', opts:['Build a model','Check if it is a data/logging issue','Launch an A/B test','Redesign the product'], ans:1, explain:'Rule out data pipeline issues before deeper analysis.' },
+  { topic:'casing', q:'Which is the best North Star metric for Spotify?', opts:['Revenue','Downloads','Time spent listening','Number of playlists'], ans:2, explain:'Time listening captures core user value and correlates with retention.' },
+  { topic:'casing', q:'In market sizing, bottom-up estimation starts from:', opts:['Total population','GDP','A single unit and scales up','Industry revenue'], ans:2, explain:'Bottom-up: unit economics of one entity, then scale.' }
+];
+
+let current = 0;
+let answers = {};
+let timers = {};
+
+function startTimer(idx){
+  const el = document.getElementById('sw-'+idx);
+  if(!el) return;
+  const start = Date.now();
+  timers[idx] = setInterval(()=>{
+    const s = Math.floor((Date.now()-start)/1000);
+    const m = Math.floor(s/60);
+    el.querySelector('.sw-display').textContent = (m<10?'0'+m:m)+':'+(s%60<10?'0'+s%60:s%60);
+  },1000);
+}
+
+function stopTimer(idx){ if(timers[idx]) clearInterval(timers[idx]); }
+
+function renderProgress(){
+  const el = document.getElementById('progress');
+  el.innerHTML = Q.map((_,i)=>{
+    let cls = 'dp-dot';
+    if(i < current) cls += ' done';
+    else if(i === current) cls += ' active';
+    return `<div class="${cls}"></div>`;
+  }).join('');
+}
+
+function renderQuestion(){
+  if(current >= Q.length){ showResults(); return; }
+  const q = Q[current];
+  renderProgress();
+  document.getElementById('quiz-area').innerHTML = `
+    <div class="diag-question">
+      <div class="stopwatch" id="sw-${current}">&#9201; <span class="sw-display">00:00</span></div>
+      <div class="dq-topic">${q.topic.toUpperCase()} &middot; Question ${current+1} of ${Q.length}</div>
+      <h3>${q.q}</h3>
+      <div class="diag-options">
+        ${q.opts.map((o,i)=>`<button onclick="answer(${i})">${o}</button>`).join('')}
+      </div>
+    </div>`;
+  startTimer(current);
+}
+
+function answer(idx){
+  stopTimer(current);
+  const q = Q[current];
+  const btns = document.querySelectorAll('.diag-options button');
+  btns.forEach((b,i)=>{
+    b.disabled = true;
+    if(i===q.ans) b.classList.add('correct');
+    else if(i===idx) b.classList.add('wrong');
+  });
+  const topic = q.topic;
+  if(!answers[topic]) answers[topic] = {score:0,total:0};
+  answers[topic].total++;
+  if(idx===q.ans) answers[topic].score++;
+  setTimeout(()=>{ current++; renderQuestion(); }, 800);
+}
+
+function showResults(){
+  document.getElementById('quiz-area').style.display='none';
+  document.getElementById('progress').style.display='none';
+  localStorage.setItem('ds-v24-diagnostic', JSON.stringify(answers));
+  let total=0, correct=0;
+  for(const k in answers){ total+=answers[k].total; correct+=answers[k].score; }
+  const pct = Math.round((correct/total)*100);
+  document.getElementById('results').style.display='';
+  document.getElementById('results').innerHTML = `
+    <div style="text-align:center;margin-bottom:32px;">
+      <h2>Diagnostic Complete</h2>
+      <p style="font-size:2rem;font-weight:800;margin:16px 0;">${pct}%</p>
+      <p style="color:var(--text2)">${correct} / ${total} correct</p>
+    </div>
+    <div class="grid">
+      ${['sql','python','ml','stats','probability','casing'].map(k=>{
+        const s = answers[k]||{score:0,total:3};
+        const m = s.total>0?(s.score/s.total*100):0;
+        const lvl = m>=80?'Strong':m>=40?'Review':'Weak';
+        const cls = m>=80?'mastery-strong':m>=40?'mastery-review':'mastery-weak';
+        return `<div class="review-card"><h4>${k.toUpperCase()}</h4><span class="mastery-tag ${cls}">${lvl} (${s.score}/${s.total})</span></div>`;
+      }).join('')}
+    </div>
+    <div class="cta-wrap"><a href="index.html" class="cta-btn">View Dashboard &rarr;</a></div>`;
+}
+
+// Theme toggle
+document.getElementById('theme-toggle').addEventListener('click', ()=>{
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', isDark?'':'dark');
+  localStorage.setItem('ds-v24-theme', isDark?'light':'dark');
+});
+
+document.body.classList.remove('no-fouc');
+document.body.classList.add('ready');
+renderQuestion();
+</script>
+</body>
+</html>

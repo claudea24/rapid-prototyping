@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python — DS Prep v23</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="review-mode">
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v23</a>
+  <div class="nav-right">
+    <button class="print-btn" onclick="window.print()">&#128424; Print</button>
+    <a href="index.html" class="back">Dashboard</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="badge ip">Python</div>
+  <h1>Python Cheat Sheet</h1>
+  <p>Data structures, Pandas, NumPy, coding patterns, and common gotchas.</p>
+</div>
+
+<div class="banner-wrap" id="banner-wrap"></div>
+
+<div class="mode-toggle">
+  <button onclick="setMode('learn')" id="learn-btn">Learn</button>
+  <button class="active" onclick="setMode('review')" id="review-btn">Review</button>
+</div>
+
+<div class="review-grid">
+
+  <!-- Card 1: Data Structures -->
+  <div class="review-card" data-section="data-structures">
+    <h3><span class="card-num ip">1</span> Data Structures</h3>
+    <table>
+      <tr><th>Structure</th><th>Key Op</th><th>Time</th></tr>
+      <tr><td><code>list</code></td><td>Index / append</td><td>O(1)</td></tr>
+      <tr><td><code>dict</code></td><td>Lookup / insert</td><td>O(1) avg</td></tr>
+      <tr><td><code>set</code></td><td>Membership test</td><td>O(1) avg</td></tr>
+      <tr><td><code>deque</code></td><td>Both ends</td><td>O(1)</td></tr>
+      <tr><td><code>heapq</code></td><td>Push / pop min</td><td>O(log n)</td></tr>
+    </table>
+    <div class="learn-only">
+      <h4>When to Choose What</h4>
+      <p><strong>list</strong>: ordered, need index access. <strong>dict</strong>: key-value mapping, fast lookups. <strong>set</strong>: uniqueness, membership testing. <strong>deque</strong>: BFS queues, sliding windows. <strong>heapq</strong>: top-K problems, priority queues.</p>
+      <pre># defaultdict avoids KeyError
+from collections import defaultdict
+freq = defaultdict(int)
+for x in data:
+    freq[x] += 1
+
+# Counter for frequency counting
+from collections import Counter
+Counter("abracadabra").most_common(3)
+# [('a', 5), ('b', 2), ('r', 2)]</pre>
+    </div>
+  </div>
+
+  <!-- Card 2: Pandas -->
+  <div class="review-card" data-section="pandas">
+    <h3><span class="card-num ip">2</span> Pandas Essentials</h3>
+    <ul>
+      <li><strong>groupby</strong> = split-apply-combine</li>
+      <li><strong>merge</strong> = SQL-style joins (on, how)</li>
+      <li><strong>pivot_table</strong> = reshape long to wide</li>
+      <li><strong>apply</strong> = row/col-wise custom function</li>
+      <li><strong>loc</strong> = label-based, <strong>iloc</strong> = position-based</li>
+    </ul>
+    <div class="learn-only">
+      <h4>Common Patterns</h4>
+      <pre># GroupBy with multiple aggregations
+df.groupby('dept').agg(
+    avg_salary=('salary', 'mean'),
+    headcount=('id', 'count'),
+    max_salary=('salary', 'max')
+)
+
+# Merge (LEFT JOIN equivalent)
+pd.merge(orders, customers, on='customer_id', how='left')
+
+# Pivot table
+pd.pivot_table(df, values='revenue', index='month',
+               columns='product', aggfunc='sum', fill_value=0)</pre>
+    </div>
+  </div>
+
+  <!-- Card 3: NumPy -->
+  <div class="review-card" data-section="numpy">
+    <h3><span class="card-num ip">3</span> NumPy Essentials</h3>
+    <ul>
+      <li><code>*</code> = element-wise multiply</li>
+      <li><code>@</code> = matrix multiply (dot product)</li>
+      <li>Vectorize: don't loop, use broadcasting</li>
+      <li><code>axis=0</code> = along rows (collapse rows), <code>axis=1</code> = along cols</li>
+    </ul>
+    <div class="learn-only">
+      <h4>Broadcasting Rules</h4>
+      <p>Arrays with different shapes are compatible when: dimensions are equal, or one of them is 1. NumPy stretches the size-1 dimension to match.</p>
+      <pre>import numpy as np
+a = np.array([[1,2,3],[4,5,6]])  # shape (2,3)
+b = np.array([10,20,30])          # shape (3,) -> broadcasts to (2,3)
+print(a + b)  # [[11,22,33],[14,25,36]]
+
+# Vectorized vs loop (100x faster)
+# BAD:  [x**2 for x in arr]
+# GOOD: arr ** 2</pre>
+    </div>
+  </div>
+
+  <!-- Card 4: Coding Patterns -->
+  <div class="review-card" data-section="patterns">
+    <h3><span class="card-num ip">4</span> Coding Patterns</h3>
+    <table>
+      <tr><th>Pattern</th><th>When</th><th>Key Idea</th></tr>
+      <tr><td>Two Pointer</td><td>Sorted array</td><td>Shrink from both ends</td></tr>
+      <tr><td>Sliding Window</td><td>Subarray/substring</td><td>Expand right, shrink left</td></tr>
+      <tr><td>Hash Map</td><td>Lookup O(1)</td><td>Trade space for time</td></tr>
+      <tr><td>Stack</td><td>Nested/matching</td><td>LIFO for parentheses etc.</td></tr>
+    </table>
+    <div class="learn-only">
+      <h4>Two Pointer Example</h4>
+      <pre># Two Sum on sorted array
+def two_sum_sorted(nums, target):
+    l, r = 0, len(nums) - 1
+    while l &lt; r:
+        s = nums[l] + nums[r]
+        if s == target: return [l, r]
+        elif s &lt; target: l += 1
+        else: r -= 1</pre>
+      <h4>Sliding Window Example</h4>
+      <pre># Max sum of subarray of size k
+def max_subarray_sum(nums, k):
+    window = sum(nums[:k])
+    best = window
+    for i in range(k, len(nums)):
+        window += nums[i] - nums[i-k]
+        best = max(best, window)
+    return best</pre>
+    </div>
+  </div>
+
+  <!-- Card 5: Gotchas -->
+  <div class="review-card" data-section="gotchas">
+    <h3><span class="card-num ip">5</span> Python Gotchas</h3>
+    <ul>
+      <li>Mutable default args: use <code>None</code> sentinel</li>
+      <li>Shallow copy shares inner objects</li>
+      <li><code>-7 // 2 = -4</code> (floors toward negative infinity)</li>
+      <li><code>is</code> checks identity, <code>==</code> checks equality</li>
+      <li><code>[x]*3</code> creates 3 refs to same list</li>
+    </ul>
+    <div class="learn-only">
+      <h4>Mutable Default Trap</h4>
+      <pre># BAD: list is shared across calls!
+def append(val, lst=[]):
+    lst.append(val)
+    return lst
+
+# GOOD: use None sentinel
+def append(val, lst=None):
+    if lst is None:
+        lst = []
+    lst.append(val)
+    return lst</pre>
+      <h4>Copy Depth</h4>
+      <pre>import copy
+a = [[1,2],[3,4]]
+b = a.copy()         # shallow: b[0] is a[0]
+c = copy.deepcopy(a) # deep: fully independent</pre>
+    </div>
+  </div>
+
+</div>
+
+<footer>Python &mdash; DS Prep v23</footer>
+
+<script>
+function setMode(mode) {
+  var btns = document.querySelectorAll('.mode-toggle button');
+  if (mode === 'review') {
+    document.body.classList.add('review-mode');
+    btns[0].classList.remove('active');
+    btns[1].classList.add('active');
+  } else {
+    document.body.classList.remove('review-mode');
+    btns[0].classList.add('active');
+    btns[1].classList.remove('active');
+  }
+  localStorage.setItem('ds-v23-mode', mode);
+}
+
+function initPage() {
+  var raw = localStorage.getItem('ds-v23-diagnostic');
+  if (!raw) return;
+  var data = JSON.parse(raw);
+  var score = data.scores.python || 0;
+  var total = 3;
+  var pct = Math.round((score / total) * 100);
+  var level, cls;
+  if (pct >= 80) { level = 'Strong'; cls = 'banner-strong'; }
+  else if (pct >= 40) { level = 'Review'; cls = 'banner-review'; }
+  else { level = 'Weak'; cls = 'banner-weak'; }
+
+  var banner = document.getElementById('banner-wrap');
+  banner.innerHTML = '<div class="mastery-banner ' + cls + '">' +
+    score + '/3 correct &mdash; ' + level +
+    (level === 'Weak' ? ' &mdash; Focus on this topic!' : level === 'Strong' ? ' &mdash; Quick review recommended.' : ' &mdash; Some gaps to fill.') +
+    '</div>';
+
+  var savedMode = localStorage.getItem('ds-v23-mode');
+  if (!savedMode) {
+    savedMode = (level === 'Strong') ? 'review' : 'learn';
+  }
+  setMode(savedMode);
+
+  if (level === 'Weak') {
+    var cards = document.querySelectorAll('.review-card');
+    cards.forEach(function(card) {
+      card.classList.add('weak-section');
+      var h3 = card.querySelector('h3');
+      if (h3 && !h3.querySelector('.focus-badge')) {
+        h3.innerHTML += '<span class="focus-badge">FOCUS</span>';
+      }
+    });
+  }
+}
+initPage();
+</script>
+</body>
+</html>

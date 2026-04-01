@@ -235,17 +235,17 @@
       { v: 19, title: "Company Playbook",              desc: "Meta loves A/B testing. Google hammers probability. Amazon asks metrics + leadership. Filter by company to see real interview patterns — plus Cmd+K search across everything.",  changes: ["+company filters","+Meta patterns","+Google patterns","+Amazon patterns","+Cmd+K search"] },
       { v: 20, title: "Quick Reference",               desc: "Condensed single-screen cheat sheets — just the tables, formulas, and patterns you'd want on a sticky note. Toggle between full learn mode and condensed review mode. Print-friendly.",  changes: ["+condensed view","+review mode","+print button","+formula cards","+one-screen summaries"] },
       { v: 21, title: "Weak Spot Tracker",             desc: "Take a diagnostic quiz, then see exactly where your gaps are. Personalized focus zones highlight what to drill — skip what you know, fix what you don't. Progress rings per sub-topic.",  changes: ["+diagnostic quiz","+gap analysis","+focus zones","+progress rings","+personalized path"] },
-      { v: 22, title: "Bookmarks & Notes",             desc: "Star your weak spots and jot personal notes on any section. Build a custom review list saved to localStorage.",  changes: ["+bookmarks","+sticky notes","+review list","+localStorage"] },
-      { v: 23, title: "Accessibility Pass",            desc: "ARIA labels, keyboard navigation, focus rings, and WCAG contrast fixes. Making prep accessible to everyone.",  changes: ["~a11y","+ARIA labels","+focus states","~contrast"] },
-      { v: 24, title: "Content QA",                    desc: "All content reviewed for accuracy, code examples tested, links verified. The boring-but-essential polish pass.",  changes: ["~content review","~bug fixes","~code verification"] },
-      { v: 25, title: "Launch Ready",                  desc: "Meta tags, Open Graph image, favicon, and final visual polish. Ship it.",  changes: ["+meta tags","+favicon","+OG image","~final polish"] },
+      { v: 22, title: "Story + Company",                desc: "Narrative learning filtered by target company — prep for Meta, Google, or Amazon with scenarios tailored to their interview style. Dark/light toggle + Cmd+K search.",  changes: ["+company narratives","+Meta scenarios","+Google scenarios","+Amazon scenarios","+dark/light","+search"] },
+      { v: 23, title: "Weak Spot + Review",            desc: "Diagnostic quiz finds your gaps, then serves condensed cheat sheets for strong areas and deep dives for weak ones. Smart study mode with print-friendly output.",  changes: ["+diagnostic quiz","+smart modes","+focus badges","+learn/review toggle","+print"] },
+      { v: 24, title: "All Winners",                   desc: "The mega version — story mode, company filters, diagnostics, coding playground, mock interviews, search, and print. Everything in one place.",  changes: ["+story mode","+company playbook","+diagnostics","+playground","+mock interview","+search","+print"] },
+      { v: 25, title: "Launch Ready",                  desc: "Production-ready. Meta tags, favicon, mobile-optimized, accessible, content QA'd, and visually polished. Ship it.",  changes: ["+meta tags","+favicon","+a11y","+mobile","+content QA","~final polish"] },
     ];
 
     const phases = [
       { at: 1,  key: "explore",  num: "Phase 1", title: "Go Wide", range: "v01 – v12", desc: "Explore radically different designs — RPG, Duolingo, textbook, kids edition, flashcards. Cast a wide net to discover what works." },
       { at: 13, key: "converge", num: "Phase 2", title: "Converge", range: "v13 – v15", desc: "Combine and mix-match the strongest ideas from exploration into cohesive experiences." },
       { at: 16, key: "narrow",   num: "Phase 3", title: "Narrow Down", range: "v16 – v21", desc: "Test meaningful features — story mode, coding playground, mock interviews, company playbooks, cheat sheets, and gap tracking." },
-      { at: 22, key: "finetune", num: "Phase 4", title: "Fine-Tune", range: "v22 – v25", desc: "Polish and harden — bookmarks, accessibility, content QA, and launch prep. Ship it." },
+      { at: 22, key: "finetune", num: "Phase 4", title: "Fine-Tune", range: "v22 – v25", desc: "Combine the winners and ship — story + company playbooks, diagnostic + cheat sheets, the mega version, then launch polish." },
     ];
 
     const gallery = document.getElementById("gallery");

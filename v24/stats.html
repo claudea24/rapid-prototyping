@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics — DS Prep v24</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){
+      document.body&&document.body.classList.add('no-fouc');
+      var t=localStorage.getItem('ds-v24-theme');
+      if(t==='dark')document.documentElement.setAttribute('data-theme','dark');
+    })();
+  </script>
+</head>
+<body class="no-fouc">
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v24</a>
+  <div class="company-select">
+    <button data-co="all" class="active">All</button>
+    <button data-co="meta">Meta</button>
+    <button data-co="google">Google</button>
+    <button data-co="amazon">Amazon</button>
+  </div>
+  <button class="icon-btn" id="search-trigger" title="Search (Cmd+K)">&#128269;</button>
+  <button class="icon-btn" id="theme-toggle" title="Toggle dark mode">&#9790;</button>
+  <button class="icon-btn" onclick="window.print()" title="Print">&#128424;</button>
+  <a href="index.html" class="back">&larr; Dashboard</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">Statistics</div>
+  <h1>The Foundation of <span>Inference</span></h1>
+  <p>Hypothesis testing, p-values, A/B testing, and the Central Limit Theorem.</p>
+</div>
+
+<div class="section-wrap">
+  <div id="diag-banner"></div>
+
+  <div class="narrative-tabs" id="narrative-tabs">
+    <button class="active" data-co="all">General</button>
+    <button data-co="meta">Meta</button>
+    <button data-co="google">Google</button>
+    <button data-co="amazon">Amazon</button>
+  </div>
+  <div id="story-area"></div>
+
+  <div class="mode-toggle" id="mode-toggle">
+    <button class="active" data-mode="learn">Learn</button>
+    <button data-mode="review">Review</button>
+  </div>
+
+  <!-- Learn Mode -->
+  <div id="learn-content">
+    <div class="learn-section open" id="s-descriptive">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128202; Descriptive Statistics <span class="focus-badge" id="focus-desc" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <table class="content-table">
+          <tr><th>Measure</th><th>What It Tells</th><th>Sensitive To</th><th>When to Use</th></tr>
+          <tr><td><strong>Mean</strong></td><td>Average value</td><td>Outliers, skew</td><td>Symmetric data</td></tr>
+          <tr><td><strong>Median</strong></td><td>Middle value</td><td>Nothing (robust)</td><td>Skewed data</td></tr>
+          <tr><td><strong>Std Dev</strong></td><td>Spread (same units)</td><td>Outliers</td><td>Reporting spread</td></tr>
+          <tr><td><strong>IQR</strong></td><td>Middle 50% spread</td><td>Nothing (robust)</td><td>Outlier detection</td></tr>
+        </table>
+        <div class="insight-box"><strong>Key Insight:</strong> Always ask "is my data skewed?" If yes, prefer median and IQR over mean and standard deviation.</div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-hypothesis">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128300; Hypothesis Testing &amp; P-Values <span class="focus-badge" id="focus-hyp" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p><strong>The Framework:</strong> (1) Formulate H0/H1, (2) Choose alpha, (3) Collect data, (4) Compute test statistic, (5) Compare to critical value, (6) Conclude.</p>
+        <p><strong>What the p-value IS:</strong> P(data this extreme | H0 true).</p>
+        <p><strong>What it is NOT:</strong> P(H0 is true), or "probability the result is due to chance."</p>
+        <table class="content-table">
+          <tr><th>Error</th><th>Name</th><th>Analogy</th><th>Probability</th></tr>
+          <tr><td>Type I</td><td>False Positive</td><td>Convicting innocent</td><td>alpha (0.05)</td></tr>
+          <tr><td>Type II</td><td>False Negative</td><td>Acquitting guilty</td><td>beta</td></tr>
+          <tr><td>Power</td><td>Correct Rejection</td><td>Catching guilty</td><td>1 - beta (target 0.80+)</td></tr>
+        </table>
+        <table class="content-table">
+          <tr><th>Test</th><th>When</th><th>Example</th></tr>
+          <tr><td>t-test</td><td>Two groups, continuous outcome</td><td>Comparing group means</td></tr>
+          <tr><td>Paired t-test</td><td>Same subjects, before/after</td><td>Pre/post treatment</td></tr>
+          <tr><td>Chi-squared</td><td>Two categorical variables</td><td>Independence testing</td></tr>
+          <tr><td>ANOVA</td><td>3+ groups</td><td>Multiple group means</td></tr>
+          <tr><td>Mann-Whitney</td><td>Non-parametric</td><td>Normality violated</td></tr>
+        </table>
+
+        <div class="sandbox">
+          <h4>Exercise: Interpret This P-Value</h4>
+          <div class="stopwatch" id="sw-ex1">&#9201; <span class="sw-display">00:00</span>
+            <button onclick="toggleTimer('ex1')">&#9654;</button>
+            <button onclick="resetTimer('ex1')">&#8635;</button>
+          </div>
+          <p class="sandbox-desc">An A/B test yields p = 0.03. Your PM says "there is only a 3% chance the feature has no effect." Is this correct? Why or why not?</p>
+          <textarea id="ed-ex1">Your answer here...</textarea>
+          <div class="sandbox-actions">
+            <button onclick="document.getElementById('sol-ex1').classList.add('show')">&#9989; Answer</button>
+          </div>
+          <div class="result-area" id="sol-ex1">Incorrect. The p-value is P(data this extreme | H0 true), NOT P(H0 true | data). It means: IF there were truly no effect, we would see results this extreme only 3% of the time. To claim "3% chance the null is true" you would need Bayes' theorem with a prior on H0, which frequentist statistics does not provide.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-ab">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#9878; A/B Testing <span class="focus-badge" id="focus-ab" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p><strong>The Process:</strong> (1) Define metric, (2) Power analysis for sample size, (3) Randomize, (4) Run for fixed duration, (5) Analyze, (6) Measure.</p>
+        <table class="content-table">
+          <tr><th>Pitfall</th><th>What Goes Wrong</th><th>The Fix</th></tr>
+          <tr><td><strong>Peeking</strong></td><td>FP rate inflates from 5% to ~30%</td><td>Decide duration in advance</td></tr>
+          <tr><td><strong>Multiple comparisons</strong></td><td>10 metrics = ~40% chance of false positive</td><td>Bonferroni: alpha/n</td></tr>
+          <tr><td><strong>Novelty effect</strong></td><td>Lift fades over time</td><td>Run long enough for novelty to wear off</td></tr>
+          <tr><td><strong>Simpson's paradox</strong></td><td>Overall positive hides subgroup negatives</td><td>Always segment by key dimensions</td></tr>
+        </table>
+        <div class="insight-box"><strong>Key Insight:</strong> The hardest part of A/B testing is not the statistics — it is defining the right metric. Spend as much time debating the metric as analyzing results.</div>
+      </div>
+    </div>
+
+    <div class="learn-section" id="s-clt">
+      <div class="ls-header" onclick="toggleSection(this)">
+        <h3>&#128200; Central Limit Theorem <span class="focus-badge" id="focus-clt" style="display:none">FOCUS</span></h3>
+        <span class="toggle-icon">&#9660;</span>
+      </div>
+      <div class="ls-body">
+        <p>Take <strong>any</strong> population with finite mean and variance. As sample size grows, the distribution of sample means approaches <strong>normal</strong> with mean = population mean and SE = sigma / sqrt(n).</p>
+        <p><strong>Why it matters:</strong> Confidence intervals use x-bar plus/minus z*SE, which assumes x-bar is normal. P-values compare to the normal distribution. Without CLT, we would need to know the exact population distribution before making any inference.</p>
+        <p><strong>Rule of thumb:</strong> n >= 30 is usually sufficient for mildly skewed data. More skewed populations need larger samples.</p>
+        <p><strong>The 68-95-99.7 Rule:</strong> ~68% within 1 SD, ~95% within 2 SD, ~99.7% within 3 SD of the mean.</p>
+        <div class="insight-box"><strong>Key Insight:</strong> LLN tells us sample means converge to the true mean. CLT tells us <em>how</em> — normally, with SE = sigma/sqrt(n). Together they form the foundation of statistical inference.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Mode -->
+  <div id="review-content" style="display:none;">
+    <div class="review-card">
+      <h4>Descriptive Stats</h4>
+      <ul>
+        <li>Skewed data: use median + IQR (not mean + SD)</li>
+        <li>Outlier detection: 1.5 x IQR rule</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>P-Value</h4>
+      <ul>
+        <li>P(data this extreme | H0 true)</li>
+        <li>NOT P(H0 is true | data)</li>
+        <li>Type I = false positive (alpha), Type II = false negative (beta)</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>A/B Testing</h4>
+      <ul>
+        <li>Peeking inflates FP from 5% to ~30%</li>
+        <li>Multiple comparisons: Bonferroni (alpha/n)</li>
+        <li>Always decide duration before starting</li>
+        <li>Segment by platform, geo, cohort</li>
+      </ul>
+    </div>
+    <div class="review-card">
+      <h4>CLT</h4>
+      <ul>
+        <li>Sample means approach normal regardless of population shape</li>
+        <li>SE = sigma / sqrt(n)</li>
+        <li>n >= 30 usually sufficient</li>
+        <li>Foundation for CIs and hypothesis tests</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="search-overlay">
+  <div class="search-box">
+    <input type="text" placeholder="Search topics, questions... (Cmd+K)">
+    <div class="search-results"></div>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v24 &middot; <a href="index.html">Dashboard</a></p>
+</footer>
+
+<script src="search.js"></script>
+<script>
+const STORIES = {
+  all: '<div class="story-text"><strong>The Foundation of Inference.</strong> Before modeling, before hypothesis testing, before anything else, you must describe your data. Statistics provides the framework for drawing reliable conclusions from noisy observations.</div>',
+  meta: '<div class="story-text"><strong>Stats for Growth @ Meta.</strong> At Meta, every product decision is backed by experimentation. Interviews test your understanding of A/B testing pitfalls, p-value interpretation, and the statistical rigor needed when experiments touch billions of users.</div>',
+  google: '<div class="story-text"><strong>Experimentation @ Google.</strong> Google pioneered large-scale experimentation. Expect deep questions on hypothesis testing, multiple comparison corrections, and how the CLT enables inference even on highly skewed metrics like revenue per user.</div>',
+  amazon: '<div class="story-text"><strong>Stats for Ops @ Amazon.</strong> Amazon uses statistics for supply chain optimization, demand forecasting confidence intervals, and A/B testing checkout flows. Interviews focus on practical statistical reasoning and experiment design.</div>'
+};
+
+let activeCo = 'all';
+function renderStory(){ document.getElementById('story-area').innerHTML = STORIES[activeCo] || STORIES.all; }
+document.getElementById('narrative-tabs').addEventListener('click', e=>{
+  if(e.target.tagName!=='BUTTON') return;
+  document.querySelectorAll('#narrative-tabs button').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeCo = e.target.dataset.co;
+  renderStory();
+});
+document.querySelectorAll('nav .company-select button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav .company-select button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCo = btn.dataset.co;
+    document.querySelectorAll('#narrative-tabs button').forEach(b=>b.classList.remove('active'));
+    const match = document.querySelector('#narrative-tabs button[data-co="'+activeCo+'"]');
+    if(match) match.classList.add('active');
+    renderStory();
+  });
+});
+renderStory();
+
+(function(){
+  const raw = localStorage.getItem('ds-v24-diagnostic');
+  if(!raw) return;
+  try {
+    const d = JSON.parse(raw);
+    const s = d.stats || {score:0,total:3};
+    const pct = s.total>0 ? (s.score/s.total)*100 : 0;
+    let lvl, cls;
+    if(pct>=80){ lvl='Strong'; cls='strong'; }
+    else if(pct>=40){ lvl='Review'; cls='review'; }
+    else { lvl='Weak'; cls='weak'; }
+    document.getElementById('diag-banner').innerHTML = `<div class="diag-banner ${cls}">${lvl}: ${s.score}/${s.total} correct on diagnostic</div>`;
+    if(cls==='weak') document.querySelectorAll('.focus-badge').forEach(b=>b.style.display='inline');
+  } catch(e){}
+})();
+
+document.querySelectorAll('#mode-toggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('#mode-toggle button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const mode = btn.dataset.mode;
+    document.getElementById('learn-content').style.display = mode==='learn'?'':'none';
+    document.getElementById('review-content').style.display = mode==='review'?'':'none';
+  });
+});
+
+function toggleSection(header){ header.closest('.learn-section').classList.toggle('open'); }
+
+let timers = {};
+function toggleTimer(id){
+  if(timers[id]&&timers[id].running){clearInterval(timers[id].iv);timers[id].running=false;}
+  else{
+    if(!timers[id])timers[id]={elapsed:0,running:false};
+    timers[id].running=true;
+    const start=Date.now()-timers[id].elapsed;
+    timers[id].iv=setInterval(()=>{
+      timers[id].elapsed=Date.now()-start;
+      const s=Math.floor(timers[id].elapsed/1000),m=Math.floor(s/60);
+      const el=document.querySelector('#sw-'+id+' .sw-display');
+      if(el) el.textContent=(m<10?'0'+m:m)+':'+(s%60<10?'0'+s%60:s%60);
+    },1000);
+  }
+}
+function resetTimer(id){
+  if(timers[id]){clearInterval(timers[id].iv);timers[id]={elapsed:0,running:false};}
+  const el=document.querySelector('#sw-'+id+' .sw-display');
+  if(el) el.textContent='00:00';
+}
+
+document.getElementById('theme-toggle').addEventListener('click', ()=>{
+  const isDark = document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', isDark?'':'dark');
+  localStorage.setItem('ds-v24-theme', isDark?'light':'dark');
+});
+
+document.body.classList.remove('no-fouc');
+document.body.classList.add('ready');
+</script>
+</body>
+</html>
