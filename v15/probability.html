@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Probability Tower — Quest Mode</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="status-bar">
+    <a href="index.html" class="brand">Quest Mode</a>
+    <div class="stats">
+      <a href="quiz.html?cat=Probability" class="btn btn-battle" style="padding:6px 16px;font-size:0.7rem">Battle Prob</a>
+    </div>
+  </div>
+
+  <div class="dungeon-page">
+    <div class="dungeon-hero">
+      <div class="dungeon-icon">&#127922;</div>
+      <h1>The Probability Tower</h1>
+      <p class="dungeon-sub">6 floors of probability mastery</p>
+    </div>
+
+    <!-- Floor 1 -->
+    <div class="floor open" id="floor-1">
+      <div class="floor-header" onclick="toggleFloor(1)">
+        <div class="floor-num" style="background:var(--prob);color:#0a0a0a">F1</div>
+        <h3>Fundamentals</h3>
+        <span class="floor-xp">+50 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <table>
+          <tr><th>Rule</th><th>Formula</th><th>Key Point</th></tr>
+          <tr><td>Addition</td><td>P(A&cup;B) = P(A) + P(B) &minus; P(A&cap;B)</td><td>Subtract intersection (counted twice)</td></tr>
+          <tr><td>Multiplication</td><td>P(A&cap;B) = P(A) &middot; P(B|A)</td><td>Chain conditional probabilities</td></tr>
+          <tr><td>Independence</td><td>P(A&cap;B) = P(A) &middot; P(B)</td><td>Learning A doesn't change P(B)</td></tr>
+          <tr><td>Complement</td><td>P(A) = 1 &minus; P(A&#7580;)</td><td>Count what doesn't happen</td></tr>
+          <tr><td>Permutations</td><td>n! / (n&minus;k)!</td><td>Order matters</td></tr>
+          <tr><td>Combinations</td><td>n! / (k!(n&minus;k)!)</td><td>Order doesn't matter</td></tr>
+        </table>
+
+        <p><strong>Example:</strong> Committee of 3 from 10 people. Unordered: C(10,3) = 120 ways. With distinct roles: P(10,3) = 720 arrangements.</p>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          "At least one..." problems &rarr; solve as 1 &minus; P(nobody does). This complementary counting appears in the birthday problem and dozens of interview questions.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('prob',1,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 2 -->
+    <div class="floor" id="floor-2">
+      <div class="floor-header" onclick="toggleFloor(2)">
+        <div class="floor-num" style="background:var(--prob);color:#0a0a0a">F2</div>
+        <h3>Bayes' Theorem</h3>
+        <span class="floor-xp">+100 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+<pre><code>P(A|B) = P(B|A) &middot; P(A) / P(B)
+
+Posterior = (Likelihood &times; Prior) / Evidence</code></pre>
+
+        <p><strong>The Medical Test Problem:</strong> Disease affects 1% of the population. Test is 99% accurate. You test positive. What's P(disease)?</p>
+
+        <p><strong>Intuition says 99%. Reality: ~50%.</strong></p>
+
+<pre><code>P(+) = P(+|D)&middot;P(D) + P(+|D')&middot;P(D')
+     = 0.99 &times; 0.01 + 0.01 &times; 0.99
+     = 0.0198
+
+P(D|+) = 0.0099 / 0.0198 = 0.50 (50%)</code></pre>
+
+        <p><strong>Why so low?</strong> In 10,000 people: 100 sick (99 test +), 9,900 healthy (99 falsely test +). Total positives: 198. Only 99 are diseased — exactly half. The <strong>base rate</strong> (1% prevalence) dominates.</p>
+
+        <button class="floor-complete-btn" onclick="clearFloor('prob',2,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 3 -->
+    <div class="floor" id="floor-3">
+      <div class="floor-header" onclick="toggleFloor(3)">
+        <div class="floor-num" style="background:var(--prob);color:#0a0a0a">F3</div>
+        <h3>Key Distributions</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <table>
+          <tr><th>Distribution</th><th>Type</th><th>Parameters</th><th>Mean</th><th>Models</th></tr>
+          <tr><td><strong>Bernoulli</strong></td><td>Discrete</td><td>p</td><td>p</td><td>Single yes/no trial</td></tr>
+          <tr><td><strong>Binomial</strong></td><td>Discrete</td><td>n, p</td><td>np</td><td>Successes in n trials</td></tr>
+          <tr><td><strong>Poisson</strong></td><td>Discrete</td><td>&lambda;</td><td>&lambda;</td><td>Events in fixed interval</td></tr>
+          <tr><td><strong>Geometric</strong></td><td>Discrete</td><td>p</td><td>1/p</td><td>Trials until first success</td></tr>
+          <tr><td><strong>Normal</strong></td><td>Continuous</td><td>&mu;, &sigma;</td><td>&mu;</td><td>Bell curve — everything</td></tr>
+          <tr><td><strong>Exponential</strong></td><td>Continuous</td><td>&lambda;</td><td>1/&lambda;</td><td>Time between events</td></tr>
+        </table>
+
+        <p><strong>Normal 68-95-99.7 rule:</strong> ~68% within 1&sigma;, ~95% within 2&sigma;, ~99.7% within 3&sigma;.</p>
+
+        <p><strong>Exponential memoryless property:</strong> P(X &gt; s+t | X &gt; s) = P(X &gt; t) — time already waited doesn't affect future probability.</p>
+
+        <button class="floor-complete-btn" onclick="clearFloor('prob',3,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 4 -->
+    <div class="floor" id="floor-4">
+      <div class="floor-header" onclick="toggleFloor(4)">
+        <div class="floor-num" style="background:var(--prob);color:#0a0a0a">F4</div>
+        <h3>Expected Value & Variance</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+<pre><code>E[X] = &Sigma; x &middot; P(X = x)       -- long-run average
+Var(X) = E[X&sup2;] &minus; (E[X])&sup2;  -- spread around mean
+
+Linearity:  E[aX + bY] = a&middot;E[X] + b&middot;E[Y]
+            (works even when X, Y are dependent!)
+
+Variance:   Var(aX + b) = a&sup2; &middot; Var(X)
+            If independent: Var(X+Y) = Var(X) + Var(Y)</code></pre>
+
+        <p><strong>Example:</strong> Pay $5 to roll a die. Roll 6 &rarr; win $20. Roll 4 or 5 &rarr; win $10. Otherwise $0.</p>
+
+<pre><code>E[winnings] = (1/6)&middot;20 + (2/6)&middot;10 + (3/6)&middot;0 &minus; 5
+            = 3.33 + 3.33 + 0 &minus; 5 = $1.67</code></pre>
+
+        <p>Expected profit is positive — you should play this game.</p>
+
+        <button class="floor-complete-btn" onclick="clearFloor('prob',4,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 5 -->
+    <div class="floor" id="floor-5">
+      <div class="floor-header" onclick="toggleFloor(5)">
+        <div class="floor-num" style="background:var(--prob);color:#0a0a0a">F5</div>
+        <h3>Law of Large Numbers</h3>
+        <span class="floor-xp">+50 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>As sample size n &rarr; &infin;, the sample mean converges to the population mean &mu;. More data = more reliable estimates.</p>
+
+        <p><strong>Why this matters:</strong></p>
+        <p>&bull; <strong>A/B testing backbone:</strong> The observed conversion rate converges to the true rate with enough data.<br>
+        &bull; Small samples are noisy. Large samples are reliable. This is why experiments run for weeks, not hours.<br>
+        &bull; "We tried it once and it didn't work" is not a statistically valid conclusion.</p>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          LLN says sample means converge to the true mean. The CLT tells us <em>how</em> &mdash; normally, with SE = &sigma;/&radic;n. Together they form the foundation of statistical inference.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('prob',5,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 6 -->
+    <div class="floor" id="floor-6">
+      <div class="floor-header" onclick="toggleFloor(6)">
+        <div class="floor-num" style="background:var(--prob);color:#0a0a0a">F6</div>
+        <h3>Classic Interview Puzzles</h3>
+        <span class="floor-xp">+100 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>The Birthday Problem:</strong> 23 people &rarr; &ge;50% chance two share a birthday. 23 people = C(23,2) = 253 pairs. Each has 1/365 chance of matching.</p>
+
+        <p><strong>The Monty Hall Problem:</strong> 3 doors, 1 car, 2 goats. You pick a door. Host reveals a goat behind another. <strong>Switch &rarr; win 2/3 of the time.</strong></p>
+
+        <table>
+          <tr><th>Scenario</th><th>Stay</th><th>Switch</th></tr>
+          <tr><td>Car behind your door (1/3)</td><td>Win</td><td>Lose</td></tr>
+          <tr><td>Car behind door 2 (1/3)</td><td>Lose</td><td>Win</td></tr>
+          <tr><td>Car behind door 3 (1/3)</td><td>Lose</td><td>Win</td></tr>
+        </table>
+
+        <p><strong>Coupon Collector:</strong> E[T] = n &middot; H(n) &asymp; n &middot; (ln(n) + 0.577). For n=50: ~225 boxes.</p>
+
+        <div class="demo-box">
+          <h4>Interactive: Monty Hall Simulator</h4>
+          <div id="montyDoors" style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">
+            <button onclick="pickDoor(0)" class="door-btn" id="door-0" style="width:80px;height:80px;background:var(--surface);border:2px solid var(--border);border-radius:10px;font-size:1.5rem;color:var(--text);cursor:pointer">&#128682;</button>
+            <button onclick="pickDoor(1)" class="door-btn" id="door-1" style="width:80px;height:80px;background:var(--surface);border:2px solid var(--border);border-radius:10px;font-size:1.5rem;color:var(--text);cursor:pointer">&#128682;</button>
+            <button onclick="pickDoor(2)" class="door-btn" id="door-2" style="width:80px;height:80px;background:var(--surface);border:2px solid var(--border);border-radius:10px;font-size:1.5rem;color:var(--text);cursor:pointer">&#128682;</button>
+          </div>
+          <div id="montyActions" style="display:none;text-align:center">
+            <button onclick="montyChoice('stay')" style="background:var(--hp);color:#fff;border-bottom-color:var(--hp-dark)">Stay</button>
+            <button onclick="montyChoice('switch')" style="background:var(--xp);color:#0a0a0a;border-bottom-color:var(--xp-dark);margin-left:8px">Switch</button>
+          </div>
+          <div class="result" id="montyResult">Pick a door to start!</div>
+          <div id="montyStats" style="font-size:0.78rem;color:var(--muted);margin-top:6px"></div>
+        </div>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          These puzzles test your ability to decompose problems, apply conditional probability correctly, and verify your answer makes sense. When unsure, try a small example first.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('prob',6,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><p>v15 &middot; Quest Mode &mdash; <a href="../index.html">Back to Gallery</a></p></footer>
+
+  <script>
+    function toggleFloor(n) { document.getElementById('floor-' + n).classList.toggle('open'); }
+
+    function clearFloor(topic, n, btn) {
+      const key = 'ds-v15-floors-' + topic;
+      const state = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!state.includes(n)) { state.push(n); localStorage.setItem(key, JSON.stringify(state)); }
+      btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared');
+    }
+
+    (function() {
+      const state = JSON.parse(localStorage.getItem('ds-v15-floors-prob') || '[]');
+      state.forEach(n => {
+        const btn = document.querySelector('#floor-' + n + ' .floor-complete-btn');
+        if (btn) { btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared'); }
+      });
+    })();
+
+    // Monty Hall
+    let mCar, mPick, mRevealed, mPhase = 'pick';
+    let mStats = { stay: 0, stayWin: 0, sw: 0, swWin: 0 };
+
+    function resetDoors() {
+      mCar = Math.floor(Math.random() * 3);
+      mPhase = 'pick';
+      mRevealed = -1;
+      for (let i = 0; i < 3; i++) {
+        const d = document.getElementById('door-' + i);
+        d.innerHTML = '&#128682;';
+        d.style.borderColor = 'var(--border)';
+        d.disabled = false;
+      }
+      document.getElementById('montyActions').style.display = 'none';
+      document.getElementById('montyResult').textContent = 'Pick a door!';
+    }
+
+    function pickDoor(n) {
+      if (mPhase !== 'pick') return;
+      mPick = n;
+      document.getElementById('door-' + n).style.borderColor = 'var(--mp)';
+
+      // Host reveals a goat
+      const goats = [0, 1, 2].filter(i => i !== n && i !== mCar);
+      mRevealed = goats[Math.floor(Math.random() * goats.length)];
+      document.getElementById('door-' + mRevealed).innerHTML = '&#128016;';
+      document.getElementById('door-' + mRevealed).disabled = true;
+
+      mPhase = 'decide';
+      document.getElementById('montyActions').style.display = 'block';
+      document.getElementById('montyResult').textContent = 'Host reveals a goat! Stay or switch?';
+    }
+
+    function montyChoice(choice) {
+      const finalPick = choice === 'stay' ? mPick : [0,1,2].find(i => i !== mPick && i !== mRevealed);
+      const won = finalPick === mCar;
+
+      if (choice === 'stay') { mStats.stay++; if (won) mStats.stayWin++; }
+      else { mStats.sw++; if (won) mStats.swWin++; }
+
+      // Reveal all
+      for (let i = 0; i < 3; i++) {
+        const d = document.getElementById('door-' + i);
+        d.innerHTML = i === mCar ? '&#128663;' : '&#128016;';
+        d.style.borderColor = i === finalPick ? (won ? 'var(--xp)' : 'var(--hp)') : 'var(--border)';
+        d.disabled = true;
+      }
+
+      document.getElementById('montyActions').style.display = 'none';
+      document.getElementById('montyResult').innerHTML = won
+        ? '<span style="color:var(--xp);font-weight:700">You won!</span>'
+        : '<span style="color:var(--hp);font-weight:700">You lost!</span>';
+
+      const stayPct = mStats.stay ? Math.round((mStats.stayWin / mStats.stay) * 100) : 0;
+      const swPct = mStats.sw ? Math.round((mStats.swWin / mStats.sw) * 100) : 0;
+      document.getElementById('montyStats').textContent =
+        `Stay: ${mStats.stayWin}/${mStats.stay} (${stayPct}%) | Switch: ${mStats.swWin}/${mStats.sw} (${swPct}%)`;
+
+      setTimeout(resetDoors, 1500);
+    }
+
+    resetDoors();
+  </script>
+</body>
+</html>

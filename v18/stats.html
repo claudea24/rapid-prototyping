@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stats Mock Interview — DS Prep v18</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html"><div class="logo"></div>DS Prep v18</a>
+  <a class="back" href="index.html">All Sessions</a>
+</nav>
+
+<div class="interview-container">
+
+  <div class="interview-header">
+    <div class="badge" style="background:var(--stats-light);color:var(--stats);border-color:rgba(5,150,105,0.2)">Stats Interview</div>
+    <h1>Stats Mock Interview</h1>
+    <p>4 questions with follow-ups &middot; ~10 minutes</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-step" id="ps1"></div>
+    <div class="progress-step" id="ps2"></div>
+    <div class="progress-step" id="ps3"></div>
+    <div class="progress-step" id="ps4"></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question-block visible" id="q1">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q1</div>
+      <div class="interviewer-text">What is a <strong>p-value</strong>? Explain it simply.</div>
+    </div>
+    <div class="options" id="q1-opts">
+      <div class="option-card" data-q="1" data-val="wrong" onclick="pick(this)">A) The probability that the null hypothesis is true.</div>
+      <div class="option-card" data-q="1" data-val="correct" onclick="pick(this)">B) The probability of observing data this extreme (or more) assuming the null hypothesis IS true.</div>
+      <div class="option-card" data-q="1" data-val="partial" onclick="pick(this)">C) A measure of how significant the result is &mdash; lower means more significant.</div>
+    </div>
+    <div class="follow-up" id="q1-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Good. What's the <strong>most common misconception</strong> about p-values?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q1')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q1-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"People think p=0.05 means there's a 5% chance the result is wrong."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"The #1 misconception: 'the p-value is the probability the null hypothesis is true.' It's NOT. It's P(data | H0), not P(H0 | data). A p-value of 0.03 means: IF the null is true, there's a 3% chance of seeing data this extreme. It says nothing about the probability of H0 itself. Also: p &lt; 0.05 doesn't mean the effect is large or important &mdash; with enough data, even trivially small effects become 'significant.' Always pair p-values with effect sizes and confidence intervals."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q1-next" style="display:none" onclick="nextQ(2)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-block" id="q2">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q2</div>
+      <div class="interviewer-text">Design an <strong>A/B test</strong> for a new checkout flow. How do you set it up?</div>
+    </div>
+    <div class="options" id="q2-opts">
+      <div class="option-card" data-q="2" data-val="wrong" onclick="pick(this)">A) Show the new flow to everyone for a week, then compare to last week's data.</div>
+      <div class="option-card" data-q="2" data-val="correct" onclick="pick(this)">B) Randomly split users 50/50, define a primary metric (conversion rate), calculate required sample size, run until you hit it, then analyze.</div>
+      <div class="option-card" data-q="2" data-val="partial" onclick="pick(this)">C) Run both versions simultaneously and pick whichever has higher conversion.</div>
+    </div>
+    <div class="follow-up" id="q2-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">How do you determine the <strong>required sample size</strong>?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q2')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q2-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"Just run it for a week or two and see if the results are significant."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Sample size depends on four inputs: (1) <strong>Baseline conversion rate</strong> (e.g., 5%). (2) <strong>Minimum detectable effect (MDE)</strong> &mdash; the smallest improvement worth detecting (e.g., 0.5% absolute lift). (3) <strong>Significance level (alpha)</strong> &mdash; typically 0.05. (4) <strong>Power (1 - beta)</strong> &mdash; typically 0.80. Plug into a power calculator. Smaller MDE = much larger sample needed. This is why you decide sample size BEFORE running the test &mdash; it prevents 'peeking' and stopping early when results look good by chance."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q2-next" style="display:none" onclick="nextQ(3)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-block" id="q3">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q3</div>
+      <div class="interviewer-text">Results show <strong>p=0.03</strong> but the test only ran for <strong>2 days</strong>. Should we ship it?</div>
+    </div>
+    <div class="options" id="q3-opts">
+      <div class="option-card" data-q="3" data-val="wrong" onclick="pick(this)">A) Yes! p &lt; 0.05 means it's statistically significant. Ship it.</div>
+      <div class="option-card" data-q="3" data-val="correct" onclick="pick(this)">B) No &mdash; 2 days likely isn't enough. We probably haven't hit the pre-calculated sample size, and early results are unreliable due to peeking bias.</div>
+      <div class="option-card" data-q="3" data-val="partial" onclick="pick(this)">C) Maybe &mdash; if the effect is really large, 2 days could be enough.</div>
+    </div>
+    <div class="follow-up" id="q3-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Tell me more about the <strong>peeking problem</strong>. Why is checking results early dangerous?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q3')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q3-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"Looking early is fine as long as you wait for significance. If it's p &lt; 0.05, you can stop."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Peeking inflates false positive rates dramatically. If you check significance after every batch, the chance of seeing p &lt; 0.05 by luck can exceed 30% even with no real effect. Why? Each peek is another 'draw' &mdash; more draws = more chances for a false positive. Solutions: (1) <strong>Fixed horizon</strong> &mdash; commit to sample size, analyze once. (2) <strong>Sequential testing</strong> (e.g., group sequential design) &mdash; allows predefined checkpoints with adjusted thresholds. (3) <strong>Bayesian approach</strong> &mdash; continuously update posterior probability. Also watch for day-of-week effects &mdash; 2 days misses weekend behavior."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q3-next" style="display:none" onclick="nextQ(4)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-block" id="q4">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q4</div>
+      <div class="interviewer-text">Explain the <strong>Central Limit Theorem</strong>.</div>
+    </div>
+    <div class="options" id="q4-opts">
+      <div class="option-card" data-q="4" data-val="partial" onclick="pick(this)">A) Large enough samples will always be normally distributed.</div>
+      <div class="option-card" data-q="4" data-val="correct" onclick="pick(this)">B) The distribution of SAMPLE MEANS approaches a normal distribution as sample size increases, regardless of the underlying population distribution.</div>
+      <div class="option-card" data-q="4" data-val="wrong" onclick="pick(this)">C) The more data you collect, the more your data becomes normal.</div>
+    </div>
+    <div class="follow-up" id="q4-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text"><strong>Why does the CLT matter</strong> for data science in practice?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q4')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q4-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"It matters because normal distributions are easy to work with."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"The CLT is the foundation of nearly all inferential statistics we use: (1) <strong>Confidence intervals</strong> &mdash; we can build CIs for means even when the underlying data isn't normal. (2) <strong>A/B tests</strong> &mdash; t-tests and z-tests assume the sampling distribution of the mean is normal, which CLT guarantees for n &ge; 30ish. (3) <strong>Survey estimation</strong> &mdash; we can estimate population means from samples. The key nuance: CLT applies to the distribution of the sample MEAN, not the data itself. Your data can be wildly skewed, but the mean of 50 samples from it will be approximately normal."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q4-next" style="display:none" onclick="finish()">Finish Interview &rarr;</button>
+  </div>
+
+  <div class="completion" id="done">
+    <h2>Interview Complete!</h2>
+    <p>You've finished the Stats mock interview. Review your answers above or try another topic.</p>
+    <a href="index.html">&larr; Back to All Sessions</a>
+  </div>
+
+</div>
+
+<script>
+let current = 1;
+const total = 4;
+
+function updateProgress() {
+  for (let i = 1; i <= total; i++) {
+    const el = document.getElementById('ps' + i);
+    if (i < current) el.className = 'progress-step done';
+    else if (i === current) el.className = 'progress-step active';
+    else el.className = 'progress-step';
+  }
+}
+
+function pick(el) {
+  const q = el.getAttribute('data-q');
+  const val = el.getAttribute('data-val');
+  const opts = document.querySelectorAll('#q' + q + '-opts .option-card');
+  opts.forEach(o => {
+    o.style.pointerEvents = 'none';
+    const v = o.getAttribute('data-val');
+    if (o === el) o.classList.add(v === 'correct' ? 'correct' : v === 'partial' ? 'partial' : 'wrong');
+    else if (v === 'correct') o.classList.add('correct');
+    else o.style.opacity = '0.4';
+  });
+  document.getElementById('q' + q + '-followup').classList.add('show');
+}
+
+function showReveal(q) {
+  document.getElementById(q + '-reveal').classList.add('show');
+  document.getElementById(q + '-next').style.display = 'inline-flex';
+}
+
+function nextQ(n) {
+  current = n;
+  updateProgress();
+  const block = document.getElementById('q' + n);
+  block.classList.add('visible');
+  block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function finish() {
+  for (let i = 1; i <= total; i++) document.getElementById('ps' + i).className = 'progress-step done';
+  const done = document.getElementById('done');
+  done.classList.add('show');
+  done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+updateProgress();
+</script>
+
+</body>
+</html>

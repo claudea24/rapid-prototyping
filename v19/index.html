@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DS Interview Prep — Company Playbook</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v19</a>
+  <div class="nav-right">
+    <button class="search-trigger" onclick="openSearch()">&#128269; <kbd>&#8984;K</kbd></button>
+    <a href="../index.html" class="back">Gallery</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="badge">v19 &middot; Company Playbook</div>
+  <h1>Prep for <span>Your Company</span></h1>
+  <p>Meta, Google, Amazon &mdash; each has different focus areas. Filter by company to see what they actually ask.</p>
+
+  <div class="company-filters">
+    <button class="company-btn" data-company="meta" onclick="filterTopics('meta')"><span class="dot"></span> Meta</button>
+    <button class="company-btn" data-company="google" onclick="filterTopics('google')"><span class="dot"></span> Google</button>
+    <button class="company-btn" data-company="amazon" onclick="filterTopics('amazon')"><span class="dot"></span> Amazon</button>
+    <button class="company-btn active" data-company="all" onclick="filterTopics('all')"><span class="dot"></span> All Companies</button>
+  </div>
+</div>
+
+<div class="grid">
+  <a href="sql.html" class="topic-card" data-companies="meta google amazon">
+    <div class="icon-wrap ib">&#128450;</div>
+    <div class="content">
+      <h2>SQL</h2>
+      <p>Query execution order, JOINs, window functions, CTEs, and optimization &mdash; with company-specific patterns for each topic.</p>
+      <div class="tags">
+        <span class="company-badge google">Google</span>
+        <span class="company-badge amazon">Amazon</span>
+        <span class="company-badge meta">Meta</span>
+      </div>
+    </div>
+  </a>
+  <a href="python.html" class="topic-card" data-companies="meta google amazon">
+    <div class="icon-wrap ip">&#128013;</div>
+    <div class="content">
+      <h2>Python</h2>
+      <p>Data structures, Pandas, NumPy, coding patterns, and gotchas &mdash; see which companies emphasize which skills.</p>
+      <div class="tags">
+        <span class="company-badge google">Google</span>
+        <span class="company-badge amazon">Amazon</span>
+        <span class="company-badge meta">Meta</span>
+      </div>
+    </div>
+  </a>
+  <a href="ml.html" class="topic-card" data-companies="meta google amazon">
+    <div class="icon-wrap im">&#129302;</div>
+    <div class="content">
+      <h2>Machine Learning</h2>
+      <p>Supervised &amp; unsupervised algorithms, metrics, bias-variance, feature engineering &mdash; tailored by company focus.</p>
+      <div class="tags">
+        <span class="company-badge meta">Meta</span>
+        <span class="company-badge google">Google</span>
+        <span class="company-badge amazon">Amazon</span>
+      </div>
+    </div>
+  </a>
+  <a href="stats.html" class="topic-card" data-companies="meta google amazon">
+    <div class="icon-wrap is">&#128202;</div>
+    <div class="content">
+      <h2>Statistics</h2>
+      <p>Hypothesis testing, confidence intervals, A/B testing, CLT &mdash; Meta's #1 area plus Google and Amazon patterns.</p>
+      <div class="tags">
+        <span class="company-badge meta">Meta</span>
+        <span class="company-badge google">Google</span>
+        <span class="company-badge amazon">Amazon</span>
+      </div>
+    </div>
+  </a>
+  <a href="probability.html" class="topic-card" data-companies="meta google amazon">
+    <div class="icon-wrap ir">&#127922;</div>
+    <div class="content">
+      <h2>Probability</h2>
+      <p>Bayes' theorem, distributions, expected value, classic puzzles &mdash; Google is the #1 probability interview company.</p>
+      <div class="tags">
+        <span class="company-badge google">Google</span>
+        <span class="company-badge meta">Meta</span>
+        <span class="company-badge amazon">Amazon</span>
+      </div>
+    </div>
+  </a>
+  <a href="casing.html" class="topic-card" data-companies="meta google amazon">
+    <div class="icon-wrap ic">&#128161;</div>
+    <div class="content">
+      <h2>Case Studies</h2>
+      <p>AARRR framework, metric diagnosis, market sizing, experiment design &mdash; with company-specific case patterns.</p>
+      <div class="tags">
+        <span class="company-badge meta">Meta</span>
+        <span class="company-badge amazon">Amazon</span>
+        <span class="company-badge google">Google</span>
+      </div>
+    </div>
+  </a>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v19 &middot; Company Playbook &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<!-- Search Modal -->
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="Search topics, sections, companies..." autocomplete="off">
+      <span class="esc-hint">ESC</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="search.js"></script>
+<script>
+function filterTopics(company) {
+  document.querySelectorAll('.company-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`.company-btn[data-company="${company}"]`).classList.add('active');
+  document.querySelectorAll('.topic-card').forEach(card => {
+    if (company === 'all') {
+      card.style.display = '';
+    } else {
+      const companies = card.getAttribute('data-companies') || '';
+      card.style.display = companies.includes(company) ? '' : 'none';
+    }
+  });
+}
+</script>
+</body>
+</html>

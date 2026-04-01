@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SQL Mock Interview — DS Prep v18</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html"><div class="logo"></div>DS Prep v18</a>
+  <a class="back" href="index.html">All Sessions</a>
+</nav>
+
+<div class="interview-container">
+
+  <div class="interview-header">
+    <div class="badge" style="background:var(--sql-light);color:var(--sql);border-color:rgba(37,99,235,0.2)">SQL Interview</div>
+    <h1>SQL Mock Interview</h1>
+    <p>5 questions with follow-ups &middot; ~10 minutes</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-step" id="ps1"></div>
+    <div class="progress-step" id="ps2"></div>
+    <div class="progress-step" id="ps3"></div>
+    <div class="progress-step" id="ps4"></div>
+    <div class="progress-step" id="ps5"></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question-block visible" id="q1">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q1</div>
+      <div class="interviewer-text">Can you explain the <strong>logical execution order</strong> of a SQL query?</div>
+    </div>
+    <div class="options" id="q1-opts">
+      <div class="option-card" data-q="1" data-val="wrong" onclick="pick(this)">A) SELECT runs first, then FROM pulls the data, then WHERE filters it.</div>
+      <div class="option-card" data-q="1" data-val="correct" onclick="pick(this)">B) FROM &rarr; WHERE &rarr; GROUP BY &rarr; HAVING &rarr; SELECT &rarr; ORDER BY &rarr; LIMIT</div>
+      <div class="option-card" data-q="1" data-val="partial" onclick="pick(this)">C) It depends on the database engine and query optimizer.</div>
+    </div>
+    <div class="follow-up" id="q1-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Great. So <strong>why can't you use a SELECT alias in the WHERE clause?</strong></div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q1')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q1-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"It's just a SQL syntax thing. You just can't do it."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Because WHERE is evaluated at step 2, before SELECT creates the alias at step 5. The alias literally doesn't exist yet when WHERE runs. You can reference it in ORDER BY, though, since that runs after SELECT."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q1-next" style="display:none" onclick="nextQ(2)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-block" id="q2">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q2</div>
+      <div class="interviewer-text">What's the difference between <strong>RANK()</strong> and <strong>DENSE_RANK()</strong>?</div>
+    </div>
+    <div class="options" id="q2-opts">
+      <div class="option-card" data-q="2" data-val="wrong" onclick="pick(this)">A) They're basically the same thing, just different syntax.</div>
+      <div class="option-card" data-q="2" data-val="correct" onclick="pick(this)">B) RANK() skips numbers after ties (1,1,3), DENSE_RANK() doesn't (1,1,2).</div>
+      <div class="option-card" data-q="2" data-val="partial" onclick="pick(this)">C) RANK() is for ordering, DENSE_RANK() is for grouping.</div>
+    </div>
+    <div class="follow-up" id="q2-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Good. <strong>When would you choose ROW_NUMBER() instead?</strong></div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q2')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q2-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"ROW_NUMBER just gives unique numbers. Use it when you want unique IDs."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"ROW_NUMBER() assigns a unique sequential integer regardless of ties &mdash; great for deduplication (pick one row per group) or pagination. RANK/DENSE_RANK preserve tie info, which matters when you need to know 'who tied for 2nd place.' A classic pattern: <code>WHERE rn = 1</code> inside a CTE to get the latest record per user."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q2-next" style="display:none" onclick="nextQ(3)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-block" id="q3">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q3</div>
+      <div class="interviewer-text">How would you <strong>find employees with no department</strong>?</div>
+    </div>
+    <div class="options" id="q3-opts">
+      <div class="option-card" data-q="3" data-val="partial" onclick="pick(this)">A) Use a subquery: <code>WHERE dept_id NOT IN (SELECT id FROM departments)</code></div>
+      <div class="option-card" data-q="3" data-val="correct" onclick="pick(this)">B) LEFT JOIN departments ON ... WHERE departments.id IS NULL</div>
+      <div class="option-card" data-q="3" data-val="wrong" onclick="pick(this)">C) INNER JOIN and filter for NULLs.</div>
+    </div>
+    <div class="follow-up" id="q3-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Nice. What if I need <strong>employees AND departments with no match</strong> on either side?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q3')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q3-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"Just do two LEFT JOINs and UNION them together."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Use a FULL OUTER JOIN. It returns all rows from both tables &mdash; matched rows plus unmatched from each side. Not all databases support it (MySQL doesn't natively), so a workaround is <code>LEFT JOIN UNION ALL RIGHT JOIN WHERE left.id IS NULL</code>. The key insight: LEFT JOIN + IS NULL finds unmatched from one side; FULL OUTER finds unmatched from both."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q3-next" style="display:none" onclick="nextQ(4)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-block" id="q4">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q4</div>
+      <div class="interviewer-text">Write a query for <strong>month-over-month revenue change</strong>. How would you approach this?</div>
+    </div>
+    <div class="options" id="q4-opts">
+      <div class="option-card" data-q="4" data-val="partial" onclick="pick(this)">A) Self-join the table on month = month - 1 using a subquery.</div>
+      <div class="option-card" data-q="4" data-val="correct" onclick="pick(this)">B) Use a CTE to aggregate monthly revenue, then LAG() to get the prior month.</div>
+      <div class="option-card" data-q="4" data-val="wrong" onclick="pick(this)">C) Create a temp table for each month and join them.</div>
+    </div>
+    <div class="follow-up" id="q4-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text"><strong>Why CTE over a correlated subquery here?</strong></div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q4')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q4-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"CTEs are just cleaner syntax. It doesn't really matter which you use."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"A CTE + LAG() is more readable and usually more performant. The CTE aggregates once, then LAG() pulls the previous row &mdash; one scan. A correlated subquery re-executes for every row, scanning the table N times. Here's the pattern:"</p>
+        <pre>WITH monthly AS (
+  SELECT DATE_TRUNC('month', order_date) AS mo,
+         SUM(revenue) AS rev
+  FROM orders GROUP BY 1
+)
+SELECT mo, rev,
+  LAG(rev) OVER (ORDER BY mo) AS prev_rev,
+  ROUND((rev - LAG(rev) OVER (ORDER BY mo))
+    / LAG(rev) OVER (ORDER BY mo) * 100, 1) AS pct_change
+FROM monthly ORDER BY mo;</pre>
+      </div>
+    </div>
+    <button class="next-btn" id="q4-next" style="display:none" onclick="nextQ(5)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question-block" id="q5">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q5</div>
+      <div class="interviewer-text">This query is <strong>running slow</strong>. How do you debug it?</div>
+    </div>
+    <div class="options" id="q5-opts">
+      <div class="option-card" data-q="5" data-val="wrong" onclick="pick(this)">A) Just add more indexes on every column.</div>
+      <div class="option-card" data-q="5" data-val="correct" onclick="pick(this)">B) Run EXPLAIN/EXPLAIN ANALYZE, check for full table scans, then look at indexes and filter order.</div>
+      <div class="option-card" data-q="5" data-val="partial" onclick="pick(this)">C) Break it into smaller queries and run them separately.</div>
+    </div>
+    <div class="follow-up" id="q5-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text"><strong>What would EXPLAIN show you?</strong> Walk me through what you'd look for.</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q5')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q5-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"EXPLAIN shows you the query plan. You look for anything that seems slow."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"EXPLAIN shows the query execution plan &mdash; the steps the optimizer chose. I look for: <strong>(1)</strong> Sequential/full table scans on large tables (means no useful index). <strong>(2)</strong> High estimated row counts at each step. <strong>(3)</strong> Nested loops on large datasets (might need a hash join). <strong>(4)</strong> Sort operations without indexes. Key fixes: add indexes on WHERE/JOIN columns, filter early (push predicates down), avoid SELECT *, and check if statistics are stale. EXPLAIN ANALYZE actually runs the query and shows real vs estimated rows &mdash; big gaps mean stale stats."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q5-next" style="display:none" onclick="finish()">Finish Interview &rarr;</button>
+  </div>
+
+  <!-- Completion -->
+  <div class="completion" id="done">
+    <h2>Interview Complete!</h2>
+    <p>You've finished the SQL mock interview. Review your answers above or try another topic.</p>
+    <a href="index.html">&larr; Back to All Sessions</a>
+  </div>
+
+</div>
+
+<script>
+let current = 1;
+const total = 5;
+
+function updateProgress() {
+  for (let i = 1; i <= total; i++) {
+    const el = document.getElementById('ps' + i);
+    if (i < current) el.className = 'progress-step done';
+    else if (i === current) el.className = 'progress-step active';
+    else el.className = 'progress-step';
+  }
+}
+
+function pick(el) {
+  const q = el.getAttribute('data-q');
+  const val = el.getAttribute('data-val');
+  const opts = document.querySelectorAll('#q' + q + '-opts .option-card');
+  opts.forEach(o => {
+    o.style.pointerEvents = 'none';
+    const v = o.getAttribute('data-val');
+    if (o === el) o.classList.add(v === 'correct' ? 'correct' : v === 'partial' ? 'partial' : 'wrong');
+    else if (v === 'correct') o.classList.add('correct');
+    else o.style.opacity = '0.4';
+  });
+  document.getElementById('q' + q + '-followup').classList.add('show');
+}
+
+function showReveal(q) {
+  document.getElementById(q + '-reveal').classList.add('show');
+  document.getElementById(q + '-next').style.display = 'inline-flex';
+}
+
+function nextQ(n) {
+  current = n;
+  updateProgress();
+  const block = document.getElementById('q' + n);
+  block.classList.add('visible');
+  block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function finish() {
+  for (let i = 1; i <= total; i++) document.getElementById('ps' + i).className = 'progress-step done';
+  const done = document.getElementById('done');
+  done.classList.add('show');
+  done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+updateProgress();
+</script>
+
+</body>
+</html>

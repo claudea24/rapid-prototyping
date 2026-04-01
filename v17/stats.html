@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics — Coding Playground | DS Prep v17</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#059669;--accent-light:#d1fae5;--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--rose:#dc2626;--rose-light:#fee2e2;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+    .stopwatch-bar{position:sticky;top:56px;z-index:150;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;justify-content:center;gap:16px}
+    .stopwatch-display{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--heading);letter-spacing:2px;min-width:90px;text-align:center}
+    .stopwatch-bar button{font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;padding:6px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
+    .stopwatch-bar button:hover{border-color:var(--accent);color:var(--accent)}
+    .stopwatch-bar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .stopwatch-bar button.primary:hover{background:#047857}
+    .stopwatch-bar button.reset{color:var(--rose);border-color:var(--rose-light)}
+    .stopwatch-bar button.reset:hover{background:var(--rose-light)}
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+    .challenge{margin-bottom:32px}
+    .challenge-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+    .challenge-header h3{font-size:1.05rem;font-weight:700;color:var(--heading)}
+    .difficulty{font-size:.6rem;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:1px}
+    .difficulty.easy{background:var(--green-light);color:var(--green)}
+    .difficulty.medium{background:var(--amber-light);color:var(--amber)}
+    .difficulty.hard{background:var(--rose-light);color:var(--rose)}
+    .think-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:0 0 12px;box-shadow:var(--shadow)}
+    .think-card .think-prompt{font-size:.88rem;color:var(--text);line-height:1.7;margin-bottom:14px}
+    .think-card .think-prompt strong{color:var(--heading)}
+    .think-card .answer{display:none;margin-top:12px;padding:16px 18px;background:var(--green-light);border:1px solid #86efac;border-radius:10px;font-size:.84rem;line-height:1.7;color:#15803d}
+    .think-card .answer.show{display:block}
+    .think-card button{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;padding:8px 20px;border-radius:8px;border:1px solid var(--amber-light);background:var(--surface);color:var(--amber);cursor:pointer;transition:all .2s}
+    .think-card button:hover{background:var(--amber-light)}
+    .think-card .done-time{font-size:.75rem;font-weight:600;color:var(--green);margin-top:8px;display:none}
+    .think-card .done-time.show{display:block}
+    .btn-row{display:flex;gap:8px;flex-wrap:wrap}
+    .btn-row button.done{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;padding:8px 20px;border-radius:8px;border:1px solid var(--green-light);background:var(--surface);color:var(--green);cursor:pointer;transition:all .2s}
+    .btn-row button.done:hover{background:var(--green-light)}
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:#5b4cdb;text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.stopwatch-bar{padding:8px 16px;gap:10px;flex-wrap:wrap}.stopwatch-display{font-size:1.2rem}.page-header{padding:24px 16px 8px}.page-header .intro{margin-left:0}.container{padding:16px 16px 48px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v17</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html" class="active">Stats</a>
+    <a href="probability.html">Prob</a>
+    <a href="casing.html">Case</a>
+  </div>
+</nav>
+
+<div class="stopwatch-bar">
+  <button class="primary" id="toggleBtn" onclick="toggleStopwatch()">Start</button>
+  <span class="stopwatch-display" id="stopwatchDisplay">00:00</span>
+  <button class="reset" onclick="resetStopwatch()">Reset</button>
+</div>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon">&#128202;</div>
+    <h1>Statistics</h1>
+  </div>
+  <p class="intro">3 conceptual challenges on hypothesis testing, A/B testing, and sample size calculations.</p>
+</div>
+
+<div class="container">
+
+  <div class="challenge" id="c1">
+    <div class="challenge-header">
+      <h3>Challenge 1 — Design the A/B Test</h3>
+      <span class="difficulty medium">Medium</span>
+    </div>
+    <div class="think-card">
+      <p class="think-prompt"><strong>Think about it...</strong> Your PM wants to test a new checkout flow. Current conversion rate is 3.2%. They want to detect a 10% relative improvement (to 3.52%). How would you design this A/B test? What's your null and alternative hypothesis? What are potential pitfalls?</p>
+      <div class="btn-row">
+        <button onclick="toggleAnswer(1)">Reveal Answer</button>
+        <button class="done" onclick="markDone(1)">Done</button>
+      </div>
+      <div class="answer" id="answer1"><strong>Hypotheses:</strong><br>H0: p_new = p_old = 0.032 (no difference)<br>H1: p_new != p_old (two-sided test)<br><br><strong>Design:</strong><br>- Randomization unit: user (not session, to avoid same-user contamination)<br>- Metric: conversion rate (purchases / unique visitors)<br>- Significance level: alpha = 0.05<br>- Power: 80% (beta = 0.20)<br>- MDE: 0.32 percentage points (3.2% to 3.52%)<br><br><strong>Sample size</strong> (per group): ~120,000 users. Formula: n = (Z_alpha/2 + Z_beta)^2 * (p1(1-p1) + p2(1-p2)) / (p2-p1)^2. At 3.2% baseline with 0.32pp MDE, you need large samples because the effect is small.<br><br><strong>Pitfalls:</strong><br>1. <strong>Peeking</strong> — checking results before reaching sample size inflates false positive rate<br>2. <strong>Novelty effect</strong> — users may engage more simply because it's new<br>3. <strong>Simpson's paradox</strong> — results may differ across segments (mobile vs desktop)<br>4. <strong>Network effects</strong> — if users influence each other, independence assumption breaks</div>
+      <div class="done-time" id="done1"></div>
+    </div>
+  </div>
+
+  <div class="challenge" id="c2">
+    <div class="challenge-header">
+      <h3>Challenge 2 — Interpret This P-value</h3>
+      <span class="difficulty easy">Easy</span>
+    </div>
+    <div class="think-card">
+      <p class="think-prompt"><strong>Think about it...</strong> Your A/B test returns p = 0.03. Your colleague says "there's a 3% chance the new feature doesn't work." Is this correct? What does p = 0.03 actually mean? What would you say to a non-technical stakeholder?</p>
+      <div class="btn-row">
+        <button onclick="toggleAnswer(2)">Reveal Answer</button>
+        <button class="done" onclick="markDone(2)">Done</button>
+      </div>
+      <div class="answer" id="answer2"><strong>Your colleague is WRONG.</strong> This is the most common misinterpretation of p-values.<br><br><strong>What p = 0.03 actually means:</strong> "If there were truly no difference between the groups (H0 is true), the probability of observing data as extreme as (or more extreme than) what we observed is 3%."<br><br>It does NOT mean:<br>- "3% chance the null is true" (that's a Bayesian posterior)<br>- "97% chance the feature works"<br>- "The effect size is large"<br><br><strong>For stakeholders:</strong> "If the new feature had zero effect, it would be very unlikely (3 in 100 chance) to see results this different just by random chance. This gives us confidence the effect is real, but we should also look at the effect SIZE and confidence interval to judge if it's practically meaningful."<br><br><strong>Key nuance:</strong> Statistical significance != practical significance. A p-value of 0.03 with a 0.01% conversion lift isn't actionable even though it's "significant."</div>
+      <div class="done-time" id="done2"></div>
+    </div>
+  </div>
+
+  <div class="challenge" id="c3">
+    <div class="challenge-header">
+      <h3>Challenge 3 — Calculate Sample Size</h3>
+      <span class="difficulty hard">Hard</span>
+    </div>
+    <div class="think-card">
+      <p class="think-prompt"><strong>Think about it...</strong> You need to run a test where the baseline metric is a continuous variable (average revenue per user = $45, standard deviation = $30). You want to detect a $3 increase with 80% power and 5% significance. How many users per group do you need? Show your work.</p>
+      <div class="btn-row">
+        <button onclick="toggleAnswer(3)">Reveal Answer</button>
+        <button class="done" onclick="markDone(3)">Done</button>
+      </div>
+      <div class="answer" id="answer3"><strong>Formula for two-sample t-test:</strong><br>n = 2 * (Z_alpha/2 + Z_beta)^2 * sigma^2 / delta^2<br><br><strong>Values:</strong><br>- Z_alpha/2 = Z_0.025 = 1.96 (two-sided, alpha=0.05)<br>- Z_beta = Z_0.20 = 0.842 (power=80%)<br>- sigma = $30 (standard deviation)<br>- delta = $3 (minimum detectable effect)<br><br><strong>Calculation:</strong><br>n = 2 * (1.96 + 0.842)^2 * 30^2 / 3^2<br>n = 2 * (2.802)^2 * 900 / 9<br>n = 2 * 7.851 * 100<br>n = 1,570.2<br><br><strong>Answer: ~1,571 users per group (3,142 total).</strong><br><br><strong>Practical note:</strong> This assumes equal variance in both groups and no attrition. In practice, you'd add 10-20% buffer for drop-offs. If your site gets 1,000 users/day, you need about 3-4 days to run this test. The large sample is needed because the effect ($3) is small relative to the noise ($30 SD) — the signal-to-noise ratio (effect/SD = 0.1) is low.</div>
+      <div class="done-time" id="done3"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v17 &middot; <a href="index.html">Back to Hub</a></p>
+</footer>
+
+<script>
+  let stopwatchTime=0,stopwatchInterval=null,running=false;
+  function formatTime(ms){const min=Math.floor(ms/60000);const sec=Math.floor((ms%60000)/1000);return String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
+  function toggleStopwatch(){const btn=document.getElementById('toggleBtn');if(running){clearInterval(stopwatchInterval);running=false;btn.textContent='Start'}else{stopwatchInterval=setInterval(()=>{stopwatchTime+=100;document.getElementById('stopwatchDisplay').textContent=formatTime(stopwatchTime)},100);running=true;btn.textContent='Pause'}}
+  function resetStopwatch(){clearInterval(stopwatchInterval);running=false;stopwatchTime=0;document.getElementById('stopwatchDisplay').textContent='00:00';document.getElementById('toggleBtn').textContent='Start'}
+  function toggleAnswer(n){document.getElementById('answer'+n).classList.toggle('show')}
+  function markDone(n){const el=document.getElementById('done'+n);el.textContent='Completed at '+formatTime(stopwatchTime);el.classList.add('show')}
+</script>
+</body>
+</html>

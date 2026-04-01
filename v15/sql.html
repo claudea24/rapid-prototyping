@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The SQL Caverns — Quest Mode</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="status-bar">
+    <a href="index.html" class="brand">Quest Mode</a>
+    <div class="stats">
+      <a href="quiz.html?cat=SQL" class="btn btn-battle" style="padding:6px 16px;font-size:0.7rem">Battle SQL</a>
+    </div>
+  </div>
+
+  <div class="dungeon-page">
+    <div class="dungeon-hero">
+      <div class="dungeon-icon">&#128451;</div>
+      <h1>The SQL Caverns</h1>
+      <p class="dungeon-sub">6 floors of SQL mastery</p>
+    </div>
+
+    <!-- Floor 1 -->
+    <div class="floor open" id="floor-1">
+      <div class="floor-header" onclick="toggleFloor(1)">
+        <div class="floor-num" style="background:var(--sql)">F1</div>
+        <h3>Query Execution Order</h3>
+        <span class="floor-xp">+50 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>When you write a SQL query, you begin with <code>SELECT</code>, but the database engine does <strong>not</strong> read your query top to bottom. It follows its own logical execution order — understanding this is the single most important step toward writing correct SQL.</p>
+
+        <table>
+          <tr><th>Step</th><th>Clause</th><th>What It Does</th></tr>
+          <tr><td>1</td><td><strong>FROM / JOIN</strong></td><td>Identify source tables and perform joins</td></tr>
+          <tr><td>2</td><td><strong>WHERE</strong></td><td>Filter individual rows before grouping</td></tr>
+          <tr><td>3</td><td><strong>GROUP BY</strong></td><td>Collapse rows into groups</td></tr>
+          <tr><td>4</td><td><strong>HAVING</strong></td><td>Filter groups after aggregation</td></tr>
+          <tr><td>5</td><td><strong>SELECT</strong></td><td>Evaluate expressions and aliases</td></tr>
+          <tr><td>6</td><td><strong>ORDER BY</strong></td><td>Sort the result set</td></tr>
+          <tr><td>7</td><td><strong>LIMIT</strong></td><td>Restrict the number of returned rows</td></tr>
+        </table>
+
+<pre><code>SELECT   customer_id,
+         SUM(amount) AS total_spent
+FROM     orders
+WHERE    order_date >= '2024-01-01'
+GROUP BY customer_id
+HAVING   SUM(amount) > 1000
+ORDER BY total_spent DESC
+LIMIT    10;</code></pre>
+
+        <p>The engine proceeds: <strong>FROM</strong> loads <code>orders</code>. <strong>WHERE</strong> discards rows before 2024. <strong>GROUP BY</strong> groups by <code>customer_id</code>. <strong>HAVING</strong> removes groups with ≤$1,000. <strong>SELECT</strong> computes the alias. <strong>ORDER BY</strong> sorts. <strong>LIMIT</strong> returns top 10.</p>
+
+        <div class="demo-box">
+          <h4>Interactive: Execution Order Shuffle</h4>
+          <button onclick="shuffleOrder()" style="background:var(--sql);color:#0a0a0a;border-bottom-color:#3b82f6">Shuffle & Reveal</button>
+          <div class="result" id="orderResult"></div>
+        </div>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          <code>HAVING</code> must use <code>SUM(amount)</code> rather than the alias <code>total_spent</code>, because the alias is not created until <code>SELECT</code> runs in step 5. Always write with the standard in mind.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('sql',1,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 2 -->
+    <div class="floor" id="floor-2">
+      <div class="floor-header" onclick="toggleFloor(2)">
+        <div class="floor-num" style="background:var(--sql)">F2</div>
+        <h3>Joining Tables</h3>
+        <span class="floor-xp">+50 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>Real-world data rarely lives in a single table. Joins reunite related pieces of information.</p>
+
+        <table>
+          <tr><th>Join Type</th><th>Keeps</th><th>Non-Matches</th><th>Use When</th></tr>
+          <tr><td><strong>INNER JOIN</strong></td><td>Only matched rows</td><td>Dropped from both</td><td>Records in both tables</td></tr>
+          <tr><td><strong>LEFT JOIN</strong></td><td>All left + matched right</td><td>Right fills with NULL</td><td>Complete roster from left</td></tr>
+          <tr><td><strong>RIGHT JOIN</strong></td><td>All right + matched left</td><td>Left fills with NULL</td><td>Mirror of LEFT</td></tr>
+          <tr><td><strong>FULL OUTER</strong></td><td>All rows from both</td><td>NULLs on both sides</td><td>Reconciliation</td></tr>
+          <tr><td><strong>CROSS JOIN</strong></td><td>Every row × every row</td><td>N/A (Cartesian)</td><td>Generate combinations</td></tr>
+        </table>
+
+<pre><code>-- INNER JOIN: only matched rows
+SELECT e.name, d.dept_name
+FROM   employees e
+INNER JOIN departments d ON e.dept_id = d.dept_id;
+
+-- LEFT JOIN: all employees, even unmatched
+SELECT e.name, d.dept_name
+FROM   employees e
+LEFT JOIN departments d ON e.dept_id = d.dept_id;</code></pre>
+
+        <p>With INNER JOIN, Carol (NULL dept_id) is excluded. With LEFT JOIN, Carol appears with NULL department name — the left table's row is preserved.</p>
+
+        <div class="loot-card">
+          <div class="loot-tag">Pro Tip</div>
+          Find rows with <em>no</em> match: use <code>LEFT JOIN</code> + <code>WHERE d.dept_id IS NULL</code>. Often more readable than <code>NOT EXISTS</code>.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('sql',2,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 3 -->
+    <div class="floor" id="floor-3">
+      <div class="floor-header" onclick="toggleFloor(3)">
+        <div class="floor-num" style="background:var(--sql)">F3</div>
+        <h3>Window Functions</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>Window functions compute a value across a "window" of rows without collapsing them — you still get one output row per input row.</p>
+
+        <table>
+          <tr><th>Function</th><th>Ties</th><th>Gaps</th><th>Example (95k, 95k, 88k)</th><th>Use Case</th></tr>
+          <tr><td><code>ROW_NUMBER()</code></td><td>Broken arbitrarily</td><td>N/A</td><td>1, 2, 3</td><td>Deduplication, top-N</td></tr>
+          <tr><td><code>RANK()</code></td><td>Same rank</td><td>Yes — skips</td><td>1, 1, 3</td><td>Competitive standing</td></tr>
+          <tr><td><code>DENSE_RANK()</code></td><td>Same rank</td><td>No — consecutive</td><td>1, 1, 2</td><td>Consecutive labels</td></tr>
+        </table>
+
+<pre><code>SELECT
+  name, department, salary,
+  ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC) AS row_num,
+  RANK()       OVER (PARTITION BY department ORDER BY salary DESC) AS rnk,
+  DENSE_RANK() OVER (PARTITION BY department ORDER BY salary DESC) AS d_rnk
+FROM employees;</code></pre>
+
+        <div class="loot-card">
+          <div class="loot-tag">Pro Tip</div>
+          Beyond ranking, window functions support running totals (<code>SUM() OVER</code>), moving averages (<code>AVG() OVER (ROWS BETWEEN ...)</code>), and access to other rows via <code>LAG()</code> and <code>LEAD()</code>.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('sql',3,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 4 -->
+    <div class="floor" id="floor-4">
+      <div class="floor-header" onclick="toggleFloor(4)">
+        <div class="floor-num" style="background:var(--sql)">F4</div>
+        <h3>Aggregation & Grouping</h3>
+        <span class="floor-xp">+50 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><code>WHERE</code> filters individual rows <em>before</em> grouping — it cannot reference aggregate functions. <code>HAVING</code> filters <em>after</em> grouping, so it can.</p>
+
+<pre><code>-- This FAILS: WHERE cannot use aggregates
+SELECT department, COUNT(*) AS headcount
+FROM   employees
+WHERE  COUNT(*) > 5      -- ERROR!
+GROUP BY department;
+
+-- This WORKS: HAVING filters after aggregation
+SELECT department, COUNT(*) AS headcount
+FROM   employees
+GROUP BY department
+HAVING COUNT(*) > 5;</code></pre>
+
+        <table>
+          <tr><th>Function</th><th>Counts NULLs?</th><th>Returns</th></tr>
+          <tr><td><code>COUNT(*)</code></td><td>Yes — counts all rows</td><td>Total rows in group</td></tr>
+          <tr><td><code>COUNT(col)</code></td><td>No — skips NULLs</td><td>Non-NULL values</td></tr>
+          <tr><td><code>SUM(col)</code></td><td>Skips NULLs</td><td>Sum of non-NULL values</td></tr>
+          <tr><td><code>AVG(col)</code></td><td>Skips NULLs</td><td>Average of non-NULL values</td></tr>
+        </table>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          Every column in <code>SELECT</code> must either appear in <code>GROUP BY</code> or be wrapped in an aggregate function. MySQL may silently pick an arbitrary value — almost always a bug.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('sql',4,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 5 -->
+    <div class="floor" id="floor-5">
+      <div class="floor-header" onclick="toggleFloor(5)">
+        <div class="floor-num" style="background:var(--sql)">F5</div>
+        <h3>Common Table Expressions</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>A CTE is a named, temporary result set that exists only for a single query. Introduced with <code>WITH</code>, CTEs break complex queries into digestible, named steps.</p>
+
+<pre><code>WITH monthly_revenue AS (
+  SELECT
+    DATE_TRUNC('month', order_date) AS month,
+    SUM(amount)                      AS revenue
+  FROM   orders
+  GROUP BY 1
+),
+with_prior AS (
+  SELECT
+    month, revenue,
+    LAG(revenue) OVER (ORDER BY month) AS prev_revenue
+  FROM monthly_revenue
+)
+SELECT
+  month, revenue, prev_revenue,
+  ROUND(100.0 * (revenue - prev_revenue) / prev_revenue, 1) AS pct_change
+FROM with_prior
+ORDER BY month;</code></pre>
+
+        <p>Each CTE is self-contained and easy to verify independently. CTEs are also invaluable for recursive queries (traversing hierarchies), though these are less commonly tested in DS interviews.</p>
+
+        <div class="loot-card">
+          <div class="loot-tag">Pro Tip</div>
+          In most databases, CTEs are optimised the same way as subqueries. In PostgreSQL 12+, you can add <code>MATERIALIZED</code> or <code>NOT MATERIALIZED</code> to control this.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('sql',5,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 6 -->
+    <div class="floor" id="floor-6">
+      <div class="floor-header" onclick="toggleFloor(6)">
+        <div class="floor-num" style="background:var(--sql)">F6</div>
+        <h3>Query Optimisation</h3>
+        <span class="floor-xp">+100 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>Writing correct SQL is necessary but not sufficient. A poorly written query against millions of rows can take minutes instead of milliseconds.</p>
+
+        <table>
+          <tr><th>Principle</th><th>Why</th><th>Impact</th></tr>
+          <tr><td><strong>Use EXPLAIN</strong></td><td>Shows query plan — indexes, scans, row estimates</td><td>Primary diagnostic tool</td></tr>
+          <tr><td><strong>Index filter/join columns</strong></td><td>Turns full scan O(n) into O(log n)</td><td>Orders of magnitude faster</td></tr>
+          <tr><td><strong>Avoid SELECT *</strong></td><td>Forces reading all columns</td><td>Less I/O, faster queries</td></tr>
+          <tr><td><strong>Filter early</strong></td><td>Push WHERE before JOIN</td><td>Reduces join size</td></tr>
+          <tr><td><strong>EXISTS over IN</strong></td><td>EXISTS short-circuits</td><td>Faster for large subqueries</td></tr>
+        </table>
+
+<pre><code>EXPLAIN ANALYZE
+SELECT * FROM orders
+WHERE customer_id = 42;</code></pre>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          Optimisation is about reducing the data the engine must read at each step. Every principle — indexing, projection, early filtering — serves that single goal. When a query is slow, ask: "Where is the engine reading more data than it needs to?"
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('sql',6,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><p>v15 &middot; Quest Mode &mdash; <a href="../index.html">Back to Gallery</a></p></footer>
+
+  <script>
+    function toggleFloor(n) {
+      document.getElementById('floor-' + n).classList.toggle('open');
+    }
+
+    function clearFloor(topic, n, btn) {
+      const key = 'ds-v15-floors-' + topic;
+      const state = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!state.includes(n)) { state.push(n); localStorage.setItem(key, JSON.stringify(state)); }
+      btn.textContent = '\u2713 Floor Cleared';
+      btn.classList.add('cleared');
+    }
+
+    // Load cleared state
+    (function() {
+      const state = JSON.parse(localStorage.getItem('ds-v15-floors-sql') || '[]');
+      state.forEach(n => {
+        const btn = document.querySelector('#floor-' + n + ' .floor-complete-btn');
+        if (btn) { btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared'); }
+      });
+    })();
+
+    // Interactive: Execution Order Shuffle
+    const ORDER_STEPS = ['FROM / JOIN', 'WHERE', 'GROUP BY', 'HAVING', 'SELECT', 'ORDER BY', 'LIMIT'];
+    function shuffleOrder() {
+      const el = document.getElementById('orderResult');
+      const shuffled = [...ORDER_STEPS].sort(() => Math.random() - 0.5);
+      el.innerHTML = '<div style="color:var(--muted);margin-bottom:8px">Shuffled: ' + shuffled.join(' → ') + '</div>';
+      let i = 0;
+      const iv = setInterval(() => {
+        if (i >= ORDER_STEPS.length) { clearInterval(iv); return; }
+        el.innerHTML += '<div style="color:var(--xp);font-weight:600">Step ' + (i+1) + ': ' + ORDER_STEPS[i] + '</div>';
+        i++;
+      }, 400);
+    }
+  </script>
+</body>
+</html>

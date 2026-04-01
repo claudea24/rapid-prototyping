@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SQL Playground — Coding Playground | DS Prep v17</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#2563eb;--accent-light:#dbeafe;--accent-glow:rgba(37,99,235,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--rose:#dc2626;--rose-light:#fee2e2;--cyan:#0891b2;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+
+    .stopwatch-bar{position:sticky;top:56px;z-index:150;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;justify-content:center;gap:16px}
+    .stopwatch-display{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--heading);letter-spacing:2px;min-width:90px;text-align:center}
+    .stopwatch-bar button{font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;padding:6px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
+    .stopwatch-bar button:hover{border-color:var(--accent);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+    .stopwatch-bar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .stopwatch-bar button.primary:hover{background:#1d4ed8}
+    .stopwatch-bar button.reset{color:var(--rose);border-color:var(--rose-light)}
+    .stopwatch-bar button.reset:hover{background:var(--rose-light)}
+
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    .challenge{margin-bottom:40px}
+    .challenge-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+    .challenge-header h3{font-size:1.05rem;font-weight:700;color:var(--heading)}
+    .difficulty{font-size:.6rem;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:1px}
+    .difficulty.easy{background:var(--green-light);color:var(--green)}
+    .difficulty.medium{background:var(--amber-light);color:var(--amber)}
+    .difficulty.hard{background:var(--rose-light);color:var(--rose)}
+    .problem{font-size:.88rem;color:var(--text);line-height:1.7;margin-bottom:14px}
+    .problem code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    .sandbox{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:0 0 12px;box-shadow:0 1px 3px rgba(0,0,0,0.06)}
+    .sandbox textarea{width:100%;min-height:140px;font-family:'JetBrains Mono',monospace;font-size:.82rem;line-height:1.7;padding:16px;background:#f8f9fc;border:1px solid var(--border);border-radius:10px;color:#1e293b;resize:vertical;outline:none;transition:border-color .2s}
+    .sandbox textarea:focus{border-color:var(--accent)}
+    .btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+    .btn-row button{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;padding:8px 20px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:all .2s}
+    .btn-row button.run{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .btn-row button.run:hover{background:#1d4ed8}
+    .btn-row button.reveal{color:var(--amber);border-color:var(--amber-light)}
+    .btn-row button.reveal:hover{background:var(--amber-light)}
+    .btn-row button.done{color:var(--green);border-color:var(--green-light)}
+    .btn-row button.done:hover{background:var(--green-light)}
+    .result{margin-top:12px;padding:14px 18px;border-radius:10px;font-size:.82rem;line-height:1.6;display:none}
+    .result.show{display:block}
+    .result.hint{background:var(--accent-light);color:var(--accent);border:1px solid rgba(37,99,235,0.15)}
+    .result.solution{background:var(--green-light);color:#15803d;border:1px solid #86efac;font-family:'JetBrains Mono',monospace;white-space:pre-wrap}
+    .done-time{font-size:.75rem;font-weight:600;color:var(--green);margin-top:8px;display:none}
+    .done-time.show{display:block}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+
+    @media(max-width:700px){
+      nav{padding:0 16px}
+      .stopwatch-bar{padding:8px 16px;gap:10px;flex-wrap:wrap}
+      .stopwatch-display{font-size:1.2rem}
+      .page-header{padding:24px 16px 8px}
+      .page-header .intro{margin-left:0}
+      .container{padding:16px 16px 48px}
+      .sandbox textarea{min-height:100px}
+    }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v17</a>
+  <div class="nav-links">
+    <a href="sql.html" class="active">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Prob</a>
+    <a href="casing.html">Case</a>
+  </div>
+</nav>
+
+<div class="stopwatch-bar">
+  <button class="primary" id="toggleBtn" onclick="toggleStopwatch()">Start</button>
+  <span class="stopwatch-display" id="stopwatchDisplay">00:00</span>
+  <button class="reset" onclick="resetStopwatch()">Reset</button>
+</div>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#128450;</div>
+    <h1>SQL Playground</h1>
+  </div>
+  <p class="intro">6 hands-on SQL challenges. Start the stopwatch, write your solution, then check it. Track your time per challenge with the "Done" button.</p>
+</div>
+
+<div class="container">
+
+  <!-- Challenge 1 -->
+  <div class="challenge" id="c1">
+    <div class="challenge-header">
+      <h3>Challenge 1 — Query Order Fix</h3>
+      <span class="difficulty easy">Easy</span>
+    </div>
+    <p class="problem">This query fails. The alias <code>total_spent</code> can't be used in <code>WHERE</code> because WHERE executes before SELECT. Fix it using <code>HAVING</code>.</p>
+    <div class="sandbox">
+      <textarea id="editor1">-- Fix this query:
+SELECT customer_id, SUM(amount) AS total_spent
+FROM orders
+WHERE total_spent > 1000
+GROUP BY customer_id;</textarea>
+      <div class="btn-row">
+        <button class="run" onclick="checkChallenge(1)">Run</button>
+        <button class="reveal" onclick="showSolution(1)">Show Solution</button>
+        <button class="done" onclick="markDone(1)">Done</button>
+      </div>
+      <div class="result hint" id="hint1">Hint: Replace WHERE with HAVING for filtering on aggregate results. HAVING runs after GROUP BY.</div>
+      <div class="result solution" id="sol1">SELECT customer_id, SUM(amount) AS total_spent
+FROM orders
+GROUP BY customer_id
+HAVING SUM(amount) > 1000;</div>
+      <div class="done-time" id="done1"></div>
+    </div>
+  </div>
+
+  <!-- Challenge 2 -->
+  <div class="challenge" id="c2">
+    <div class="challenge-header">
+      <h3>Challenge 2 — The Missing Employees</h3>
+      <span class="difficulty easy">Easy</span>
+    </div>
+    <p class="problem">Write a <code>LEFT JOIN</code> to find employees who have no department assigned. The <code>employees</code> table has <code>dept_id</code> which may be NULL, and the <code>departments</code> table has <code>id</code> and <code>name</code>.</p>
+    <div class="sandbox">
+      <textarea id="editor2">-- Schema:
+-- employees(id, name, dept_id)
+-- departments(id, name)
+--
+-- Find employees with no department:
+SELECT e.name
+FROM employees e
+-- your JOIN here
+;</textarea>
+      <div class="btn-row">
+        <button class="run" onclick="checkChallenge(2)">Run</button>
+        <button class="reveal" onclick="showSolution(2)">Show Solution</button>
+        <button class="done" onclick="markDone(2)">Done</button>
+      </div>
+      <div class="result hint" id="hint2">Hint: Use LEFT JOIN on departments, then filter WHERE departments.id IS NULL.</div>
+      <div class="result solution" id="sol2">SELECT e.name
+FROM employees e
+LEFT JOIN departments d ON e.dept_id = d.id
+WHERE d.id IS NULL;</div>
+      <div class="done-time" id="done2"></div>
+    </div>
+  </div>
+
+  <!-- Challenge 3 -->
+  <div class="challenge" id="c3">
+    <div class="challenge-header">
+      <h3>Challenge 3 — Top 3 Per Department</h3>
+      <span class="difficulty medium">Medium</span>
+    </div>
+    <p class="problem">Use a window function to find the top 3 highest salaries per department. Table: <code>employees(id, name, department, salary)</code>. Return name, department, salary, and rank.</p>
+    <div class="sandbox">
+      <textarea id="editor3">-- Find top 3 salaries per department
+-- Use ROW_NUMBER() or RANK()
+SELECT *
+FROM employees
+-- your solution here
+;</textarea>
+      <div class="btn-row">
+        <button class="run" onclick="checkChallenge(3)">Run</button>
+        <button class="reveal" onclick="showSolution(3)">Show Solution</button>
+        <button class="done" onclick="markDone(3)">Done</button>
+      </div>
+      <div class="result hint" id="hint3">Hint: Use a CTE with ROW_NUMBER() OVER (PARTITION BY department ORDER BY salary DESC), then filter where rn &lt;= 3.</div>
+      <div class="result solution" id="sol3">WITH ranked AS (
+  SELECT name, department, salary,
+    ROW_NUMBER() OVER (
+      PARTITION BY department
+      ORDER BY salary DESC
+    ) AS rn
+  FROM employees
+)
+SELECT name, department, salary, rn
+FROM ranked
+WHERE rn <= 3;</div>
+      <div class="done-time" id="done3"></div>
+    </div>
+  </div>
+
+  <!-- Challenge 4 -->
+  <div class="challenge" id="c4">
+    <div class="challenge-header">
+      <h3>Challenge 4 — Count the NULLs</h3>
+      <span class="difficulty medium">Medium</span>
+    </div>
+    <p class="problem">What's the difference between <code>COUNT(*)</code> and <code>COUNT(email)</code>? Write both queries on the <code>users(id, name, email)</code> table to demonstrate. Some users have NULL emails.</p>
+    <div class="sandbox">
+      <textarea id="editor4">-- Show the difference between COUNT(*) and COUNT(email)
+-- Table: users(id, name, email) — some emails are NULL
+
+-- Query 1: counts ALL rows
+SELECT COUNT(*) AS total_rows FROM users;
+
+-- Query 2: counts only non-NULL emails
+-- Write it below:
+</textarea>
+      <div class="btn-row">
+        <button class="run" onclick="checkChallenge(4)">Run</button>
+        <button class="reveal" onclick="showSolution(4)">Show Solution</button>
+        <button class="done" onclick="markDone(4)">Done</button>
+      </div>
+      <div class="result hint" id="hint4">Hint: COUNT(*) counts all rows regardless of NULLs. COUNT(column) skips NULLs. You can also use COUNT(*) - COUNT(email) to find how many NULLs exist.</div>
+      <div class="result solution" id="sol4">-- COUNT(*) counts ALL rows including NULLs
+SELECT COUNT(*) AS total_rows FROM users;
+
+-- COUNT(email) counts only non-NULL values
+SELECT COUNT(email) AS non_null_emails FROM users;
+
+-- Bonus: count the NULLs specifically
+SELECT
+  COUNT(*) AS total_rows,
+  COUNT(email) AS has_email,
+  COUNT(*) - COUNT(email) AS null_emails
+FROM users;</div>
+      <div class="done-time" id="done4"></div>
+    </div>
+  </div>
+
+  <!-- Challenge 5 -->
+  <div class="challenge" id="c5">
+    <div class="challenge-header">
+      <h3>Challenge 5 — Month over Month</h3>
+      <span class="difficulty hard">Hard</span>
+    </div>
+    <p class="problem">Write a CTE to calculate month-over-month revenue change. Table: <code>revenue(month DATE, amount DECIMAL)</code>. Show current month, previous month, and the percentage change.</p>
+    <div class="sandbox">
+      <textarea id="editor5">-- Calculate month-over-month revenue change
+-- Table: revenue(month, amount)
+-- Use a CTE + LAG() window function
+
+SELECT month, amount
+FROM revenue
+ORDER BY month;</textarea>
+      <div class="btn-row">
+        <button class="run" onclick="checkChallenge(5)">Run</button>
+        <button class="reveal" onclick="showSolution(5)">Show Solution</button>
+        <button class="done" onclick="markDone(5)">Done</button>
+      </div>
+      <div class="result hint" id="hint5">Hint: Use LAG(amount) OVER (ORDER BY month) in a CTE to get the previous month's amount, then calculate the percentage change in the outer query.</div>
+      <div class="result solution" id="sol5">WITH monthly AS (
+  SELECT
+    month,
+    amount AS current_revenue,
+    LAG(amount) OVER (ORDER BY month) AS prev_revenue
+  FROM revenue
+)
+SELECT
+  month,
+  current_revenue,
+  prev_revenue,
+  ROUND(
+    (current_revenue - prev_revenue) * 100.0
+    / prev_revenue, 2
+  ) AS pct_change
+FROM monthly
+WHERE prev_revenue IS NOT NULL
+ORDER BY month;</div>
+      <div class="done-time" id="done5"></div>
+    </div>
+  </div>
+
+  <!-- Challenge 6 -->
+  <div class="challenge" id="c6">
+    <div class="challenge-header">
+      <h3>Challenge 6 — Optimize This</h3>
+      <span class="difficulty hard">Hard</span>
+    </div>
+    <p class="problem">This query is slow. It uses a correlated subquery with <code>IN</code> on a large table. Rewrite it using <code>EXISTS</code> for better performance, and suggest what index to add.</p>
+    <div class="sandbox">
+      <textarea id="editor6">-- This is slow — optimize it!
+SELECT *
+FROM customers c
+WHERE c.id IN (
+  SELECT o.customer_id
+  FROM orders o
+  WHERE o.total > 500
+    AND o.order_date >= '2025-01-01'
+);
+
+-- Hint: rewrite with EXISTS
+-- Also: what index would help?</textarea>
+      <div class="btn-row">
+        <button class="run" onclick="checkChallenge(6)">Run</button>
+        <button class="reveal" onclick="showSolution(6)">Show Solution</button>
+        <button class="done" onclick="markDone(6)">Done</button>
+      </div>
+      <div class="result hint" id="hint6">Hint: EXISTS stops scanning once it finds the first match (short-circuits), while IN must build the full result set. Add a composite index on orders(customer_id, order_date, total).</div>
+      <div class="result solution" id="sol6">-- Rewritten with EXISTS (short-circuits on first match)
+SELECT *
+FROM customers c
+WHERE EXISTS (
+  SELECT 1
+  FROM orders o
+  WHERE o.customer_id = c.id
+    AND o.total > 500
+    AND o.order_date >= '2025-01-01'
+);
+
+-- Recommended index:
+-- CREATE INDEX idx_orders_lookup
+-- ON orders(customer_id, order_date, total);</div>
+      <div class="done-time" id="done6"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v17 &middot; <a href="index.html">Back to Hub</a></p>
+</footer>
+
+<script>
+  // Stopwatch
+  let stopwatchTime = 0;
+  let stopwatchInterval = null;
+  let running = false;
+
+  function formatTime(ms) {
+    const min = Math.floor(ms / 60000);
+    const sec = Math.floor((ms % 60000) / 1000);
+    return String(min).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+  }
+
+  function toggleStopwatch() {
+    const btn = document.getElementById('toggleBtn');
+    if (running) {
+      clearInterval(stopwatchInterval);
+      running = false;
+      btn.textContent = 'Start';
+    } else {
+      stopwatchInterval = setInterval(() => {
+        stopwatchTime += 100;
+        document.getElementById('stopwatchDisplay').textContent = formatTime(stopwatchTime);
+      }, 100);
+      running = true;
+      btn.textContent = 'Pause';
+    }
+  }
+
+  function resetStopwatch() {
+    clearInterval(stopwatchInterval);
+    running = false;
+    stopwatchTime = 0;
+    document.getElementById('stopwatchDisplay').textContent = '00:00';
+    document.getElementById('toggleBtn').textContent = 'Start';
+  }
+
+  // Challenge interactions
+  function checkChallenge(n) {
+    const hint = document.getElementById('hint' + n);
+    hint.classList.add('show');
+    const sol = document.getElementById('sol' + n);
+    sol.classList.remove('show');
+  }
+
+  function showSolution(n) {
+    const sol = document.getElementById('sol' + n);
+    sol.classList.add('show');
+    const hint = document.getElementById('hint' + n);
+    hint.classList.remove('show');
+  }
+
+  function markDone(n) {
+    const el = document.getElementById('done' + n);
+    el.textContent = 'Completed at ' + formatTime(stopwatchTime);
+    el.classList.add('show');
+  }
+</script>
+</body>
+</html>

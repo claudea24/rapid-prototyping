@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Mock Interview — DS Prep v18</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html"><div class="logo"></div>DS Prep v18</a>
+  <a class="back" href="index.html">All Sessions</a>
+</nav>
+
+<div class="interview-container">
+
+  <div class="interview-header">
+    <div class="badge" style="background:var(--python-light);color:var(--python);border-color:rgba(202,138,4,0.2)">Python Interview</div>
+    <h1>Python Mock Interview</h1>
+    <p>4 questions with follow-ups &middot; ~10 minutes</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-step" id="ps1"></div>
+    <div class="progress-step" id="ps2"></div>
+    <div class="progress-step" id="ps3"></div>
+    <div class="progress-step" id="ps4"></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question-block visible" id="q1">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q1</div>
+      <div class="interviewer-text">What data structure would you use for <strong>O(1) lookup</strong>?</div>
+    </div>
+    <div class="options" id="q1-opts">
+      <div class="option-card" data-q="1" data-val="wrong" onclick="pick(this)">A) A sorted list with binary search &mdash; O(log n) is close enough.</div>
+      <div class="option-card" data-q="1" data-val="correct" onclick="pick(this)">B) A dictionary (hash map) &mdash; average O(1) lookup by key.</div>
+      <div class="option-card" data-q="1" data-val="partial" onclick="pick(this)">C) A set &mdash; it's fast for membership checks.</div>
+    </div>
+    <div class="follow-up" id="q1-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Good. <strong>What happens when there are hash collisions?</strong> Does it stay O(1)?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q1')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q1-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"Collisions don't really happen in Python. Dictionaries are always O(1)."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Hash collisions are handled via open addressing in CPython. When two keys hash to the same slot, Python probes for the next open slot. Average case stays O(1), but worst case degrades to O(n) if many keys collide. Sets also use hash tables internally, so both dict and set give O(1) average lookup. The key requirement is that keys must be hashable (immutable)."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q1-next" style="display:none" onclick="nextQ(2)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-block" id="q2">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q2</div>
+      <div class="interviewer-text">How does <strong>groupby</strong> work in Pandas? Walk me through it.</div>
+    </div>
+    <div class="options" id="q2-opts">
+      <div class="option-card" data-q="2" data-val="partial" onclick="pick(this)">A) It splits the dataframe into groups, then you apply a function to each.</div>
+      <div class="option-card" data-q="2" data-val="correct" onclick="pick(this)">B) Split-Apply-Combine: split by key, apply aggregation, combine results back into a DataFrame.</div>
+      <div class="option-card" data-q="2" data-val="wrong" onclick="pick(this)">C) It sorts the data by the group column, then iterates through it.</div>
+    </div>
+    <div class="follow-up" id="q2-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">What's the difference between <strong>.agg() vs .apply()</strong> after a groupby?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q2')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q2-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"They're pretty much interchangeable. agg is just shorter syntax."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"<code>.agg()</code> applies column-level aggregation functions (sum, mean, etc.) and can apply different functions to different columns &mdash; it's optimized and fast. <code>.apply()</code> passes the entire sub-DataFrame to a custom function, giving full flexibility but it's slower because it can't be vectorized. Rule of thumb: use <code>.agg()</code> for standard aggregations, <code>.apply()</code> only when you need custom logic that operates on multiple columns together."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q2-next" style="display:none" onclick="nextQ(3)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-block" id="q3">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q3</div>
+      <div class="interviewer-text">Solve <strong>Two Sum</strong>: given an array of integers and a target, return indices of two numbers that add up to the target.</div>
+    </div>
+    <div class="options" id="q3-opts">
+      <div class="option-card" data-q="3" data-val="wrong" onclick="pick(this)">A) Brute force: check every pair with two nested loops. O(n&sup2;).</div>
+      <div class="option-card" data-q="3" data-val="correct" onclick="pick(this)">B) Hash map: for each number, check if (target - num) is already in the map. O(n).</div>
+      <div class="option-card" data-q="3" data-val="partial" onclick="pick(this)">C) Sort the array first, then use two pointers. O(n log n).</div>
+    </div>
+    <div class="follow-up" id="q3-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">What's the <strong>time and space complexity</strong> of your hash map approach?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q3')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q3-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"It's O(n) time. Space is... also O(n) I guess? Because of the hash map."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"O(n) time &mdash; one pass through the array. O(n) space for the hash map in the worst case (no match until the last element). The tradeoff vs brute force: we spend O(n) extra memory to go from O(n&sup2;) to O(n) time. The two-pointer approach is O(n log n) time and O(1) space, but it loses original indices when sorting &mdash; so for returning indices, hash map is better."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q3-next" style="display:none" onclick="nextQ(4)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-block" id="q4">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q4</div>
+      <div class="interviewer-text">What's wrong with <code>def f(x=[]):</code>? Why is this a common Python gotcha?</div>
+    </div>
+    <div class="options" id="q4-opts">
+      <div class="option-card" data-q="4" data-val="wrong" onclick="pick(this)">A) Nothing &mdash; it creates a new empty list each time the function is called.</div>
+      <div class="option-card" data-q="4" data-val="correct" onclick="pick(this)">B) The default list is created ONCE at definition time and shared across all calls &mdash; it mutates between calls.</div>
+      <div class="option-card" data-q="4" data-val="partial" onclick="pick(this)">C) It's a performance issue &mdash; creating lists as defaults is slow.</div>
+    </div>
+    <div class="follow-up" id="q4-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Related: what's the difference between <strong>deep copy and shallow copy</strong>?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q4')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q4-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"Deep copy copies everything, shallow copy just copies the top level. Use deep copy to be safe."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"A shallow copy (<code>copy.copy()</code> or <code>list.copy()</code>) creates a new outer container but the nested objects still reference the originals. A deep copy (<code>copy.deepcopy()</code>) recursively copies everything. For the mutable default argument fix, use <code>def f(x=None): x = x if x is not None else []</code> &mdash; this creates a fresh list each call. The core principle: in Python, default arguments are evaluated once at function definition, not at each call."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q4-next" style="display:none" onclick="finish()">Finish Interview &rarr;</button>
+  </div>
+
+  <div class="completion" id="done">
+    <h2>Interview Complete!</h2>
+    <p>You've finished the Python mock interview. Review your answers above or try another topic.</p>
+    <a href="index.html">&larr; Back to All Sessions</a>
+  </div>
+
+</div>
+
+<script>
+let current = 1;
+const total = 4;
+
+function updateProgress() {
+  for (let i = 1; i <= total; i++) {
+    const el = document.getElementById('ps' + i);
+    if (i < current) el.className = 'progress-step done';
+    else if (i === current) el.className = 'progress-step active';
+    else el.className = 'progress-step';
+  }
+}
+
+function pick(el) {
+  const q = el.getAttribute('data-q');
+  const val = el.getAttribute('data-val');
+  const opts = document.querySelectorAll('#q' + q + '-opts .option-card');
+  opts.forEach(o => {
+    o.style.pointerEvents = 'none';
+    const v = o.getAttribute('data-val');
+    if (o === el) o.classList.add(v === 'correct' ? 'correct' : v === 'partial' ? 'partial' : 'wrong');
+    else if (v === 'correct') o.classList.add('correct');
+    else o.style.opacity = '0.4';
+  });
+  document.getElementById('q' + q + '-followup').classList.add('show');
+}
+
+function showReveal(q) {
+  document.getElementById(q + '-reveal').classList.add('show');
+  document.getElementById(q + '-next').style.display = 'inline-flex';
+}
+
+function nextQ(n) {
+  current = n;
+  updateProgress();
+  const block = document.getElementById('q' + n);
+  block.classList.add('visible');
+  block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function finish() {
+  for (let i = 1; i <= total; i++) document.getElementById('ps' + i).className = 'progress-step done';
+  const done = document.getElementById('done');
+  done.classList.add('show');
+  done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+updateProgress();
+</script>
+
+</body>
+</html>

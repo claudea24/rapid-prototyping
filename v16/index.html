@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DS Interview Prep — Story Mode</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    (function(){var t=localStorage.getItem('ds-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')})();
+  </script>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v16</a>
+  <div class="nav-links">
+    <a href="../index.html" class="back">Gallery</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="badge">v16 &middot; Story Mode</div>
+  <h1>Your Data Science <span>Adventure Begins</span></h1>
+  <p>Learn by living it. Each chapter drops you into a real company scenario where you solve actual problems and pick up concepts in context &mdash; not from a textbook, but because the story demands it.</p>
+</div>
+
+<div class="grid">
+  <a href="sql.html" class="chapter-card">
+    <div class="ch-num" style="background:var(--sql)">Ch.1</div>
+    <div class="content">
+      <h2>The Spotify Puzzle</h2>
+      <div class="subtitle ib">SQL</div>
+      <p>DAU dropped 15%. Your manager needs answers by end of day. Investigate with queries &mdash; learn execution order, joins, window functions, CTEs, and optimization along the way.</p>
+    </div>
+  </a>
+  <a href="python.html" class="chapter-card">
+    <div class="ch-num" style="background:var(--python)">Ch.2</div>
+    <div class="content">
+      <h2>The Python Pipeline</h2>
+      <div class="subtitle ip">Python</div>
+      <p>Product launch in 48 hours. The data is a mess &mdash; missing values, wrong types, duplicates everywhere. Clean it up before the deadline.</p>
+    </div>
+  </a>
+  <a href="ml.html" class="chapter-card">
+    <div class="ch-num" style="background:var(--ml)">Ch.3</div>
+    <div class="content">
+      <h2>The Prediction Game</h2>
+      <div class="subtitle im">Machine Learning</div>
+      <p>Marketing wants to predict which users will churn next month. Choose the model, evaluate it, avoid the traps. Build something that actually works.</p>
+    </div>
+  </a>
+  <a href="stats.html" class="chapter-card">
+    <div class="ch-num" style="background:var(--stats)">Ch.4</div>
+    <div class="content">
+      <h2>The A/B Experiment</h2>
+      <div class="subtitle is">Statistics</div>
+      <p>New checkout flow is ready. Design the experiment, run the numbers, and convince the team it works &mdash; without falling into classic traps.</p>
+    </div>
+  </a>
+  <a href="probability.html" class="chapter-card">
+    <div class="ch-num" style="background:var(--prob)">Ch.5</div>
+    <div class="content">
+      <h2>The Casino Problem</h2>
+      <div class="subtitle ir">Probability</div>
+      <p>A gaming company wants to launch a new feature. Calculate the odds, understand the distributions, solve the puzzles. Math meets business.</p>
+    </div>
+  </a>
+  <a href="casing.html" class="chapter-card">
+    <div class="ch-num" style="background:var(--case)">Ch.6</div>
+    <div class="content">
+      <h2>The Board Meeting</h2>
+      <div class="subtitle ic">Case Studies</div>
+      <p>Revenue is up 20% but rides are down 5%. The board wants an explanation and a plan. Structure your thinking, diagnose the numbers, present with confidence.</p>
+    </div>
+  </a>
+</div>
+
+<div class="features">
+  <div class="feature">
+    <div class="fi">&#128214;</div>
+    <h3>Narrative Learning</h3>
+    <p>Every concept is taught because the story demands it &mdash; not because it's next in a textbook</p>
+  </div>
+  <div class="feature">
+    <div class="fi">&#127919;</div>
+    <h3>Real Scenarios</h3>
+    <p>Spotify, A/B tests, board meetings &mdash; the same situations you'll face in interviews and on the job</p>
+  </div>
+  <div class="feature">
+    <div class="fi">&#9790;</div>
+    <h3>Dark Mode</h3>
+    <p>Toggle between light and dark themes for comfortable reading any time of day</p>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v16 &middot; Story Mode &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<script>
+function toggleTheme(){
+  var d=document.documentElement;
+  if(d.getAttribute('data-theme')==='dark'){d.removeAttribute('data-theme');localStorage.setItem('ds-theme','light')}
+  else{d.setAttribute('data-theme','dark');localStorage.setItem('ds-theme','dark')}
+}
+</script>
+</body>
+</html>

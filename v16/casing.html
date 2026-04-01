@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Board Meeting — Case Studies | DS Prep v16</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    (function(){var t=localStorage.getItem('ds-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')})();
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#0891b2;--accent-light:#cffafe;--accent-glow:rgba(8,145,178,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--code-bg:#f8f9fc;--code-text:#1e293b;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px;--story:#155e75;--story-bg:#ecfeff}
+    [data-theme="dark"]{--bg:#0f0f13;--surface:#1a1a22;--surface2:#24242e;--border:#2e2e3a;--text:#c8c8d0;--text-muted:#8888a0;--heading:#e8e8f0;--accent:#22d3ee;--accent-light:rgba(34,211,238,0.12);--accent-glow:rgba(34,211,238,0.1);--green:#22c55e;--green-light:rgba(34,197,94,0.12);--amber:#f59e0b;--amber-light:rgba(245,158,11,0.12);--code-bg:#1e1e28;--code-text:#d4d4e0;--shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 12px rgba(0,0,0,0.2);--story:#22d3ee;--story-bg:rgba(34,211,238,0.08)}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;transition:background .3s,color .3s}
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:var(--surface);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:background .3s}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px;align-items:center}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+    .theme-toggle{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:1rem;line-height:1;transition:all .2s;color:var(--text);margin-left:8px}
+    .theme-toggle:hover{border-color:var(--accent)}
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header h1 span{color:var(--accent)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+    .story-text{font-size:.95rem;font-style:italic;color:var(--story);line-height:1.75;margin:16px 0;padding:16px 20px;background:var(--story-bg);border-radius:10px;border-left:3px solid var(--story)}
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+    .insight{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:var(--accent-glow)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:var(--accent-light);padding:1px 5px;border-radius:3px}
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+    .kw{color:#9333ea}.fn{color:#2563eb}.str{color:#16a34a}.cm{color:#94a3b8;font-style:italic}.num{color:#0891b2}
+    [data-theme="dark"] .kw{color:#c084fc}[data-theme="dark"] .fn{color:#60a5fa}[data-theme="dark"] .str{color:#4ade80}[data-theme="dark"] .cm{color:#64748b}[data-theme="dark"] .num{color:#22d3ee}
+    .resolution{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 10px 10px 0;padding:16px 20px;margin:24px 0}
+    .resolution .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:6px}
+    .resolution p{font-size:.88rem;color:var(--text);line-height:1.65;font-style:italic}
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.nav-links{display:none!important}.page-header,.container{padding-left:16px;padding-right:16px}.page-header h1{font-size:1.4rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v16</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html" class="active">Casing</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#128161;</div>
+    <h1>The Board Meeting &mdash; <span>Case Studies</span></h1>
+  </div>
+  <p class="intro">Revenue is up but rides are down. The board wants answers. Structure your thinking, decompose the numbers, and present with confidence.</p>
+</div>
+
+<div class="container">
+
+  <div class="story-text">
+    It's 3 PM Friday. Your director walks over: "Board meeting is Monday. Revenue is up 20% but rides are down 5%. The CEO wants a clear explanation and a recommendation. I need your analysis by Sunday night." You have 48 hours.
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 1</span> The Framework &mdash; AARRR &amp; North Star</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        Before diving into the numbers, you need a framework. Where does "revenue" sit in the user lifecycle? Which metrics are upstream? The AARRR framework gives you the map. And you need to know what the company's North Star metric is &mdash; because that's what the board really cares about.
+      </div>
+
+      <table class="comp-table">
+        <thead><tr><th>Stage</th><th>Definition</th><th>Example Metrics</th><th>Why It Matters</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Acquisition</strong></td><td>How users discover product</td><td>Sign-ups, CPA, channel split</td><td>Can't grow without awareness</td></tr>
+          <tr><td><strong>Activation</strong></td><td>First core value experience</td><td>Onboarding %, time to first action</td><td>Multiplies acquisition value</td></tr>
+          <tr><td><strong>Retention</strong></td><td>Do users come back?</td><td>D1/D7/D30, churn, cohort curves</td><td>Most important; compounds</td></tr>
+          <tr><td><strong>Revenue</strong></td><td>How product makes money</td><td>ARPU, LTV, conversion, MRR</td><td>Validates business model</td></tr>
+          <tr><td><strong>Referral</strong></td><td>Do users bring others?</td><td>NPS, viral coefficient</td><td>Free, pre-qualified acquisition</td></tr>
+        </tbody>
+      </table>
+
+      <table class="comp-table">
+        <thead><tr><th>Company</th><th>North Star Metric</th><th>Why It Works</th></tr></thead>
+        <tbody>
+          <tr><td>Airbnb</td><td>Nights booked</td><td>Captures value for both guests and hosts</td></tr>
+          <tr><td>Spotify</td><td>Time spent listening</td><td>Engagement proxy for satisfaction</td></tr>
+          <tr><td>Facebook</td><td>Daily active users</td><td>Habitual use prerequisite for monetization</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>A good North Star aligns user value with business value. If it grows while users are unhappy or the business is losing money, it's the wrong metric. For a rideshare company, the North Star is likely "completed rides" &mdash; but the board is seeing revenue up and rides down. Something is off.</p>
+      </div>
+
+      <div class="story-text">
+        You identify the tension: rides (the North Star) are down, but revenue is up. That means revenue per ride must have increased significantly. Time to decompose the numbers.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 2</span> Diagnosing the Numbers &mdash; Metric Decomposition</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        Revenue = Rides &times; Revenue per Ride. If revenue is up 20% and rides are down 5%, then revenue per ride must be up ~26%. But why? You need to segment, hypothesize, and investigate.
+      </div>
+
+      <div class="code-block"><pre><span class="cm"># Revenue decomposition</span>
+Revenue = Rides &times; Revenue_per_Ride
+<span class="num">1.20</span> = <span class="num">0.95</span> &times; X
+X = <span class="num">1.20</span> / <span class="num">0.95</span> &asymp; <span class="num">1.263</span>
+<span class="cm"># Revenue per ride up ~26%</span>
+
+<span class="cm"># Investigation framework:</span>
+<span class="cm"># 1. Is it a data problem? (logging, schema migration)</span>
+<span class="cm"># 2. External factor? (holiday, competitor, weather)</span>
+<span class="cm"># 3. Internal change? (pricing, feature, experiment)</span>
+<span class="cm"># 4. Segment to isolate (platform, geo, cohort, ride type)</span>
+<span class="cm"># 5. Quantify the contribution</span></pre></div>
+
+      <p class="explain"><strong>Your hypotheses:</strong> (a) Price increase &mdash; did the company raise base fares or implement more aggressive surge pricing? (b) Mix shift &mdash; fewer short commutes but steady long/airport rides, raising the average fare. (c) Product mix &mdash; launch of premium tier (Black/XL) capturing a larger share of expensive rides.</p>
+
+      <p class="explain"><strong>The six-step framework:</strong> (1) <strong>Clarify</strong> &mdash; restate the problem, ask scope questions. (2) <strong>Define Metrics</strong> &mdash; primary metric + guardrails. (3) <strong>Hypothesize</strong> &mdash; before touching data. (4) <strong>Analyze</strong> &mdash; segment along relevant dimensions. (5) <strong>Recommend</strong> &mdash; concrete action + expected impact. (6) <strong>Measure</strong> &mdash; how to validate.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Always check for data problems first. A schema migration breaking the ride tracking? Embarrassingly common. Rule it out before building elaborate theories. Then check external factors. Only then investigate internal changes.</p>
+      </div>
+
+      <div class="story-text">
+        Segmentation reveals the answer: a new surge pricing algorithm launched 6 weeks ago. It's generating more revenue per ride but suppressing demand for price-sensitive short trips. You need to size the opportunity and recommend a path forward.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 3</span> The Recommendation &mdash; Sizing &amp; Experiment Design</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        The board will ask: "How big is the opportunity if we fix this?" You need a market sizing estimate. And they'll want to know: "How do we validate the fix?" You need an experiment design. Lead with the answer, then show your work.
+      </div>
+
+      <table class="comp-table">
+        <thead><tr><th>Approach</th><th>Start With</th><th>Structure</th><th>Strength</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Top-Down</strong></td><td>Large known number</td><td>TAM &rarr; filter &rarr; target</td><td>Fast, macro-level</td></tr>
+          <tr><td><strong>Bottom-Up</strong></td><td>Single unit</td><td>Unit economics &rarr; scale</td><td>More grounded, concrete</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>Your sizing:</strong> Pre-surge, short rides were 40% of volume (~2M rides/month). Post-surge, they dropped 25% to ~1.5M. Lost rides: 500K/month. At $8 average fare: $4M/month in lost revenue. But surge generates extra $6M/month on remaining rides. Net: +$2M/month. The question is whether the ride volume decline will accelerate.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Decision</th><th>Options</th><th>Default</th><th>Watch Out</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Randomization unit</strong></td><td>User, session, page</td><td>User-level</td><td>Network effects &rarr; cluster randomization</td></tr>
+          <tr><td><strong>Duration</strong></td><td>Days to weeks</td><td>&ge; 1 full weekly cycle</td><td>Day-of-week effects, pay cycles</td></tr>
+          <tr><td><strong>Guardrail metrics</strong></td><td>AOV, support tickets, load time</td><td>Always include several</td><td>Must not degrade even if primary improves</td></tr>
+          <tr><td><strong>Network effects</strong></td><td>Standard vs. cluster</td><td>Standard (if independent)</td><td>Marketplace products &rarr; cluster</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>Communicate using the Pyramid Principle:</strong> Lead with the answer. "The revenue increase is driven by a new surge pricing algorithm. It generates +$2M/month net, but ride volume is declining and may accelerate. I recommend A/B testing a modified algorithm that caps surge at 2x for trips under 3 miles." Then show the supporting analysis.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The best technical answer, poorly communicated, loses to a decent answer well communicated. State the conclusion first. Quantify everything &mdash; not "affected a lot of users" but "affected approximately 500,000 rides, roughly 25% of short-trip volume." Name trade-offs proactively.</p>
+      </div>
+
+      <div class="resolution">
+        <div class="label">Story Resolution</div>
+        <p>You present Monday morning: "Revenue is up because surge pricing is working. Rides are down because it's suppressing price-sensitive demand. Net positive today, but the trend is concerning. I recommend capping surge for short trips and running a 3-week A/B test to validate." The CEO nods. The board approves the experiment. Three weeks later, the modified algorithm recovers 60% of lost rides while retaining 85% of the revenue uplift. Your director mentions you for the next promotion cycle.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v16 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+function toggleTheme(){var d=document.documentElement;if(d.getAttribute('data-theme')==='dark'){d.removeAttribute('data-theme');localStorage.setItem('ds-theme','light')}else{d.setAttribute('data-theme','dark');localStorage.setItem('ds-theme','dark')}}
+</script>
+</body>
+</html>

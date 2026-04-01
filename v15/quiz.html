@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Battle Mode — Quest Mode</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .battle-ui {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* ── HUD ── */
+    .hud {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .hud-left { display: flex; align-items: center; gap: 16px; }
+    .hud .hearts { font-size: 1.3rem; letter-spacing: 4px; }
+    .hud .hearts .lost { filter: grayscale(1); opacity: 0.3; }
+    .hud-center {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .hud-right { display: flex; align-items: center; gap: 14px; }
+    .hud .xp-count { font-size: 0.85rem; font-weight: 700; color: var(--gold); }
+    .hud .streak-badge {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--streak);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .hud .streak-badge.active { opacity: 1; }
+
+    /* HP Bar */
+    .hp-bar {
+      height: 8px;
+      background: var(--surface);
+      border-radius: 4px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .hp-bar .hp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--hp-dark), var(--hp));
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    /* Timer */
+    .timer-bar {
+      height: 4px;
+      background: var(--surface);
+      border-radius: 2px;
+      margin-bottom: 24px;
+      overflow: hidden;
+      display: none;
+    }
+    .timer-bar.active { display: block; }
+    .timer-bar .timer-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--xp), var(--gold));
+      border-radius: 2px;
+      transition: width 0.1s linear;
+    }
+
+    /* ── FILTER BUTTONS ── */
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .filter-btn {
+      font-family: inherit;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn.active { border-color: var(--mp); color: var(--mp); background: rgba(96,165,250,0.1); }
+
+    /* ── QUESTION CARD ── */
+    .q-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 16px;
+      transition: border-color 0.3s;
+      display: none;
+    }
+    .q-card.visible { display: block; animation: fadeIn 0.4s ease; }
+    .q-card.correct { border-color: var(--xp); box-shadow: 0 0 20px rgba(74,222,128,0.15); }
+    .q-card.wrong { border-color: var(--hp); box-shadow: 0 0 20px rgba(248,113,113,0.15); }
+
+    .q-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .q-meta .category {
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .q-meta .rarity {
+      font-size: 0.62rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-left: auto;
+    }
+    .rarity.common { color: var(--text); }
+    .rarity.rare { color: var(--mp); }
+    .rarity.legendary { color: var(--gold); }
+
+    .q-meta .round {
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+    .q-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--white);
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 8px; }
+    .opt-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: var(--surface2);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .opt-btn:hover:not(:disabled) { border-color: var(--mp); color: var(--white); }
+    .opt-btn:disabled { cursor: default; opacity: 0.85; }
+    .opt-btn.selected-correct { border-color: var(--xp); background: rgba(74,222,128,0.12); color: var(--xp); }
+    .opt-btn.selected-wrong { border-color: var(--hp); background: rgba(248,113,113,0.12); color: var(--hp); }
+    .opt-btn.show-correct { border-color: var(--xp); color: var(--xp); }
+
+    .q-explain {
+      display: none;
+      margin-top: 14px;
+      padding: 14px;
+      background: rgba(96,165,250,0.06);
+      border-radius: 8px;
+      font-size: 0.84rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .q-explain.show { display: block; }
+
+    /* XP Popup */
+    .xp-popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      pointer-events: none;
+      opacity: 0;
+      z-index: 200;
+    }
+    .xp-popup.flash {
+      animation: xpFlash 1.2s ease-out forwards;
+    }
+    @keyframes xpFlash {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -120%) scale(1.5); }
+    }
+
+    /* ── GAME OVER / VICTORY ── */
+    .end-screen {
+      display: none;
+      text-align: center;
+      padding: 48px 24px;
+    }
+    .end-screen.visible { display: block; animation: fadeIn 0.5s ease; }
+    .end-screen .end-icon { font-size: 4rem; margin-bottom: 16px; }
+    .end-screen h2 { font-size: 2rem; font-weight: 700; color: var(--white); margin-bottom: 8px; }
+    .end-screen .rank-letter {
+      font-size: 4rem;
+      font-weight: 900;
+      margin: 16px 0 8px;
+    }
+    .end-screen .rank-title { font-size: 1rem; color: var(--muted); margin-bottom: 24px; }
+    .end-screen .final-stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+    .end-screen .final-stat { text-align: center; }
+    .end-screen .final-stat .val { font-size: 1.8rem; font-weight: 700; color: var(--white); }
+    .end-screen .final-stat .lbl { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+    .rank-s { color: var(--gold); }
+    .rank-a { color: var(--xp); }
+    .rank-b { color: var(--mp); }
+    .rank-c { color: var(--purple); }
+    .rank-d { color: var(--streak); }
+    .rank-f { color: var(--hp); }
+  </style>
+</head>
+<body>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <a href="index.html" class="brand">Quest Mode</a>
+    <div class="stats">
+      <div class="stat-item hearts">
+        <span class="icon">&hearts;</span>
+        <span id="navHearts">5</span>
+      </div>
+      <div class="stat-item xp">
+        <span class="icon">&#9733;</span>
+        <span id="navXp">0 XP</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="battle-ui">
+    <!-- HUD -->
+    <div class="hud" id="hud">
+      <div class="hud-left">
+        <div class="hearts" id="heartsDisplay"></div>
+      </div>
+      <div class="hud-center" id="roundCounter">Round 1 / 30</div>
+      <div class="hud-right">
+        <span class="streak-badge" id="streakBadge">&#128293; x0</span>
+        <span class="xp-count" id="xpCount">0 XP</span>
+      </div>
+    </div>
+    <div class="hp-bar"><div class="hp-fill" id="hpFill" style="width:100%"></div></div>
+    <div class="timer-bar" id="timerBar"><div class="timer-fill" id="timerFill"></div></div>
+
+    <!-- Filters -->
+    <div class="filters" id="filters"></div>
+
+    <!-- Questions Container -->
+    <div id="questionsContainer"></div>
+
+    <!-- XP Popup -->
+    <div class="xp-popup" id="xpPopup"></div>
+
+    <!-- End Screen -->
+    <div class="end-screen" id="endScreen"></div>
+  </div>
+
+  <script>
+    // ── QUESTIONS ──
+    const QUESTIONS = [
+      // SQL
+      { cat: 'SQL', q: 'What is the correct logical execution order of a SQL query?', opts: ['SELECT → FROM → WHERE → GROUP BY', 'FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY', 'FROM → SELECT → WHERE → GROUP BY', 'SELECT → WHERE → FROM → ORDER BY'], ans: 1, explain: 'The database engine processes FROM/JOIN first, then WHERE, GROUP BY, HAVING, SELECT, ORDER BY, and finally LIMIT.', diff: 'easy' },
+      { cat: 'SQL', q: 'Which JOIN preserves all rows from the left table, filling NULLs for non-matches?', opts: ['INNER JOIN', 'CROSS JOIN', 'LEFT JOIN', 'FULL OUTER JOIN'], ans: 2, explain: 'A LEFT JOIN keeps every row from the left table. Where no match exists on the right side, columns are filled with NULL.', diff: 'easy' },
+      { cat: 'SQL', q: 'What is the difference between RANK() and DENSE_RANK()?', opts: ['RANK skips values after ties; DENSE_RANK does not', 'They are identical', 'DENSE_RANK skips values; RANK does not', 'RANK assigns unique numbers; DENSE_RANK ties'], ans: 0, explain: 'RANK() assigns the same rank to ties then skips (1,1,3). DENSE_RANK() assigns ties but continues consecutively (1,1,2).', diff: 'medium' },
+      { cat: 'SQL', q: 'Why can\'t you use a SELECT alias in the WHERE clause?', opts: ['It\'s a syntax restriction', 'WHERE is evaluated before SELECT in execution order', 'Aliases are only for display', 'You actually can in all databases'], ans: 1, explain: 'WHERE runs at step 2, but SELECT (where aliases are created) runs at step 5. The alias doesn\'t exist yet when WHERE is evaluated.', diff: 'medium' },
+      { cat: 'SQL', q: 'What does COUNT(*) count compared to COUNT(column)?', opts: ['They are the same', 'COUNT(*) counts all rows; COUNT(col) skips NULLs', 'COUNT(*) skips NULLs; COUNT(col) counts all', 'COUNT(*) is faster'], ans: 1, explain: 'COUNT(*) counts every row including NULLs. COUNT(column) only counts rows where that column is NOT NULL.', diff: 'easy' },
+
+      // Python
+      { cat: 'Python', q: 'What is the time complexity of checking membership in a Python set?', opts: ['O(n)', 'O(log n)', 'O(1) average', 'O(n log n)'], ans: 2, explain: 'Sets use hash tables internally, providing O(1) average-case membership testing, compared to O(n) for lists.', diff: 'easy' },
+      { cat: 'Python', q: 'What happens with mutable default arguments in Python?', opts: ['A new object is created each call', 'The same mutable object is shared across all calls', 'Python raises an error', 'The default is ignored'], ans: 1, explain: 'Default arguments are evaluated once at function definition time. A mutable default (like a list) is shared across calls, leading to surprising accumulation.', diff: 'medium' },
+      { cat: 'Python', q: 'What is the difference between a shallow copy and a deep copy?', opts: ['No difference', 'Shallow copies inner objects; deep copies only outer', 'Shallow copies outer container but shares inner objects; deep copies everything', 'Deep copy is faster'], ans: 2, explain: 'A shallow copy creates a new outer container but inner objects are still shared references. A deep copy recursively duplicates everything.', diff: 'medium' },
+      { cat: 'Python', q: 'What does the @ operator do with NumPy arrays?', opts: ['Element-wise multiplication', 'Matrix multiplication (dot product)', 'Array concatenation', 'Power operation'], ans: 1, explain: 'The @ operator performs matrix multiplication. The * operator does element-wise (Hadamard) multiplication. This distinction is critical for linear algebra operations.', diff: 'hard' },
+      { cat: 'Python', q: 'Which pattern converts an O(n²) nested-loop search into O(n)?', opts: ['Two Pointers', 'Sliding Window', 'Hash Map lookup', 'Binary Search'], ans: 2, explain: 'A hash map (dict) replaces the inner search loop with O(1) lookups, reducing the overall complexity from O(n²) to O(n). Classic example: Two Sum.', diff: 'medium' },
+
+      // ML
+      { cat: 'ML', q: 'What is the bias-variance tradeoff?', opts: ['Bias and variance are unrelated', 'High bias = overfitting, high variance = underfitting', 'High bias = underfitting, high variance = overfitting', 'Both decrease with model complexity'], ans: 2, explain: 'High bias means the model is too simple (underfitting). High variance means the model is too complex and fits noise (overfitting). The goal is to balance both.', diff: 'easy' },
+      { cat: 'ML', q: 'When should you use precision vs. recall as your primary metric?', opts: ['Always use accuracy instead', 'Precision when false positives are costly; recall when false negatives are costly', 'They measure the same thing', 'Precision for large datasets, recall for small'], ans: 1, explain: 'Precision = TP/(TP+FP) — use when false positives are expensive (spam filter). Recall = TP/(TP+FN) — use when false negatives are dangerous (disease detection).', diff: 'medium' },
+      { cat: 'ML', q: 'What is the purpose of cross-validation?', opts: ['To increase training data', 'To tune hyperparameters and estimate generalization performance', 'To reduce training time', 'To remove outliers'], ans: 1, explain: 'Cross-validation splits data into k folds, trains on k-1 and validates on 1, rotating through all folds. This gives a reliable estimate of how the model will perform on unseen data.', diff: 'easy' },
+      { cat: 'ML', q: 'What causes data leakage?', opts: ['Too much training data', 'Information from the test set influencing the training process', 'Using too many features', 'Slow training speed'], ans: 1, explain: 'Data leakage occurs when information that wouldn\'t be available at prediction time leaks into training — e.g., normalizing before splitting, or using future data to predict the past.', diff: 'hard' },
+      { cat: 'ML', q: 'What is the difference between bagging and boosting?', opts: ['They are the same technique', 'Bagging trains models in parallel on random subsets; boosting trains sequentially focusing on errors', 'Boosting is always better', 'Bagging uses deep trees; boosting uses shallow trees'], ans: 1, explain: 'Bagging (e.g., Random Forest) trains independent models on bootstrap samples and averages them — reduces variance. Boosting (e.g., XGBoost) trains sequentially, each model correcting prior errors — reduces bias.', diff: 'hard' },
+
+      // Statistics
+      { cat: 'Stats', q: 'What does a p-value represent?', opts: ['The probability the hypothesis is true', 'The probability of seeing data this extreme if H₀ is true', 'The confidence level', 'The effect size'], ans: 1, explain: 'The p-value is the probability of observing results as extreme as (or more extreme than) the data, assuming the null hypothesis is true. It is NOT the probability that H₀ is true.', diff: 'easy' },
+      { cat: 'Stats', q: 'What is a Type I error vs. Type II error?', opts: ['Type I = false negative; Type II = false positive', 'Type I = false positive (rejecting true H₀); Type II = false negative (failing to reject false H₀)', 'They are the same', 'Type I = large sample; Type II = small sample'], ans: 1, explain: 'Type I (α): Rejecting a true null hypothesis (false alarm). Type II (β): Failing to reject a false null hypothesis (missed detection). There is a tradeoff between them.', diff: 'medium' },
+      { cat: 'Stats', q: 'What does the Central Limit Theorem state?', opts: ['All data is normally distributed', 'Sample means approach a normal distribution as sample size increases, regardless of the population distribution', 'Larger samples have more variance', 'The mean equals the median'], ans: 1, explain: 'The CLT says that the distribution of sample means tends toward a normal distribution as n grows large, even if the underlying population is not normal. This is why many statistical tests work.', diff: 'medium' },
+      { cat: 'Stats', q: 'In A/B testing, what is statistical power?', opts: ['The p-value threshold', 'The probability of detecting a real effect when one exists (1 - β)', 'The sample size', 'The confidence interval width'], ans: 1, explain: 'Power = 1 - β = probability of correctly rejecting H₀ when it\'s false. Higher power means you\'re more likely to detect a true effect. Common target: 80%.', diff: 'hard' },
+      { cat: 'Stats', q: 'When would you use a chi-squared test?', opts: ['Comparing means of two groups', 'Testing association between categorical variables', 'Measuring correlation', 'Comparing medians'], ans: 1, explain: 'The chi-squared test evaluates whether there is a significant association between two categorical variables by comparing observed frequencies to expected frequencies under independence.', diff: 'medium' },
+
+      // Probability
+      { cat: 'Probability', q: 'What is Bayes\' Theorem used for?', opts: ['Calculating joint probabilities', 'Updating prior beliefs with new evidence to get posterior probability', 'Finding the mode of a distribution', 'Testing hypotheses'], ans: 1, explain: 'Bayes\' Theorem: P(A|B) = P(B|A) × P(A) / P(B). It lets you update your prior belief P(A) after observing evidence B to get the posterior P(A|B).', diff: 'easy' },
+      { cat: 'Probability', q: 'How many times must you roll a fair die to have a >50% chance of seeing a 6?', opts: ['3', '4', '6', '10'], ans: 1, explain: 'P(no 6 in n rolls) = (5/6)^n. We need (5/6)^n < 0.5. Solving: n > log(0.5)/log(5/6) ≈ 3.8. So 4 rolls gives >50% chance.', diff: 'hard' },
+      { cat: 'Probability', q: 'In the Monty Hall problem, should you switch doors?', opts: ['No, it\'s 50/50 either way', 'Yes, switching gives 2/3 probability of winning', 'It doesn\'t matter', 'Only if the host knows'], ans: 1, explain: 'Switching wins 2/3 of the time. Your initial pick has 1/3 chance. The host revealing a goat doesn\'t change your door\'s probability, but concentrates the remaining 2/3 on the other door.', diff: 'medium' },
+      { cat: 'Probability', q: 'What is the expected value of rolling a fair six-sided die?', opts: ['3', '3.5', '4', '3.25'], ans: 1, explain: 'E[X] = (1+2+3+4+5+6)/6 = 21/6 = 3.5. The expected value is the probability-weighted average of all possible outcomes.', diff: 'easy' },
+      { cat: 'Probability', q: 'What distribution models the number of events in a fixed interval?', opts: ['Binomial', 'Poisson', 'Uniform', 'Exponential'], ans: 1, explain: 'The Poisson distribution models the number of events occurring in a fixed interval of time or space, given a known average rate λ. Examples: emails per hour, accidents per month.', diff: 'medium' },
+
+      // Case Studies
+      { cat: 'Casing', q: 'What does the AARRR framework stand for?', opts: ['Analyze, Act, Report, Review, Repeat', 'Acquisition, Activation, Retention, Revenue, Referral', 'Access, Apply, Run, Report, Refine', 'Attract, Acquire, Retain, Renew, Refer'], ans: 1, explain: 'AARRR (Pirate Metrics): Acquisition (getting users), Activation (first value moment), Retention (coming back), Revenue (monetization), Referral (sharing with others).', diff: 'easy' },
+      { cat: 'Casing', q: 'A key metric drops 20% overnight. What is your first step?', opts: ['Immediately alert stakeholders', 'Check if it\'s a data/logging issue vs. a real product change', 'Launch an A/B test', 'Revert the last deployment'], ans: 1, explain: 'Always start by verifying data integrity — check for logging bugs, pipeline delays, or definition changes. Only after confirming the drop is real should you investigate product causes.', diff: 'medium' },
+      { cat: 'Casing', q: 'How do you estimate the number of piano tuners in Chicago?', opts: ['Google the answer', 'Use a Fermi estimation: population → households → pianos → tuning frequency → tuners needed', 'Ask an expert', 'Use census data only'], ans: 1, explain: 'Fermi estimation breaks impossible-seeming questions into estimable components: ~2.7M people → ~1M households → ~10% have pianos → ~100K pianos → each tuned yearly → each tuner does ~4/day × 250 days = 1000/year → ~100 tuners.', diff: 'hard' },
+      { cat: 'Casing', q: 'What is a north star metric?', opts: ['The most tracked metric in dashboards', 'A single metric that best captures the core value your product delivers to customers', 'Revenue', 'Daily active users'], ans: 1, explain: 'A north star metric is the single metric that best reflects the value customers get from your product. For Airbnb: nights booked. For Slack: messages sent. It aligns the team toward one goal.', diff: 'easy' },
+      { cat: 'Casing', q: 'Why might an A/B test show a significant result that doesn\'t replicate?', opts: ['The test was too long', 'Multiple comparison problem, novelty effect, or selection bias', 'The metric was wrong', 'The sample was too large'], ans: 1, explain: 'Common causes: testing many variants without correction (multiple comparisons), users reacting to novelty that fades, seasonal effects, or the test not running long enough to capture full behavior cycles.', diff: 'hard' },
+    ];
+
+    // ── GAME STATE ──
+    let lives = 3;
+    let score = 0;
+    let xp = 0;
+    let streak = 0;
+    let answered = 0;
+    let currentQ = 0;
+    let activeFilter = 'all';
+    let filteredQs = [...QUESTIONS];
+    let timerInterval = null;
+    const isBattle = new URLSearchParams(location.search).get('mode') === 'battle';
+    const TOTAL = QUESTIONS.length;
+
+    // XP values per difficulty
+    const XP_MAP = { easy: 10, medium: 20, hard: 35 };
+
+    // ── INIT ──
+    function init() {
+      renderFilters();
+      showQuestion(0);
+      updateHUD();
+    }
+
+    // ── FILTERS ──
+    function renderFilters() {
+      const cats = ['all', ...new Set(QUESTIONS.map(q => q.cat))];
+      const filtersEl = document.getElementById('filters');
+      cats.forEach(c => {
+        const btn = document.createElement('button');
+        btn.className = 'filter-btn' + (c === 'all' ? ' active' : '');
+        btn.textContent = c === 'all' ? 'All' : c;
+        btn.onclick = () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeFilter = c;
+          filteredQs = c === 'all' ? [...QUESTIONS] : QUESTIONS.filter(q => q.cat === c);
+          currentQ = 0;
+          answered = 0;
+          document.getElementById('questionsContainer').innerHTML = '';
+          showQuestion(0);
+          updateHUD();
+        };
+        filtersEl.appendChild(btn);
+      });
+    }
+
+    // ── SHOW QUESTION ──
+    function showQuestion(idx) {
+      if (idx >= filteredQs.length) { endGame(true); return; }
+      const q = filteredQs[idx];
+      const container = document.getElementById('questionsContainer');
+
+      const catColors = { SQL: 'var(--sql)', Python: 'var(--python)', ML: 'var(--ml)', Stats: 'var(--stats)', Probability: 'var(--prob)', Casing: 'var(--case)' };
+      const rarityMap = { easy: 'common', medium: 'rare', hard: 'legendary' };
+      const rarityLabel = { easy: 'Common', medium: 'Rare', hard: 'Legendary' };
+      const color = catColors[q.cat] || 'var(--mp)';
+
+      const card = document.createElement('div');
+      card.className = 'q-card visible';
+      card.id = `q-${idx}`;
+      card.innerHTML = `
+        <div class="q-meta">
+          <span class="category" style="background:${color};color:#0a0a0a">${q.cat}</span>
+          <span class="round">Round ${idx + 1}</span>
+          <span class="rarity ${rarityMap[q.diff]}">${rarityLabel[q.diff]}</span>
+        </div>
+        <div class="q-text">${q.q}</div>
+        <div class="options">
+          ${q.opts.map((o, i) => `<button class="opt-btn" onclick="answer(${idx},${i})">${o}</button>`).join('')}
+        </div>
+        <div class="q-explain" id="explain-${idx}">${q.explain}</div>
+      `;
+
+      // Hide previous cards
+      container.querySelectorAll('.q-card').forEach(c => c.classList.remove('visible'));
+      container.appendChild(card);
+
+      // Timer for battle mode
+      if (isBattle) {
+        startTimer(idx);
+      }
+    }
+
+    // ── TIMER ──
+    function startTimer(qIdx) {
+      const bar = document.getElementById('timerBar');
+      const fill = document.getElementById('timerFill');
+      bar.classList.add('active');
+      let timeLeft = 100;
+      fill.style.width = '100%';
+
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        timeLeft -= 0.5;
+        fill.style.width = timeLeft + '%';
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          // Auto-wrong
+          answer(qIdx, -1);
+        }
+      }, 100); // 20 seconds total
+    }
+
+    // ── ANSWER ──
+    function answer(qIdx, chosen) {
+      clearInterval(timerInterval);
+      document.getElementById('timerBar').classList.remove('active');
+
+      const q = filteredQs[qIdx];
+      const card = document.getElementById(`q-${qIdx}`);
+      const buttons = card.querySelectorAll('.opt-btn');
+      const isCorrect = chosen === q.ans;
+
+      // Disable all buttons
+      buttons.forEach((btn, i) => {
+        btn.disabled = true;
+        if (i === q.ans) btn.classList.add('show-correct');
+        if (i === chosen && !isCorrect) btn.classList.add('selected-wrong');
+        if (i === chosen && isCorrect) btn.classList.add('selected-correct');
+      });
+
+      // Show explanation
+      document.getElementById(`explain-${qIdx}`).classList.add('show');
+
+      if (isCorrect) {
+        card.classList.add('correct');
+        score++;
+        streak++;
+        let earnedXP = XP_MAP[q.diff] || 10;
+        if (streak >= 3) earnedXP = Math.round(earnedXP * 1.5);
+        xp += earnedXP;
+        showXPPopup(`+${earnedXP} XP`);
+      } else {
+        card.classList.add('wrong');
+        streak = 0;
+        lives--;
+        if (lives <= 0) { setTimeout(() => endGame(false), 800); }
+      }
+
+      answered++;
+      updateHUD();
+
+      // Next question
+      if (lives > 0) {
+        setTimeout(() => {
+          currentQ++;
+          showQuestion(currentQ);
+        }, 1500);
+      }
+    }
+
+    // ── XP POPUP ──
+    function showXPPopup(text) {
+      const popup = document.getElementById('xpPopup');
+      popup.textContent = text;
+      popup.classList.remove('flash');
+      void popup.offsetWidth;
+      popup.classList.add('flash');
+    }
+
+    // ── UPDATE HUD ──
+    function updateHUD() {
+      // Hearts
+      const heartsEl = document.getElementById('heartsDisplay');
+      let heartsHTML = '';
+      for (let i = 0; i < 3; i++) {
+        heartsHTML += i < lives ? '<span>&hearts;</span>' : '<span class="lost">&hearts;</span>';
+      }
+      heartsEl.innerHTML = heartsHTML;
+
+      // HP bar
+      document.getElementById('hpFill').style.width = ((lives / 3) * 100) + '%';
+
+      // Round counter
+      document.getElementById('roundCounter').textContent = `Round ${Math.min(currentQ + 1, filteredQs.length)} / ${filteredQs.length}`;
+
+      // XP
+      document.getElementById('xpCount').textContent = `${xp} XP`;
+      document.getElementById('navXp').textContent = `${xp} XP`;
+
+      // Streak
+      const badge = document.getElementById('streakBadge');
+      badge.innerHTML = `&#128293; x${streak}`;
+      badge.classList.toggle('active', streak >= 2);
+
+      // Nav hearts
+      document.getElementById('navHearts').textContent = lives;
+    }
+
+    // ── END GAME ──
+    function endGame(victory) {
+      clearInterval(timerInterval);
+      document.getElementById('hud').style.display = 'none';
+      document.querySelector('.hp-bar').style.display = 'none';
+      document.getElementById('timerBar').style.display = 'none';
+      document.getElementById('filters').style.display = 'none';
+      document.getElementById('questionsContainer').style.display = 'none';
+
+      const pct = filteredQs.length > 0 ? Math.round((score / filteredQs.length) * 100) : 0;
+      let rank, rankClass, rankTitle;
+      if (pct >= 95) { rank = 'S'; rankClass = 'rank-s'; rankTitle = 'Legendary Champion'; }
+      else if (pct >= 85) { rank = 'A'; rankClass = 'rank-a'; rankTitle = 'Elite Warrior'; }
+      else if (pct >= 70) { rank = 'B'; rankClass = 'rank-b'; rankTitle = 'Seasoned Fighter'; }
+      else if (pct >= 55) { rank = 'C'; rankClass = 'rank-c'; rankTitle = 'Apprentice'; }
+      else if (pct >= 40) { rank = 'D'; rankClass = 'rank-d'; rankTitle = 'Novice'; }
+      else { rank = 'F'; rankClass = 'rank-f'; rankTitle = 'Fallen'; }
+
+      const endScreen = document.getElementById('endScreen');
+      endScreen.innerHTML = `
+        <div class="end-icon">${victory ? '&#127942;' : '&#128128;'}</div>
+        <h2>${victory ? 'Victory!' : 'Game Over'}</h2>
+        <div class="rank-letter ${rankClass}">${rank}</div>
+        <div class="rank-title">${rankTitle}</div>
+        <div class="final-stats">
+          <div class="final-stat"><div class="val">${score}/${filteredQs.length}</div><div class="lbl">Correct</div></div>
+          <div class="final-stat"><div class="val">${xp}</div><div class="lbl">XP Earned</div></div>
+          <div class="final-stat"><div class="val">${lives}/3</div><div class="lbl">HP Left</div></div>
+        </div>
+        <a href="index.html" class="btn btn-primary">Return to Base</a>
+        <span style="margin:0 8px"></span>
+        <button class="btn btn-battle" onclick="location.reload()">Play Again</button>
+      `;
+      endScreen.classList.add('visible');
+
+      // Save XP to hub state
+      try {
+        const state = JSON.parse(localStorage.getItem('ds-v15-state') || '{}');
+        state.xp = (state.xp || 0) + xp;
+        const today = new Date().toISOString().slice(0, 10);
+        if (!state.completedDates) state.completedDates = {};
+        state.completedDates[today] = score;
+        localStorage.setItem('ds-v15-state', JSON.stringify(state));
+      } catch(e) {}
+    }
+
+    init();
+  </script>
+</body>
+</html>

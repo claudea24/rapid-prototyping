@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diagnostic Quiz — DS Prep v21</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v21</a>
+  <a href="index.html" class="back">Back</a>
+</nav>
+
+<div class="quiz-container">
+  <div class="quiz-progress">
+    <span class="qp-text" id="qp-text">Q 1 / 18</span>
+    <div class="qp-bar"><div class="qp-fill" id="qp-fill" style="width:5.56%"></div></div>
+  </div>
+  <div class="quiz-card" id="quiz-card">
+    <div class="q-topic" id="q-topic"></div>
+    <div class="q-text" id="q-text"></div>
+    <div class="quiz-options" id="quiz-options"></div>
+    <button class="quiz-next" id="quiz-next" onclick="nextQuestion()">Next &rarr;</button>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  // SQL
+  { topic:'sql', topicLabel:'SQL', cls:'ib',
+    text:'What is the correct logical execution order of a SQL query?',
+    options:['SELECT \u2192 FROM \u2192 WHERE \u2192 GROUP BY \u2192 ORDER BY','FROM \u2192 WHERE \u2192 GROUP BY \u2192 HAVING \u2192 SELECT \u2192 ORDER BY \u2192 LIMIT','FROM \u2192 SELECT \u2192 WHERE \u2192 GROUP BY \u2192 ORDER BY','SELECT \u2192 FROM \u2192 GROUP BY \u2192 WHERE \u2192 HAVING'],
+    answer:1 },
+  { topic:'sql', topicLabel:'SQL', cls:'ib',
+    text:'Which JOIN type preserves all rows from the left table even if there is no match?',
+    options:['INNER JOIN','RIGHT JOIN','LEFT JOIN','CROSS JOIN'],
+    answer:2 },
+  { topic:'sql', topicLabel:'SQL', cls:'ib',
+    text:'RANK() vs DENSE_RANK() \u2014 which one skips rank values after ties?',
+    options:['DENSE_RANK()','RANK()','Both skip values','Neither skips values'],
+    answer:1 },
+
+  // Python
+  { topic:'python', topicLabel:'Python', cls:'ip',
+    text:'What is the average time complexity of a membership test (x in s) for a Python set?',
+    options:['O(n)','O(log n)','O(1)','O(n log n)'],
+    answer:2 },
+  { topic:'python', topicLabel:'Python', cls:'ip',
+    text:'What happens when you define def f(x=[])?',
+    options:['A new list is created each call','The default list is shared across calls (mutable default gotcha)','It raises a SyntaxError','x is always None'],
+    answer:1 },
+  { topic:'python', topicLabel:'Python', cls:'ip',
+    text:'In NumPy, what does the @ operator do?',
+    options:['Element-wise multiplication','Matrix multiplication','Array concatenation','Broadcasting'],
+    answer:1 },
+
+  // ML
+  { topic:'ml', topicLabel:'Machine Learning', cls:'im',
+    text:'A model with high bias is likely suffering from:',
+    options:['Overfitting','Underfitting','Data leakage','Class imbalance'],
+    answer:1 },
+  { topic:'ml', topicLabel:'Machine Learning', cls:'im',
+    text:'A fraud detection model achieves 99.5% accuracy. Is this necessarily a good model?',
+    options:['Yes, 99.5% is excellent','No \u2014 class imbalance means accuracy is misleading','Yes, if the dataset is large enough','It depends on the algorithm used'],
+    answer:1 },
+  { topic:'ml', topicLabel:'Machine Learning', cls:'im',
+    text:'What causes data leakage in a machine learning pipeline?',
+    options:['Using too many features','Information from the test set leaking into training','Training for too many epochs','Using regularization'],
+    answer:1 },
+
+  // Stats
+  { topic:'stats', topicLabel:'Statistics', cls:'is',
+    text:'A p-value represents the probability of\u2026',
+    options:['The hypothesis being true','The data being correct','Observing data this extreme, given that H\u2080 is true','The experiment being valid'],
+    answer:2 },
+  { topic:'stats', topicLabel:'Statistics', cls:'is',
+    text:'Peeking at an A/B test daily (checking results repeatedly) does what to the false positive rate?',
+    options:['Keeps it at 5%','Reduces it','Inflates it (potentially to ~30% or more)','Has no effect'],
+    answer:2 },
+  { topic:'stats', topicLabel:'Statistics', cls:'is',
+    text:'A 95% confidence interval means\u2026',
+    options:['There is a 95% chance the true value is in this specific interval','95% of similarly constructed intervals would contain the true value','The result is 95% accurate','We are 95% sure our data is correct'],
+    answer:1 },
+
+  // Probability
+  { topic:'probability', topicLabel:'Probability', cls:'ir',
+    text:'A test is 99% accurate. Disease prevalence is 1%. You test positive. What is P(disease | positive)?',
+    options:['99%','About 50%','About 1%','About 90%'],
+    answer:1 },
+  { topic:'probability', topicLabel:'Probability', cls:'ir',
+    text:'In the Monty Hall problem, should you switch or stay?',
+    options:['Stay \u2014 1/2 chance either way','Switch \u2014 2/3 chance of winning','It does not matter','Stay \u2014 2/3 chance of winning'],
+    answer:1 },
+  { topic:'probability', topicLabel:'Probability', cls:'ir',
+    text:'What is the expected value of a single roll of a fair six-sided die?',
+    options:['3','3.5','4','3.67'],
+    answer:1 },
+
+  // Casing
+  { topic:'casing', topicLabel:'Case Studies', cls:'ic',
+    text:'In the AARRR pirate metrics framework, what does AARRR stand for?',
+    options:['Awareness, Action, Retention, Revenue, Referral','Acquisition, Activation, Retention, Revenue, Referral','Acquisition, Analysis, Retention, Revenue, Reach','Awareness, Activation, Reach, Revenue, Referral'],
+    answer:1 },
+  { topic:'casing', topicLabel:'Case Studies', cls:'ic',
+    text:'A key product metric suddenly drops 15%. What should be your FIRST step?',
+    options:['Launch an A/B test to fix it','Check if it is a data or instrumentation problem','Redesign the feature','Alert the executive team'],
+    answer:1 },
+  { topic:'casing', topicLabel:'Case Studies', cls:'ic',
+    text:'What is commonly considered the North Star metric for Airbnb?',
+    options:['Monthly active users','Revenue per user','Nights booked','Number of listings'],
+    answer:2 }
+];
+
+let current = 0;
+let answered = false;
+const scores = { sql:0, python:0, ml:0, stats:0, probability:0, casing:0 };
+const answers = [];
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  document.getElementById('qp-text').textContent = 'Q ' + (current+1) + ' / 18';
+  document.getElementById('qp-fill').style.width = ((current+1)/18*100) + '%';
+  document.getElementById('q-topic').className = 'q-topic ' + q.cls;
+  document.getElementById('q-topic').textContent = q.topicLabel;
+  document.getElementById('q-text').textContent = q.text;
+
+  const opts = document.getElementById('quiz-options');
+  opts.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'quiz-option';
+    div.innerHTML = '<div class="opt-letter">' + letters[i] + '</div><span>' + opt + '</span>';
+    div.onclick = () => selectOption(i);
+    opts.appendChild(div);
+  });
+
+  document.getElementById('quiz-next').classList.remove('show');
+  answered = false;
+}
+
+function selectOption(idx) {
+  if (answered) return;
+  answered = true;
+  const q = QUESTIONS[current];
+  const opts = document.querySelectorAll('.quiz-option');
+
+  opts.forEach((el, i) => {
+    if (i === q.answer) el.classList.add('correct');
+    else if (i === idx && idx !== q.answer) el.classList.add('wrong');
+    el.style.pointerEvents = 'none';
+  });
+
+  if (idx === q.answer) scores[q.topic]++;
+  answers.push({ topic:q.topic, question:current, correct: idx === q.answer });
+
+  const nextBtn = document.getElementById('quiz-next');
+  nextBtn.textContent = current < 17 ? 'Next \u2192' : 'See Results';
+  nextBtn.classList.add('show');
+}
+
+function nextQuestion() {
+  if (current >= 17) {
+    localStorage.setItem('ds-v21-diagnostic', JSON.stringify({ scores, answers, timestamp: Date.now() }));
+    window.location.href = 'index.html';
+    return;
+  }
+  current++;
+  renderQuestion();
+}
+
+renderQuestion();
+</script>
+</body>
+</html>

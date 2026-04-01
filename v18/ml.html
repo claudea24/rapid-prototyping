@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ML Mock Interview — DS Prep v18</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html"><div class="logo"></div>DS Prep v18</a>
+  <a class="back" href="index.html">All Sessions</a>
+</nav>
+
+<div class="interview-container">
+
+  <div class="interview-header">
+    <div class="badge" style="background:var(--ml-light);color:var(--ml);border-color:rgba(124,58,237,0.2)">ML Interview</div>
+    <h1>ML Mock Interview</h1>
+    <p>4 questions with follow-ups &middot; ~10 minutes</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-step" id="ps1"></div>
+    <div class="progress-step" id="ps2"></div>
+    <div class="progress-step" id="ps3"></div>
+    <div class="progress-step" id="ps4"></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question-block visible" id="q1">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q1</div>
+      <div class="interviewer-text">How would you <strong>predict customer churn</strong>? Walk me through your approach.</div>
+    </div>
+    <div class="options" id="q1-opts">
+      <div class="option-card" data-q="1" data-val="wrong" onclick="pick(this)">A) Train a deep neural network on all available features &mdash; it'll find the patterns.</div>
+      <div class="option-card" data-q="1" data-val="correct" onclick="pick(this)">B) Start with logistic regression or gradient-boosted trees. Define churn clearly, engineer features like recency/frequency, validate with proper time-based splits.</div>
+      <div class="option-card" data-q="1" data-val="partial" onclick="pick(this)">C) Use a random forest with all the customer data and tune hyperparameters.</div>
+    </div>
+    <div class="follow-up" id="q1-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text"><strong>Why not start with a neural network?</strong> Aren't they more powerful?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q1')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q1-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"Neural nets need too much data. Logistic regression is simpler."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Three reasons: (1) Interpretability &mdash; stakeholders need to understand WHY customers churn to take action, and tree-based models give feature importances. (2) Tabular data &mdash; gradient-boosted trees (XGBoost, LightGBM) consistently outperform neural nets on structured/tabular data. (3) Iteration speed &mdash; simpler models train fast, letting you iterate on feature engineering, which usually matters more than model complexity. Start simple, establish a baseline, then add complexity only if needed."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q1-next" style="display:none" onclick="nextQ(2)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-block" id="q2">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q2</div>
+      <div class="interviewer-text"><strong>Precision vs recall</strong> &mdash; when would you optimize for each?</div>
+    </div>
+    <div class="options" id="q2-opts">
+      <div class="option-card" data-q="2" data-val="partial" onclick="pick(this)">A) Precision when false positives are costly, recall when false negatives are costly.</div>
+      <div class="option-card" data-q="2" data-val="correct" onclick="pick(this)">B) Precision for spam filters (don't lose real emails). Recall for disease screening (don't miss sick patients). The business context determines the tradeoff.</div>
+      <div class="option-card" data-q="2" data-val="wrong" onclick="pick(this)">C) Always optimize for accuracy &mdash; it balances both.</div>
+    </div>
+    <div class="follow-up" id="q2-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">When would you use <strong>F1 score</strong> instead of optimizing one or the other?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q2')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q2-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"F1 is always good because it balances precision and recall."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"F1 is the harmonic mean of precision and recall &mdash; it penalizes extreme imbalance between them. Use it when: (1) you care equally about both, (2) classes are imbalanced (accuracy is misleading), or (3) as a single metric for model comparison. But often you DON'T want F1 &mdash; if missing cancer is 100x worse than a false alarm, use F2 (weighted F-beta) or just focus on recall with a minimum precision threshold. Always tie the metric to the business cost."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q2-next" style="display:none" onclick="nextQ(3)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-block" id="q3">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q3</div>
+      <div class="interviewer-text">Your fraud detection model has <strong>98% accuracy</strong>. Is that good?</div>
+    </div>
+    <div class="options" id="q3-opts">
+      <div class="option-card" data-q="3" data-val="wrong" onclick="pick(this)">A) Yes, 98% is excellent! Ship it.</div>
+      <div class="option-card" data-q="3" data-val="correct" onclick="pick(this)">B) Not necessarily &mdash; if only 2% of transactions are fraud, a model that predicts "not fraud" for everything gets 98% accuracy while catching zero fraud.</div>
+      <div class="option-card" data-q="3" data-val="partial" onclick="pick(this)">C) It depends on the baseline. We need to compare against a simple model.</div>
+    </div>
+    <div class="follow-up" id="q3-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Exactly. So how do you handle <strong>class imbalance</strong> in this scenario?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q3')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q3-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"Use SMOTE to oversample the minority class, then train normally."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Multiple strategies: (1) <strong>Metrics</strong> &mdash; use precision-recall AUC, not accuracy. (2) <strong>Resampling</strong> &mdash; SMOTE for oversampling or random undersampling, but be careful with synthetic examples in test sets. (3) <strong>Class weights</strong> &mdash; set <code>class_weight='balanced'</code> to penalize misclassifying the rare class more. (4) <strong>Threshold tuning</strong> &mdash; don't just use 0.5; adjust the decision threshold to match business costs. (5) <strong>Anomaly detection</strong> &mdash; frame it as detecting outliers instead of classification. In practice, threshold tuning + class weights often outperform fancy resampling."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q3-next" style="display:none" onclick="nextQ(4)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-block" id="q4">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q4</div>
+      <div class="interviewer-text">What is <strong>data leakage</strong>? Give me an example.</div>
+    </div>
+    <div class="options" id="q4-opts">
+      <div class="option-card" data-q="4" data-val="wrong" onclick="pick(this)">A) When your training data is too small and the model overfits.</div>
+      <div class="option-card" data-q="4" data-val="correct" onclick="pick(this)">B) When information from the test set (or the future) leaks into training, making the model look unrealistically good. Example: including "cancellation_date" as a feature to predict churn.</div>
+      <div class="option-card" data-q="4" data-val="partial" onclick="pick(this)">C) When you normalize the data before splitting into train/test.</div>
+    </div>
+    <div class="follow-up" id="q4-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">How does <strong>sklearn's Pipeline</strong> help prevent leakage?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q4')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q4-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"Pipeline just chains steps together for convenience."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Pipeline ensures preprocessing steps (scaling, imputation, encoding) are fit ONLY on training data and then applied to test data. Without it, you might fit a scaler on the entire dataset before splitting &mdash; the scaler has 'seen' test data statistics, which leaks information. Pipeline wraps everything so that during cross-validation, each fold independently fits the preprocessing. Two types of leakage: (1) <strong>Target leakage</strong> &mdash; features that encode the target (like cancellation date for churn). (2) <strong>Train-test contamination</strong> &mdash; preprocessing on full data before splitting. Pipeline prevents type 2."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q4-next" style="display:none" onclick="finish()">Finish Interview &rarr;</button>
+  </div>
+
+  <div class="completion" id="done">
+    <h2>Interview Complete!</h2>
+    <p>You've finished the ML mock interview. Review your answers above or try another topic.</p>
+    <a href="index.html">&larr; Back to All Sessions</a>
+  </div>
+
+</div>
+
+<script>
+let current = 1;
+const total = 4;
+
+function updateProgress() {
+  for (let i = 1; i <= total; i++) {
+    const el = document.getElementById('ps' + i);
+    if (i < current) el.className = 'progress-step done';
+    else if (i === current) el.className = 'progress-step active';
+    else el.className = 'progress-step';
+  }
+}
+
+function pick(el) {
+  const q = el.getAttribute('data-q');
+  const val = el.getAttribute('data-val');
+  const opts = document.querySelectorAll('#q' + q + '-opts .option-card');
+  opts.forEach(o => {
+    o.style.pointerEvents = 'none';
+    const v = o.getAttribute('data-val');
+    if (o === el) o.classList.add(v === 'correct' ? 'correct' : v === 'partial' ? 'partial' : 'wrong');
+    else if (v === 'correct') o.classList.add('correct');
+    else o.style.opacity = '0.4';
+  });
+  document.getElementById('q' + q + '-followup').classList.add('show');
+}
+
+function showReveal(q) {
+  document.getElementById(q + '-reveal').classList.add('show');
+  document.getElementById(q + '-next').style.display = 'inline-flex';
+}
+
+function nextQ(n) {
+  current = n;
+  updateProgress();
+  const block = document.getElementById('q' + n);
+  block.classList.add('visible');
+  block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function finish() {
+  for (let i = 1; i <= total; i++) document.getElementById('ps' + i).className = 'progress-step done';
+  const done = document.getElementById('done');
+  done.classList.add('show');
+  done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+updateProgress();
+</script>
+
+</body>
+</html>

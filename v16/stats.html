@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The A/B Experiment — Stats | DS Prep v16</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    (function(){var t=localStorage.getItem('ds-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')})();
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#059669;--accent-light:#d1fae5;--accent-glow:rgba(5,150,105,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--code-bg:#f8f9fc;--code-text:#1e293b;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px;--story:#065f46;--story-bg:#ecfdf5}
+    [data-theme="dark"]{--bg:#0f0f13;--surface:#1a1a22;--surface2:#24242e;--border:#2e2e3a;--text:#c8c8d0;--text-muted:#8888a0;--heading:#e8e8f0;--accent:#34d399;--accent-light:rgba(52,211,153,0.12);--accent-glow:rgba(52,211,153,0.1);--green:#22c55e;--green-light:rgba(34,197,94,0.12);--amber:#f59e0b;--amber-light:rgba(245,158,11,0.12);--code-bg:#1e1e28;--code-text:#d4d4e0;--shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 12px rgba(0,0,0,0.2);--story:#34d399;--story-bg:rgba(52,211,153,0.08)}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;transition:background .3s,color .3s}
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:var(--surface);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:background .3s}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px;align-items:center}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+    .theme-toggle{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:1rem;line-height:1;transition:all .2s;color:var(--text);margin-left:8px}
+    .theme-toggle:hover{border-color:var(--accent)}
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header h1 span{color:var(--accent)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+    .story-text{font-size:.95rem;font-style:italic;color:var(--story);line-height:1.75;margin:16px 0;padding:16px 20px;background:var(--story-bg);border-radius:10px;border-left:3px solid var(--story)}
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+    .insight{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:var(--accent-glow)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:var(--accent-light);padding:1px 5px;border-radius:3px}
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+    .kw{color:#9333ea}.fn{color:#2563eb}.str{color:#16a34a}.cm{color:#94a3b8;font-style:italic}.num{color:#0891b2}
+    [data-theme="dark"] .kw{color:#c084fc}[data-theme="dark"] .fn{color:#60a5fa}[data-theme="dark"] .str{color:#4ade80}[data-theme="dark"] .cm{color:#64748b}[data-theme="dark"] .num{color:#22d3ee}
+    .resolution{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 10px 10px 0;padding:16px 20px;margin:24px 0}
+    .resolution .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:6px}
+    .resolution p{font-size:.88rem;color:var(--text);line-height:1.65;font-style:italic}
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.nav-links{display:none!important}.page-header,.container{padding-left:16px;padding-right:16px}.page-header h1{font-size:1.4rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v16</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html" class="active">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#128202;</div>
+    <h1>The A/B Experiment &mdash; <span>Statistics</span></h1>
+  </div>
+  <p class="intro">New checkout flow is ready. Design the experiment and prove it works &mdash; without fooling yourself.</p>
+</div>
+
+<div class="container">
+
+  <div class="story-text">
+    The product team redesigned the checkout flow from 4 steps to 2. Everyone loves it. But the VP won't ship without data: "Run an A/B test. If it works, we ship globally. If not, we scrap it." You're in charge of the experiment.
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 1</span> Setting Up the Test &mdash; Hypothesis Testing</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        Before writing a single line of code, you need to formalize what you're testing. Your colleague says "just see if the numbers go up." That's not how experiments work. You need hypotheses, a significance level, and a clear stopping rule.
+      </div>
+
+      <p class="explain">The hypothesis testing framework has six steps: (1) Formulate H&sub0; (no effect) and H&sub1; (effect exists). (2) Choose significance level &alpha; (usually 0.05). (3) Collect data. (4) Compute test statistic. (5) Compare to critical value or compute p-value. (6) Conclude: reject or fail to reject H&sub0;.</p>
+
+      <p class="explain"><strong>What the p-value actually means:</strong> The probability of observing data at least as extreme as what you got, <strong>assuming H&sub0; is true</strong>. It does NOT mean the probability that H&sub0; is true. It does NOT mean the probability the result is due to chance.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Error</th><th>Name</th><th>Analogy</th><th>Probability</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Type I</strong></td><td>False Positive</td><td>Convicting an innocent person</td><td>&alpha; (usually 0.05)</td></tr>
+          <tr><td><strong>Type II</strong></td><td>False Negative</td><td>Acquitting a guilty person</td><td>&beta;</td></tr>
+          <tr><td><strong>Power</strong></td><td>Correct Rejection</td><td>Catching the guilty</td><td>1 &minus; &beta; (target &ge; 0.80)</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain">For your checkout test: H&sub0;: New flow has no effect (completion = 65%). H&sub1;: New flow increases completion (&gt; 65%). You want to detect a 2-point lift with 80% power at &alpha; = 0.05.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The hardest part of A/B testing isn't the statistics &mdash; it's defining the right metric. Spend as much time debating the metric as analyzing results. "Checkout completion" sounds clear, but does it mean "clicked pay" or "payment confirmed"?</p>
+      </div>
+
+      <div class="story-text">
+        You define the metric: checkout completion rate (users reaching payment confirmation after adding an item). Now you need to figure out how many users to include and how long to run.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 2</span> The Numbers &mdash; Confidence Intervals &amp; Sample Size</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        Your PM asks: "Can we just run it for a day and see?" No. You need enough samples for the result to be meaningful. And you need to understand what a confidence interval actually tells you &mdash; because your PM will ask.
+      </div>
+
+      <p class="explain">A 95% confidence interval does NOT mean "there is a 95% probability the true parameter is in this interval." <strong>Correct interpretation:</strong> If we repeated this sampling procedure 100 times, approximately 95 of those intervals would contain the true parameter. Confidence is in the <strong>procedure</strong>, not the single interval.</p>
+
+      <div class="code-block"><pre><span class="cm"># CI = x_bar +/- z* x (sigma / sqrt(n))</span>
+<span class="cm"># Example: Average session duration</span>
+<span class="cm"># n=200, mean=4.2min, SD=1.8min</span>
+SE = <span class="num">1.8</span> / (<span class="num">200</span> ** <span class="num">0.5</span>)    <span class="cm"># 0.127</span>
+margin = <span class="num">1.96</span> * SE           <span class="cm"># 0.249</span>
+CI = (<span class="num">4.2</span> - margin, <span class="num">4.2</span> + margin)  <span class="cm"># (3.95, 4.45)</span></pre></div>
+
+      <table class="comp-table">
+        <thead><tr><th>Factor</th><th>Effect on Width</th><th>Can You Control?</th></tr></thead>
+        <tbody>
+          <tr><td>Sample size n</td><td>Larger &rarr; narrower (via &radic;n)</td><td>Yes &mdash; run bigger study</td></tr>
+          <tr><td>Variability &sigma;</td><td>More &rarr; wider</td><td>No (inherent to data)</td></tr>
+          <tr><td>Confidence level</td><td>99% wider than 95%</td><td>Yes (trade-off with precision)</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>Sample size calculation:</strong> Current completion 65%, want to detect 2-point lift (&rarr; 67%), &alpha; = 0.05, power = 0.80. Required: ~4,400 per arm = 8,800 total. At 2,000 checkout users/day = ~5 days needed. <strong>Round up to 14 days</strong> (two full weekly cycles + time for novelty to fade).</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Always run at least one full weekly cycle (7+ days) to capture day-of-week effects. Weekend shopping behavior is different from weekday. And always decide the duration <em>before</em> looking at any results.</p>
+      </div>
+
+      <div class="story-text">
+        You lock in 14 days, 50/50 split, user-level randomization. The test launches Monday. On day 3, your PM says: "The numbers look great! Can we call it early?" You know better.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 3</span> Don't Peek &mdash; A/B Test Pitfalls</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        Your PM is checking the dashboard every morning. On day 5, the p-value dips below 0.05. "Ship it!" she says. You pull up the research on peeking and show her why that's a terrible idea.
+      </div>
+
+      <table class="comp-table">
+        <thead><tr><th>Pitfall</th><th>What Goes Wrong</th><th>The Fix</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Peeking</strong></td><td>Checking daily and stopping when p &lt; 0.05 inflates FP rate from 5% to ~30%</td><td>Decide duration in advance. Use sequential testing if monitoring needed.</td></tr>
+          <tr><td><strong>Multiple comparisons</strong></td><td>Testing 10 metrics: ~40% chance of finding one "significant" by chance</td><td>Bonferroni correction: divide &alpha; by number of tests (&alpha; = 0.05/10 = 0.005)</td></tr>
+          <tr><td><strong>Novelty effect</strong></td><td>Users engage more simply because it's new. Lift fades over time.</td><td>Run long enough for novelty to wear off. Examine time trends.</td></tr>
+          <tr><td><strong>Simpson's paradox</strong></td><td>Overall positive masks negative results in every subgroup</td><td>Always segment by key dimensions (platform, geography, cohort)</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>Your guardrail metrics:</strong> (1) Average order value &mdash; ensure streamlined flow doesn't cause users to skip adding items. (2) 14-day return rate &mdash; ensure speed doesn't lead to accidental purchases. (3) Support contacts related to checkout &mdash; ensure it's not confusing.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Each peek at the data is another hypothesis test. If you check daily for 14 days, your effective false positive rate isn't 5% &mdash; it's closer to 30%. This is why pre-registration and fixed stopping rules exist.</p>
+      </div>
+
+      <div class="resolution">
+        <div class="label">Story Resolution</div>
+        <p>You wait the full 14 days. Final results: checkout completion up 2.3 percentage points (65.0% &rarr; 67.3%), p = 0.008, 95% CI [0.6%, 4.0%]. All guardrails pass &mdash; AOV unchanged, returns flat, support tickets actually down 12%. You present to the VP with confidence intervals, not just a p-value. She says: "Ship it." The new checkout rolls out globally the following Monday.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v16 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+function toggleTheme(){var d=document.documentElement;if(d.getAttribute('data-theme')==='dark'){d.removeAttribute('data-theme');localStorage.setItem('ds-theme','light')}else{d.setAttribute('data-theme','dark');localStorage.setItem('ds-theme','dark')}}
+</script>
+</body>
+</html>

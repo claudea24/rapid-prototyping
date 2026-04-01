@@ -142,10 +142,64 @@
     .card .info .changes span.changed { background: #1a1a0f; color: #fbbf24; }
     .card .info .changes span.removed { background: #1a0f0f; color: #f87171; }
 
+    /* Phase dividers */
+    .phase {
+      grid-column: 1 / -1;
+      padding: 40px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .phase:first-child { padding-top: 0; }
+    .phase-info { flex-shrink: 0; }
+    .phase-num {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      margin-bottom: 4px;
+    }
+    .phase-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.3px;
+    }
+    .phase-desc {
+      font-size: 0.82rem;
+      color: #555;
+      margin-top: 4px;
+      max-width: 500px;
+      line-height: 1.5;
+    }
+    .phase-line {
+      flex: 1;
+      height: 1px;
+      background: #222;
+    }
+    .phase-range {
+      font-size: 0.68rem;
+      font-weight: 600;
+      color: #444;
+      white-space: nowrap;
+    }
+
+    /* Phase accent colors */
+    .phase[data-phase="explore"] .phase-num { color: #4ade80; }
+    .phase[data-phase="explore"] .phase-title { color: #4ade80; }
+    .phase[data-phase="converge"] .phase-num { color: #60a5fa; }
+    .phase[data-phase="converge"] .phase-title { color: #60a5fa; }
+    .phase[data-phase="narrow"] .phase-num { color: #fbbf24; }
+    .phase[data-phase="narrow"] .phase-title { color: #fbbf24; }
+    .phase[data-phase="finetune"] .phase-num { color: #a78bfa; }
+    .phase[data-phase="finetune"] .phase-title { color: #a78bfa; }
+
     @media (max-width: 768px) {
       header { padding: 40px 16px 24px; }
       header h1 { font-size: 1.8rem; }
       .gallery { grid-template-columns: 1fr; padding: 8px 16px 48px; }
+      .phase-title { font-size: 1.1rem; }
+      .phase-desc { display: none; }
     }
   </style>
 </head>
@@ -153,7 +207,7 @@
   <header>
     <div class="eyebrow">Rapid Prototyping</div>
     <h1>Data Science Interview Prep Guide</h1>
-    <p>12 iterations of prototyping a data science interview prep website — covering SQL, Python, Machine Learning, Statistics, Probability, and Case Studies. Watch it evolve from v01 to v12.</p>
+    <p>25 iterations of prototyping a data science interview prep website — covering SQL, Python, Machine Learning, Statistics, Probability, and Case Studies. Four phases: explore wide, converge the best ideas, try targeted features, then fine-tune to production.</p>
   </header>
 
   <div class="gallery" id="gallery"></div>
@@ -174,22 +228,46 @@
       { v: 12, title: "Interactive Sandboxes",           desc: "Learn by doing — live SQL editor with in-memory query engine, Python code playground, ML parameter tuner, stats simulator, probability lab with canvas charts, and case study workshop with metric decomposition.",  changes: ["+live SQL sandbox","+Python playground","+ML lab","+stats simulator","+probability lab","+case workshop","+in-memory engines"] },
       { v: 13, title: "Deep Interactive",               desc: "Best of all worlds — v07's textbook-depth explanations with method comparison tables and worked examples, v12's live sandboxes with instant execution, and v11's elegant dark design with collapsible sections.",  changes: ["+textbook explanations","+comparison tables","+live sandboxes","+worked examples","+key insights","+collapsible sections"] },
       { v: 14, title: "Bright Practice",               desc: "Bright light theme with clean white surfaces and color-coded topics. Every section links to curated StrataScratch and LeetCode problems matching each concept — theory meets hands-on drilling.",  changes: ["+light theme","+practice links","+StrataScratch","+LeetCode","+bright design","~collapsible sections"] },
-      { v: 15, title: "Search & Filter",               desc: "Global search bar to filter across topics, concepts, and quiz questions.",                     changes: ["+search","+filter by category","+highlight matches"] },
-      { v: 16, title: "Quiz Timer Mode",               desc: "Added optional timed quiz mode with countdown and speed-based scoring.",                       changes: ["+timer mode","+speed scoring","~quiz UI"] },
-      { v: 17, title: "Tip & Warning Callouts",        desc: "Interview tips, common mistakes, and gotcha callout boxes throughout all sections.",           changes: ["+callout boxes","+interview tips","+warnings"] },
-      { v: 18, title: "Print-Friendly Cheat Sheets",   desc: "Print stylesheet for clean, ink-friendly cheat sheet output.",                                changes: ["+print styles","+@media print","~layout for print"] },
-      { v: 19, title: "Dark/Light Toggle",             desc: "Theme toggle with smooth CSS transition and preference persistence.",                          changes: ["+light theme","+theme toggle","+localStorage"] },
-      { v: 20, title: "Scroll Animations",             desc: "Intersection Observer fade-in and slide-up animations on scroll.",                             changes: ["+scroll animations","+transitions","~visual polish"] },
-      { v: 21, title: "Spaced Repetition",             desc: "Quiz uses spaced repetition — missed questions resurface more often.",                         changes: ["+spaced repetition","+question weighting","~quiz logic"] },
-      { v: 22, title: "Bookmarks & Notes",             desc: "Let users bookmark cards and add personal notes saved to localStorage.",                       changes: ["+bookmarks","+user notes","+localStorage"] },
-      { v: 23, title: "Accessibility Pass",            desc: "ARIA labels, keyboard navigation, focus rings, and WCAG contrast fixes.",                     changes: ["~a11y","+ARIA labels","+focus states","~contrast"] },
-      { v: 24, title: "Content QA",                    desc: "All content reviewed for accuracy, code examples tested, links verified.",                     changes: ["~content review","~bug fixes","~code verification"] },
-      { v: 25, title: "Launch Ready",                  desc: "Meta tags, Open Graph image, favicon, and final visual polish. Production-ready.",             changes: ["+meta tags","+favicon","+OG image","~final polish"] },
+      { v: 15, title: "Quest Mode",                     desc: "Gamified RPG adventure combining dungeon-themed topics with XP, hearts, streaks, daily challenges, calendar heatmap, battle quiz with ranks, and interactive demos — a mashup of v03, v05, v06, and v08.",  changes: ["+RPG theme","+XP & hearts","+daily challenge","+battle quiz","+calendar heatmap","+interactive demos","+dungeon floors","+streak tracking"] },
+      { v: 16, title: "Story Mode",                     desc: "Learn by solving real company problems — 'DAU dropped 15% at Spotify, figure out why.' Concepts taught in context as the narrative unfolds. Dark/light toggle for long reading sessions.",  changes: ["+narrative learning","+company scenarios","+contextual concepts","+dark/light toggle","+chapter progression"] },
+      { v: 17, title: "Coding Playground",             desc: "Live SQL and Python editors with pre-loaded challenge problems and a stopwatch tracking how long each takes. Can you solve this JOIN in under 3 minutes?",  changes: ["+live SQL editor","+Python playground","+stopwatch timer","+challenge problems","+expected output"] },
+      { v: 18, title: "Mock Interview",                desc: "Simulate a real DS interview — interviewer asks, you pick an approach, follow-up questions drill deeper, then the model answer reveals what good vs bad looks like.",  changes: ["+interview simulation","+follow-up questions","+model answers","+before/after reveals","+conversational flow"] },
+      { v: 19, title: "Company Playbook",              desc: "Meta loves A/B testing. Google hammers probability. Amazon asks metrics + leadership. Filter by company to see real interview patterns — plus Cmd+K search across everything.",  changes: ["+company filters","+Meta patterns","+Google patterns","+Amazon patterns","+Cmd+K search"] },
+      { v: 20, title: "Quick Reference",               desc: "Condensed single-screen cheat sheets — just the tables, formulas, and patterns you'd want on a sticky note. Toggle between full learn mode and condensed review mode. Print-friendly.",  changes: ["+condensed view","+review mode","+print button","+formula cards","+one-screen summaries"] },
+      { v: 21, title: "Weak Spot Tracker",             desc: "Take a diagnostic quiz, then see exactly where your gaps are. Personalized focus zones highlight what to drill — skip what you know, fix what you don't. Progress rings per sub-topic.",  changes: ["+diagnostic quiz","+gap analysis","+focus zones","+progress rings","+personalized path"] },
+      { v: 22, title: "Bookmarks & Notes",             desc: "Star your weak spots and jot personal notes on any section. Build a custom review list saved to localStorage.",  changes: ["+bookmarks","+sticky notes","+review list","+localStorage"] },
+      { v: 23, title: "Accessibility Pass",            desc: "ARIA labels, keyboard navigation, focus rings, and WCAG contrast fixes. Making prep accessible to everyone.",  changes: ["~a11y","+ARIA labels","+focus states","~contrast"] },
+      { v: 24, title: "Content QA",                    desc: "All content reviewed for accuracy, code examples tested, links verified. The boring-but-essential polish pass.",  changes: ["~content review","~bug fixes","~code verification"] },
+      { v: 25, title: "Launch Ready",                  desc: "Meta tags, Open Graph image, favicon, and final visual polish. Ship it.",  changes: ["+meta tags","+favicon","+OG image","~final polish"] },
+    ];
+
+    const phases = [
+      { at: 1,  key: "explore",  num: "Phase 1", title: "Go Wide", range: "v01 – v12", desc: "Explore radically different designs — RPG, Duolingo, textbook, kids edition, flashcards. Cast a wide net to discover what works." },
+      { at: 13, key: "converge", num: "Phase 2", title: "Converge", range: "v13 – v15", desc: "Combine and mix-match the strongest ideas from exploration into cohesive experiences." },
+      { at: 16, key: "narrow",   num: "Phase 3", title: "Narrow Down", range: "v16 – v21", desc: "Test meaningful features — story mode, coding playground, mock interviews, company playbooks, cheat sheets, and gap tracking." },
+      { at: 22, key: "finetune", num: "Phase 4", title: "Fine-Tune", range: "v22 – v25", desc: "Polish and harden — bookmarks, accessibility, content QA, and launch prep. Ship it." },
     ];
 
     const gallery = document.getElementById("gallery");
 
     versions.forEach(({ v, title, desc, changes }) => {
+      // Insert phase header if this version starts a new phase
+      const phase = phases.find(p => p.at === v);
+      if (phase) {
+        const phaseEl = document.createElement("div");
+        phaseEl.className = "phase";
+        phaseEl.dataset.phase = phase.key;
+        phaseEl.innerHTML = `
+          <div class="phase-info">
+            <div class="phase-num">${phase.num}</div>
+            <div class="phase-title">${phase.title}</div>
+            <div class="phase-desc">${phase.desc}</div>
+          </div>
+          <div class="phase-line"></div>
+          <div class="phase-range">${phase.range}</div>
+        `;
+        gallery.appendChild(phaseEl);
+      }
       const num = String(v).padStart(2, "0");
       const folder = `v${num}`;
 

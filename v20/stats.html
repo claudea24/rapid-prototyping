@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics Quick Reference — DS Prep v20</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="review-mode">
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v20</a>
+  <div class="nav-right">
+    <button class="print-btn" onclick="window.print()">&#128424; Print</button>
+    <a href="index.html" class="back">All Topics</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="badge is">Statistics Quick Reference</div>
+  <h1>Statistics Cheat Sheet</h1>
+  <p>Central tendency, hypothesis testing, confidence intervals, and A/B testing.</p>
+</div>
+
+<div class="mode-toggle">
+  <button onclick="setMode('learn')">Learn</button>
+  <button class="active" onclick="setMode('review')">Review</button>
+</div>
+
+<div class="review-grid">
+
+  <!-- Card 1: Central Tendency -->
+  <div class="review-card">
+    <h3><span class="card-num is">1</span> Central Tendency</h3>
+    <table>
+      <tr><th>Measure</th><th>Best For</th><th>Sensitive To</th></tr>
+      <tr><td>Mean</td><td>Symmetric data</td><td>Outliers</td></tr>
+      <tr><td>Median</td><td>Skewed data</td><td>Nothing (robust)</td></tr>
+      <tr><td>Mode</td><td>Categorical</td><td>Multimodal data</td></tr>
+    </table>
+    <p>Right-skewed: mean &gt; median. Left-skewed: mean &lt; median.</p>
+    <div class="learn-only">
+      <h4>Spread Measures</h4>
+      <p><strong>Variance</strong>: average squared deviation from mean. <strong>Std Dev</strong>: square root of variance (same units as data). <strong>IQR</strong>: Q3 - Q1 (robust to outliers). Use IQR for skewed data, std dev for symmetric.</p>
+      <pre># Outlier detection with IQR
+Q1, Q3 = np.percentile(data, [25, 75])
+IQR = Q3 - Q1
+lower = Q1 - 1.5 * IQR
+upper = Q3 + 1.5 * IQR</pre>
+    </div>
+  </div>
+
+  <!-- Card 2: Hypothesis Testing -->
+  <div class="review-card">
+    <h3><span class="card-num is">2</span> Hypothesis Testing</h3>
+    <div class="formula">H&#8320; &rarr; H&#8321; &rarr; &alpha; &rarr; Collect data &rarr; Test statistic &rarr; p-value &rarr; Conclude</div>
+    <ul>
+      <li><strong>p &lt; &alpha;</strong>: reject H&#8320; (statistically significant)</li>
+      <li><strong>Type I</strong>: false positive (reject true H&#8320;) = &alpha;</li>
+      <li><strong>Type II</strong>: false negative (keep false H&#8320;) = &beta;</li>
+      <li><strong>Power</strong> = 1 - &beta; (ability to detect real effect)</li>
+    </ul>
+    <div class="learn-only">
+      <h4>Common Misconceptions</h4>
+      <p>p-value is NOT the probability that H&#8320; is true. It's the probability of seeing data this extreme IF H&#8320; were true. "Statistically significant" does not mean "practically important" -- always check effect size.</p>
+      <div class="example-box">
+        <h5>Increasing Power</h5>
+        <p>Larger sample size, larger effect size, higher &alpha; (less strict), less noise in measurements.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: Test Types -->
+  <div class="review-card">
+    <h3><span class="card-num is">3</span> Statistical Tests</h3>
+    <table>
+      <tr><th>Test</th><th>Compares</th><th>Assumption</th></tr>
+      <tr><td>t-test</td><td>2 means</td><td>Normal / n &gt; 30</td></tr>
+      <tr><td>Chi-squared</td><td>Categorical counts</td><td>Expected &ge; 5</td></tr>
+      <tr><td>ANOVA</td><td>3+ group means</td><td>Normal, equal var</td></tr>
+      <tr><td>Mann-Whitney</td><td>2 groups (non-param)</td><td>Ordinal data</td></tr>
+      <tr><td>Paired t-test</td><td>Before/after</td><td>Same subjects</td></tr>
+    </table>
+    <div class="learn-only">
+      <h4>Choosing the Right Test</h4>
+      <p>Ask: (1) How many groups? (2) Continuous or categorical? (3) Paired or independent? (4) Normal distribution?</p>
+      <pre># Two-sample t-test
+from scipy import stats
+t_stat, p_val = stats.ttest_ind(group_a, group_b)
+
+# Chi-squared test
+observed = [[50, 30], [20, 40]]
+chi2, p, dof, expected = stats.chi2_contingency(observed)</pre>
+    </div>
+  </div>
+
+  <!-- Card 4: Confidence Intervals -->
+  <div class="review-card">
+    <h3><span class="card-num is">4</span> Confidence Intervals</h3>
+    <div class="formula">CI = x&#772; &plusmn; z* &times; &sigma; / &radic;n</div>
+    <ul>
+      <li>95% CI: z* = 1.96</li>
+      <li>Interpretation: 95% of such intervals contain the true parameter</li>
+      <li>NOT: "95% probability the true value is in this interval"</li>
+      <li>Width halves when n quadruples (&radic;n in denominator)</li>
+    </ul>
+    <div class="learn-only">
+      <h4>CI vs p-value</h4>
+      <p>A 95% CI that excludes 0 is equivalent to p &lt; 0.05 (for testing whether the parameter differs from 0). CIs are more informative because they show effect size and precision, not just significance.</p>
+      <pre># Bootstrap confidence interval (non-parametric)
+import numpy as np
+boot_means = [np.mean(np.random.choice(data, len(data)))
+              for _ in range(10000)]
+ci_lower, ci_upper = np.percentile(boot_means, [2.5, 97.5])</pre>
+    </div>
+  </div>
+
+  <!-- Card 5: A/B Testing -->
+  <div class="review-card">
+    <h3><span class="card-num is">5</span> A/B Testing Checklist</h3>
+    <ul>
+      <li><strong>1.</strong> Define primary metric + guardrails</li>
+      <li><strong>2.</strong> Power analysis for sample size</li>
+      <li><strong>3.</strong> Randomize at user level</li>
+      <li><strong>4.</strong> Run for fixed duration (no peeking!)</li>
+      <li><strong>5.</strong> Analyze with pre-registered test</li>
+    </ul>
+    <div class="learn-only">
+      <h4>Sample Size Formula</h4>
+      <div class="formula">n = (z_&alpha; + z_&beta;)&sup2; &times; 2&sigma;&sup2; / &delta;&sup2;</div>
+      <p>Where &delta; is the minimum detectable effect. Doubling the required precision (halving &delta;) quadruples sample size.</p>
+      <h4>Common Pitfalls</h4>
+      <p><strong>Peeking</strong>: checking results daily inflates false positives. Use sequential testing if you must peek. <strong>Simpson's paradox</strong>: overall trend reverses within segments. <strong>Network effects</strong>: users in treatment affect control (use cluster randomization).</p>
+    </div>
+  </div>
+
+</div>
+
+<footer>Statistics Quick Reference &mdash; DS Prep v20</footer>
+
+<script>
+function setMode(mode) {
+  const btns = document.querySelectorAll('.mode-toggle button');
+  if (mode === 'review') {
+    document.body.classList.add('review-mode');
+    btns[0].classList.remove('active');
+    btns[1].classList.add('active');
+  } else {
+    document.body.classList.remove('review-mode');
+    btns[0].classList.add('active');
+    btns[1].classList.remove('active');
+  }
+}
+</script>
+</body>
+</html>

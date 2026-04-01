@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DS Interview Prep — Weak Spot Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v21</a>
+  <a href="../index.html" class="back">Gallery</a>
+</nav>
+
+<div class="hero">
+  <div class="badge">v21 &middot; Weak Spot Tracker</div>
+  <h1>Find Your <span>Blind Spots</span></h1>
+  <p>Take a quick diagnostic, then see exactly where your gaps are. Skip what you know, drill what you don't.</p>
+</div>
+
+<!-- Before diagnostic: CTA -->
+<div id="pre-diagnostic" class="cta-wrap" style="display:none;">
+  <a href="diagnostic.html" class="cta-btn">&#9881; Start Diagnostic</a>
+</div>
+
+<!-- After diagnostic: Dashboard -->
+<div id="dashboard" style="display:none;">
+  <p class="section-label">Overall Score</p>
+  <div class="score-ring-wrap">
+    <div class="score-ring-container">
+      <div class="score-ring">
+        <svg viewBox="0 0 180 180">
+          <circle class="ring-bg" cx="90" cy="90" r="72"/>
+          <circle class="ring-fill" id="ring-fill" cx="90" cy="90" r="72" stroke-dasharray="452.39" stroke-dashoffset="452.39"/>
+          <text class="ring-text" id="ring-text" x="90" y="90" transform="rotate(90 90 90)">0%</text>
+        </svg>
+      </div>
+      <span class="ring-label" id="ring-label">0 / 18 correct</span>
+    </div>
+  </div>
+
+  <p class="section-label">Topic Mastery</p>
+  <div class="grid" id="topic-grid"></div>
+
+  <div class="focus-zone" id="focus-zone">
+    <h2><span class="fz-icon">&#127919;</span> Focus Zone</h2>
+    <div id="focus-cards"></div>
+  </div>
+
+  <div class="retake-wrap">
+    <a href="diagnostic.html" class="retake-btn">&#8635; Retake Diagnostic</a>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v21 &middot; <a href="../index.html">Back to Gallery</a></p>
+</footer>
+
+<script>
+const TOPICS = [
+  { key:'sql', name:'SQL', icon:'&#128450;', cls:'ib', page:'sql.html' },
+  { key:'python', name:'Python', icon:'&#128013;', cls:'ip', page:'python.html' },
+  { key:'ml', name:'Machine Learning', icon:'&#129302;', cls:'im', page:'ml.html' },
+  { key:'stats', name:'Statistics', icon:'&#128202;', cls:'is', page:'stats.html' },
+  { key:'probability', name:'Probability', icon:'&#127922;', cls:'ir', page:'probability.html' },
+  { key:'casing', name:'Case Studies', icon:'&#128161;', cls:'ic', page:'casing.html' }
+];
+
+function getMastery(score, total) {
+  const pct = total > 0 ? (score / total) * 100 : 0;
+  if (pct >= 80) return { level:'Strong', cls:'mastery-strong', color:'var(--green)' };
+  if (pct >= 40) return { level:'Review', cls:'mastery-review', color:'var(--amber)' };
+  return { level:'Weak', cls:'mastery-weak', color:'var(--rose)' };
+}
+
+function init() {
+  const raw = localStorage.getItem('ds-v21-diagnostic');
+  if (!raw) {
+    document.getElementById('pre-diagnostic').style.display = '';
+    document.getElementById('dashboard').style.display = 'none';
+    return;
+  }
+  const data = JSON.parse(raw);
+  document.getElementById('pre-diagnostic').style.display = 'none';
+  document.getElementById('dashboard').style.display = '';
+
+  // Overall score ring
+  const totalCorrect = Object.values(data.scores).reduce((a,b)=>a+b,0);
+  const totalQ = 18;
+  const pct = Math.round((totalCorrect / totalQ) * 100);
+  const circumference = 2 * Math.PI * 72;
+  const offset = circumference - (pct / 100) * circumference;
+  const mastery = getMastery(totalCorrect, totalQ);
+
+  const ringFill = document.getElementById('ring-fill');
+  ringFill.style.stroke = mastery.color;
+  setTimeout(() => { ringFill.setAttribute('stroke-dashoffset', offset); }, 100);
+  document.getElementById('ring-text').textContent = pct + '%';
+  document.getElementById('ring-label').textContent = totalCorrect + ' / ' + totalQ + ' correct';
+
+  // Topic cards
+  const grid = document.getElementById('topic-grid');
+  grid.innerHTML = '';
+  const weakTopics = [];
+
+  TOPICS.forEach(t => {
+    const score = data.scores[t.key] || 0;
+    const total = 3;
+    const pctT = Math.round((score / total) * 100);
+    const m = getMastery(score, total);
+    if (m.level === 'Weak') weakTopics.push(t);
+    else if (m.level === 'Review' && weakTopics.length < 3) weakTopics.push(t);
+
+    const card = document.createElement('div');
+    card.className = 'topic-card';
+    card.innerHTML = `
+      <div class="icon-wrap ${t.cls}">${t.icon}</div>
+      <div class="card-content">
+        <h2>${t.name}</h2>
+        <p class="score-text">${score}/${total} correct</p>
+        <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width:${pctT}%;background:${m.color}"></div></div>
+        <span class="mastery-badge ${m.cls}">${m.level}</span>
+        <br><a href="${t.page}" class="study-btn">Study &rarr;</a>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Focus zone - pick weakest (up to 3)
+  const focusCards = document.getElementById('focus-cards');
+  focusCards.innerHTML = '';
+  const sorted = TOPICS.slice().sort((a,b) => (data.scores[a.key]||0) - (data.scores[b.key]||0));
+  const focusTopics = sorted.slice(0, 3).filter(t => getMastery(data.scores[t.key]||0, 3).level !== 'Strong');
+
+  if (focusTopics.length === 0) {
+    document.getElementById('focus-zone').style.display = 'none';
+  } else {
+    focusTopics.forEach(t => {
+      const score = data.scores[t.key] || 0;
+      const m = getMastery(score, 3);
+      const fc = document.createElement('div');
+      fc.className = 'focus-card';
+      fc.innerHTML = `
+        <div style="font-size:1.5rem">${t.icon}</div>
+        <div class="fc-info">
+          <h3>${t.name}</h3>
+          <p>${score}/3 correct &mdash; ${m.level === 'Weak' ? 'This is a weak spot. Start here.' : 'Needs brushing up.'}</p>
+        </div>
+        <a href="${t.page}" class="start-btn">Start here &rarr;</a>
+      `;
+      focusCards.appendChild(fc);
+    });
+  }
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Python Pipeline — Python | DS Prep v16</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    (function(){var t=localStorage.getItem('ds-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')})();
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#ca8a04;--accent-light:#fef9c3;--accent-glow:rgba(202,138,4,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--code-bg:#f8f9fc;--code-text:#1e293b;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px;--story:#92400e;--story-bg:#fffbeb}
+    [data-theme="dark"]{--bg:#0f0f13;--surface:#1a1a22;--surface2:#24242e;--border:#2e2e3a;--text:#c8c8d0;--text-muted:#8888a0;--heading:#e8e8f0;--accent:#eab308;--accent-light:rgba(234,179,8,0.12);--accent-glow:rgba(234,179,8,0.1);--green:#22c55e;--green-light:rgba(34,197,94,0.12);--amber:#f59e0b;--amber-light:rgba(245,158,11,0.12);--code-bg:#1e1e28;--code-text:#d4d4e0;--shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 12px rgba(0,0,0,0.2);--story:#fbbf24;--story-bg:rgba(251,191,36,0.08)}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;transition:background .3s,color .3s}
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:var(--surface);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:background .3s}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px;align-items:center}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+    .theme-toggle{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:1rem;line-height:1;transition:all .2s;color:var(--text);margin-left:8px}
+    .theme-toggle:hover{border-color:var(--accent)}
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header h1 span{color:var(--accent)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+    .story-text{font-size:.95rem;font-style:italic;color:var(--story);line-height:1.75;margin:16px 0;padding:16px 20px;background:var(--story-bg);border-radius:10px;border-left:3px solid var(--story)}
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+    .insight{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:var(--accent-glow)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:var(--accent-light);padding:1px 5px;border-radius:3px}
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+    .kw{color:#9333ea}.fn{color:#2563eb}.str{color:#16a34a}.cm{color:#94a3b8;font-style:italic}.num{color:#0891b2}
+    [data-theme="dark"] .kw{color:#c084fc}[data-theme="dark"] .fn{color:#60a5fa}[data-theme="dark"] .str{color:#4ade80}[data-theme="dark"] .cm{color:#64748b}[data-theme="dark"] .num{color:#22d3ee}
+    .resolution{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 10px 10px 0;padding:16px 20px;margin:24px 0}
+    .resolution .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:6px}
+    .resolution p{font-size:.88rem;color:var(--text);line-height:1.65;font-style:italic}
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.nav-links{display:none!important}.page-header,.container{padding-left:16px;padding-right:16px}.page-header h1{font-size:1.4rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v16</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html" class="active">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#128013;</div>
+    <h1>The Python Pipeline &mdash; <span>Python</span></h1>
+  </div>
+  <p class="intro">Product launch in 48 hours. The data is a mess. You're the one who has to fix it.</p>
+</div>
+
+<div class="container">
+
+  <div class="story-text">
+    It's Thursday afternoon. The product manager drops by: "We launch Sunday morning. Marketing needs the user segmentation data for the campaign. But the data export from our three vendors arrived and it's... not great. Missing values, wrong types, duplicates everywhere. Can you clean it up?"
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 1</span> Choosing Your Tools &mdash; Data Structures</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        You open the first file: 2.3 million rows of user IDs, but it's full of duplicates. Before reaching for Pandas, you think: what's the fastest way to deduplicate? The answer lies in choosing the right data structure.
+      </div>
+
+      <p class="explain">Choosing the right data structure is often the difference between a solution that passes and one that times out. Checking whether a list contains duplicates takes O(n&sup2;) with nested loops, but only O(n) if you pour the elements into a <code>set</code> and compare lengths.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Structure</th><th>Lookup</th><th>Insert</th><th>Delete</th><th>Best Use Case</th></tr></thead>
+        <tbody>
+          <tr><td><code>list</code></td><td>O(1) index</td><td>O(1) end / O(n) front</td><td>O(n)</td><td>Ordered sequences, stacks</td></tr>
+          <tr><td><code>dict</code></td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td><td>Key-value mapping, counting</td></tr>
+          <tr><td><code>set</code></td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td><td>Membership tests, dedup</td></tr>
+          <tr><td><code>deque</code></td><td>O(n)</td><td>O(1) both ends</td><td>O(1) both ends</td><td>BFS, sliding windows</td></tr>
+          <tr><td><code>heapq</code></td><td>O(1) min</td><td>O(log n)</td><td>O(log n)</td><td>Top-k, priority scheduling</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Choosing the right data structure can turn an O(n&sup2;) solution into O(n). When an interview solution feels too slow, the first question to ask is: "Am I using the right container?"</p>
+      </div>
+
+      <div class="story-text">
+        You use a set to identify 340,000 duplicate user IDs in seconds. Now you need to merge the three vendor files and clean the actual data. Time for Pandas.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 2</span> Cleaning the Mess &mdash; Pandas</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        The three vendor files have different column names, missing emails, and revenue stored as strings with dollar signs. You need groupby for segmentation, merge to combine files, and fillna for the gaps. And whatever you do, don't write a for-loop over rows.
+      </div>
+
+      <p class="explain">The golden rule of Pandas: <strong>if you are writing a for-loop over rows, you are almost certainly doing it wrong.</strong> Use vectorized operations or <code>groupby</code> + <code>agg</code>.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Operation</th><th>Method</th><th>What It Does</th></tr></thead>
+        <tbody>
+          <tr><td>GroupBy</td><td><code>df.groupby('col').agg()</code></td><td>Split &rarr; apply function &rarr; combine results</td></tr>
+          <tr><td>Merge</td><td><code>df.merge(df2, on='id', how='left')</code></td><td>SQL-style joins in Python</td></tr>
+          <tr><td>Pivot</td><td><code>df.pivot_table(values, index, aggfunc)</code></td><td>Reshape long &rarr; wide format</td></tr>
+          <tr><td>Missing data</td><td><code>df.fillna(0)</code> / <code>df.dropna()</code></td><td>Handle NULL values</td></tr>
+          <tr><td>Apply</td><td><code>df.apply(fn, axis=1)</code></td><td>Row/column-wise transformation</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block"><pre><span class="kw">import</span> pandas <span class="kw">as</span> pd
+
+df = pd.DataFrame({
+    <span class="str">'region'</span>:  [<span class="str">'East'</span>, <span class="str">'West'</span>, <span class="str">'East'</span>, <span class="str">'West'</span>, <span class="str">'East'</span>],
+    <span class="str">'product'</span>: [<span class="str">'Widget'</span>, <span class="str">'Gadget'</span>, <span class="str">'Gadget'</span>, <span class="str">'Widget'</span>, <span class="str">'Widget'</span>],
+    <span class="str">'revenue'</span>: [<span class="num">120</span>, <span class="num">340</span>, <span class="num">210</span>, <span class="num">150</span>, <span class="num">95</span>]
+})
+
+summary = df.groupby(<span class="str">'region'</span>)[<span class="str">'revenue'</span>].agg(
+    total_revenue=<span class="str">'sum'</span>,
+    avg_order=<span class="str">'mean'</span>,
+    num_transactions=<span class="str">'count'</span>
+)
+<span class="fn">print</span>(summary)</pre></div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Always verify the resulting row count after a merge &mdash; unexpected duplicates from many-to-many joins are a common source of bugs. If your merged DataFrame is larger than expected, check for duplicate keys.</p>
+      </div>
+
+      <div class="story-text">
+        The three files are merged, cleaned, and segmented. But marketing also needs a deduplication script that runs on the raw ID lists. Your colleague suggests a hash map approach &mdash; it's a classic coding pattern.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 3</span> Coding the Solution &mdash; Hash Map Pattern</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        You need to match user IDs across systems. For each ID in system A, find the matching ID in system B. A nested loop would take hours on 2.3M records. The hash map pattern does it in one pass.
+      </div>
+
+      <p class="explain">The hash map pattern uses a dictionary to remember previously seen values, converting nested-loop lookups into O(1) checks. It's the most versatile pattern in coding interviews.</p>
+
+      <div class="code-block"><pre><span class="cm"># Naive approach: O(n^2)</span>
+<span class="kw">def</span> <span class="fn">two_sum_naive</span>(nums, target):
+    <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="fn">len</span>(nums)):
+        <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(i + <span class="num">1</span>, <span class="fn">len</span>(nums)):
+            <span class="kw">if</span> nums[i] + nums[j] == target:
+                <span class="kw">return</span> [i, j]
+
+<span class="cm"># Hash map approach: O(n)</span>
+<span class="kw">def</span> <span class="fn">two_sum</span>(nums, target):
+    seen = {}  <span class="cm"># value -> index</span>
+    <span class="kw">for</span> i, num <span class="kw">in</span> <span class="fn">enumerate</span>(nums):
+        complement = target - num
+        <span class="kw">if</span> complement <span class="kw">in</span> seen:
+            <span class="kw">return</span> [seen[complement], i]
+        seen[num] = i
+
+<span class="fn">print</span>(<span class="fn">two_sum</span>([<span class="num">2</span>, <span class="num">7</span>, <span class="num">11</span>, <span class="num">15</span>], <span class="num">9</span>))  <span class="cm"># [0, 1]</span></pre></div>
+
+      <table class="comp-table">
+        <thead><tr><th>Pattern</th><th>When to Use</th><th>Complexity</th><th>Classic Examples</th></tr></thead>
+        <tbody>
+          <tr><td>Two Pointers</td><td>Sorted array problems</td><td>O(n)</td><td>Pair sum, container with most water</td></tr>
+          <tr><td>Sliding Window</td><td>Subarray/substring problems</td><td>O(n)</td><td>Longest unique substring</td></tr>
+          <tr><td>Hash Map</td><td>Counting, lookup, grouping</td><td>O(n)</td><td>Two Sum, frequency counting</td></tr>
+          <tr><td>Sort + Greedy</td><td>Optimization problems</td><td>O(n log n)</td><td>Interval scheduling</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Whenever a brute-force solution uses a nested loop where the inner loop is <em>searching</em> for something, ask: "Can I replace that search with a dictionary lookup?" If yes, you've just shaved an order of magnitude off your complexity.</p>
+      </div>
+
+      <div class="resolution">
+        <div class="label">Story Resolution</div>
+        <p>Pipeline is clean. The dedup script runs in 4 seconds instead of the estimated 6 hours. Marketing gets their segmentation data Saturday morning &mdash; a full day ahead of schedule. The product launch goes smoothly. Your PM sends a thank-you Slack that gets 47 emoji reactions.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v16 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+function toggleTheme(){var d=document.documentElement;if(d.getAttribute('data-theme')==='dark'){d.removeAttribute('data-theme');localStorage.setItem('ds-theme','light')}else{d.setAttribute('data-theme','dark');localStorage.setItem('ds-theme','dark')}}
+</script>
+</body>
+</html>

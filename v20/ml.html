@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML Quick Reference — DS Prep v20</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="print.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="review-mode">
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v20</a>
+  <div class="nav-right">
+    <button class="print-btn" onclick="window.print()">&#128424; Print</button>
+    <a href="index.html" class="back">All Topics</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="badge im">Machine Learning Quick Reference</div>
+  <h1>ML Cheat Sheet</h1>
+  <p>Algorithms, metrics, bias-variance, feature engineering, and cross-validation.</p>
+</div>
+
+<div class="mode-toggle">
+  <button onclick="setMode('learn')">Learn</button>
+  <button class="active" onclick="setMode('review')">Review</button>
+</div>
+
+<div class="review-grid">
+
+  <!-- Card 1: Algorithms -->
+  <div class="review-card">
+    <h3><span class="card-num im">1</span> Algorithm Cheat Sheet</h3>
+    <table>
+      <tr><th>Algorithm</th><th>Strength</th><th>Watch Out</th></tr>
+      <tr><td>Linear Reg</td><td>Interpretable</td><td>Assumes linearity</td></tr>
+      <tr><td>Logistic Reg</td><td>Probability output</td><td>Linear boundary</td></tr>
+      <tr><td>Decision Tree</td><td>Nonlinear, visual</td><td>Overfits easily</td></tr>
+      <tr><td>Random Forest</td><td>Robust, parallel</td><td>Slow, memory</td></tr>
+      <tr><td>XGBoost</td><td>SOTA tabular</td><td>Tuning needed</td></tr>
+      <tr><td>SVM</td><td>High-dim</td><td>Slow, scale sensitive</td></tr>
+      <tr><td>KNN</td><td>Lazy, simple</td><td>Curse of dimensionality</td></tr>
+    </table>
+    <div class="learn-only">
+      <h4>Decision Framework</h4>
+      <p>Start with <strong>logistic regression</strong> as a baseline (interpretable, fast). Move to <strong>tree-based models</strong> (RF, XGBoost) for nonlinear relationships. Use <strong>SVM</strong> for high-dimensional sparse data (text). KNN is rarely used in production but good for understanding instance-based learning.</p>
+      <div class="example-box">
+        <h5>Interview Tip</h5>
+        <p>Always mention the bias-variance tradeoff when comparing models. Linear models = high bias, low variance. Complex models = low bias, high variance. Regularization bridges the gap.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Metrics -->
+  <div class="review-card">
+    <h3><span class="card-num im">2</span> Evaluation Metrics</h3>
+    <table>
+      <tr><th>Metric</th><th>Use When</th><th>Formula Intuition</th></tr>
+      <tr><td>Accuracy</td><td>Balanced classes</td><td>Correct / Total</td></tr>
+      <tr><td>Precision</td><td>FP is costly (spam)</td><td>TP / (TP+FP)</td></tr>
+      <tr><td>Recall</td><td>FN is costly (cancer)</td><td>TP / (TP+FN)</td></tr>
+      <tr><td>F1</td><td>Balance P &amp; R</td><td>2PR / (P+R)</td></tr>
+      <tr><td>AUC-ROC</td><td>Threshold-free</td><td>Rank quality</td></tr>
+    </table>
+    <div class="learn-only">
+      <h4>Confusion Matrix</h4>
+      <pre>              Predicted
+              Pos    Neg
+Actual Pos    TP     FN
+Actual Neg    FP     TN</pre>
+      <h4>When Accuracy Fails</h4>
+      <p>With 99% negative class, a model predicting all-negative gets 99% accuracy but 0% recall. Always check class balance first.</p>
+    </div>
+  </div>
+
+  <!-- Card 3: Bias-Variance -->
+  <div class="review-card">
+    <h3><span class="card-num im">3</span> Bias-Variance Tradeoff</h3>
+    <ul>
+      <li><strong>High bias</strong> = underfit (train error high)</li>
+      <li><strong>High variance</strong> = overfit (train-test gap)</li>
+      <li><strong>L1 (Lasso)</strong> = sparse features (feature selection)</li>
+      <li><strong>L2 (Ridge)</strong> = stable, shrinks all coefficients</li>
+      <li><strong>Elastic Net</strong> = L1 + L2 combined</li>
+    </ul>
+    <div class="learn-only">
+      <h4>Diagnosing the Problem</h4>
+      <p><strong>Underfit</strong>: increase model complexity, add features, reduce regularization. <strong>Overfit</strong>: more data, regularization, fewer features, dropout, early stopping.</p>
+      <h4>Regularization</h4>
+      <pre># L1 drives coefficients to exactly 0 (feature selection)
+Loss = MSE + lambda * sum(|w_i|)
+
+# L2 shrinks coefficients toward 0 (but never exactly 0)
+Loss = MSE + lambda * sum(w_i^2)</pre>
+    </div>
+  </div>
+
+  <!-- Card 4: Feature Engineering -->
+  <div class="review-card">
+    <h3><span class="card-num im">4</span> Feature Engineering</h3>
+    <table>
+      <tr><th>Technique</th><th>When</th><th>Risk</th></tr>
+      <tr><td>One-hot</td><td>Nominal categories</td><td>High cardinality</td></tr>
+      <tr><td>Scaling</td><td>KNN, SVM, Neural</td><td>Not for trees</td></tr>
+      <tr><td>Log transform</td><td>Skewed features</td><td>Zero/neg values</td></tr>
+      <tr><td>Target encode</td><td>High cardinality</td><td>Leakage risk</td></tr>
+    </table>
+    <div class="learn-only">
+      <h4>Handling Missing Values</h4>
+      <p><strong>Numerical</strong>: median (robust to outliers), mean (if symmetric). <strong>Categorical</strong>: mode or "Unknown" category. <strong>Always</strong>: add a binary "is_missing" indicator feature.</p>
+      <h4>Target Encoding Safely</h4>
+      <p>Target encoding replaces a category with the mean target value. To avoid leakage: use leave-one-out encoding or fit on training data only, then transform test data.</p>
+    </div>
+  </div>
+
+  <!-- Card 5: Cross-Validation -->
+  <div class="review-card">
+    <h3><span class="card-num im">5</span> Cross-Validation</h3>
+    <ul>
+      <li><strong>K-Fold</strong>: standard, K=5 or 10</li>
+      <li><strong>Stratified</strong>: preserves class distribution</li>
+      <li><strong>Time Series</strong>: never use future data (expanding window)</li>
+      <li><strong>Pipeline</strong>: fit scaler/encoder inside CV to prevent leakage</li>
+    </ul>
+    <div class="learn-only">
+      <h4>Data Leakage Prevention</h4>
+      <pre># WRONG: fit scaler on all data, then split
+scaler.fit(X)
+X_scaled = scaler.transform(X)
+cross_val_score(model, X_scaled, y)
+
+# RIGHT: use Pipeline (scaler fits inside each fold)
+from sklearn.pipeline import Pipeline
+pipe = Pipeline([('scaler', StandardScaler()),
+                 ('model', LogisticRegression())])
+cross_val_score(pipe, X, y)</pre>
+      <div class="example-box">
+        <h5>Time Series CV</h5>
+        <p>Never shuffle time series data. Use expanding or sliding window: train on months 1-3, test on 4. Then train on 1-4, test on 5. And so on.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>ML Quick Reference &mdash; DS Prep v20</footer>
+
+<script>
+function setMode(mode) {
+  const btns = document.querySelectorAll('.mode-toggle button');
+  if (mode === 'review') {
+    document.body.classList.add('review-mode');
+    btns[0].classList.remove('active');
+    btns[1].classList.add('active');
+  } else {
+    document.body.classList.remove('review-mode');
+    btns[0].classList.add('active');
+    btns[1].classList.remove('active');
+  }
+}
+</script>
+</body>
+</html>

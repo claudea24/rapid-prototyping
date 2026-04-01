@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning — Coding Playground | DS Prep v17</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#7c3aed;--accent-light:#ede9fe;--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--rose:#dc2626;--rose-light:#fee2e2;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+    .stopwatch-bar{position:sticky;top:56px;z-index:150;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;justify-content:center;gap:16px}
+    .stopwatch-display{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--heading);letter-spacing:2px;min-width:90px;text-align:center}
+    .stopwatch-bar button{font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;padding:6px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
+    .stopwatch-bar button:hover{border-color:var(--accent);color:var(--accent)}
+    .stopwatch-bar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .stopwatch-bar button.primary:hover{background:#6d28d9}
+    .stopwatch-bar button.reset{color:var(--rose);border-color:var(--rose-light)}
+    .stopwatch-bar button.reset:hover{background:var(--rose-light)}
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+    .challenge{margin-bottom:32px}
+    .challenge-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+    .challenge-header h3{font-size:1.05rem;font-weight:700;color:var(--heading)}
+    .difficulty{font-size:.6rem;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:1px}
+    .difficulty.easy{background:var(--green-light);color:var(--green)}
+    .difficulty.medium{background:var(--amber-light);color:var(--amber)}
+    .difficulty.hard{background:var(--rose-light);color:var(--rose)}
+    .think-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:0 0 12px;box-shadow:var(--shadow)}
+    .think-card .think-prompt{font-size:.88rem;color:var(--text);line-height:1.7;margin-bottom:14px}
+    .think-card .think-prompt strong{color:var(--heading)}
+    .think-card .answer{display:none;margin-top:12px;padding:16px 18px;background:var(--green-light);border:1px solid #86efac;border-radius:10px;font-size:.84rem;line-height:1.7;color:#15803d}
+    .think-card .answer.show{display:block}
+    .think-card button{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;padding:8px 20px;border-radius:8px;border:1px solid var(--amber-light);background:var(--surface);color:var(--amber);cursor:pointer;transition:all .2s}
+    .think-card button:hover{background:var(--amber-light)}
+    .think-card .done-time{font-size:.75rem;font-weight:600;color:var(--green);margin-top:8px;display:none}
+    .think-card .done-time.show{display:block}
+    .btn-row{display:flex;gap:8px;flex-wrap:wrap}
+    .btn-row button.done{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;padding:8px 20px;border-radius:8px;border:1px solid var(--green-light);background:var(--surface);color:var(--green);cursor:pointer;transition:all .2s}
+    .btn-row button.done:hover{background:var(--green-light)}
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:#5b4cdb;text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.stopwatch-bar{padding:8px 16px;gap:10px;flex-wrap:wrap}.stopwatch-display{font-size:1.2rem}.page-header{padding:24px 16px 8px}.page-header .intro{margin-left:0}.container{padding:16px 16px 48px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v17</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html" class="active">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Prob</a>
+    <a href="casing.html">Case</a>
+  </div>
+</nav>
+
+<div class="stopwatch-bar">
+  <button class="primary" id="toggleBtn" onclick="toggleStopwatch()">Start</button>
+  <span class="stopwatch-display" id="stopwatchDisplay">00:00</span>
+  <button class="reset" onclick="resetStopwatch()">Reset</button>
+</div>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon">&#129302;</div>
+    <h1>Machine Learning</h1>
+  </div>
+  <p class="intro">3 conceptual challenges. Think through each one before revealing the answer. Time yourself with the stopwatch.</p>
+</div>
+
+<div class="container">
+
+  <div class="challenge" id="c1">
+    <div class="challenge-header">
+      <h3>Challenge 1 — Choose the Right Model</h3>
+      <span class="difficulty easy">Easy</span>
+    </div>
+    <div class="think-card">
+      <p class="think-prompt"><strong>Think about it...</strong> You have a dataset with 50,000 rows and 200 features. Your target is binary (churn/no churn). The business needs an interpretable model they can explain to stakeholders. Which model would you choose and why? What if they instead wanted maximum predictive accuracy?</p>
+      <div class="btn-row">
+        <button onclick="toggleAnswer(1)">Reveal Answer</button>
+        <button class="done" onclick="markDone(1)">Done</button>
+      </div>
+      <div class="answer" id="answer1"><strong>For interpretability:</strong> Logistic Regression. Coefficients directly show feature impact (log-odds), easy to explain to stakeholders. With 200 features, add L1 (Lasso) regularization to auto-select important features.<br><br><strong>For max accuracy:</strong> Gradient Boosted Trees (XGBoost/LightGBM). They handle non-linear relationships, feature interactions, and mixed data types well. With 50K rows and 200 features, you have enough data to avoid overfitting with proper tuning.<br><br><strong>Key tradeoff:</strong> You could use SHAP values on top of a GBM to get interpretability AND accuracy, giving the best of both worlds.</div>
+      <div class="done-time" id="done1"></div>
+    </div>
+  </div>
+
+  <div class="challenge" id="c2">
+    <div class="challenge-header">
+      <h3>Challenge 2 — Calculate F1 Score</h3>
+      <span class="difficulty medium">Medium</span>
+    </div>
+    <div class="think-card">
+      <p class="think-prompt"><strong>Think about it...</strong> Your fraud detection model has these results on a test set: 90 True Negatives, 5 True Positives, 3 False Positives, 2 False Negatives. Calculate Precision, Recall, and F1 score. Is this model good enough for production? What metric matters most here?</p>
+      <div class="btn-row">
+        <button onclick="toggleAnswer(2)">Reveal Answer</button>
+        <button class="done" onclick="markDone(2)">Done</button>
+      </div>
+      <div class="answer" id="answer2"><strong>Precision</strong> = TP / (TP + FP) = 5 / (5 + 3) = 0.625 (62.5%)<br><strong>Recall</strong> = TP / (TP + FN) = 5 / (5 + 2) = 0.714 (71.4%)<br><strong>F1</strong> = 2 * (P * R) / (P + R) = 2 * (0.625 * 0.714) / (0.625 + 0.714) = 0.667 (66.7%)<br><br><strong>Is it production-ready?</strong> Probably not. For fraud detection, <strong>Recall matters most</strong> — missing a fraud case (FN) is much more costly than flagging a legitimate transaction (FP). A recall of 71.4% means you're missing ~29% of fraud. You'd want to lower the classification threshold to catch more fraud, even at the cost of more false positives.</div>
+      <div class="done-time" id="done2"></div>
+    </div>
+  </div>
+
+  <div class="challenge" id="c3">
+    <div class="challenge-header">
+      <h3>Challenge 3 — Spot the Data Leakage</h3>
+      <span class="difficulty hard">Hard</span>
+    </div>
+    <div class="think-card">
+      <p class="think-prompt"><strong>Think about it...</strong> A colleague builds a model to predict whether a patient will be readmitted within 30 days. They get 99% accuracy on the test set. Their features include: age, diagnosis code, number of medications, length of hospital stay, discharge disposition code, and "number of readmissions in past year." Where is the data leakage? Name all sources.</p>
+      <div class="btn-row">
+        <button onclick="toggleAnswer(3)">Reveal Answer</button>
+        <button class="done" onclick="markDone(3)">Done</button>
+      </div>
+      <div class="answer" id="answer3"><strong>Leakage sources:</strong><br><br>1. <strong>"Number of readmissions in past year"</strong> — This is the most obvious leak. If computed after the current visit, it directly encodes the target variable. Even if computed before, it may include information from the training period that wouldn't be available at prediction time.<br><br>2. <strong>"Discharge disposition code"</strong> — This is only known AFTER the patient is discharged, but you need to predict readmission at admission time (or during stay). This is a <strong>temporal leakage</strong> — using future information.<br><br>3. <strong>"Length of hospital stay"</strong> — Same problem: unknown at the time you'd want to make the prediction (at admission). Only known after discharge.<br><br><strong>Fix:</strong> Only use features available at the time of prediction. If predicting at admission: use age, diagnosis, medications at admission, and historical data computed strictly before the current visit.</div>
+      <div class="done-time" id="done3"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v17 &middot; <a href="index.html">Back to Hub</a></p>
+</footer>
+
+<script>
+  let stopwatchTime=0,stopwatchInterval=null,running=false;
+  function formatTime(ms){const min=Math.floor(ms/60000);const sec=Math.floor((ms%60000)/1000);return String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
+  function toggleStopwatch(){const btn=document.getElementById('toggleBtn');if(running){clearInterval(stopwatchInterval);running=false;btn.textContent='Start'}else{stopwatchInterval=setInterval(()=>{stopwatchTime+=100;document.getElementById('stopwatchDisplay').textContent=formatTime(stopwatchTime)},100);running=true;btn.textContent='Pause'}}
+  function resetStopwatch(){clearInterval(stopwatchInterval);running=false;stopwatchTime=0;document.getElementById('stopwatchDisplay').textContent='00:00';document.getElementById('toggleBtn').textContent='Start'}
+  function toggleAnswer(n){const el=document.getElementById('answer'+n);el.classList.toggle('show')}
+  function markDone(n){const el=document.getElementById('done'+n);el.textContent='Completed at '+formatTime(stopwatchTime);el.classList.add('show')}
+</script>
+</body>
+</html>

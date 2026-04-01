@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Case Arena — Quest Mode</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="status-bar">
+    <a href="index.html" class="brand">Quest Mode</a>
+    <div class="stats">
+      <a href="quiz.html?cat=Casing" class="btn btn-battle" style="padding:6px 16px;font-size:0.7rem">Battle Casing</a>
+    </div>
+  </div>
+
+  <div class="dungeon-page">
+    <div class="dungeon-hero">
+      <div class="dungeon-icon">&#128161;</div>
+      <h1>The Case Arena</h1>
+      <p class="dungeon-sub">6 floors of case study mastery</p>
+    </div>
+
+    <!-- Floor 1 -->
+    <div class="floor open" id="floor-1">
+      <div class="floor-header" onclick="toggleFloor(1)">
+        <div class="floor-num" style="background:var(--case)">F1</div>
+        <h3>Product Metrics (AARRR)</h3>
+        <span class="floor-xp">+50 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>The "pirate metrics" framework captures the user lifecycle in five stages:</p>
+
+        <table>
+          <tr><th>Stage</th><th>Definition</th><th>Example Metrics</th><th>Why It Matters</th></tr>
+          <tr><td><strong>Acquisition</strong></td><td>How users discover product</td><td>Sign-ups, CPA, channel split</td><td>Can't grow without awareness</td></tr>
+          <tr><td><strong>Activation</strong></td><td>First core value experience</td><td>Onboarding %, time to first action</td><td>Multiplies acquisition value</td></tr>
+          <tr><td><strong>Retention</strong></td><td>Do users come back?</td><td>D1/D7/D30, churn, cohort curves</td><td>Most important; compounds</td></tr>
+          <tr><td><strong>Revenue</strong></td><td>How product makes money</td><td>ARPU, LTV, conversion, MRR</td><td>Validates business model</td></tr>
+          <tr><td><strong>Referral</strong></td><td>Do users bring others?</td><td>NPS, viral coefficient</td><td>Free, pre-qualified acquisition</td></tr>
+        </table>
+
+        <p><strong>The North Star Metric</strong> — a single number that captures core value your product delivers:</p>
+
+        <table>
+          <tr><th>Company</th><th>North Star</th><th>Why It Works</th></tr>
+          <tr><td>Airbnb</td><td>Nights booked</td><td>Value for both guests and hosts</td></tr>
+          <tr><td>Spotify</td><td>Time spent listening</td><td>Engagement proxy for satisfaction</td></tr>
+          <tr><td>Facebook</td><td>Daily active users</td><td>Habitual use &rarr; monetization</td></tr>
+        </table>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          A good North Star aligns user value with business value. If it grows while users are unhappy, it's the wrong metric.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('case',1,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 2 -->
+    <div class="floor" id="floor-2">
+      <div class="floor-header" onclick="toggleFloor(2)">
+        <div class="floor-num" style="background:var(--case)">F2</div>
+        <h3>Structuring Your Approach</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>The six-step framework for any case question:</p>
+        <p><strong>1. Clarify</strong> — Restate the problem. Ask scope questions.<br>
+        <strong>2. Define Metrics</strong> — Primary metric + guardrail metrics.<br>
+        <strong>3. Hypothesize</strong> — State leading hypotheses <em>before</em> touching data.<br>
+        <strong>4. Analyze</strong> — Segment by cohort, platform, geography, time.<br>
+        <strong>5. Recommend</strong> — Concrete action + expected impact estimate.<br>
+        <strong>6. Measure</strong> — How will you validate? What experiment?</p>
+
+        <p><strong>Example: "WAU Dropped 15%"</strong></p>
+        <p><strong>Clarify:</strong> Week-over-week? All platforms?<br>
+        <strong>Metrics:</strong> Primary = WAU. Guardrails = revenue/user, session quality.<br>
+        <strong>Hypothesize:</strong> (a) Product bug, (b) seasonal, (c) marketing campaign ended.<br>
+        <strong>Analyze:</strong> Segment by platform &rarr; drop is iOS only. By version &rarr; v4.7. Check crashes &rarr; spike after deploy.<br>
+        <strong>Recommend:</strong> "iOS v4.7 crash bug. Immediate hotfix + re-engagement push. Recovers ~12 of 15 lost points within one week."<br>
+        <strong>Measure:</strong> Track iOS WAU recovery daily. Monitor crash rates and App Store ratings.</p>
+
+        <button class="floor-complete-btn" onclick="clearFloor('case',2,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 3 -->
+    <div class="floor" id="floor-3">
+      <div class="floor-header" onclick="toggleFloor(3)">
+        <div class="floor-num" style="background:var(--case)">F3</div>
+        <h3>Diagnosing Metric Changes</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>Investigation Framework:</strong></p>
+        <p>1. <strong>Data problem?</strong> Check logging pipeline, schema changes, processing delays.<br>
+        2. <strong>External factor?</strong> Holidays, competitor launches, weather, news events.<br>
+        3. <strong>Internal change?</strong> New feature, UI redesign, pricing change, experiment ramp.<br>
+        4. <strong>Segment to isolate.</strong> Platform, geography, cohort, device, subscription tier.<br>
+        5. <strong>Quantify the contribution.</strong> Does the identified driver explain 90% or 20%?</p>
+
+        <p><strong>Example: "Revenue Up 20% but Rides Down 5%"</strong></p>
+
+<pre><code>Revenue = Rides &times; Revenue per Ride
+1.20 = 0.95 &times; X
+X &asymp; 1.263 &rarr; Revenue per ride up ~26%</code></pre>
+
+        <p>Hypotheses: Price increase? Mix shift to longer/premium rides? New surge algorithm? Segment by ride type, geography, time of day to find the primary driver.</p>
+
+        <button class="floor-complete-btn" onclick="clearFloor('case',3,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 4 -->
+    <div class="floor" id="floor-4">
+      <div class="floor-header" onclick="toggleFloor(4)">
+        <div class="floor-num" style="background:var(--case)">F4</div>
+        <h3>Market Sizing</h3>
+        <span class="floor-xp">+100 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <table>
+          <tr><th>Approach</th><th>Start With</th><th>Strength</th></tr>
+          <tr><td><strong>Top-Down</strong></td><td>Large known number</td><td>Fast, macro-level</td></tr>
+          <tr><td><strong>Bottom-Up</strong></td><td>Single unit</td><td>More grounded, concrete</td></tr>
+        </table>
+
+        <p><strong>Example: Piano Tuners in Chicago</strong></p>
+        <p><strong>Step 1 — Pianos:</strong> 9.5M population &rarr; 3.5M households &rarr; 5% own piano = 175K + 10K institutional = <strong>185K pianos</strong><br>
+        <strong>Step 2 — Tunings/year:</strong> ~1 per piano = <strong>185K tunings</strong><br>
+        <strong>Step 3 — Tunings per tuner:</strong> 2 hrs each, 2000 hrs/year = <strong>1000 tunings/tuner/year</strong><br>
+        <strong>Step 4 — Divide:</strong> 185K / 1000 = <strong>~185 piano tuners</strong> (actual: 100&ndash;300)</p>
+
+        <div class="demo-box">
+          <h4>Interactive: Random Fermi Question</h4>
+          <button onclick="newFermi()" style="background:var(--case);color:#0a0a0a;border-bottom-color:#db2777">Generate Question</button>
+          <div class="result" id="fermiResult"></div>
+        </div>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          Interviewers care about structure and assumptions, not the exact number. A clearly reasoned estimate off by 2x is infinitely better than a lucky guess.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('case',4,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 5 -->
+    <div class="floor" id="floor-5">
+      <div class="floor-header" onclick="toggleFloor(5)">
+        <div class="floor-num" style="background:var(--case)">F5</div>
+        <h3>Experiment Design</h3>
+        <span class="floor-xp">+100 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <table>
+          <tr><th>Decision</th><th>Default</th><th>Watch Out</th></tr>
+          <tr><td><strong>Randomization unit</strong></td><td>User-level</td><td>Network effects &rarr; cluster randomization</td></tr>
+          <tr><td><strong>Duration</strong></td><td>&ge; 1 full weekly cycle</td><td>Day-of-week effects, pay cycles</td></tr>
+          <tr><td><strong>Guardrails</strong></td><td>Always include several</td><td>Must not degrade even if primary improves</td></tr>
+          <tr><td><strong>Network effects</strong></td><td>Standard (if independent)</td><td>Social/marketplace &rarr; cluster</td></tr>
+          <tr><td><strong>Novelty/primacy</strong></td><td>Run 2&ndash;4 weeks</td><td>Initial lift may fade; resistance may resolve</td></tr>
+        </table>
+
+        <p><strong>Example: Testing New Checkout (4 &rarr; 2 steps)</strong></p>
+        <p><strong>Unit:</strong> User-level. <strong>Primary:</strong> Checkout completion rate. <strong>Guardrails:</strong> AOV, 14-day return rate, support contacts.</p>
+        <p><strong>Sample size:</strong> Current 65%, detect 2pt lift, &alpha;=0.05, power=0.80. Need ~4,400/arm. At 2,000/day = 5 days needed. <strong>Round to 14 days</strong> (two weekly cycles + novelty fade).</p>
+
+        <button class="floor-complete-btn" onclick="clearFloor('case',5,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 6 -->
+    <div class="floor" id="floor-6">
+      <div class="floor-header" onclick="toggleFloor(6)">
+        <div class="floor-num" style="background:var(--case)">F6</div>
+        <h3>Communicating Your Analysis</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>Lead with the answer (Pyramid Principle).</strong> State the conclusion first, then supporting evidence. "The drop was caused by an iOS v4.7 bug. Here's how I found that."</p>
+
+        <p><strong>Signal your structure.</strong> "I'll approach this in three parts: clarify the metric, investigate causes, then recommend an action."</p>
+
+        <p><strong>Quantify everything.</strong> Not "affected a lot of users" but "affected approximately 120,000 users, ~8% of MAU."</p>
+
+        <p><strong>Acknowledge trade-offs.</strong> "Rolling out the hotfix recovers engagement but delays the redesign by 2 sprints." Naming trade-offs strengthens credibility.</p>
+
+        <p><strong>Ask clarifying questions.</strong> "When you say engagement, do you mean DAU, time spent, or actions per session?"</p>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          The best technical answer, poorly communicated, loses to a decent answer well communicated. Analysis only creates value if someone understands it well enough to act on it.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('case',6,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><p>v15 &middot; Quest Mode &mdash; <a href="../index.html">Back to Gallery</a></p></footer>
+
+  <script>
+    function toggleFloor(n) { document.getElementById('floor-' + n).classList.toggle('open'); }
+
+    function clearFloor(topic, n, btn) {
+      const key = 'ds-v15-floors-' + topic;
+      const state = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!state.includes(n)) { state.push(n); localStorage.setItem(key, JSON.stringify(state)); }
+      btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared');
+    }
+
+    (function() {
+      const state = JSON.parse(localStorage.getItem('ds-v15-floors-case') || '[]');
+      state.forEach(n => {
+        const btn = document.querySelector('#floor-' + n + ' .floor-complete-btn');
+        if (btn) { btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared'); }
+      });
+    })();
+
+    // Fermi questions
+    const FERMI_QS = [
+      { q: "How many coffee shops are in New York City?", hint: "Think: population → neighborhoods → shops per block" },
+      { q: "How many tennis balls fit in this room?", hint: "Think: room volume → ball volume → packing efficiency (~64%)" },
+      { q: "How many Uber rides happen in San Francisco per day?", hint: "Think: population → % using rideshare → rides/user/day" },
+      { q: "How many haircuts happen in London per day?", hint: "Think: population → haircut frequency → daily average" },
+      { q: "How many iPhones are sold in the US per year?", hint: "Think: US smartphone users → % iPhone → replacement cycle" },
+      { q: "How much does Google make from Search ads per day?", hint: "Think: daily searches → % with ads → click rate → CPC" },
+      { q: "How many flights take off globally per day?", hint: "Think: major airports → flights/airport/day → total" },
+      { q: "How many data scientists work in the US?", hint: "Think: tech workforce → % in data roles → growth rate" },
+    ];
+
+    function newFermi() {
+      const q = FERMI_QS[Math.floor(Math.random() * FERMI_QS.length)];
+      document.getElementById('fermiResult').innerHTML =
+        `<div style="font-weight:600;color:var(--white);margin-bottom:6px">${q.q}</div>
+         <div style="color:var(--muted);font-size:0.82rem">${q.hint}</div>`;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies — Coding Playground | DS Prep v17</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#0891b2;--accent-light:#cffafe;--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--rose:#dc2626;--rose-light:#fee2e2;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+    .stopwatch-bar{position:sticky;top:56px;z-index:150;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:10px 32px;display:flex;align-items:center;justify-content:center;gap:16px}
+    .stopwatch-display{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--heading);letter-spacing:2px;min-width:90px;text-align:center}
+    .stopwatch-bar button{font-family:'Inter',sans-serif;font-size:.75rem;font-weight:700;padding:6px 16px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
+    .stopwatch-bar button:hover{border-color:var(--accent);color:var(--accent)}
+    .stopwatch-bar button.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+    .stopwatch-bar button.primary:hover{background:#0e7490}
+    .stopwatch-bar button.reset{color:var(--rose);border-color:var(--rose-light)}
+    .stopwatch-bar button.reset:hover{background:var(--rose-light)}
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+    .challenge{margin-bottom:32px}
+    .challenge-header{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+    .challenge-header h3{font-size:1.05rem;font-weight:700;color:var(--heading)}
+    .difficulty{font-size:.6rem;font-weight:700;padding:3px 10px;border-radius:10px;text-transform:uppercase;letter-spacing:1px}
+    .difficulty.easy{background:var(--green-light);color:var(--green)}
+    .difficulty.medium{background:var(--amber-light);color:var(--amber)}
+    .difficulty.hard{background:var(--rose-light);color:var(--rose)}
+    .think-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin:0 0 12px;box-shadow:var(--shadow)}
+    .think-card .think-prompt{font-size:.88rem;color:var(--text);line-height:1.7;margin-bottom:14px}
+    .think-card .think-prompt strong{color:var(--heading)}
+    .think-card .answer{display:none;margin-top:12px;padding:16px 18px;background:var(--green-light);border:1px solid #86efac;border-radius:10px;font-size:.84rem;line-height:1.7;color:#15803d}
+    .think-card .answer.show{display:block}
+    .think-card button{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;padding:8px 20px;border-radius:8px;border:1px solid var(--amber-light);background:var(--surface);color:var(--amber);cursor:pointer;transition:all .2s}
+    .think-card button:hover{background:var(--amber-light)}
+    .think-card .done-time{font-size:.75rem;font-weight:600;color:var(--green);margin-top:8px;display:none}
+    .think-card .done-time.show{display:block}
+    .btn-row{display:flex;gap:8px;flex-wrap:wrap}
+    .btn-row button.done{font-family:'Inter',sans-serif;font-size:.78rem;font-weight:700;padding:8px 20px;border-radius:8px;border:1px solid var(--green-light);background:var(--surface);color:var(--green);cursor:pointer;transition:all .2s}
+    .btn-row button.done:hover{background:var(--green-light)}
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:#5b4cdb;text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.stopwatch-bar{padding:8px 16px;gap:10px;flex-wrap:wrap}.stopwatch-display{font-size:1.2rem}.page-header{padding:24px 16px 8px}.page-header .intro{margin-left:0}.container{padding:16px 16px 48px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v17</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Prob</a>
+    <a href="casing.html" class="active">Case</a>
+  </div>
+</nav>
+
+<div class="stopwatch-bar">
+  <button class="primary" id="toggleBtn" onclick="toggleStopwatch()">Start</button>
+  <span class="stopwatch-display" id="stopwatchDisplay">00:00</span>
+  <button class="reset" onclick="resetStopwatch()">Reset</button>
+</div>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon">&#128161;</div>
+    <h1>Case Studies</h1>
+  </div>
+  <p class="intro">3 real-world case study problems covering metric diagnosis, market sizing, and experiment design.</p>
+</div>
+
+<div class="container">
+
+  <div class="challenge" id="c1">
+    <div class="challenge-header">
+      <h3>Challenge 1 — Diagnose the Metric Drop</h3>
+      <span class="difficulty medium">Medium</span>
+    </div>
+    <div class="think-card">
+      <p class="think-prompt"><strong>Think about it...</strong> You're a DS at an e-commerce company. The CEO messages you: "Daily revenue dropped 15% yesterday compared to the same day last week. What happened?" Walk through your diagnostic framework step by step. What data would you look at? What are the most likely causes?</p>
+      <div class="btn-row">
+        <button onclick="toggleAnswer(1)">Reveal Answer</button>
+        <button class="done" onclick="markDone(1)">Done</button>
+      </div>
+      <div class="answer" id="answer1"><strong>Diagnostic Framework:</strong><br><br><strong>Step 1: Validate the data</strong><br>- Is the data pipeline working correctly? Check for ETL failures, logging issues, or tracking bugs.<br>- Is this a data issue or a real business issue?<br><br><strong>Step 2: Decompose the metric</strong><br>Revenue = Traffic * Conversion Rate * AOV (Average Order Value)<br>- Which component dropped? Check each one independently.<br><br><strong>Step 3: Segment the drop</strong><br>- By platform: Mobile vs Desktop vs App<br>- By geography: Any regional issues?<br>- By traffic source: Organic vs Paid vs Direct vs Email<br>- By product category: Is it across the board or specific?<br>- By user type: New vs Returning customers<br><br><strong>Step 4: Check external factors</strong><br>- Was there a holiday, competitor sale, or major news event?<br>- Weather events affecting a key region?<br>- Payment processor outage?<br><br><strong>Step 5: Check internal changes</strong><br>- Any code deployments yesterday? (site bugs, checkout issues)<br>- Marketing campaigns paused or budgets changed?<br>- Price changes or promotions ending?<br>- A/B tests launched that might affect conversion?<br><br><strong>Most likely causes (ordered by frequency):</strong><br>1. Technical bug (broken checkout, tracking failure)<br>2. Marketing budget/campaign change<br>3. External event (competitor promotion, holiday shift)<br>4. Seasonal pattern (compare YoY, not just WoW)</div>
+      <div class="done-time" id="done1"></div>
+    </div>
+  </div>
+
+  <div class="challenge" id="c2">
+    <div class="challenge-header">
+      <h3>Challenge 2 — Market Size Estimation</h3>
+      <span class="difficulty easy">Easy</span>
+    </div>
+    <div class="think-card">
+      <p class="think-prompt"><strong>Think about it...</strong> Estimate the annual revenue of all coffee shops in the United States. Show your reasoning with a top-down or bottom-up approach (or both). State your assumptions clearly.</p>
+      <div class="btn-row">
+        <button onclick="toggleAnswer(2)">Reveal Answer</button>
+        <button class="done" onclick="markDone(2)">Done</button>
+      </div>
+      <div class="answer" id="answer2"><strong>Bottom-Up Approach:</strong><br><br><strong>Assumptions:</strong><br>- US population: ~330 million<br>- Adults (18+): ~260 million<br>- % who drink coffee: ~65% = ~170 million coffee drinkers<br>- % who buy from shops (not just home): ~40% = ~68 million<br>- Average purchases per week: 3<br>- Average spend per visit: $5.50<br>- Weeks per year: 52<br><br><strong>Calculation:</strong><br>68M people * 3 visits/week * $5.50/visit * 52 weeks<br>= 68M * 858/year<br>= ~$58 billion/year<br><br><strong>Top-Down Sanity Check:</strong><br>- ~35,000 Starbucks in US, avg revenue ~$1.5M/year = $52.5B (just Starbucks)<br>- There are ~38,000 other coffee shops<br>- Total shops: ~73,000, average revenue maybe $800K<br>= ~$58 billion<br><br><strong>Both approaches converge around $55-60 billion.</strong><br>(Actual US coffee shop market: ~$50-60B, so this estimate is reasonable.)<br><br><strong>Key to good estimation:</strong> State assumptions clearly, use round numbers, and sanity-check with a different method.</div>
+      <div class="done-time" id="done2"></div>
+    </div>
+  </div>
+
+  <div class="challenge" id="c3">
+    <div class="challenge-header">
+      <h3>Challenge 3 — Design the Experiment</h3>
+      <span class="difficulty hard">Hard</span>
+    </div>
+    <div class="think-card">
+      <p class="think-prompt"><strong>Think about it...</strong> A ride-sharing company wants to test a new surge pricing algorithm. The old algorithm raises prices 2x during peak hours; the new one uses ML to set dynamic prices between 1.2x-3x based on demand signals. How would you design this experiment? Consider: randomization unit, metrics, duration, risks, and ethical concerns.</p>
+      <div class="btn-row">
+        <button onclick="toggleAnswer(3)">Reveal Answer</button>
+        <button class="done" onclick="markDone(3)">Done</button>
+      </div>
+      <div class="answer" id="answer3"><strong>Experiment Design:</strong><br><br><strong>Randomization unit: Geographic zones</strong> (not individual users)<br>- Why not users? A rider in Zone A seeing 1.5x while a rider next to them sees 2.5x creates fairness issues and marketplace interference (drivers will move toward higher-priced zones, contaminating the experiment).<br>- Use "switchback" design: alternate algorithms across time blocks (e.g., hour-by-hour) within zones to control for zone-level confounders.<br><br><strong>Primary metrics:</strong><br>- Revenue per ride-request<br>- Ride completion rate (do more rides actually happen?)<br>- ETA (are enough drivers available?)<br><br><strong>Guardrail metrics:</strong><br>- Rider cancellation rate<br>- Driver earnings per hour<br>- Rider NPS / satisfaction score<br>- Price fairness complaints<br><br><strong>Duration:</strong> At least 4 weeks to capture weekday/weekend cycles, holidays, and various demand patterns. Need sufficient surge events to have statistical power.<br><br><strong>Risks:</strong><br>1. Revenue loss if new algorithm underprices consistently<br>2. Driver supply imbalance between zones<br>3. PR risk if extreme prices (3x) go viral<br>4. Network effects: pricing in one zone affects driver supply in adjacent zones<br><br><strong>Ethical concerns:</strong><br>- Price discrimination: Does the ML model inadvertently charge more in lower-income areas?<br>- Transparency: Do riders know why prices vary?<br>- Emergency situations: Should surge pricing be capped during emergencies?<br>- Set a maximum price cap (e.g., 2.5x) for the experiment to limit downside risk.<br><br><strong>Analysis plan:</strong> Use difference-in-differences with zone and time fixed effects. Cluster standard errors at the zone level.</div>
+      <div class="done-time" id="done3"></div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v17 &middot; <a href="index.html">Back to Hub</a></p>
+</footer>
+
+<script>
+  let stopwatchTime=0,stopwatchInterval=null,running=false;
+  function formatTime(ms){const min=Math.floor(ms/60000);const sec=Math.floor((ms%60000)/1000);return String(min).padStart(2,'0')+':'+String(sec).padStart(2,'0')}
+  function toggleStopwatch(){const btn=document.getElementById('toggleBtn');if(running){clearInterval(stopwatchInterval);running=false;btn.textContent='Start'}else{stopwatchInterval=setInterval(()=>{stopwatchTime+=100;document.getElementById('stopwatchDisplay').textContent=formatTime(stopwatchTime)},100);running=true;btn.textContent='Pause'}}
+  function resetStopwatch(){clearInterval(stopwatchInterval);running=false;stopwatchTime=0;document.getElementById('stopwatchDisplay').textContent='00:00';document.getElementById('toggleBtn').textContent='Start'}
+  function toggleAnswer(n){document.getElementById('answer'+n).classList.toggle('show')}
+  function markDone(n){const el=document.getElementById('done'+n);el.textContent='Completed at '+formatTime(stopwatchTime);el.classList.add('show')}
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probability — Company Playbook | DS Prep v19</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v19</a>
+  <div class="nav-right">
+    <button class="search-trigger" onclick="openSearch()">&#128269; <kbd>&#8984;K</kbd></button>
+    <a href="index.html" class="back">All Topics</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon ir">&#127922;</div>
+    <h1>Probability &mdash; <span>Company Interview Patterns</span></h1>
+  </div>
+  <p class="intro">Google is the #1 probability interview company. They test Bayes, distributions, and classic puzzles extensively.</p>
+</div>
+
+<div class="container">
+  <div class="filter-bar">
+    <button class="filter-pill active" onclick="filterCompany('all')">All</button>
+    <button class="filter-pill" onclick="filterCompany('meta')">Meta</button>
+    <button class="filter-pill" onclick="filterCompany('google')">Google</button>
+    <button class="filter-pill" onclick="filterCompany('amazon')">Amazon</button>
+  </div>
+
+  <!-- 5.1 Fundamentals -->
+  <div class="section" data-companies="google" id="s5-1">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">5.1</span> Fundamentals <span class="company-badge google">Google</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Google is the #1 probability interview company. Expect core rules, counting, and complement problems.</div>
+
+      <p class="explain"><strong>Addition Rule:</strong> P(A &cup; B) = P(A) + P(B) - P(A &cap; B). <strong>Multiplication Rule:</strong> P(A &cap; B) = P(A) &middot; P(B|A). <strong>Independence:</strong> P(A &cap; B) = P(A) &middot; P(B). <strong>Complement:</strong> P(A) = 1 - P(A&rsquo;).</p>
+
+      <table class="comp-table">
+        <tr><th>Rule</th><th>Formula</th><th>Key Point</th></tr>
+        <tr><td>Addition</td><td>P(A&cup;B) = P(A) + P(B) - P(A&cap;B)</td><td>Subtract intersection</td></tr>
+        <tr><td>Multiplication</td><td>P(A&cap;B) = P(A) &middot; P(B|A)</td><td>Chain conditionals</td></tr>
+        <tr><td>Independence</td><td>P(A&cap;B) = P(A) &middot; P(B)</td><td>Learning A doesn't change P(B)</td></tr>
+        <tr><td>Complement</td><td>P(A) = 1 - P(A')</td><td>Count what doesn't happen</td></tr>
+        <tr><td>Permutations</td><td>n! / (n-k)!</td><td>Order matters</td></tr>
+        <tr><td>Combinations</td><td>n! / (k!(n-k)!)</td><td>Order doesn't matter</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>"At least one..." problems &rarr; solve as 1 - P(nobody does). This complementary counting appears in the birthday problem, network reliability, and dozens of interview questions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.2 Bayes' Theorem -->
+  <div class="section" data-companies="google meta" id="s5-2">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">5.2</span> Bayes' Theorem <span class="company-badge google">Google</span><span class="company-badge meta">Meta</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Google and Meta both test Bayes' theorem. The medical test problem is a classic that appears frequently.</div>
+
+      <p class="explain"><strong>Bayes' Theorem:</strong> P(A|B) = P(B|A) &middot; P(A) / P(B). In words: <strong>Posterior = (Likelihood &times; Prior) / Evidence.</strong></p>
+
+      <p class="explain"><strong>The Medical Test Problem:</strong> A disease affects 1% of the population. A test is 99% accurate (99% sensitivity, 99% specificity). You test positive. What's the probability you have the disease?</p>
+
+      <div class="code-block"><pre><span class="cm">P(+) = P(+|D) &middot; P(D) + P(+|D') &middot; P(D')</span>
+     = 0.99 &times; 0.01 + 0.01 &times; 0.99
+     = 0.0198
+
+<span class="cm">P(D|+) = P(+|D) &middot; P(D) / P(+)</span>
+       = 0.0099 / 0.0198
+       = <span class="num">0.50 (50%)</span></pre></div>
+
+      <p class="explain"><strong>Why so low?</strong> Consider 10,000 people: 100 are sick (99 test positive), 9,900 are healthy (99 falsely test positive). Total positives: 198. Only 99 are actually diseased &mdash; exactly half. The <strong>base rate</strong> (1% prevalence) dominates.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Always consider the base rate. A 99% accurate test is not very useful when the condition is rare. This is the most counter-intuitive result in probability.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.3 Key Distributions -->
+  <div class="section" data-companies="google" id="s5-3">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">5.3</span> Key Distributions <span class="company-badge google">Google</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Google tests distribution knowledge extensively. Know when to use each and their key properties.</div>
+
+      <table class="comp-table">
+        <tr><th>Distribution</th><th>Type</th><th>Parameters</th><th>Mean</th><th>Variance</th><th>Models</th></tr>
+        <tr><td><strong>Bernoulli</strong></td><td>Discrete</td><td>p</td><td>p</td><td>p(1-p)</td><td>Single yes/no trial</td></tr>
+        <tr><td><strong>Binomial</strong></td><td>Discrete</td><td>n, p</td><td>np</td><td>np(1-p)</td><td>Successes in n trials</td></tr>
+        <tr><td><strong>Poisson</strong></td><td>Discrete</td><td>&lambda;</td><td>&lambda;</td><td>&lambda;</td><td>Events in fixed interval</td></tr>
+        <tr><td><strong>Geometric</strong></td><td>Discrete</td><td>p</td><td>1/p</td><td>(1-p)/p&sup2;</td><td>Trials until first success</td></tr>
+        <tr><td><strong>Normal</strong></td><td>Continuous</td><td>&mu;, &sigma;</td><td>&mu;</td><td>&sigma;&sup2;</td><td>Bell curve &mdash; everything</td></tr>
+        <tr><td><strong>Exponential</strong></td><td>Continuous</td><td>&lambda;</td><td>1/&lambda;</td><td>1/&lambda;&sup2;</td><td>Time between events</td></tr>
+      </table>
+
+      <p class="explain"><strong>68-95-99.7 rule</strong> for the Normal: ~68% within 1&sigma;, ~95% within 2&sigma;, ~99.7% within 3&sigma;. The <strong>Exponential</strong> has the memoryless property: time already waited doesn't affect future probability.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The Poisson approximates the Binomial when n is large and p is small (&lambda; = np). This connection appears frequently in interview questions about rare events.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.4 Expected Value & Variance -->
+  <div class="section" data-companies="google amazon" id="s5-4">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">5.4</span> Expected Value &amp; Variance <span class="company-badge google">Google</span><span class="company-badge amazon">Amazon</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Google and Amazon test expected value problems. Linearity of expectation is the key tool for solving them efficiently.</div>
+
+      <p class="explain"><strong>Expected Value:</strong> E[X] = &Sigma; x &middot; P(X = x). The long-run average. <strong>Variance:</strong> Var(X) = E[X&sup2;] - (E[X])&sup2;.</p>
+
+      <p class="explain"><strong>Linearity of Expectation:</strong> E[aX + bY] = a&middot;E[X] + b&middot;E[Y]. <em>This works even when X and Y are dependent!</em> Incredibly powerful for decomposing complex expected values.</p>
+
+      <div class="code-block"><pre><span class="cm">Pay $5 to roll a fair die.</span>
+<span class="cm">Roll 6 &rarr; win $20. Roll 4 or 5 &rarr; win $10. Otherwise &rarr; $0.</span>
+
+E[winnings] = (1/6) &middot; 20 + (2/6) &middot; 10 + (3/6) &middot; 0 - 5
+            = 3.33 + 3.33 + 0 - 5
+            = <span class="num">$1.67</span>  <span class="cm">&larr; positive, you should play</span></pre></div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Linearity of expectation lets you decompose complex problems into simple pieces without worrying about dependencies. It's the most powerful tool for expected value interview questions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.5 Law of Large Numbers -->
+  <div class="section" data-companies="meta" id="s5-5">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">5.5</span> Law of Large Numbers <span class="company-badge meta">Meta</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Meta tests LLN in the context of A/B testing. Why do experiments need to run for weeks, not hours?</div>
+
+      <p class="explain">As sample size n &rarr; &infin;, the sample mean X&#772; converges to the population mean &mu;. More data = more reliable estimates.</p>
+
+      <p class="explain"><strong>Why this matters for data science:</strong> The observed conversion rate in an A/B test is a sample mean. LLN guarantees it converges to the true rate with enough data. Small samples are noisy; large samples are reliable. "We tried it once and it didn't work" is not statistically valid.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>LLN tells us that sample means converge to the true mean. The CLT tells us <em>how</em> &mdash; normally, with SE = &sigma;/&radic;n. Together, they form the foundation of statistical inference.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5.6 Classic Puzzles -->
+  <div class="section" data-companies="google" id="s5-6">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">5.6</span> Classic Interview Puzzles <span class="company-badge google">Google</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Google loves brain teasers and probability puzzles. These test decomposition and careful conditional reasoning.</div>
+
+      <p class="explain"><strong>The Birthday Problem:</strong> How many people needed for &ge;50% chance two share a birthday? Answer: 23. Use complementary counting: P(all unique) = (365/365) &times; (364/365) &times; ... At n=23, P(at least one match) crosses 50%. Why? 23 people = C(23,2) = 253 pairs to compare.</p>
+
+      <p class="explain"><strong>The Monty Hall Problem:</strong> 3 doors, 1 car, 2 goats. You pick a door. Host opens another showing a goat. Should you switch? <strong>Yes &mdash; switching wins 2/3 of the time.</strong> Your initial pick has 1/3 chance. The other two doors collectively have 2/3. When host reveals a goat, all 2/3 concentrates on the remaining door.</p>
+
+      <table class="comp-table">
+        <tr><th>Scenario</th><th>Stay</th><th>Switch</th></tr>
+        <tr><td>Car behind your door (1/3)</td><td>Win</td><td>Lose</td></tr>
+        <tr><td>Car behind door 2 (1/3)</td><td>Lose</td><td>Win</td></tr>
+        <tr><td>Car behind door 3 (1/3)</td><td>Lose</td><td>Win</td></tr>
+      </table>
+
+      <p class="explain"><strong>Coupon Collector:</strong> E[T] = n &middot; H(n) where H(n) = harmonic number &asymp; ln(n) + 0.5772. For n=50, E[T] &asymp; 225 boxes.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>These puzzles test problem decomposition, correct conditional probability, and the ability to check whether an answer passes the smell test. When unsure, try a small example first.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v19 &middot; <a href="index.html">Company Playbook</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<!-- Search Modal -->
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="Search topics, sections, companies..." autocomplete="off">
+      <span class="esc-hint">ESC</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="search.js"></script>
+<script>
+function toggleSection(head) {
+  const body = head.nextElementSibling;
+  head.classList.toggle('open');
+  body.classList.toggle('open');
+}
+function filterCompany(company) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.section[data-companies]').forEach(s => {
+    if (company === 'all') { s.style.display = ''; }
+    else { s.style.display = (s.getAttribute('data-companies') || '').includes(company) ? '' : 'none'; }
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics — Company Playbook | DS Prep v19</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v19</a>
+  <div class="nav-right">
+    <button class="search-trigger" onclick="openSearch()">&#128269; <kbd>&#8984;K</kbd></button>
+    <a href="index.html" class="back">All Topics</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon is">&#128202;</div>
+    <h1>Statistics &mdash; <span>Company Interview Patterns</span></h1>
+  </div>
+  <p class="intro">Meta leads in A/B testing and hypothesis testing. Google demands methodological rigor. Amazon focuses on confidence intervals and business experiments.</p>
+</div>
+
+<div class="container">
+  <div class="filter-bar">
+    <button class="filter-pill active" onclick="filterCompany('all')">All</button>
+    <button class="filter-pill" onclick="filterCompany('meta')">Meta</button>
+    <button class="filter-pill" onclick="filterCompany('google')">Google</button>
+    <button class="filter-pill" onclick="filterCompany('amazon')">Amazon</button>
+  </div>
+
+  <!-- 4.1 Descriptive Statistics -->
+  <div class="section" data-companies="meta google amazon" id="s4-1">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">4.1</span> Descriptive Statistics <span class="company-badge meta">Meta</span><span class="company-badge google">Google</span><span class="company-badge amazon">Amazon</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">All companies expect you to know when to use mean vs. median and how to detect outliers.</div>
+
+      <p class="explain">The <strong>mean</strong> is sensitive to outliers. The <strong>median</strong> is robust. Always ask "is my data skewed?" to decide which to use. <strong>IQR</strong> (Q3 - Q1) measures the middle 50% and is robust to outliers.</p>
+
+      <table class="comp-table">
+        <tr><th>Measure</th><th>What It Tells You</th><th>Sensitive To</th><th>When to Use</th></tr>
+        <tr><td><strong>Mean</strong></td><td>Average value</td><td>Outliers, skew</td><td>Symmetric data</td></tr>
+        <tr><td><strong>Median</strong></td><td>Middle value</td><td>Nothing (robust)</td><td>Skewed data, outliers</td></tr>
+        <tr><td><strong>Mode</strong></td><td>Most frequent</td><td>&mdash;</td><td>Categorical data</td></tr>
+        <tr><td><strong>Variance</strong></td><td>Spread (squared units)</td><td>Outliers</td><td>Mathematical properties</td></tr>
+        <tr><td><strong>Std Dev</strong></td><td>Spread (same units)</td><td>Outliers</td><td>Reporting spread</td></tr>
+        <tr><td><strong>IQR</strong></td><td>Middle 50% spread</td><td>Nothing (robust)</td><td>Outlier detection</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Always ask "is my data skewed?" If yes or outliers suspected, prefer median and IQR over mean and standard deviation. Using the wrong summary statistic is common, quiet damage.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.2 Hypothesis Testing -->
+  <div class="section" data-companies="meta" id="s4-2">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">4.2</span> Hypothesis Testing <span class="company-badge meta">Meta</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Meta has a heavy A/B testing culture. Expect detailed questions about hypothesis formulation, p-values, and error types.</div>
+
+      <p class="explain">The framework: (1) Formulate H0 and H1, (2) Choose significance level alpha, (3) Collect data, (4) Compute test statistic, (5) Compare to critical value or compute p-value, (6) Conclude.</p>
+
+      <p class="explain"><strong>The p-value</strong> is the probability of observing data at least as extreme as what you got, <em>assuming H0 is true</em>. It does NOT mean the probability that H0 is true.</p>
+
+      <table class="comp-table">
+        <tr><th>Error</th><th>Name</th><th>Analogy</th><th>Probability</th></tr>
+        <tr><td><strong>Type I</strong></td><td>False Positive</td><td>Convicting an innocent person</td><td>&alpha; (usually 0.05)</td></tr>
+        <tr><td><strong>Type II</strong></td><td>False Negative</td><td>Acquitting a guilty person</td><td>&beta;</td></tr>
+        <tr><td><strong>Power</strong></td><td>Correct Rejection</td><td>Catching the guilty</td><td>1 - &beta; (target &ge; 0.80)</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>A small p-value says: "data this extreme would be very unlikely if H0 were true." It does <em>not</em> tell you how likely H0 is. This distinction trips up many candidates.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.3 Statistical Tests -->
+  <div class="section" data-companies="google" id="s4-3">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">4.3</span> Common Statistical Tests <span class="company-badge google">Google</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Google demands methodological rigor. Expect questions about choosing the right test and checking assumptions.</div>
+
+      <table class="comp-table">
+        <tr><th>Test</th><th>When</th><th>Assumes</th><th>Example</th></tr>
+        <tr><td><strong>z-test</strong></td><td>Large n, &sigma; known</td><td>Normality</td><td>Rare in practice</td></tr>
+        <tr><td><strong>t-test</strong></td><td>Unknown &sigma;</td><td>Normality</td><td>Comparing two group means</td></tr>
+        <tr><td><strong>Paired t-test</strong></td><td>Same subjects, before/after</td><td>Paired diffs normal</td><td>Pre/post treatment</td></tr>
+        <tr><td><strong>Chi-squared</strong></td><td>Two categorical variables</td><td>Expected counts &ge; 5</td><td>Independence testing</td></tr>
+        <tr><td><strong>ANOVA</strong></td><td>3+ groups</td><td>Normality, equal variance</td><td>Multiple group means</td></tr>
+        <tr><td><strong>Mann-Whitney U</strong></td><td>Non-parametric</td><td>&mdash;</td><td>When normality violated</td></tr>
+      </table>
+
+      <p class="explain"><strong>Decision flowchart:</strong> Is outcome categorical? &rarr; Chi-squared. Continuous, how many groups? One &rarr; one-sample t-test. Two &rarr; paired or independent t-test. Three+ &rarr; ANOVA. Can't assume normality? &rarr; Mann-Whitney U.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Always check assumptions before applying a test. Using a t-test on heavily skewed data without verifying normality is a common interview mistake.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.4 Confidence Intervals -->
+  <div class="section" data-companies="meta amazon" id="s4-4">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">4.4</span> Confidence Intervals <span class="company-badge meta">Meta</span><span class="company-badge amazon">Amazon</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Meta and Amazon test confidence interval interpretation. The "95% probability" misconception is a common trap.</div>
+
+      <p class="explain"><strong>Formula:</strong> CI = x&#772; &plusmn; z* &times; (&sigma; / &radic;n). A 95% CI does NOT mean "95% probability the true parameter is in this interval." Correct: if we repeated the procedure 100 times, approximately 95 intervals would contain the true parameter.</p>
+
+      <table class="comp-table">
+        <tr><th>Factor</th><th>Effect on Width</th><th>Can You Control?</th></tr>
+        <tr><td>Sample size n</td><td>Larger &rarr; narrower (via &radic;n)</td><td>Yes &mdash; run bigger study</td></tr>
+        <tr><td>Variability &sigma;</td><td>More &rarr; wider</td><td>No (inherent to data)</td></tr>
+        <tr><td>Confidence level</td><td>99% wider than 95%</td><td>Yes (trade-off with precision)</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Confidence is in the <em>procedure</em>, not the single interval. This is the most commonly misunderstood concept in statistics interviews.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.5 A/B Testing -->
+  <div class="section" data-companies="meta amazon" id="s4-5">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">4.5</span> A/B Testing <span class="company-badge meta">Meta</span><span class="company-badge amazon">Amazon</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">This is Meta's #1 topic. Amazon also tests experiment design heavily. Expect peeking, multiple comparisons, and novelty effect questions.</div>
+
+      <p class="explain"><strong>The full process:</strong> (1) Define metric, (2) Power analysis for sample size, (3) Randomize (user-level), (4) Run for fixed duration, (5) Analyze at predetermined end, (6) Document how to validate.</p>
+
+      <table class="comp-table">
+        <tr><th>Pitfall</th><th>What Goes Wrong</th><th>The Fix</th></tr>
+        <tr><td><strong>Peeking</strong></td><td>FP rate inflates from 5% to ~30%</td><td>Decide duration in advance; use sequential testing</td></tr>
+        <tr><td><strong>Multiple comparisons</strong></td><td>10 metrics &rarr; ~40% chance of false positive</td><td>Bonferroni: &alpha; / number of tests</td></tr>
+        <tr><td><strong>Novelty effect</strong></td><td>Users engage more just because it's new</td><td>Run long enough for novelty to fade</td></tr>
+        <tr><td><strong>Simpson's paradox</strong></td><td>Overall positive masks negative subgroups</td><td>Always segment by key dimensions</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The hardest part of A/B testing isn't the statistics &mdash; it's defining the right metric. Spend as much time debating the metric as analyzing results.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4.6 CLT -->
+  <div class="section" data-companies="google" id="s4-6">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">4.6</span> Central Limit Theorem <span class="company-badge google">Google</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Google tests CLT understanding deeply. Expect to explain why confidence intervals work and what happens with small samples.</div>
+
+      <p class="explain">Take <strong>any</strong> population with finite mean &mu; and standard deviation &sigma;. Draw random samples of size n. As n grows, the distribution of sample means approaches a <strong>normal distribution</strong> with Mean = &mu; and Standard Error = &sigma; / &radic;n.</p>
+
+      <p class="explain"><strong>The 68-95-99.7 rule:</strong> ~68% within 1&sigma;, ~95% within 2&sigma;, ~99.7% within 3&sigma;. Rule of thumb: n &ge; 30 is usually sufficient, though more skewed populations need larger samples.</p>
+
+      <p class="explain"><strong>Why it matters:</strong> Confidence intervals use x&#772; &plusmn; z*&middot;SE, which relies on x&#772; being approximately normal. P-values compare test statistics to the standard normal. Without CLT, we would need the exact population distribution before making any inference.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The Law of Large Numbers tells us that sample means converge to the true mean. The CLT tells us <em>how</em> &mdash; normally, with SE = &sigma;/&radic;n. Together, they form the foundation of statistical inference.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v19 &middot; <a href="index.html">Company Playbook</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<!-- Search Modal -->
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="Search topics, sections, companies..." autocomplete="off">
+      <span class="esc-hint">ESC</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="search.js"></script>
+<script>
+function toggleSection(head) {
+  const body = head.nextElementSibling;
+  head.classList.toggle('open');
+  body.classList.toggle('open');
+}
+function filterCompany(company) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.section[data-companies]').forEach(s => {
+    if (company === 'all') { s.style.display = ''; }
+    else { s.style.display = (s.getAttribute('data-companies') || '').includes(company) ? '' : 'none'; }
+  });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python — Weak Spot Tracker | DS Prep v21</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#ca8a04;--accent-light:#fef9c3;--accent-glow:rgba(202,138,4,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--rose:#dc2626;--rose-light:#fee2e2;--code-bg:#f8f9fc;--code-text:#1e293b;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+
+    .diag-banner{max-width:900px;margin:16px auto 0;padding:16px 24px;border-radius:var(--radius);display:flex;align-items:center;gap:12px;font-size:.88rem;font-weight:600}
+    .diag-banner.strong{background:var(--green-light);border:1px solid #86efac;color:var(--green)}
+    .diag-banner.review{background:var(--amber-light);border:1px solid #fcd34d;color:var(--amber)}
+    .diag-banner.weak{background:var(--rose-light);border:1px solid #fca5a5;color:var(--rose)}
+    .diag-banner .db-icon{font-size:1.2rem}
+
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header h1 span{color:var(--accent)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    .section{margin-bottom:32px}
+    .section.focus-section{border-left:4px solid var(--rose);padding-left:20px}
+    .focus-badge{display:inline-block;font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:6px;background:var(--rose-light);color:var(--rose);margin-left:10px;vertical-align:middle}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    .insight{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:var(--accent-light);padding:1px 5px;border-radius:3px}
+
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+    .kw{color:#9333ea}.fn{color:#2563eb}.str{color:#16a34a}.cm{color:#94a3b8;font-style:italic}.num{color:#0891b2}
+
+    .practice-box{background:var(--green-light);border:1px solid #86efac;border-radius:10px;padding:18px 20px;margin:20px 0}
+    .practice-box .practice-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:10px}
+    .practice-box ul{list-style:none;padding:0}
+    .practice-box li{margin-bottom:6px}
+    .practice-box a{font-size:.84rem;color:var(--green);text-decoration:none;font-weight:600}
+    .practice-box a:hover{color:#15803d}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.nav-links{display:none!important}.page-header,.container{padding-left:16px;padding-right:16px}.diag-banner{margin-left:16px;margin-right:16px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v21</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html" class="active">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+  </div>
+</nav>
+
+<div id="diag-banner"></div>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#128013;</div>
+    <h1>Python &mdash; <span>Data Structures &amp; Patterns</span></h1>
+  </div>
+  <p class="intro">Data structures, Pandas, NumPy, coding patterns, and common gotchas for data science interviews.</p>
+</div>
+
+<div class="container">
+
+  <!-- 1 Data Structure Complexity -->
+  <div class="section" id="section-0">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">1</span> Data Structure Time Complexity</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Knowing the time complexity of core operations is essential for coding interviews and choosing the right data structure.</p>
+      <table class="comp-table">
+        <tr><th>Structure</th><th>Lookup</th><th>Insert</th><th>Delete</th><th>Membership</th></tr>
+        <tr><td><code>list</code></td><td>O(1) index</td><td>O(1) append, O(n) insert</td><td>O(n)</td><td>O(n)</td></tr>
+        <tr><td><code>dict</code></td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td></tr>
+        <tr><td><code>set</code></td><td>N/A</td><td>O(1) avg</td><td>O(1) avg</td><td><strong>O(1) avg</strong></td></tr>
+        <tr><td><code>deque</code></td><td>O(n)</td><td>O(1) ends</td><td>O(1) ends</td><td>O(n)</td></tr>
+      </table>
+      <div class="insight">
+        <div class="label">Key Takeaway</div>
+        <p>Use <strong>sets</strong> for membership tests &mdash; <code>x in my_set</code> is O(1) on average vs O(n) for lists. This is a very common interview question.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 Mutable Default Arguments -->
+  <div class="section" id="section-1">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">2</span> Mutable Default Arguments Gotcha</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Default arguments are evaluated <strong>once</strong> at function definition time, not at each call. If the default is mutable (like a list), it is shared across all calls.</p>
+      <div class="code-block"><pre><span class="cm"># Bug: shared mutable default</span>
+<span class="kw">def</span> <span class="fn">add_item</span>(item, lst=[]):
+    lst.append(item)
+    <span class="kw">return</span> lst
+
+<span class="fn">print</span>(add_item(<span class="num">1</span>))  <span class="cm"># [1]</span>
+<span class="fn">print</span>(add_item(<span class="num">2</span>))  <span class="cm"># [1, 2] &mdash; not [2]!</span>
+
+<span class="cm"># Fix: use None sentinel</span>
+<span class="kw">def</span> <span class="fn">add_item</span>(item, lst=<span class="kw">None</span>):
+    <span class="kw">if</span> lst <span class="kw">is None</span>:
+        lst = []
+    lst.append(item)
+    <span class="kw">return</span> lst</pre></div>
+      <div class="insight">
+        <div class="label">Interview Insight</div>
+        <p>This is a classic Python gotcha. Always use <code>None</code> as the default and create the mutable object inside the function body.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 NumPy & Matrix Operations -->
+  <div class="section" id="section-2">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">3</span> NumPy &amp; Matrix Operations</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">NumPy provides efficient array operations. The <code>@</code> operator (Python 3.5+) performs matrix multiplication.</p>
+      <div class="code-block"><pre><span class="kw">import</span> numpy <span class="kw">as</span> np
+
+A = np.array([[<span class="num">1</span>, <span class="num">2</span>], [<span class="num">3</span>, <span class="num">4</span>]])
+B = np.array([[<span class="num">5</span>, <span class="num">6</span>], [<span class="num">7</span>, <span class="num">8</span>]])
+
+<span class="cm"># Matrix multiplication</span>
+C = A @ B           <span class="cm"># same as np.matmul(A, B)</span>
+<span class="cm"># Element-wise multiplication</span>
+D = A * B           <span class="cm"># Hadamard product</span></pre></div>
+      <table class="comp-table">
+        <tr><th>Operation</th><th>Syntax</th><th>Result</th></tr>
+        <tr><td>Matrix multiply</td><td><code>A @ B</code> or <code>np.matmul(A,B)</code></td><td>Standard linear algebra product</td></tr>
+        <tr><td>Element-wise multiply</td><td><code>A * B</code></td><td>Hadamard product</td></tr>
+        <tr><td>Dot product (1D)</td><td><code>np.dot(a, b)</code></td><td>Scalar</td></tr>
+        <tr><td>Broadcasting</td><td><code>A + scalar</code></td><td>Adds to every element</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 4 Pandas Essentials -->
+  <div class="section" id="section-3">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">4</span> Pandas Essentials</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Key Pandas operations for data manipulation in interviews.</p>
+      <table class="comp-table">
+        <tr><th>Operation</th><th>Method</th><th>Notes</th></tr>
+        <tr><td>Group aggregate</td><td><code>df.groupby('col').agg()</code></td><td>Like SQL GROUP BY</td></tr>
+        <tr><td>Merge</td><td><code>pd.merge(df1, df2, on='key')</code></td><td>Like SQL JOIN</td></tr>
+        <tr><td>Pivot</td><td><code>df.pivot_table()</code></td><td>Reshape long to wide</td></tr>
+        <tr><td>Apply</td><td><code>df.apply(func)</code></td><td>Row/column-wise transform</td></tr>
+        <tr><td>Window</td><td><code>df.rolling(n).mean()</code></td><td>Moving averages</td></tr>
+      </table>
+      <div class="insight">
+        <div class="label">Performance Tip</div>
+        <p>Avoid <code>.iterrows()</code> in production &mdash; it is extremely slow. Use vectorized operations or <code>.apply()</code> instead.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 List Comprehensions & Generators -->
+  <div class="section" id="section-4">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">5</span> Comprehensions &amp; Generators</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">List comprehensions are Pythonic and fast. Generators use lazy evaluation for memory efficiency.</p>
+      <div class="code-block"><pre><span class="cm"># List comprehension</span>
+squares = [x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>) <span class="kw">if</span> x % <span class="num">2</span> == <span class="num">0</span>]
+
+<span class="cm"># Generator (lazy, memory-efficient)</span>
+squares_gen = (x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10_000_000</span>))
+
+<span class="cm"># Dict comprehension</span>
+word_lens = {w: <span class="fn">len</span>(w) <span class="kw">for</span> w <span class="kw">in</span> [<span class="str">'hello'</span>, <span class="str">'world'</span>]}</pre></div>
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice</div>
+        <ul>
+          <li><a href="https://leetcode.com/problemset/all/?topicSlugs=array" target="_blank">LeetCode Array Problems &rarr;</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v21 &middot; <a href="index.html">Dashboard</a></p>
+</footer>
+
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+(function(){
+  const raw=localStorage.getItem('ds-v21-diagnostic');
+  if(!raw)return;
+  const data=JSON.parse(raw);
+  const score=data.scores.python||0;
+  const pct=(score/3)*100;
+  const banner=document.getElementById('diag-banner');
+  if(pct>=80) banner.innerHTML='<div class="diag-banner strong"><span class="db-icon">&#9989;</span> You nailed Python! Quick review below.</div>';
+  else if(pct>=40) banner.innerHTML='<div class="diag-banner review"><span class="db-icon">&#9888;&#65039;</span> Python needs some brushing up. Focus on the highlighted sections.</div>';
+  else banner.innerHTML='<div class="diag-banner weak"><span class="db-icon">&#10060;</span> Python is a weak spot. Work through all sections carefully.</div>';
+
+  const qIndices=[3,4,5];
+  const secMap=[0,1,2];
+  data.answers.forEach(a=>{
+    if(a.topic==='python'&&!a.correct){
+      const li=qIndices.indexOf(a.question);
+      if(li>=0){
+        const sec=document.getElementById('section-'+secMap[li]);
+        if(sec){sec.classList.add('focus-section');const h2=sec.querySelector('h2');if(h2&&!h2.querySelector('.focus-badge'))h2.insertAdjacentHTML('beforeend','<span class="focus-badge">FOCUS</span>');}
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Probability Mock Interview — DS Prep v18</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="index.html"><div class="logo"></div>DS Prep v18</a>
+  <a class="back" href="index.html">All Sessions</a>
+</nav>
+
+<div class="interview-container">
+
+  <div class="interview-header">
+    <div class="badge" style="background:var(--prob-light);color:var(--prob);border-color:rgba(219,39,119,0.2)">Probability Interview</div>
+    <h1>Probability Mock Interview</h1>
+    <p>4 questions with follow-ups &middot; ~10 minutes</p>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-step" id="ps1"></div>
+    <div class="progress-step" id="ps2"></div>
+    <div class="progress-step" id="ps3"></div>
+    <div class="progress-step" id="ps4"></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question-block visible" id="q1">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q1</div>
+      <div class="interviewer-text">A medical test is <strong>99% accurate</strong> (both sensitivity and specificity). The disease prevalence is <strong>1%</strong>. You test positive. What's the probability you actually have the disease?</div>
+    </div>
+    <div class="options" id="q1-opts">
+      <div class="option-card" data-q="1" data-val="wrong" onclick="pick(this)">A) 99% &mdash; the test is 99% accurate, so it's almost certain.</div>
+      <div class="option-card" data-q="1" data-val="correct" onclick="pick(this)">B) About 50% &mdash; by Bayes' theorem, the low base rate drags it way down.</div>
+      <div class="option-card" data-q="1" data-val="partial" onclick="pick(this)">C) Somewhere between 50-99% &mdash; high accuracy but low prevalence matters.</div>
+    </div>
+    <div class="follow-up" id="q1-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Walk me through the math. Why do <strong>base rates</strong> matter so much here?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q1')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q1-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"Because the disease is rare, there are more false positives. Something about Bayes' theorem."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Out of 10,000 people: 100 have the disease (1%), 9,900 don't. Of the 100 sick: 99 test positive (true positives). Of the 9,900 healthy: 99 test positive (false positives). So 99 true positives out of 198 total positives = 50%. The base rate matters because when the disease is rare, even a small false positive rate generates many false alarms from the huge healthy population. This is <strong>base rate neglect</strong> &mdash; one of the most important biases in data science, affecting everything from fraud detection to spam filtering."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q1-next" style="display:none" onclick="nextQ(2)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question-block" id="q2">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q2</div>
+      <div class="interviewer-text">The <strong>Monty Hall problem</strong>: you pick a door, the host opens another revealing a goat. Should you switch?</div>
+    </div>
+    <div class="options" id="q2-opts">
+      <div class="option-card" data-q="2" data-val="wrong" onclick="pick(this)">A) No &mdash; it's 50/50 now. Two doors, one car. Doesn't matter.</div>
+      <div class="option-card" data-q="2" data-val="correct" onclick="pick(this)">B) Yes, always switch &mdash; switching gives you 2/3 chance of winning.</div>
+      <div class="option-card" data-q="2" data-val="partial" onclick="pick(this)">C) Yes, but only slightly better. The math is complicated.</div>
+    </div>
+    <div class="follow-up" id="q2-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text"><strong>WHY</strong> is it 2/3 and not 1/2? Most people get this wrong &mdash; convince me.</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q2')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q2-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"Because the host gives you information by opening a door. So switching is better."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Your initial pick has a 1/3 chance of being correct &mdash; that never changes. The other two doors together have 2/3. When the host (who KNOWS where the car is) opens a goat door, that 2/3 probability concentrates onto the remaining door. The key insight: the host's action is NOT random &mdash; he MUST open a goat door. If you picked wrong initially (2/3 probability), switching ALWAYS wins. If you picked right initially (1/3 probability), switching ALWAYS loses. So switching wins 2/3 of the time. Think of it with 100 doors &mdash; you pick one, host opens 98 goat doors. Would you switch? Of course."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q2-next" style="display:none" onclick="nextQ(3)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question-block" id="q3">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q3</div>
+      <div class="interviewer-text">What's the <strong>expected value</strong> of rolling a fair six-sided die?</div>
+    </div>
+    <div class="options" id="q3-opts">
+      <div class="option-card" data-q="3" data-val="wrong" onclick="pick(this)">A) 3 &mdash; it's the middle number.</div>
+      <div class="option-card" data-q="3" data-val="correct" onclick="pick(this)">B) 3.5 &mdash; the average of 1+2+3+4+5+6 divided by 6.</div>
+      <div class="option-card" data-q="3" data-val="partial" onclick="pick(this)">C) Between 3 and 4 &mdash; each face has equal probability.</div>
+    </div>
+    <div class="follow-up" id="q3-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Now a game: I charge you <strong>$4 to play</strong>, and you win whatever the die shows. <strong>Should you play?</strong> What if I offer best of 2 rolls?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q3')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q3-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"No, because 3.5 &lt; 4. With two rolls, maybe it's worth it."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Single roll: E[winnings] = $3.50, cost = $4, so expected loss of $0.50 per game &mdash; don't play. Best of 2 rolls: E[max(X1, X2)] = 4.47 (calculated by summing over all 36 outcomes). Since 4.47 > 4, the game now has positive expected value of $0.47 per play. You should play the two-roll version. The general principle: whenever evaluating a bet, compute E[payoff] - cost. Positive = take it (in the long run). This is the foundation of decision theory."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q3-next" style="display:none" onclick="nextQ(4)">Next Question &rarr;</button>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question-block" id="q4">
+    <div class="interviewer-bubble">
+      <div class="interviewer-avatar">Q4</div>
+      <div class="interviewer-text">The <strong>birthday problem</strong>: how many people do you need in a room for a 50% chance that two share a birthday?</div>
+    </div>
+    <div class="options" id="q4-opts">
+      <div class="option-card" data-q="4" data-val="wrong" onclick="pick(this)">A) About 183 &mdash; half of 365.</div>
+      <div class="option-card" data-q="4" data-val="correct" onclick="pick(this)">B) Just 23 &mdash; it's surprisingly low because you're checking all PAIRS.</div>
+      <div class="option-card" data-q="4" data-val="partial" onclick="pick(this)">C) Around 50-60 &mdash; fewer than you'd think due to combinatorics.</div>
+    </div>
+    <div class="follow-up" id="q4-followup">
+      <div class="interviewer-bubble">
+        <div class="interviewer-avatar">&#8618;</div>
+        <div class="interviewer-text">Walk me through the math. Why does <strong>complement counting</strong> work well here?</div>
+      </div>
+      <button class="reveal-btn" onclick="showReveal('q4')">See Model Answer</button>
+    </div>
+    <div class="reveal" id="q4-reveal">
+      <div class="before">
+        <div class="reveal-label bad">&#10060; Mediocre Answer</div>
+        <p>"There are lots of pairs so the probability adds up. Complement counting avoids double-counting."</p>
+      </div>
+      <div class="after">
+        <div class="reveal-label good">&#9989; Great Answer</div>
+        <p>"Instead of computing P(at least one match) directly (messy, many overlapping cases), we compute P(NO matches) and subtract from 1. Person 1 has any birthday: 365/365. Person 2 must differ: 364/365. Person 3: 363/365. And so on. P(no match among 23) = (365/365)(364/365)(363/365)...(343/365) &asymp; 0.493. So P(match) &asymp; 0.507 > 50%. It's counterintuitive because with 23 people there are C(23,2) = 253 pairs being checked &mdash; people think linearly (23 vs 365) but the comparison space grows quadratically. Complement counting is the go-to technique whenever 'at least one' appears in a probability question."</p>
+      </div>
+    </div>
+    <button class="next-btn" id="q4-next" style="display:none" onclick="finish()">Finish Interview &rarr;</button>
+  </div>
+
+  <div class="completion" id="done">
+    <h2>Interview Complete!</h2>
+    <p>You've finished the Probability mock interview. Review your answers above or try another topic.</p>
+    <a href="index.html">&larr; Back to All Sessions</a>
+  </div>
+
+</div>
+
+<script>
+let current = 1;
+const total = 4;
+
+function updateProgress() {
+  for (let i = 1; i <= total; i++) {
+    const el = document.getElementById('ps' + i);
+    if (i < current) el.className = 'progress-step done';
+    else if (i === current) el.className = 'progress-step active';
+    else el.className = 'progress-step';
+  }
+}
+
+function pick(el) {
+  const q = el.getAttribute('data-q');
+  const val = el.getAttribute('data-val');
+  const opts = document.querySelectorAll('#q' + q + '-opts .option-card');
+  opts.forEach(o => {
+    o.style.pointerEvents = 'none';
+    const v = o.getAttribute('data-val');
+    if (o === el) o.classList.add(v === 'correct' ? 'correct' : v === 'partial' ? 'partial' : 'wrong');
+    else if (v === 'correct') o.classList.add('correct');
+    else o.style.opacity = '0.4';
+  });
+  document.getElementById('q' + q + '-followup').classList.add('show');
+}
+
+function showReveal(q) {
+  document.getElementById(q + '-reveal').classList.add('show');
+  document.getElementById(q + '-next').style.display = 'inline-flex';
+}
+
+function nextQ(n) {
+  current = n;
+  updateProgress();
+  const block = document.getElementById('q' + n);
+  block.classList.add('visible');
+  block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function finish() {
+  for (let i = 1; i <= total; i++) document.getElementById('ps' + i).className = 'progress-step done';
+  const done = document.getElementById('done');
+  done.classList.add('show');
+  done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+updateProgress();
+</script>
+
+</body>
+</html>

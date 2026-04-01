@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The ML Forge — Quest Mode</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="status-bar">
+    <a href="index.html" class="brand">Quest Mode</a>
+    <div class="stats">
+      <a href="quiz.html?cat=ML" class="btn btn-battle" style="padding:6px 16px;font-size:0.7rem">Battle ML</a>
+    </div>
+  </div>
+
+  <div class="dungeon-page">
+    <div class="dungeon-hero">
+      <div class="dungeon-icon">&#129302;</div>
+      <h1>The ML Forge</h1>
+      <p class="dungeon-sub">6 floors of machine learning mastery</p>
+    </div>
+
+    <!-- Floor 1 -->
+    <div class="floor open" id="floor-1">
+      <div class="floor-header" onclick="toggleFloor(1)">
+        <div class="floor-num" style="background:var(--ml)">F1</div>
+        <h3>Supervised Learning</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>Linear Regression</strong> fits a hyperplane minimizing squared residuals. Assumes linearity, normal residuals, and no multicollinearity. It's a <em>diagnostic framework</em> — learn more from residual plots than predictions.</p>
+
+        <p><strong>Logistic Regression</strong> models log-odds as a linear function. The sigmoid squashes output to (0,1). Coefficients are interpretable as change in log-odds per unit change.</p>
+
+        <p><strong>Decision Trees</strong> recursively partition feature space using Gini impurity or entropy. Interpretable but high variance — small data changes can produce different trees.</p>
+
+        <p><strong>Random Forest</strong> corrects variance through <strong>bagging</strong> — many trees on random subsets, averaged. The "wisdom of crowds."</p>
+
+        <p><strong>Gradient Boosting</strong> builds trees <em>sequentially</em>, each correcting prior errors via gradient descent in function space. XGBoost, LightGBM, CatBoost dominate tabular data.</p>
+
+        <p><strong>SVM</strong> maximizes the margin between classes. The kernel trick maps to higher dimensions for nonlinear problems. Elegant but scales poorly.</p>
+
+        <p><strong>KNN</strong> is a lazy learner — stores training data, finds k nearest neighbors at prediction time. No training phase but slow inference.</p>
+
+        <table>
+          <tr><th>Algorithm</th><th>Strengths</th><th>Weaknesses</th><th>When to Use</th></tr>
+          <tr><td><strong>Linear Reg.</strong></td><td>Interpretable, fast</td><td>Assumes linearity</td><td>Baseline, interpretability</td></tr>
+          <tr><td><strong>Logistic Reg.</strong></td><td>Probabilistic, interpretable</td><td>Linear boundary only</td><td>Binary classification + explainability</td></tr>
+          <tr><td><strong>Decision Tree</strong></td><td>Nonlinear, no scaling</td><td>High variance, overfitting</td><td>Quick exploration</td></tr>
+          <tr><td><strong>Random Forest</strong></td><td>Low variance, robust</td><td>Less interpretable</td><td>General-purpose accuracy</td></tr>
+          <tr><td><strong>Gradient Boost</strong></td><td>State-of-the-art tabular</td><td>Overfitting risk</td><td>Accuracy is king</td></tr>
+          <tr><td><strong>SVM</strong></td><td>High-dim, kernel flex</td><td>Slow, opaque</td><td>Text, small datasets</td></tr>
+          <tr><td><strong>KNN</strong></td><td>No training, complex bounds</td><td>Slow inference</td><td>Small data, prototyping</td></tr>
+        </table>
+
+        <button class="floor-complete-btn" onclick="clearFloor('ml',1,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 2 -->
+    <div class="floor" id="floor-2">
+      <div class="floor-header" onclick="toggleFloor(2)">
+        <div class="floor-num" style="background:var(--ml)">F2</div>
+        <h3>Unsupervised Learning</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>K-Means:</strong> Alternates assigning points to nearest centroid and recomputing centroids. Use elbow method or silhouette score to choose k.</p>
+
+        <p><strong>Hierarchical Clustering:</strong> Builds a dendrogram. Cut at desired level for clusters. Explore structure at multiple granularities.</p>
+
+        <p><strong>DBSCAN:</strong> Defines clusters as dense regions. Core points within &epsilon; form clusters; everything else is noise. No k required.</p>
+
+        <p><strong>PCA:</strong> Finds axes of maximum variance (eigenvectors of covariance matrix). Linear, fast, deterministic dimensionality reduction.</p>
+
+        <p><strong>t-SNE / UMAP:</strong> Nonlinear dimensionality reduction for visualization. Preserve local structure but distort global distances.</p>
+
+        <table>
+          <tr><th>Algorithm</th><th>Type</th><th>Key Property</th><th>Use When</th></tr>
+          <tr><td><strong>K-Means</strong></td><td>Clustering</td><td>Fast, spherical clusters</td><td>Known k, convex clusters</td></tr>
+          <tr><td><strong>Hierarchical</strong></td><td>Clustering</td><td>Dendrogram exploration</td><td>Unknown k, want hierarchy</td></tr>
+          <tr><td><strong>DBSCAN</strong></td><td>Clustering</td><td>Arbitrary shapes, outliers</td><td>No k, noise expected</td></tr>
+          <tr><td><strong>PCA</strong></td><td>Dim. Reduction</td><td>Linear, fast</td><td>Feature reduction</td></tr>
+          <tr><td><strong>t-SNE/UMAP</strong></td><td>Dim. Reduction</td><td>Nonlinear, local structure</td><td>2D visualization only</td></tr>
+        </table>
+
+        <button class="floor-complete-btn" onclick="clearFloor('ml',2,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 3 -->
+    <div class="floor" id="floor-3">
+      <div class="floor-header" onclick="toggleFloor(3)">
+        <div class="floor-num" style="background:var(--ml)">F3</div>
+        <h3>Evaluation Metrics</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>Accuracy</strong> is misleading with imbalanced data — a fraud detector predicting "not fraud" always achieves 99.5% accuracy while catching zero fraud.</p>
+
+        <table>
+          <tr><th>Metric</th><th>Idea</th><th>Use When</th></tr>
+          <tr><td><strong>Accuracy</strong></td><td>(TP+TN) / total</td><td>Balanced datasets</td></tr>
+          <tr><td><strong>Precision</strong></td><td>TP / (TP+FP)</td><td>FP is costly (spam filter)</td></tr>
+          <tr><td><strong>Recall</strong></td><td>TP / (TP+FN)</td><td>FN is costly (disease detection)</td></tr>
+          <tr><td><strong>F1 Score</strong></td><td>Harmonic mean of P &amp; R</td><td>Balance precision and recall</td></tr>
+          <tr><td><strong>AUC-ROC</strong></td><td>Area under TPR vs FPR</td><td>Comparing models, threshold-independent</td></tr>
+          <tr><td><strong>RMSE</strong></td><td>&radic;(mean squared errors)</td><td>Penalize large errors (regression)</td></tr>
+          <tr><td><strong>MAE</strong></td><td>Mean absolute errors</td><td>Treat all errors equally</td></tr>
+        </table>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          Before choosing a metric, always ask: "What is the cost of a false positive versus a false negative?" The answer drives your metric, threshold, model, and stakeholder presentation.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('ml',3,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 4 -->
+    <div class="floor" id="floor-4">
+      <div class="floor-header" onclick="toggleFloor(4)">
+        <div class="floor-num" style="background:var(--ml)">F4</div>
+        <h3>Bias-Variance Tradeoff</h3>
+        <span class="floor-xp">+100 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>The Dartboard Analogy:</strong> High bias = darts cluster tight but away from bullseye (underfitting). High variance = darts scatter widely around bullseye (overfitting). Sweet spot = tight cluster on bullseye.</p>
+
+        <p><strong>Total Error = Bias&sup2; + Variance + Irreducible Noise</strong></p>
+
+        <table>
+          <tr><th>Scenario</th><th>Bias</th><th>Variance</th><th>Symptom</th><th>Fix</th></tr>
+          <tr><td>Underfitting</td><td>High</td><td>Low</td><td>Poor on train AND test</td><td>More features, complex model</td></tr>
+          <tr><td>Sweet spot</td><td>Low</td><td>Low</td><td>Good on both</td><td>Keep it</td></tr>
+          <tr><td>Overfitting</td><td>Low</td><td>High</td><td>Great train, poor test</td><td>Regularize, more data</td></tr>
+        </table>
+
+        <p><strong>L1 (Lasso):</strong> Adds |coefficients| &rarr; sparsity, drives coefficients to zero (feature selection).<br>
+        <strong>L2 (Ridge):</strong> Adds coefficients&sup2; &rarr; shrinks all toward zero, stability.<br>
+        <strong>Elastic Net:</strong> Combines both.</p>
+
+        <div class="demo-box">
+          <h4>Interactive: Bias-Variance Dartboard</h4>
+          <button onclick="drawDarts('high-bias')" style="background:var(--hp);color:#fff;border-bottom-color:var(--hp-dark)">High Bias</button>
+          <button onclick="drawDarts('sweet')" style="background:var(--xp);color:#0a0a0a;border-bottom-color:var(--xp-dark);margin-left:6px">Sweet Spot</button>
+          <button onclick="drawDarts('high-var')" style="background:var(--purple);color:#fff;border-bottom-color:#7c3aed;margin-left:6px">High Variance</button>
+          <canvas id="dartCanvas" width="200" height="200" style="display:block;margin:12px auto 0"></canvas>
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('ml',4,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 5 -->
+    <div class="floor" id="floor-5">
+      <div class="floor-header" onclick="toggleFloor(5)">
+        <div class="floor-num" style="background:var(--ml)">F5</div>
+        <h3>Feature Engineering</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <table>
+          <tr><th>Technique</th><th>When</th><th>Watch Out</th></tr>
+          <tr><td>One-hot encoding</td><td>Nominal categories</td><td>High cardinality &rarr; many columns</td></tr>
+          <tr><td>Label encoding</td><td>Ordinal categories</td><td>Don't use for nominal</td></tr>
+          <tr><td>StandardScaler</td><td>KNN, SVM, logistic, PCA</td><td>Not needed for trees</td></tr>
+          <tr><td>Log transform</td><td>Right-skewed data</td><td>Remember to reverse</td></tr>
+          <tr><td>Target encoding</td><td>High cardinality</td><td>Data leakage risk</td></tr>
+        </table>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          Feature engineering often matters more than model choice. Simple logistic regression on well-crafted features can outperform gradient boosting on raw features.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('ml',5,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 6 -->
+    <div class="floor" id="floor-6">
+      <div class="floor-header" onclick="toggleFloor(6)">
+        <div class="floor-num" style="background:var(--ml)">F6</div>
+        <h3>Cross-Validation & Data Leakage</h3>
+        <span class="floor-xp">+100 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>K-Fold CV:</strong> Split data into k folds. Each iteration: one fold as test, k&minus;1 as train. Every point appears in both roles exactly once.</p>
+
+<pre><code>from sklearn.model_selection import cross_val_score
+scores = cross_val_score(model, X, y, cv=5, scoring='f1')
+print(f"Mean F1: {scores.mean():.3f} (+/- {scores.std():.3f})")</code></pre>
+
+        <p><strong>Time Series CV:</strong> Standard k-fold is fatal for time series — it trains on future data. Use expanding or sliding window: training set only includes data <em>before</em> the test period.</p>
+
+        <p><strong>Data Leakage:</strong> Fitting preprocessing on the full dataset before splitting. If you standardize using the full dataset's mean/std (including test), the model implicitly "knows" test data.</p>
+
+        <p><strong>Rule:</strong> Everything that learns from data must be fit inside the training fold only. Use <code>Pipeline</code>.</p>
+
+        <p><strong>Example:</strong> Hospital readmission model — computed features using current visit data and scaled on full dataset. Reported AUC: 94%. Production AUC: <strong>68%</strong>. Two leaks, 26-point drop.</p>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          If performance seems "too good to be true," it almost certainly is. The most common culprit is data leakage. Audit every feature: "Would I have this information at the moment of prediction?"
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('ml',6,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><p>v15 &middot; Quest Mode &mdash; <a href="../index.html">Back to Gallery</a></p></footer>
+
+  <script>
+    function toggleFloor(n) { document.getElementById('floor-' + n).classList.toggle('open'); }
+
+    function clearFloor(topic, n, btn) {
+      const key = 'ds-v15-floors-' + topic;
+      const state = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!state.includes(n)) { state.push(n); localStorage.setItem(key, JSON.stringify(state)); }
+      btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared');
+    }
+
+    (function() {
+      const state = JSON.parse(localStorage.getItem('ds-v15-floors-ml') || '[]');
+      state.forEach(n => {
+        const btn = document.querySelector('#floor-' + n + ' .floor-complete-btn');
+        if (btn) { btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared'); }
+      });
+    })();
+
+    // Dartboard demo
+    function drawDarts(mode) {
+      const c = document.getElementById('dartCanvas');
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, 200, 200);
+
+      // Target rings
+      ctx.strokeStyle = '#2a2a4a';
+      [80, 55, 30, 10].forEach(r => {
+        ctx.beginPath(); ctx.arc(100, 100, r, 0, Math.PI * 2); ctx.stroke();
+      });
+      // Bullseye
+      ctx.fillStyle = '#4ade80'; ctx.beginPath(); ctx.arc(100, 100, 4, 0, Math.PI * 2); ctx.fill();
+
+      const darts = [];
+      for (let i = 0; i < 12; i++) {
+        let x, y;
+        if (mode === 'high-bias') {
+          x = 140 + (Math.random() - 0.5) * 20;
+          y = 60 + (Math.random() - 0.5) * 20;
+        } else if (mode === 'sweet') {
+          x = 100 + (Math.random() - 0.5) * 24;
+          y = 100 + (Math.random() - 0.5) * 24;
+        } else {
+          x = 100 + (Math.random() - 0.5) * 140;
+          y = 100 + (Math.random() - 0.5) * 140;
+        }
+        darts.push({x, y});
+      }
+
+      const colors = { 'high-bias': '#f87171', 'sweet': '#4ade80', 'high-var': '#a78bfa' };
+      darts.forEach(d => {
+        ctx.fillStyle = colors[mode];
+        ctx.beginPath(); ctx.arc(d.x, d.y, 4, 0, Math.PI * 2); ctx.fill();
+      });
+    }
+  </script>
+</body>
+</html>

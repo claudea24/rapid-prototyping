@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Prediction Game — ML | DS Prep v16</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    (function(){var t=localStorage.getItem('ds-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')})();
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#7c3aed;--accent-light:#ede9fe;--accent-glow:rgba(124,58,237,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--code-bg:#f8f9fc;--code-text:#1e293b;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px;--story:#6d28d9;--story-bg:#f5f3ff}
+    [data-theme="dark"]{--bg:#0f0f13;--surface:#1a1a22;--surface2:#24242e;--border:#2e2e3a;--text:#c8c8d0;--text-muted:#8888a0;--heading:#e8e8f0;--accent:#a78bfa;--accent-light:rgba(167,139,250,0.12);--accent-glow:rgba(167,139,250,0.1);--green:#22c55e;--green-light:rgba(34,197,94,0.12);--amber:#f59e0b;--amber-light:rgba(245,158,11,0.12);--code-bg:#1e1e28;--code-text:#d4d4e0;--shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 12px rgba(0,0,0,0.2);--story:#a78bfa;--story-bg:rgba(167,139,250,0.08)}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;transition:background .3s,color .3s}
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:var(--surface);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:background .3s}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px;align-items:center}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+    .theme-toggle{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:1rem;line-height:1;transition:all .2s;color:var(--text);margin-left:8px}
+    .theme-toggle:hover{border-color:var(--accent)}
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header h1 span{color:var(--accent)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+    .story-text{font-size:.95rem;font-style:italic;color:var(--story);line-height:1.75;margin:16px 0;padding:16px 20px;background:var(--story-bg);border-radius:10px;border-left:3px solid var(--story)}
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+    .insight{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:var(--accent-glow)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:var(--accent-light);padding:1px 5px;border-radius:3px}
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+    .kw{color:#9333ea}.fn{color:#2563eb}.str{color:#16a34a}.cm{color:#94a3b8;font-style:italic}.num{color:#0891b2}
+    [data-theme="dark"] .kw{color:#c084fc}[data-theme="dark"] .fn{color:#60a5fa}[data-theme="dark"] .str{color:#4ade80}[data-theme="dark"] .cm{color:#64748b}[data-theme="dark"] .num{color:#22d3ee}
+    .resolution{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 10px 10px 0;padding:16px 20px;margin:24px 0}
+    .resolution .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:6px}
+    .resolution p{font-size:.88rem;color:var(--text);line-height:1.65;font-style:italic}
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.nav-links{display:none!important}.page-header,.container{padding-left:16px;padding-right:16px}.page-header h1{font-size:1.4rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v16</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html" class="active">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#129302;</div>
+    <h1>The Prediction Game &mdash; <span>Machine Learning</span></h1>
+  </div>
+  <p class="intro">Marketing wants to predict churn. You need to build a model that actually works in production, not just on a Jupyter notebook.</p>
+</div>
+
+<div class="container">
+
+  <div class="story-text">
+    The Head of Marketing pulls you into a meeting: "We're spending $2M/month on re-engagement campaigns, but we're spraying and praying. Can you build a model that predicts which users will churn next month? If we target the right 20%, we save half the budget."
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 1</span> Choose Your Model &mdash; Supervised Learning</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        You have labeled data &mdash; users who churned last quarter and users who didn't. This is a binary classification problem. But which algorithm? Logistic regression for interpretability? Random Forest for robustness? Gradient boosting for accuracy? Each has trade-offs.
+      </div>
+
+      <p class="explain"><strong>Logistic Regression</strong> models log-odds as a linear function. Coefficients are directly interpretable. <strong>Random Forest</strong> trains many trees on random subsets and averages &mdash; low variance, robust. <strong>Gradient Boosting</strong> builds trees sequentially, each correcting the prior's errors &mdash; state-of-the-art for tabular data.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Algorithm</th><th>Strengths</th><th>Weaknesses</th><th>When to Use</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Linear Regression</strong></td><td>Interpretable, fast</td><td>Assumes linearity, outlier-sensitive</td><td>Baseline for regression</td></tr>
+          <tr><td><strong>Logistic Regression</strong></td><td>Probabilistic, interpretable</td><td>Linear boundary only</td><td>Binary classification + explainability</td></tr>
+          <tr><td><strong>Decision Tree</strong></td><td>Nonlinear, no scaling needed</td><td>High variance, overfitting</td><td>Quick exploration</td></tr>
+          <tr><td><strong>Random Forest</strong></td><td>Low variance, robust</td><td>Less interpretable, slower</td><td>General-purpose accuracy</td></tr>
+          <tr><td><strong>Gradient Boosting</strong></td><td>State-of-the-art tabular</td><td>Overfitting risk, slow</td><td>Max accuracy needed</td></tr>
+          <tr><td><strong>SVM</strong></td><td>High-dim, kernel flexibility</td><td>Slow, hyperparameter-sensitive</td><td>Text, small/medium data</td></tr>
+          <tr><td><strong>KNN</strong></td><td>No training, complex boundaries</td><td>Slow inference, curse of dim</td><td>Small datasets, prototyping</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>For churn prediction, you likely want <strong>both</strong>: a logistic regression baseline for interpretability (stakeholders want to know <em>why</em> users churn) and a gradient boosting model for production accuracy. Start simple, add complexity only if needed.</p>
+      </div>
+
+      <div class="story-text">
+        You start with logistic regression as a baseline and Random Forest as the candidate. Both train quickly. But how do you know which is better? You need the right evaluation metric &mdash; and for churn, accuracy is the wrong one.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 2</span> Evaluate It &mdash; Metrics That Matter</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        Your first model reports 94% accuracy. Impressive? No &mdash; only 6% of users actually churn. A model that predicts "no churn" for everyone gets 94% accuracy while catching zero churners. You need precision and recall.
+      </div>
+
+      <p class="explain"><strong>Precision</strong> answers: "Of all users I flagged as churners, how many actually churned?" <strong>Recall</strong> answers: "Of all actual churners, how many did I catch?" For churn, recall matters more &mdash; missing a churner means losing them forever.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Metric</th><th>Idea</th><th>Fails When</th><th>Use When</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Accuracy</strong></td><td>(TP+TN) / total</td><td>Imbalanced classes</td><td>Balanced datasets</td></tr>
+          <tr><td><strong>Precision</strong></td><td>TP / (TP+FP)</td><td>&mdash;</td><td>Cost of FP is high (spam filter)</td></tr>
+          <tr><td><strong>Recall</strong></td><td>TP / (TP+FN)</td><td>&mdash;</td><td>Cost of FN is high (churn, disease)</td></tr>
+          <tr><td><strong>F1 Score</strong></td><td>Harmonic mean of P &amp; R</td><td>&mdash;</td><td>Need balance of both</td></tr>
+          <tr><td><strong>AUC-ROC</strong></td><td>Area under TPR vs FPR</td><td>&mdash;</td><td>Comparing models, threshold-free</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Before choosing a metric, always ask: "What is the cost of a false positive versus a false negative?" For churn, a false negative means losing a customer ($50 LTV). A false positive means sending a discount to someone who would have stayed ($5 wasted). Recall should dominate.</p>
+      </div>
+
+      <div class="story-text">
+        With recall as your north star, the Random Forest outperforms logistic regression: 78% recall vs 62%. But when you test on a holdout set, recall drops to 51%. Something is wrong &mdash; your model is overfitting.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 3</span> The Bias-Variance Trap &mdash; Overfitting</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        Your senior data scientist takes one look at the results: "Classic overfitting. Your training recall is 95% but test is 51%. That gap is your problem. Let me show you the dartboard analogy."
+      </div>
+
+      <p class="explain">Imagine throwing darts at a target. <strong>High bias, low variance:</strong> darts cluster tightly but away from the bullseye &mdash; underfitting. <strong>Low bias, high variance:</strong> darts scatter around the bullseye &mdash; overfitting. The sweet spot is tight clusters on the bullseye.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Scenario</th><th>Bias</th><th>Variance</th><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Underfitting</td><td>High</td><td>Low</td><td>Poor on train AND test</td><td>More features, complex model</td></tr>
+          <tr><td>Sweet spot</td><td>Low</td><td>Low</td><td>Good on both</td><td>Keep it</td></tr>
+          <tr><td>Overfitting</td><td>Low</td><td>High</td><td>Great train, poor test</td><td>Regularize, more data, simplify</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain"><strong>L1 (Lasso)</strong> adds sum of |coefficients| &mdash; drives some to exactly zero (feature selection). <strong>L2 (Ridge)</strong> adds sum of coefficients&sup2; &mdash; shrinks all toward zero (stability). <strong>Elastic Net</strong> combines both.</p>
+
+      <div class="code-block"><pre><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
+<span class="kw">from</span> sklearn.ensemble <span class="kw">import</span> RandomForestClassifier
+
+model = RandomForestClassifier(
+    n_estimators=<span class="num">200</span>,
+    max_depth=<span class="num">10</span>,        <span class="cm"># limit depth to reduce variance</span>
+    min_samples_leaf=<span class="num">20</span>, <span class="cm"># require more samples per leaf</span>
+    random_state=<span class="num">42</span>
+)
+
+scores = cross_val_score(model, X, y, cv=<span class="num">5</span>, scoring=<span class="str">'recall'</span>)
+<span class="fn">print</span>(<span class="str">f"Mean Recall: {scores.mean():.3f} (+/- {scores.std():.3f})"</span>)</pre></div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>If performance seems "too good to be true," it almost certainly is. The most common culprit is data leakage &mdash; fitting preprocessing on the full dataset before splitting. Everything that learns from data must be fit inside the training fold only. Use <code>Pipeline</code> to ensure containment.</p>
+      </div>
+
+      <div class="resolution">
+        <div class="label">Story Resolution</div>
+        <p>Random Forest with proper 5-fold cross-validation, depth-limited trees, and a Pipeline that prevents leakage. Final recall: 73% on the holdout set. Marketing targets the top 20% risk score and offers personalized retention incentives. Three months later: churn reduced 23%, campaign spend down 40%. The Head of Marketing mentions your model in the all-hands.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v16 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+function toggleTheme(){var d=document.documentElement;if(d.getAttribute('data-theme')==='dark'){d.removeAttribute('data-theme');localStorage.setItem('ds-theme','light')}else{d.setAttribute('data-theme','dark');localStorage.setItem('ds-theme','dark')}}
+</script>
+</body>
+</html>

@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quest Mode — Data Science Interview Prep</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Status Bar -->
+  <div class="status-bar">
+    <a href="../index.html" class="brand">Quest Mode</a>
+    <div class="stats">
+      <div class="stat-item level">
+        <span class="icon">&#9733;</span>
+        <span id="levelText">Lv 1</span>
+      </div>
+      <div class="stat-item xp">
+        <span class="icon">&#9733;</span>
+        <span id="xpMini">0 XP</span>
+        <div class="xp-bar-mini"><div class="fill" id="xpMiniFill" style="width:0%"></div></div>
+      </div>
+      <div class="stat-item hearts">
+        <span class="icon">&hearts;</span>
+        <span id="heartsText">5</span>
+      </div>
+      <div class="stat-item streak">
+        <span class="icon">&#128293;</span>
+        <span id="streakText">0</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="level-badge" id="levelBadge">Level 1 &middot; Data Apprentice</div>
+    <h1>Train Your <span class="highlight">Data Science</span> Skills</h1>
+    <p>Conquer six skill dungeons, complete daily quests, and defeat the interview boss. Your adventure starts now.</p>
+  </section>
+
+  <!-- XP Bar -->
+  <div class="xp-section">
+    <div class="xp-label">
+      <span>Experience Points</span>
+      <span id="xpText">0 / 1000 XP</span>
+    </div>
+    <div class="xp-track">
+      <div class="xp-fill" id="xpFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Character Stats -->
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <!-- Learning Path -->
+  <section class="path-section">
+    <div class="section-header">
+      <h2>Dungeon Path</h2>
+      <p>Clear each dungeon to unlock the next</p>
+    </div>
+    <div class="path-container" id="pathContainer"></div>
+  </section>
+
+  <!-- Daily Challenge -->
+  <section class="daily-section">
+    <div class="section-header">
+      <h2>Daily Challenge</h2>
+      <p>One topic per day, every day</p>
+    </div>
+    <div class="daily-card">
+      <div class="date" id="dailyDate"></div>
+      <h3 id="dailyTitle">Today's Challenge</h3>
+      <div class="topic-tag" id="dailyTopic"></div>
+      <div class="meta">
+        <span>5 questions</span>
+        <span>~3 min</span>
+      </div>
+      <div class="countdown" id="countdown">
+        <small>Next challenge in</small>
+        <span id="countdownTime">--:--:--</span>
+      </div>
+      <a href="quiz.html" class="btn btn-gold">Start Challenge</a>
+    </div>
+  </section>
+
+  <!-- Quest Log -->
+  <section class="quests-section">
+    <div class="section-header">
+      <h2>Daily Quests</h2>
+      <p>Complete quests to earn bonus XP</p>
+    </div>
+    <div id="questLog"></div>
+  </section>
+
+  <!-- Calendar -->
+  <section class="calendar-section">
+    <div class="section-header">
+      <h2>Activity</h2>
+    </div>
+    <div class="cal-header" id="calMonth"></div>
+    <div class="cal-days"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+    <div class="cal-grid" id="calGrid"></div>
+  </section>
+
+  <!-- Battle Mode -->
+  <section class="battle-section">
+    <div class="battle-card">
+      <div class="battle-icon">&#9876;&#65039;</div>
+      <h3>Battle Mode</h3>
+      <p>Test all your skills in a timed boss fight across every topic.</p>
+      <div class="battle-stats">
+        <span>30 Questions</span>
+        <span>6 Topics</span>
+        <span>3 Lives</span>
+      </div>
+      <a href="quiz.html?mode=battle" class="btn btn-battle">Enter Battle</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>v15 &middot; Quest Mode &mdash; <a href="../index.html">Back to Gallery</a></p>
+  </footer>
+
+  <script>
+    // ── DATA ──
+    const TOPICS = [
+      { id: 'sql',    name: 'SQL',          icon: '&#128451;', color: 'var(--sql)',    page: 'sql.html' },
+      { id: 'python', name: 'Python',       icon: '&#128013;', color: 'var(--python)', page: 'python.html' },
+      { id: 'ml',     name: 'ML',           icon: '&#129302;', color: 'var(--ml)',     page: 'ml.html' },
+      { id: 'stats',  name: 'Statistics',   icon: '&#128202;', color: 'var(--stats)',  page: 'stats.html' },
+      { id: 'prob',   name: 'Probability',  icon: '&#127922;', color: 'var(--prob)',   page: 'probability.html' },
+      { id: 'case',   name: 'Case Studies', icon: '&#128161;', color: 'var(--case)',   page: 'casing.html' },
+    ];
+
+    const DUNGEONS = [
+      { ...TOPICS[0], subtitle: 'The SQL Caverns',     floors: 6 },
+      { ...TOPICS[1], subtitle: 'The Python Pit',      floors: 5 },
+      { ...TOPICS[2], subtitle: 'The ML Forge',        floors: 6 },
+      { ...TOPICS[3], subtitle: 'The Stats Sanctum',   floors: 6 },
+      { ...TOPICS[4], subtitle: 'The Probability Tower', floors: 6 },
+      { ...TOPICS[5], subtitle: 'The Case Arena',      floors: 6 },
+    ];
+
+    const QUESTS = [
+      { text: 'Clear 1 dungeon floor',           xp: 50  },
+      { text: 'Complete a Python coding pattern', xp: 75  },
+      { text: 'Score 80%+ on a quiz',             xp: 100 },
+      { text: 'Read through a SQL concept',       xp: 50  },
+      { text: 'Win a battle with full HP',         xp: 150 },
+    ];
+
+    const RANKS = [
+      { min: 0,    title: 'Data Apprentice' },
+      { min: 200,  title: 'Query Squire' },
+      { min: 500,  title: 'Analyst Knight' },
+      { min: 1000, title: 'Model Mage' },
+      { min: 2000, title: 'Data Wizard' },
+      { min: 3500, title: 'Interview Champion' },
+    ];
+
+    const DAILY_SCHEDULE = [
+      { topic: 'sql',    label: 'SQL',           color: 'var(--sql)' },
+      { topic: 'python', label: 'Python',        color: 'var(--python)' },
+      { topic: 'ml',     label: 'Machine Learning', color: 'var(--ml)' },
+      { topic: 'stats',  label: 'Statistics',    color: 'var(--stats)' },
+      { topic: 'prob',   label: 'Probability',   color: 'var(--prob)' },
+      { topic: 'case',   label: 'Case Studies',  color: 'var(--case)' },
+      { topic: 'mixed',  label: 'Mixed Review',  color: 'var(--purple)' },
+    ];
+
+    // ── STATE ──
+    const STORAGE_KEY = 'ds-v15-state';
+    function getState() {
+      const def = { xp: 0, hearts: 5, streak: 0, completedDungeons: [], questsDone: [], completedDates: {} };
+      try { return { ...def, ...JSON.parse(localStorage.getItem(STORAGE_KEY)) }; } catch { return def; }
+    }
+    function saveState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+
+    const state = getState();
+
+    // ── LEVEL / RANK ──
+    function getRank(xp) {
+      let rank = RANKS[0];
+      for (const r of RANKS) { if (xp >= r.min) rank = r; }
+      return rank;
+    }
+    function getLevel(xp) {
+      let lv = 1;
+      for (const r of RANKS) { if (xp >= r.min) lv = RANKS.indexOf(r) + 1; }
+      return lv;
+    }
+
+    // ── UPDATE UI ──
+    function updateUI() {
+      const rank = getRank(state.xp);
+      const level = getLevel(state.xp);
+      const nextRank = RANKS[Math.min(level, RANKS.length - 1)];
+      const prevMin = RANKS[level - 1]?.min || 0;
+      const nextMin = nextRank.min || state.xp;
+      const pct = nextMin > prevMin ? Math.min(100, ((state.xp - prevMin) / (nextMin - prevMin)) * 100) : 100;
+
+      document.getElementById('levelText').textContent = `Lv ${level}`;
+      document.getElementById('levelBadge').innerHTML = `Level ${level} &middot; ${rank.title}`;
+      document.getElementById('xpText').textContent = `${state.xp} / ${nextMin} XP`;
+      document.getElementById('xpMini').textContent = `${state.xp} XP`;
+      document.getElementById('xpFill').style.width = pct + '%';
+      document.getElementById('xpMiniFill').style.width = pct + '%';
+      document.getElementById('heartsText').textContent = state.hearts;
+      document.getElementById('streakText').textContent = state.streak;
+    }
+
+    // ── STATS GRID ──
+    function renderStats() {
+      const grid = document.getElementById('statsGrid');
+      TOPICS.forEach(t => {
+        const completed = state.completedDungeons.filter(d => d === t.id).length;
+        const max = DUNGEONS.find(d => d.id === t.id)?.floors || 6;
+        const pct = (completed / max) * 100;
+        grid.innerHTML += `
+          <div class="stat-card">
+            <div class="stat-icon">${t.icon}</div>
+            <div class="stat-name">${t.name}</div>
+            <div class="stat-bar"><div class="fill" style="width:${pct}%;background:${t.color}"></div></div>
+            <div class="stat-val">${completed}/${max} floors</div>
+          </div>`;
+      });
+    }
+
+    // ── LEARNING PATH ──
+    function renderPath() {
+      const container = document.getElementById('pathContainer');
+      const positions = ['center', 'right', 'center', 'left'];
+      let currentFound = false;
+
+      DUNGEONS.forEach((d, i) => {
+        const isCompleted = state.completedDungeons.includes(d.id);
+        const isCurrent = !isCompleted && !currentFound;
+        if (isCurrent) currentFound = true;
+        const isLocked = !isCompleted && !isCurrent;
+
+        const stateClass = isCompleted ? 'completed' : isCurrent ? 'current' : 'locked';
+        const pos = positions[i % positions.length];
+
+        if (i > 0) {
+          container.innerHTML += `<div class="path-connector ${isCompleted || isCurrent ? 'done' : ''}"></div>`;
+        }
+
+        const href = isLocked ? '' : `href="${d.page}"`;
+        const tag = isLocked ? 'div' : 'a';
+        container.innerHTML += `
+          <div class="path-node-row ${pos}">
+            <${tag} ${href} class="path-node ${stateClass}">
+              ${isCompleted ? '<span class="crown-badge">&#128081;</span>' : ''}
+              ${d.icon}
+              <span class="node-label">${d.subtitle}</span>
+            </${tag}>
+          </div>`;
+
+        // Add checkpoint after every 2 dungeons
+        if ((i + 1) % 2 === 0 && i < DUNGEONS.length - 1) {
+          container.innerHTML += `
+            <div class="path-connector ${isCompleted ? 'done' : ''}"></div>
+            <div class="checkpoint">
+              <div class="cp-icon">&#127942;</div>
+              <div class="cp-label">Checkpoint ${Math.floor((i + 1) / 2)}</div>
+            </div>`;
+        }
+      });
+
+      // Final challenge
+      container.innerHTML += `
+        <div class="path-connector"></div>
+        <div class="checkpoint">
+          <div class="cp-icon">&#127775;</div>
+          <div class="cp-label">Final Boss</div>
+        </div>`;
+    }
+
+    // ── DAILY CHALLENGE ──
+    function renderDaily() {
+      const now = new Date();
+      const dayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1; // Mon=0
+      const today = DAILY_SCHEDULE[dayIndex];
+      const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+      document.getElementById('dailyDate').textContent = dateStr;
+      document.getElementById('dailyTitle').textContent = `Today: ${today.label}`;
+      const tag = document.getElementById('dailyTopic');
+      tag.textContent = today.label;
+      tag.style.background = today.color;
+      tag.style.color = '#0a0a0a';
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const tomorrow = new Date(now);
+      tomorrow.setHours(24, 0, 0, 0);
+      const diff = tomorrow - now;
+      const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
+      const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+      const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+      document.getElementById('countdownTime').textContent = `${h}:${m}:${s}`;
+    }
+
+    // ── QUESTS ──
+    function renderQuests() {
+      const log = document.getElementById('questLog');
+      QUESTS.forEach((q, i) => {
+        const done = state.questsDone.includes(i);
+        log.innerHTML += `
+          <div class="quest-item ${done ? 'done' : ''}" onclick="toggleQuest(${i})">
+            <div class="quest-check"></div>
+            <span class="quest-text">${q.text}</span>
+            <span class="quest-xp">+${q.xp} XP</span>
+          </div>`;
+      });
+    }
+
+    function toggleQuest(i) {
+      const idx = state.questsDone.indexOf(i);
+      if (idx === -1) {
+        state.questsDone.push(i);
+        state.xp += QUESTS[i].xp;
+      } else {
+        state.questsDone.splice(idx, 1);
+        state.xp = Math.max(0, state.xp - QUESTS[i].xp);
+      }
+      saveState(state);
+      // Re-render quests
+      document.getElementById('questLog').innerHTML = '';
+      renderQuests();
+      updateUI();
+    }
+
+    // ── CALENDAR ──
+    function renderCalendar() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = now.getMonth();
+      const monthName = now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+      document.getElementById('calMonth').textContent = monthName;
+
+      const firstDay = new Date(year, month, 1);
+      let startDay = firstDay.getDay() - 1;
+      if (startDay < 0) startDay = 6; // Sun → 6
+
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const todayDate = now.getDate();
+      const grid = document.getElementById('calGrid');
+
+      // Empty cells before first day
+      for (let i = 0; i < startDay; i++) {
+        grid.innerHTML += '<div class="cal-cell empty"></div>';
+      }
+
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const isDone = state.completedDates[dateKey];
+        const isToday = d === todayDate;
+        const isFuture = d > todayDate;
+        let cls = 'cal-cell';
+        if (isDone) cls += ' done';
+        if (isToday) cls += ' today';
+        if (isFuture) cls += ' future';
+        grid.innerHTML += `<div class="${cls}">${d}</div>`;
+      }
+    }
+
+    // ── INIT ──
+    renderStats();
+    renderPath();
+    renderDaily();
+    renderQuests();
+    renderCalendar();
+    updateUI();
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>

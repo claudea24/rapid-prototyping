@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Stats Sanctum — Quest Mode</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="status-bar">
+    <a href="index.html" class="brand">Quest Mode</a>
+    <div class="stats">
+      <a href="quiz.html?cat=Stats" class="btn btn-battle" style="padding:6px 16px;font-size:0.7rem">Battle Stats</a>
+    </div>
+  </div>
+
+  <div class="dungeon-page">
+    <div class="dungeon-hero">
+      <div class="dungeon-icon">&#128202;</div>
+      <h1>The Stats Sanctum</h1>
+      <p class="dungeon-sub">6 floors of statistics mastery</p>
+    </div>
+
+    <!-- Floor 1 -->
+    <div class="floor open" id="floor-1">
+      <div class="floor-header" onclick="toggleFloor(1)">
+        <div class="floor-num" style="background:var(--stats);color:#0a0a0a">F1</div>
+        <h3>Descriptive Statistics</h3>
+        <span class="floor-xp">+50 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>The <strong>mean</strong> is sensitive to outliers — a single billionaire drags the average. The <strong>median</strong> (middle value when sorted) is robust. The <strong>mode</strong> is the most frequent value, works for categorical data.</p>
+
+        <p><strong>Variance</strong> measures spread via squared deviations. <strong>Standard deviation</strong> is &radic;variance, same units as data. <strong>IQR</strong> (Q3 &minus; Q1) captures the middle 50%, robust to outliers.</p>
+
+        <table>
+          <tr><th>Measure</th><th>What It Tells You</th><th>Sensitive To</th><th>When to Use</th></tr>
+          <tr><td><strong>Mean</strong></td><td>Average value</td><td>Outliers, skew</td><td>Symmetric data</td></tr>
+          <tr><td><strong>Median</strong></td><td>Middle value</td><td>Nothing (robust)</td><td>Skewed data</td></tr>
+          <tr><td><strong>Mode</strong></td><td>Most frequent</td><td>&mdash;</td><td>Categorical data</td></tr>
+          <tr><td><strong>Std Dev</strong></td><td>Spread (same units)</td><td>Outliers</td><td>Reporting spread</td></tr>
+          <tr><td><strong>IQR</strong></td><td>Middle 50% spread</td><td>Nothing (robust)</td><td>Outlier detection</td></tr>
+        </table>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          Always ask "is my data skewed?" If yes, prefer median and IQR over mean and standard deviation. Using the wrong summary statistic is common, quiet damage.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('stats',1,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 2 -->
+    <div class="floor" id="floor-2">
+      <div class="floor-header" onclick="toggleFloor(2)">
+        <div class="floor-num" style="background:var(--stats);color:#0a0a0a">F2</div>
+        <h3>Hypothesis Testing</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>The Framework:</strong></p>
+        <p>1. Formulate H&sub0; (null) and H&sub1; (alternative)<br>
+        2. Choose significance level &alpha; (0.05)<br>
+        3. Collect data<br>
+        4. Compute test statistic<br>
+        5. Compare to critical value or compute p-value<br>
+        6. Conclude: reject or fail to reject H&sub0;</p>
+
+        <p><strong>The p-value</strong> is the probability of data this extreme <em>assuming H&sub0; is true</em>. It does <strong>NOT</strong> mean the probability H&sub0; is true. It does <strong>NOT</strong> mean the probability the result is due to chance.</p>
+
+        <table>
+          <tr><th>Error</th><th>Name</th><th>Analogy</th><th>Probability</th></tr>
+          <tr><td><strong>Type I</strong></td><td>False Positive</td><td>Convicting an innocent</td><td>&alpha; (0.05)</td></tr>
+          <tr><td><strong>Type II</strong></td><td>False Negative</td><td>Acquitting a guilty</td><td>&beta;</td></tr>
+          <tr><td><strong>Power</strong></td><td>Correct Rejection</td><td>Catching the guilty</td><td>1 &minus; &beta; (&ge; 0.80)</td></tr>
+        </table>
+
+        <p><strong>Worked Example:</strong> New onboarding flow. Baseline 12%, observed 13.8% in 2,000 users. z = 2.48, p = 0.0066. p &lt; 0.05 &rarr; <strong>reject H&sub0;</strong>: the new flow significantly increases conversions.</p>
+
+        <button class="floor-complete-btn" onclick="clearFloor('stats',2,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 3 -->
+    <div class="floor" id="floor-3">
+      <div class="floor-header" onclick="toggleFloor(3)">
+        <div class="floor-num" style="background:var(--stats);color:#0a0a0a">F3</div>
+        <h3>Common Statistical Tests</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <table>
+          <tr><th>Test</th><th>When</th><th>Assumes</th><th>Example</th></tr>
+          <tr><td><strong>z-test</strong></td><td>Large n, &sigma; known</td><td>Normality</td><td>Rare in practice</td></tr>
+          <tr><td><strong>t-test</strong></td><td>Unknown &sigma;</td><td>Normality</td><td>Comparing two group means</td></tr>
+          <tr><td><strong>Paired t-test</strong></td><td>Same subjects, before/after</td><td>Paired differences normal</td><td>Pre/post treatment</td></tr>
+          <tr><td><strong>Chi-squared</strong></td><td>Two categorical variables</td><td>Expected counts &ge; 5</td><td>Independence testing</td></tr>
+          <tr><td><strong>ANOVA</strong></td><td>3+ groups</td><td>Normality, equal var</td><td>Multiple group means</td></tr>
+          <tr><td><strong>Mann-Whitney U</strong></td><td>Non-parametric</td><td>&mdash;</td><td>Normality violated</td></tr>
+        </table>
+
+        <p><strong>Decision Flowchart:</strong><br>
+        1. Outcome categorical? &rarr; Chi-squared<br>
+        2. Continuous, how many groups? One &rarr; one-sample t-test. Two &rarr; continue. Three+ &rarr; ANOVA<br>
+        3. Paired? &rarr; Paired t-test<br>
+        4. Normality OK? &rarr; Independent t-test. No &rarr; Mann-Whitney U</p>
+
+        <button class="floor-complete-btn" onclick="clearFloor('stats',3,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 4 -->
+    <div class="floor" id="floor-4">
+      <div class="floor-header" onclick="toggleFloor(4)">
+        <div class="floor-num" style="background:var(--stats);color:#0a0a0a">F4</div>
+        <h3>Confidence Intervals</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+<pre><code>CI = x&#772; &plusmn; z* &times; (&sigma; / &radic;n)
+
+z* values: 1.645 (90%), 1.96 (95%), 2.576 (99%)</code></pre>
+
+        <p><strong>Correct interpretation:</strong> If we repeated the sampling procedure 100 times, approximately 95 of those intervals would contain the true parameter. Confidence is in the <strong>procedure</strong>, not the single interval.</p>
+
+        <table>
+          <tr><th>Factor</th><th>Effect on Width</th><th>Can You Control?</th></tr>
+          <tr><td>Sample size n</td><td>Larger &rarr; narrower</td><td>Yes &mdash; bigger study</td></tr>
+          <tr><td>Variability &sigma;</td><td>More &rarr; wider</td><td>No (inherent)</td></tr>
+          <tr><td>Confidence level</td><td>99% wider than 95%</td><td>Yes (trade-off)</td></tr>
+        </table>
+
+        <p><strong>Worked Example:</strong> 200 sessions, mean = 4.2 min, SD = 1.8. SE = 1.8/&radic;200 &asymp; 0.127. Margin = 1.96 &times; 0.127 &asymp; 0.249. 95% CI = <strong>(3.95, 4.45) minutes</strong>.</p>
+
+        <button class="floor-complete-btn" onclick="clearFloor('stats',4,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 5 -->
+    <div class="floor" id="floor-5">
+      <div class="floor-header" onclick="toggleFloor(5)">
+        <div class="floor-num" style="background:var(--stats);color:#0a0a0a">F5</div>
+        <h3>A/B Testing</h3>
+        <span class="floor-xp">+100 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>The Process:</strong> 1. Define metric 2. Power analysis for sample size 3. Randomize 4. Run for fixed duration 5. Analyze 6. Measure</p>
+
+        <table>
+          <tr><th>Pitfall</th><th>What Goes Wrong</th><th>The Fix</th></tr>
+          <tr><td><strong>Peeking</strong></td><td>Checking daily inflates FP from 5% to ~30%</td><td>Fix duration in advance; use sequential testing</td></tr>
+          <tr><td><strong>Multiple comparisons</strong></td><td>10 metrics &rarr; ~40% chance of false positive</td><td>Bonferroni: &alpha;/number of tests</td></tr>
+          <tr><td><strong>Novelty effect</strong></td><td>Users engage with new features simply because they're new</td><td>Run long enough for novelty to fade</td></tr>
+          <tr><td><strong>Simpson's paradox</strong></td><td>Overall positive masks negative in every subgroup</td><td>Segment by key dimensions</td></tr>
+        </table>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          The hardest part of A/B testing isn't the statistics — it's defining the right metric. Spend as much time debating the metric as analyzing results.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('stats',5,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 6 -->
+    <div class="floor" id="floor-6">
+      <div class="floor-header" onclick="toggleFloor(6)">
+        <div class="floor-num" style="background:var(--stats);color:#0a0a0a">F6</div>
+        <h3>Central Limit Theorem</h3>
+        <span class="floor-xp">+100 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>Take <strong>any</strong> population with finite mean &mu; and standard deviation &sigma;. Draw samples of size n. As n grows, the distribution of sample means approaches a <strong>normal distribution</strong> with mean = &mu; and SE = &sigma;/&radic;n.</p>
+
+        <p><strong>The Intuition:</strong> Roll one die &rarr; uniform distribution. Roll 30 dice, average them &rarr; beautiful bell curve centered at 3.5. Works for <em>any</em> starting distribution. Rule of thumb: n &ge; 30 is usually sufficient.</p>
+
+        <div class="demo-box">
+          <h4>Interactive: CLT Dice Simulator</h4>
+          <button onclick="rollDice()" style="background:var(--stats);color:#0a0a0a;border-bottom-color:#22c55e">Roll 30 Dice & Add Mean</button>
+          <button onclick="resetCLT()" style="background:var(--surface2);color:var(--text);border:1px solid var(--border);margin-left:6px">Reset</button>
+          <div class="result" id="cltResult">Samples: 0</div>
+          <canvas id="cltCanvas" width="400" height="180" style="display:block;margin:12px auto 0;width:100%;max-width:400px"></canvas>
+        </div>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          The Law of Large Numbers tells us sample means converge to the true mean. The CLT tells us <em>how</em> &mdash; normally, with SE = &sigma;/&radic;n. Together they form the foundation of statistical inference.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('stats',6,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><p>v15 &middot; Quest Mode &mdash; <a href="../index.html">Back to Gallery</a></p></footer>
+
+  <script>
+    function toggleFloor(n) { document.getElementById('floor-' + n).classList.toggle('open'); }
+
+    function clearFloor(topic, n, btn) {
+      const key = 'ds-v15-floors-' + topic;
+      const state = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!state.includes(n)) { state.push(n); localStorage.setItem(key, JSON.stringify(state)); }
+      btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared');
+    }
+
+    (function() {
+      const state = JSON.parse(localStorage.getItem('ds-v15-floors-stats') || '[]');
+      state.forEach(n => {
+        const btn = document.querySelector('#floor-' + n + ' .floor-complete-btn');
+        if (btn) { btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared'); }
+      });
+    })();
+
+    // CLT Demo
+    const cltMeans = [];
+    function rollDice() {
+      let sum = 0;
+      for (let i = 0; i < 30; i++) sum += Math.floor(Math.random() * 6) + 1;
+      cltMeans.push(sum / 30);
+      document.getElementById('cltResult').textContent = `Samples: ${cltMeans.length} | Last mean: ${(sum/30).toFixed(2)}`;
+      drawCLT();
+    }
+    function resetCLT() {
+      cltMeans.length = 0;
+      document.getElementById('cltResult').textContent = 'Samples: 0';
+      const ctx = document.getElementById('cltCanvas').getContext('2d');
+      ctx.clearRect(0, 0, 400, 180);
+    }
+    function drawCLT() {
+      const c = document.getElementById('cltCanvas');
+      const ctx = c.getContext('2d');
+      ctx.clearRect(0, 0, 400, 180);
+      if (cltMeans.length === 0) return;
+
+      const bins = new Array(20).fill(0);
+      const min = 1, max = 6;
+      cltMeans.forEach(m => {
+        const idx = Math.min(19, Math.floor(((m - min) / (max - min)) * 20));
+        bins[idx]++;
+      });
+      const maxCount = Math.max(...bins, 1);
+      const barW = 400 / 20;
+
+      bins.forEach((count, i) => {
+        const h = (count / maxCount) * 150;
+        ctx.fillStyle = '#4ade80';
+        ctx.fillRect(i * barW + 1, 170 - h, barW - 2, h);
+      });
+
+      // axis
+      ctx.fillStyle = '#5c6b80';
+      ctx.font = '10px Space Grotesk';
+      ctx.textAlign = 'center';
+      ctx.fillText('1', 0, 180);
+      ctx.fillText('3.5', 200, 180);
+      ctx.fillText('6', 395, 180);
+    }
+  </script>
+</body>
+</html>

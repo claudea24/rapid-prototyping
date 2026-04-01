@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Python Pit — Quest Mode</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="status-bar">
+    <a href="index.html" class="brand">Quest Mode</a>
+    <div class="stats">
+      <a href="quiz.html?cat=Python" class="btn btn-battle" style="padding:6px 16px;font-size:0.7rem">Battle Python</a>
+    </div>
+  </div>
+
+  <div class="dungeon-page">
+    <div class="dungeon-hero">
+      <div class="dungeon-icon">&#128013;</div>
+      <h1>The Python Pit</h1>
+      <p class="dungeon-sub">5 floors of Python mastery</p>
+    </div>
+
+    <!-- Floor 1 -->
+    <div class="floor open" id="floor-1">
+      <div class="floor-header" onclick="toggleFloor(1)">
+        <div class="floor-num" style="background:var(--python);color:#0a0a0a">F1</div>
+        <h3>Data Structures & Complexity</h3>
+        <span class="floor-xp">+50 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>Choosing the right data structure is often the difference between a solution that passes and one that times out.</p>
+
+        <table>
+          <tr><th>Structure</th><th>Lookup</th><th>Insert</th><th>Delete</th><th>Best Use Case</th></tr>
+          <tr><td><code>list</code></td><td>O(1) index</td><td>O(1) end / O(n) front</td><td>O(n)</td><td>Ordered sequences, stacks</td></tr>
+          <tr><td><code>dict</code></td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td><td>Key-value mapping, counting</td></tr>
+          <tr><td><code>set</code></td><td>O(1) avg</td><td>O(1) avg</td><td>O(1) avg</td><td>Membership tests, dedup</td></tr>
+          <tr><td><code>deque</code></td><td>O(n)</td><td>O(1) both ends</td><td>O(1) both ends</td><td>BFS, sliding windows</td></tr>
+          <tr><td><code>heapq</code></td><td>O(1) min</td><td>O(log n)</td><td>O(log n)</td><td>Top-k, priority scheduling</td></tr>
+        </table>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          Choosing the right data structure can turn O(n&sup2;) into O(n). Checking duplicates: O(n&sup2;) with nested loops, O(n) with a set. When a solution feels slow, ask: <em>"Am I using the right container?"</em>
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('python',1,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 2 -->
+    <div class="floor" id="floor-2">
+      <div class="floor-header" onclick="toggleFloor(2)">
+        <div class="floor-num" style="background:var(--python);color:#0a0a0a">F2</div>
+        <h3>Pandas Essentials</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p>The golden rule of Pandas: <strong>if you are writing a for-loop over rows, you are almost certainly doing it wrong.</strong></p>
+
+        <p><strong>GroupBy: Split-Apply-Combine</strong> — partition the DataFrame into groups, apply a function to each group independently, then stitch results back together.</p>
+
+<pre><code>import pandas as pd
+
+df = pd.DataFrame({
+    'region':  ['East', 'West', 'East', 'West', 'East'],
+    'product': ['Widget', 'Gadget', 'Gadget', 'Widget', 'Widget'],
+    'revenue': [120, 340, 210, 150, 95]
+})
+
+summary = df.groupby('region')['revenue'].agg(
+    total_revenue='sum',
+    avg_order='mean',
+    num_transactions='count'
+)
+#         total_revenue  avg_order  num_transactions
+# East              425     141.67                 3
+# West              490     245.00                 2</code></pre>
+
+        <table>
+          <tr><th>Operation</th><th>Method</th><th>What It Does</th></tr>
+          <tr><td>GroupBy</td><td><code>df.groupby('col').agg()</code></td><td>Split &rarr; apply &rarr; combine</td></tr>
+          <tr><td>Merge</td><td><code>df.merge(df2, on='id', how='left')</code></td><td>SQL-style joins in Python</td></tr>
+          <tr><td>Pivot</td><td><code>df.pivot_table(values, index, aggfunc)</code></td><td>Reshape long &rarr; wide</td></tr>
+          <tr><td>Missing data</td><td><code>df.fillna(0) / df.dropna()</code></td><td>Handle NULL values</td></tr>
+          <tr><td>Apply</td><td><code>df.apply(fn, axis=1)</code></td><td>Row/column transformation</td></tr>
+        </table>
+
+        <button class="floor-complete-btn" onclick="clearFloor('python',2,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 3 -->
+    <div class="floor" id="floor-3">
+      <div class="floor-header" onclick="toggleFloor(3)">
+        <div class="floor-num" style="background:var(--python);color:#0a0a0a">F3</div>
+        <h3>NumPy Patterns</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>Vectorization:</strong> NumPy sidesteps Python's per-element overhead by handing entire operations to compiled C loops. Speedups of 10&ndash;100&times; are typical.</p>
+
+        <p><strong>Broadcasting:</strong> Arrays of different shapes can operate together. Dimensions are compared right to left — compatible if equal or one is 1.</p>
+
+        <p><strong><code>*</code> vs <code>@</code>:</strong> <code>*</code> is element-wise (Hadamard) product. <code>@</code> is matrix multiplication (dot product).</p>
+
+<pre><code>import numpy as np
+
+X = np.array([
+    [1, 2, 5],
+    [1, 3, 8],
+    [1, 5, 12]
+], dtype=float)
+
+y = np.array([10, 15, 24], dtype=float)
+
+# Closed-form OLS: beta = (X^T X)^-1 X^T y
+XtX     = X.T @ X
+XtX_inv = np.linalg.inv(XtX)
+beta    = XtX_inv @ X.T @ y
+# array([ 0.5,  0.5,  1.5])
+# y ≈ 0.5 + 0.5·x1 + 1.5·x2</code></pre>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          When you see <code>for i in range(len(arr))</code> with NumPy arrays, stop and ask: "Can I express this as a vectorized operation?" Almost always, the answer is yes.
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('python',3,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 4 -->
+    <div class="floor" id="floor-4">
+      <div class="floor-header" onclick="toggleFloor(4)">
+        <div class="floor-num" style="background:var(--python);color:#0a0a0a">F4</div>
+        <h3>Common Coding Patterns</h3>
+        <span class="floor-xp">+100 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <table>
+          <tr><th>Pattern</th><th>When to Use</th><th>Complexity</th><th>Classic Examples</th></tr>
+          <tr><td>Two Pointers</td><td>Sorted array problems</td><td>O(n)</td><td>Pair sum, container with most water</td></tr>
+          <tr><td>Sliding Window</td><td>Subarray/substring</td><td>O(n)</td><td>Longest unique substring</td></tr>
+          <tr><td>Hash Map</td><td>Counting, lookup</td><td>O(n)</td><td>Two Sum, frequency counting</td></tr>
+          <tr><td>Sort + Greedy</td><td>Optimization</td><td>O(n log n)</td><td>Interval scheduling</td></tr>
+        </table>
+
+<pre><code># Naive O(n²)
+def two_sum_naive(nums, target):
+    for i in range(len(nums)):
+        for j in range(i + 1, len(nums)):
+            if nums[i] + nums[j] == target:
+                return [i, j]
+
+# Hash map O(n)
+def two_sum(nums, target):
+    seen = {}
+    for i, num in enumerate(nums):
+        complement = target - num
+        if complement in seen:
+            return [seen[complement], i]
+        seen[num] = i
+
+print(two_sum([2, 7, 11, 15], 9))  # [0, 1]</code></pre>
+
+        <div class="demo-box">
+          <h4>Interactive: Two Sum Solver</h4>
+          <button onclick="runTwoSum()" style="background:var(--python);color:#0a0a0a;border-bottom-color:var(--gold-dark)">Generate & Solve</button>
+          <div class="result" id="twoSumResult"></div>
+        </div>
+
+        <div class="loot-card">
+          <div class="loot-tag">Key Insight</div>
+          The hash map pattern is the single most important tool in coding interviews. Whenever a brute-force uses a nested loop where the inner loop is <em>searching</em>, ask: "Can I replace that search with a dictionary lookup?"
+        </div>
+
+        <button class="floor-complete-btn" onclick="clearFloor('python',4,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+
+    <!-- Floor 5 -->
+    <div class="floor" id="floor-5">
+      <div class="floor-header" onclick="toggleFloor(5)">
+        <div class="floor-num" style="background:var(--python);color:#0a0a0a">F5</div>
+        <h3>Python Gotchas</h3>
+        <span class="floor-xp">+75 XP</span>
+        <span class="chevron">&#9660;</span>
+      </div>
+      <div class="floor-body">
+        <p><strong>Mutable Default Arguments:</strong> Default values are evaluated <em>once</em> at function definition, not each call.</p>
+
+<pre><code>def append_to(item, target=[]):
+    target.append(item)
+    return target
+
+print(append_to(1))   # [1]
+print(append_to(2))   # [1, 2] — SAME list!
+
+# Fix: use None sentinel
+def append_to(item, target=None):
+    if target is None:
+        target = []
+    target.append(item)
+    return target</code></pre>
+
+        <p><strong>Shallow vs Deep Copy:</strong> Assignment copies <em>references</em>. Shallow copy creates new outer container but shares inner objects. Deep copy recursively duplicates everything.</p>
+
+        <p><strong>Floor Division:</strong> <code>-7 // 2 = -4</code> (rounds toward &minus;&infin;, not toward zero).</p>
+
+        <p><strong><code>is</code> vs <code>==</code>:</strong> <code>==</code> compares values; <code>is</code> compares identity (same object in memory).</p>
+
+        <table>
+          <tr><th>Gotcha</th><th>What Happens</th><th>The Fix</th></tr>
+          <tr><td>Mutable defaults</td><td>List shared across all calls</td><td>Use <code>None</code> sentinel</td></tr>
+          <tr><td>Shallow copy</td><td>Inner objects still shared</td><td>Use <code>copy.deepcopy()</code></td></tr>
+          <tr><td>Floor division</td><td><code>-7 // 2 = -4</code></td><td>Use <code>int(a/b)</code> for truncation</td></tr>
+          <tr><td><code>is</code> vs <code>==</code></td><td><code>is</code> checks identity</td><td>Use <code>is</code> only for <code>None</code></td></tr>
+        </table>
+
+        <button class="floor-complete-btn" onclick="clearFloor('python',5,this)">Mark Floor Cleared</button>
+      </div>
+    </div>
+  </div>
+
+  <footer><p>v15 &middot; Quest Mode &mdash; <a href="../index.html">Back to Gallery</a></p></footer>
+
+  <script>
+    function toggleFloor(n) { document.getElementById('floor-' + n).classList.toggle('open'); }
+
+    function clearFloor(topic, n, btn) {
+      const key = 'ds-v15-floors-' + topic;
+      const state = JSON.parse(localStorage.getItem(key) || '[]');
+      if (!state.includes(n)) { state.push(n); localStorage.setItem(key, JSON.stringify(state)); }
+      btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared');
+    }
+
+    (function() {
+      const state = JSON.parse(localStorage.getItem('ds-v15-floors-python') || '[]');
+      state.forEach(n => {
+        const btn = document.querySelector('#floor-' + n + ' .floor-complete-btn');
+        if (btn) { btn.textContent = '\u2713 Floor Cleared'; btn.classList.add('cleared'); }
+      });
+    })();
+
+    function runTwoSum() {
+      const el = document.getElementById('twoSumResult');
+      const nums = Array.from({length: 6}, () => Math.floor(Math.random() * 20) + 1);
+      const i1 = Math.floor(Math.random() * nums.length);
+      let i2 = i1;
+      while (i2 === i1) i2 = Math.floor(Math.random() * nums.length);
+      const target = nums[i1] + nums[i2];
+
+      el.innerHTML = `<div style="color:var(--muted)">nums = [${nums.join(', ')}], target = ${target}</div>`;
+      const seen = {};
+      let step = 0;
+      const iv = setInterval(() => {
+        if (step >= nums.length) { clearInterval(iv); return; }
+        const num = nums[step];
+        const comp = target - num;
+        if (comp in seen) {
+          el.innerHTML += `<div style="color:var(--xp);font-weight:600">Step ${step}: num=${num}, complement=${comp} FOUND at index ${seen[comp]}! Answer: [${seen[comp]}, ${step}]</div>`;
+          clearInterval(iv);
+        } else {
+          el.innerHTML += `<div>Step ${step}: num=${num}, need ${comp}, not in map. Store {${num}: ${step}}</div>`;
+          seen[num] = step;
+        }
+        step++;
+      }, 500);
+    }
+  </script>
+</body>
+</html>

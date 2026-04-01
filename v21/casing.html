@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies — Weak Spot Tracker | DS Prep v21</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#0891b2;--accent-light:#cffafe;--accent-glow:rgba(8,145,178,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--rose:#dc2626;--rose-light:#fee2e2;--code-bg:#f8f9fc;--code-text:#1e293b;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+
+    .diag-banner{max-width:900px;margin:16px auto 0;padding:16px 24px;border-radius:var(--radius);display:flex;align-items:center;gap:12px;font-size:.88rem;font-weight:600}
+    .diag-banner.strong{background:var(--green-light);border:1px solid #86efac;color:var(--green)}
+    .diag-banner.review{background:var(--amber-light);border:1px solid #fcd34d;color:var(--amber)}
+    .diag-banner.weak{background:var(--rose-light);border:1px solid #fca5a5;color:var(--rose)}
+    .diag-banner .db-icon{font-size:1.2rem}
+
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header h1 span{color:var(--accent)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    .section{margin-bottom:32px}
+    .section.focus-section{border-left:4px solid var(--rose);padding-left:20px}
+    .focus-badge{display:inline-block;font-size:.55rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:3px 8px;border-radius:6px;background:var(--rose-light);color:var(--rose);margin-left:10px;vertical-align:middle}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    .insight{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:var(--accent-light);padding:1px 5px;border-radius:3px}
+
+    .exec-steps{display:flex;flex-direction:column;gap:6px;margin:16px 0}
+    .exec-step{display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+    .exec-step .step-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .exec-step .step-kw{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--accent);font-size:.82rem;width:110px;flex-shrink:0}
+    .exec-step .step-desc{font-size:.8rem;color:var(--text-muted)}
+
+    .practice-box{background:var(--green-light);border:1px solid #86efac;border-radius:10px;padding:18px 20px;margin:20px 0}
+    .practice-box .practice-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:10px}
+    .practice-box ul{list-style:none;padding:0}
+    .practice-box li{margin-bottom:6px}
+    .practice-box a{font-size:.84rem;color:var(--green);text-decoration:none;font-weight:600}
+    .practice-box a:hover{color:#15803d}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.nav-links{display:none!important}.page-header,.container{padding-left:16px;padding-right:16px}.diag-banner{margin-left:16px;margin-right:16px}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v21</a>
+  <div class="nav-links">
+    <a href="sql.html">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html" class="active">Casing</a>
+  </div>
+</nav>
+
+<div id="diag-banner"></div>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#128161;</div>
+    <h1>Case Studies &mdash; <span>Frameworks &amp; Metrics</span></h1>
+  </div>
+  <p class="intro">AARRR framework, metric diagnosis, North Star metrics, market sizing, and experiment design.</p>
+</div>
+
+<div class="container">
+
+  <!-- 1 AARRR Framework -->
+  <div class="section" id="section-0">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">1</span> AARRR Pirate Metrics Framework</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">The <strong>AARRR</strong> (Pirate Metrics) framework covers the full user lifecycle. It's the go-to structure for product case studies.</p>
+      <div class="exec-steps">
+        <div class="exec-step"><div class="step-num">A</div><div class="step-kw">Acquisition</div><div class="step-desc">How do users find you? (SEO, ads, referrals)</div></div>
+        <div class="exec-step"><div class="step-num">A</div><div class="step-kw">Activation</div><div class="step-desc">First "aha" moment (signup, first action)</div></div>
+        <div class="exec-step"><div class="step-num">R</div><div class="step-kw">Retention</div><div class="step-desc">Do users come back? (DAU/MAU, cohort curves)</div></div>
+        <div class="exec-step"><div class="step-num">R</div><div class="step-kw">Revenue</div><div class="step-desc">How do you make money? (LTV, ARPU)</div></div>
+        <div class="exec-step"><div class="step-num">R</div><div class="step-kw">Referral</div><div class="step-desc">Do users invite others? (viral coefficient)</div></div>
+      </div>
+      <div class="insight">
+        <div class="label">Interview Insight</div>
+        <p>When asked to "define metrics for product X," use AARRR as your skeleton. Pick 1-2 metrics per stage and explain which stage matters most for the company's current goals.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 Metric Diagnosis -->
+  <div class="section" id="section-1">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">2</span> Diagnosing a Metric Drop</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">When a metric drops, follow a structured debugging process. <strong>The first step is always checking if it's a data problem.</strong></p>
+      <div class="exec-steps">
+        <div class="exec-step"><div class="step-num">1</div><div class="step-kw">Data check</div><div class="step-desc">Is the data pipeline broken? Logging issues? Duplicate dedup?</div></div>
+        <div class="exec-step"><div class="step-num">2</div><div class="step-kw">External</div><div class="step-desc">Seasonality? Holiday? Competitor launch? App store changes?</div></div>
+        <div class="exec-step"><div class="step-num">3</div><div class="step-kw">Segment</div><div class="step-desc">Which user segment, platform, or region is affected?</div></div>
+        <div class="exec-step"><div class="step-num">4</div><div class="step-kw">Internal</div><div class="step-desc">Recent code deploy? Feature change? Experiment rollout?</div></div>
+        <div class="exec-step"><div class="step-num">5</div><div class="step-kw">Decompose</div><div class="step-desc">Break metric into components (e.g., revenue = users &times; orders/user &times; AOV)</div></div>
+      </div>
+      <div class="insight">
+        <div class="label">Common Mistake</div>
+        <p>Jumping to "let's fix the product" before confirming the data is correct. Always rule out instrumentation issues first.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 North Star Metrics -->
+  <div class="section" id="section-2">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">3</span> North Star Metrics</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">A <strong>North Star metric</strong> captures the core value the product delivers to customers. It aligns the entire company.</p>
+      <table class="comp-table">
+        <tr><th>Company</th><th>North Star</th><th>Why</th></tr>
+        <tr><td>Airbnb</td><td><strong>Nights booked</strong></td><td>Captures both supply and demand sides</td></tr>
+        <tr><td>Facebook</td><td>DAU</td><td>Engagement drives ad revenue</td></tr>
+        <tr><td>Spotify</td><td>Time spent listening</td><td>Core value proposition</td></tr>
+        <tr><td>Slack</td><td>Messages sent per team</td><td>Indicates active adoption</td></tr>
+        <tr><td>Uber</td><td>Rides completed</td><td>Marketplace success</td></tr>
+      </table>
+      <div class="insight">
+        <div class="label">How to Choose</div>
+        <p>A good North Star metric: (1) reflects customer value, (2) is measurable, (3) is a leading indicator of revenue, (4) is actionable by multiple teams.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 Market Sizing -->
+  <div class="section" id="section-3">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">4</span> Market Sizing (Fermi Estimation)</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <p class="explain">Break the problem into components, estimate each, and multiply. Show your reasoning, not just the answer.</p>
+      <table class="comp-table">
+        <tr><th>Step</th><th>Action</th><th>Example: "How many piano tuners in Chicago?"</th></tr>
+        <tr><td>1</td><td>Define scope</td><td>Chicago metro area, ~2.7M households</td></tr>
+        <tr><td>2</td><td>Estimate base</td><td>~10% have pianos = 270K pianos</td></tr>
+        <tr><td>3</td><td>Estimate frequency</td><td>Tuned once/year = 270K tunings/year</td></tr>
+        <tr><td>4</td><td>Estimate capacity</td><td>1 tuner does ~4/day, 250 days = 1000/year</td></tr>
+        <tr><td>5</td><td>Compute</td><td>270K / 1000 = ~270 piano tuners</td></tr>
+      </table>
+      <div class="practice-box">
+        <div class="practice-title">&#127919; Practice</div>
+        <ul>
+          <li><a href="https://www.stratascratch.com/" target="_blank">StrataScratch Case Study Questions &rarr;</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 Experiment Design -->
+  <div class="section" id="section-4">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">5</span> Experiment Design Checklist</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <table class="comp-table">
+        <tr><th>Element</th><th>What to Define</th></tr>
+        <tr><td>Hypothesis</td><td>Clear, testable statement (e.g., "New CTA increases signups by 5%")</td></tr>
+        <tr><td>Primary metric</td><td>One metric to make the decision on</td></tr>
+        <tr><td>Guardrail metrics</td><td>Metrics that should NOT degrade</td></tr>
+        <tr><td>Randomization unit</td><td>User, session, device, region</td></tr>
+        <tr><td>Sample size</td><td>Power analysis: effect size, alpha, power</td></tr>
+        <tr><td>Duration</td><td>Cover full business cycles (min 1-2 weeks)</td></tr>
+        <tr><td>Analysis plan</td><td>Pre-register: no peeking, handle multiple comparisons</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v21 &middot; <a href="index.html">Dashboard</a></p>
+</footer>
+
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+(function(){
+  const raw=localStorage.getItem('ds-v21-diagnostic');
+  if(!raw)return;
+  const data=JSON.parse(raw);
+  const score=data.scores.casing||0;
+  const pct=(score/3)*100;
+  const banner=document.getElementById('diag-banner');
+  if(pct>=80) banner.innerHTML='<div class="diag-banner strong"><span class="db-icon">&#9989;</span> You nailed Case Studies! Quick review below.</div>';
+  else if(pct>=40) banner.innerHTML='<div class="diag-banner review"><span class="db-icon">&#9888;&#65039;</span> Case Studies needs some brushing up. Focus on the highlighted sections.</div>';
+  else banner.innerHTML='<div class="diag-banner weak"><span class="db-icon">&#10060;</span> Case Studies is a weak spot. Work through all sections carefully.</div>';
+
+  const qIndices=[15,16,17];
+  const secMap=[0,1,2];
+  data.answers.forEach(a=>{
+    if(a.topic==='casing'&&!a.correct){
+      const li=qIndices.indexOf(a.question);
+      if(li>=0){
+        const sec=document.getElementById('section-'+secMap[li]);
+        if(sec){sec.classList.add('focus-section');const h2=sec.querySelector('h2');if(h2&&!h2.querySelector('.focus-badge'))h2.insertAdjacentHTML('beforeend','<span class="focus-badge">FOCUS</span>');}
+      }
+    }
+  });
+})();
+</script>
+</body>
+</html>

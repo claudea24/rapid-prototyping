@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Machine Learning — Company Playbook | DS Prep v19</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v19</a>
+  <div class="nav-right">
+    <button class="search-trigger" onclick="openSearch()">&#128269; <kbd>&#8984;K</kbd></button>
+    <a href="index.html" class="back">All Topics</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon im">&#129302;</div>
+    <h1>Machine Learning &mdash; <span>Company Interview Patterns</span></h1>
+  </div>
+  <p class="intro">From supervised learning to cross-validation &mdash; see which companies focus on which ML topics.</p>
+</div>
+
+<div class="container">
+  <div class="filter-bar">
+    <button class="filter-pill active" onclick="filterCompany('all')">All</button>
+    <button class="filter-pill" onclick="filterCompany('meta')">Meta</button>
+    <button class="filter-pill" onclick="filterCompany('google')">Google</button>
+    <button class="filter-pill" onclick="filterCompany('amazon')">Amazon</button>
+  </div>
+
+  <!-- 3.1 Supervised Learning -->
+  <div class="section" data-companies="meta google amazon" id="s3-1">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">3.1</span> Supervised Learning Algorithms <span class="company-badge meta">Meta</span><span class="company-badge google">Google</span><span class="company-badge amazon">Amazon</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">All companies test supervised learning fundamentals. Expect "when would you use X vs Y?" questions.</div>
+
+      <p class="explain"><strong>Linear Regression</strong> fits a straight line by minimizing squared residuals. <strong>Logistic Regression</strong> models log-odds for classification. <strong>Decision Trees</strong> recursively partition feature space. <strong>Random Forest</strong> corrects high variance through bagging. <strong>Gradient Boosting</strong> builds trees sequentially on residual errors.</p>
+
+      <table class="comp-table">
+        <tr><th>Algorithm</th><th>Strengths</th><th>Weaknesses</th><th>When to Use</th></tr>
+        <tr><td><strong>Linear Regression</strong></td><td>Interpretable, fast</td><td>Assumes linearity</td><td>Baseline; interpretability paramount</td></tr>
+        <tr><td><strong>Logistic Regression</strong></td><td>Probabilistic, interpretable</td><td>Linear boundary only</td><td>Binary classification + explainability</td></tr>
+        <tr><td><strong>Decision Tree</strong></td><td>Nonlinear, no scaling</td><td>High variance, overfits</td><td>Quick exploration</td></tr>
+        <tr><td><strong>Random Forest</strong></td><td>Low variance, robust</td><td>Less interpretable</td><td>General-purpose accuracy</td></tr>
+        <tr><td><strong>Gradient Boosting</strong></td><td>State-of-the-art tabular</td><td>Overfitting risk</td><td>Max accuracy needed</td></tr>
+        <tr><td><strong>SVM</strong></td><td>High-dim, kernel flexibility</td><td>Slow, opaque</td><td>Text; small/medium datasets</td></tr>
+        <tr><td><strong>KNN</strong></td><td>No training, complex boundaries</td><td>Slow inference</td><td>Small datasets; prototyping</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Linear regression is not just a model &mdash; it is a diagnostic framework. You learn more from its residual plots than from its predictions.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.2 Unsupervised Learning -->
+  <div class="section" data-companies="google" id="s3-2">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">3.2</span> Unsupervised Learning <span class="company-badge google">Google</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Google focuses on clustering at scale. Expect K-Means, DBSCAN, and PCA questions.</div>
+
+      <p class="explain">Unsupervised learning seeks structure without labels. <strong>K-Means</strong> creates spherical clusters. <strong>DBSCAN</strong> finds arbitrary-shaped clusters and identifies outliers. <strong>PCA</strong> finds axes of maximum variance for dimensionality reduction.</p>
+
+      <table class="comp-table">
+        <tr><th>Algorithm</th><th>Type</th><th>Key Property</th><th>Use When</th></tr>
+        <tr><td><strong>K-Means</strong></td><td>Clustering</td><td>Fast, spherical clusters</td><td>Known k, convex clusters</td></tr>
+        <tr><td><strong>Hierarchical</strong></td><td>Clustering</td><td>Dendrogram exploration</td><td>Unknown k, want hierarchy</td></tr>
+        <tr><td><strong>DBSCAN</strong></td><td>Clustering</td><td>Arbitrary shapes, outliers</td><td>No k needed, noise expected</td></tr>
+        <tr><td><strong>PCA</strong></td><td>Dim. Reduction</td><td>Linear, fast</td><td>Feature reduction, preprocessing</td></tr>
+        <tr><td><strong>t-SNE / UMAP</strong></td><td>Dim. Reduction</td><td>Nonlinear, local structure</td><td>2D visualization only</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>t-SNE and UMAP preserve local neighborhood structure but distort global distances. Use them to <em>see</em> your data, never to <em>measure</em> it.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.3 Evaluation Metrics -->
+  <div class="section" data-companies="meta amazon" id="s3-3">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">3.3</span> Evaluation Metrics <span class="company-badge meta">Meta</span><span class="company-badge amazon">Amazon</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Meta tests A/B test metrics extensively. Amazon focuses on business-relevant metrics like revenue impact.</div>
+
+      <table class="comp-table">
+        <tr><th>Metric</th><th>Formula Idea</th><th>Fails When</th><th>Use When</th></tr>
+        <tr><td><strong>Accuracy</strong></td><td>(TP+TN) / total</td><td>Imbalanced classes</td><td>Balanced datasets</td></tr>
+        <tr><td><strong>Precision</strong></td><td>TP / (TP+FP)</td><td>&mdash;</td><td>Cost of FP is high (spam filter)</td></tr>
+        <tr><td><strong>Recall</strong></td><td>TP / (TP+FN)</td><td>&mdash;</td><td>Cost of FN is high (disease)</td></tr>
+        <tr><td><strong>F1 Score</strong></td><td>Harmonic mean of P &amp; R</td><td>&mdash;</td><td>Balance precision and recall</td></tr>
+        <tr><td><strong>AUC-ROC</strong></td><td>Area under TPR vs FPR</td><td>&mdash;</td><td>Comparing models</td></tr>
+        <tr><td><strong>RMSE</strong></td><td>sqrt(mean squared errors)</td><td>&mdash;</td><td>Penalize large errors</td></tr>
+        <tr><td><strong>MAE</strong></td><td>Mean absolute errors</td><td>&mdash;</td><td>Treat all errors equally</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Before choosing a metric, always ask: "What is the cost of a false positive versus a false negative?" The answer should drive every downstream decision.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.4 Bias-Variance -->
+  <div class="section" data-companies="meta google amazon" id="s3-4">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">3.4</span> Bias-Variance Tradeoff <span class="company-badge meta">Meta</span><span class="company-badge google">Google</span><span class="company-badge amazon">Amazon</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">All companies test this fundamental concept. Expect the dartboard analogy and regularization questions.</div>
+
+      <p class="explain"><strong>Total Error = Bias&sup2; + Variance + Irreducible Noise.</strong> High bias = underfitting (systematically wrong). High variance = overfitting (captures noise as signal).</p>
+
+      <table class="comp-table">
+        <tr><th>Scenario</th><th>Bias</th><th>Variance</th><th>Symptom</th><th>Fix</th></tr>
+        <tr><td>Underfitting</td><td>High</td><td>Low</td><td>Poor on train AND test</td><td>More features, complex model</td></tr>
+        <tr><td>Sweet spot</td><td>Low</td><td>Low</td><td>Good on both</td><td>Keep it</td></tr>
+        <tr><td>Overfitting</td><td>Low</td><td>High</td><td>Great train, poor test</td><td>Regularization, more data</td></tr>
+      </table>
+
+      <p class="explain"><strong>L1 (Lasso)</strong> adds sum of |coefficients| &rarr; sparsity, feature selection. <strong>L2 (Ridge)</strong> adds sum of coefficients&sup2; &rarr; shrinkage, stability. <strong>Elastic Net</strong> combines both.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>The gap between training and test error is a direct measure of overfitting. When that gap widens, simplify or regularize.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.5 Feature Engineering -->
+  <div class="section" data-companies="meta amazon" id="s3-5">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">3.5</span> Feature Engineering <span class="company-badge meta">Meta</span><span class="company-badge amazon">Amazon</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Meta and Amazon test practical feature engineering. Expect questions about encoding, scaling, and leakage risk.</div>
+
+      <table class="comp-table">
+        <tr><th>Technique</th><th>When</th><th>Watch Out</th></tr>
+        <tr><td><strong>One-hot encoding</strong></td><td>Nominal categories</td><td>High cardinality &rarr; many columns</td></tr>
+        <tr><td><strong>Label encoding</strong></td><td>Ordinal categories</td><td>Don't use for nominal</td></tr>
+        <tr><td><strong>StandardScaler</strong></td><td>KNN, SVM, logistic, PCA</td><td>Not needed for trees</td></tr>
+        <tr><td><strong>Log transform</strong></td><td>Right-skewed data</td><td>Remember to reverse</td></tr>
+        <tr><td><strong>Target encoding</strong></td><td>High cardinality</td><td>Data leakage risk</td></tr>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Feature engineering often matters more than model choice. Simple logistic regression on well-crafted features can outperform gradient boosting on raw features.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.6 Cross-Validation -->
+  <div class="section" data-companies="google" id="s3-6">
+    <div class="section-head" onclick="toggleSection(this)">
+      <h2><span class="num">3.6</span> Cross-Validation &amp; Data Leakage <span class="company-badge google">Google</span></h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="company-note">Google values methodological rigor. Expect questions about k-fold CV, time series CV, and leakage detection.</div>
+
+      <p class="explain"><strong>K-Fold CV:</strong> Split data into k folds. Each iteration: one fold as test, k-1 as train. Every point appears in both roles exactly once.</p>
+
+      <p class="explain"><strong>Time Series CV:</strong> Standard k-fold is fatal for time series &mdash; it trains on future data. Respect temporal order: training set only includes data <em>before</em> the test period.</p>
+
+      <div class="code-block"><pre><span class="kw">from</span> sklearn.model_selection <span class="kw">import</span> cross_val_score
+scores = cross_val_score(model, X, y, cv=<span class="num">5</span>, scoring=<span class="str">'f1'</span>)
+print(<span class="str">f"Mean F1: {scores.mean():.3f} (+/- {scores.std():.3f})"</span>)</pre></div>
+
+      <p class="explain"><strong>Data Leakage:</strong> The most insidious form is fitting preprocessing on the full dataset before splitting. If you standardize using the mean/std of the entire dataset, the model implicitly "knows" something about the test data.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>If performance seems "too good to be true," it almost certainly is. The most common culprit is data leakage. Audit every feature: "Would I have this information at the moment of prediction?"</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v19 &middot; <a href="index.html">Company Playbook</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<!-- Search Modal -->
+<div class="search-overlay" id="searchOverlay" onclick="if(event.target===this)closeSearch()">
+  <div class="search-box">
+    <div class="search-input-wrap">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="Search topics, sections, companies..." autocomplete="off">
+      <span class="esc-hint">ESC</span>
+    </div>
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<script src="search.js"></script>
+<script>
+function toggleSection(head) {
+  const body = head.nextElementSibling;
+  head.classList.toggle('open');
+  body.classList.toggle('open');
+}
+function filterCompany(company) {
+  document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.section[data-companies]').forEach(s => {
+    if (company === 'all') { s.style.display = ''; }
+    else { s.style.display = (s.getAttribute('data-companies') || '').includes(company) ? '' : 'none'; }
+  });
+}
+</script>
+</body>
+</html>

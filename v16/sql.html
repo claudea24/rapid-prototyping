@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Spotify Puzzle — SQL | DS Prep v16</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <script>
+    (function(){var t=localStorage.getItem('ds-theme');if(t==='dark')document.documentElement.setAttribute('data-theme','dark')})();
+  </script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;--text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;--accent:#2563eb;--accent-light:#dbeafe;--accent-glow:rgba(37,99,235,0.06);--green:#16a34a;--green-light:#dcfce7;--amber:#d97706;--amber-light:#fef3c7;--code-bg:#f8f9fc;--code-text:#1e293b;--shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);--radius:14px;--story:#4338ca;--story-bg:#eef2ff}
+    [data-theme="dark"]{--bg:#0f0f13;--surface:#1a1a22;--surface2:#24242e;--border:#2e2e3a;--text:#c8c8d0;--text-muted:#8888a0;--heading:#e8e8f0;--accent:#60a5fa;--accent-light:rgba(96,165,250,0.15);--accent-glow:rgba(96,165,250,0.1);--green:#22c55e;--green-light:rgba(34,197,94,0.12);--amber:#f59e0b;--amber-light:rgba(245,158,11,0.12);--code-bg:#1e1e28;--code-text:#d4d4e0;--shadow:0 1px 3px rgba(0,0,0,0.3),0 4px 12px rgba(0,0,0,0.2);--story:#818cf8;--story-bg:rgba(99,102,241,0.1)}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7;transition:background .3s,color .3s}
+
+    nav{position:sticky;top:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:var(--surface);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:background .3s}
+    nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+    nav .brand .logo{width:20px;height:20px;border-radius:6px;background:linear-gradient(135deg,#5b4cdb,#0891b2)}
+    nav .nav-links{display:flex;gap:2px;align-items:center}
+    nav .nav-links a{text-decoration:none;color:var(--text-muted);font-size:.78rem;padding:6px 12px;border-radius:6px;transition:all .2s;font-weight:600}
+    nav .nav-links a:hover{background:var(--surface2);color:var(--heading)}
+    nav .nav-links a.active{color:var(--accent);background:var(--accent-light)}
+    .theme-toggle{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;cursor:pointer;font-size:1rem;line-height:1;transition:all .2s;color:var(--text);margin-left:8px}
+    .theme-toggle:hover{border-color:var(--accent)}
+
+    .page-header{padding:32px 32px 8px;max-width:900px;margin:0 auto}
+    .page-header .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+    .page-header .icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--accent-light)}
+    .page-header h1{font-size:1.8rem;font-weight:800;color:var(--heading)}
+    .page-header h1 span{color:var(--accent)}
+    .page-header .intro{font-size:.9rem;color:var(--text-muted);margin-left:58px;max-width:600px;line-height:1.65}
+
+    .container{max-width:900px;margin:0 auto;padding:20px 32px 64px}
+
+    /* Story text */
+    .story-text{font-size:.95rem;font-style:italic;color:var(--story);line-height:1.75;margin:16px 0;padding:16px 20px;background:var(--story-bg);border-radius:10px;border-left:3px solid var(--story)}
+
+    /* Sections */
+    .section{margin-bottom:32px}
+    .section-head{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border);cursor:pointer;user-select:none}
+    .section-head h2{font-size:1.1rem;font-weight:700;color:var(--heading)}
+    .section-head .num{font-size:.65rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1.5px;margin-right:12px}
+    .section-head .toggle{font-size:1.2rem;color:var(--text-muted);transition:transform .3s}
+    .section-head.open .toggle{transform:rotate(180deg)}
+    .section-body{display:none;padding:20px 0}
+    .section-body.open{display:block;animation:fadeIn .3s ease}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+    .explain{font-size:.88rem;color:var(--text);line-height:1.75;margin-bottom:16px}
+    .explain strong{color:var(--heading)}
+    .explain code{font-family:'JetBrains Mono',monospace;background:var(--accent-light);padding:1px 6px;border-radius:4px;font-size:.8rem;color:var(--accent)}
+
+    .insight{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 10px 10px 0;padding:16px 20px;margin:16px 0}
+    .insight .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--amber);margin-bottom:6px}
+    .insight p{font-size:.84rem;color:var(--text);line-height:1.65}
+
+    .comp-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.8rem;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+    .comp-table th{background:var(--surface2);color:var(--text-muted);font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border)}
+    .comp-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:var(--accent-glow)}
+    .comp-table code{font-family:'JetBrains Mono',monospace;font-size:.76rem;color:var(--accent);background:var(--accent-light);padding:1px 5px;border-radius:3px}
+
+    .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:14px 0}
+    .code-block pre{padding:16px 18px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.7;color:var(--code-text);overflow-x:auto;margin:0}
+    .kw{color:#9333ea}.fn{color:#2563eb}.str{color:#16a34a}.cm{color:#94a3b8;font-style:italic}.num{color:#0891b2}
+    [data-theme="dark"] .kw{color:#c084fc}[data-theme="dark"] .fn{color:#60a5fa}[data-theme="dark"] .str{color:#4ade80}[data-theme="dark"] .cm{color:#64748b}[data-theme="dark"] .num{color:#22d3ee}
+
+    .exec-steps{display:flex;flex-direction:column;gap:6px;margin:16px 0}
+    .exec-step{display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:8px;background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow)}
+    .exec-step .step-num{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:.7rem;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .exec-step .step-kw{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--accent);font-size:.82rem;width:90px;flex-shrink:0}
+    .exec-step .step-desc{font-size:.8rem;color:var(--text-muted)}
+
+    .resolution{background:var(--green-light);border-left:3px solid var(--green);border-radius:0 10px 10px 0;padding:16px 20px;margin:24px 0}
+    .resolution .label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--green);margin-bottom:6px}
+    .resolution p{font-size:.88rem;color:var(--text);line-height:1.65;font-style:italic}
+
+    footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+    footer a{color:var(--accent);text-decoration:none}
+    @media(max-width:700px){nav{padding:0 16px}.nav-links{display:none!important}.page-header,.container{padding-left:16px;padding-right:16px}.page-header h1{font-size:1.4rem}}
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="brand"><div class="logo"></div> DS Prep v16</a>
+  <div class="nav-links">
+    <a href="sql.html" class="active">SQL</a>
+    <a href="python.html">Python</a>
+    <a href="ml.html">ML</a>
+    <a href="stats.html">Stats</a>
+    <a href="probability.html">Probability</a>
+    <a href="casing.html">Casing</a>
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">&#9790;</button>
+  </div>
+</nav>
+
+<div class="page-header">
+  <div class="top">
+    <div class="icon" style="background:var(--accent-light)">&#128450;</div>
+    <h1>The Spotify Puzzle &mdash; <span>SQL</span></h1>
+  </div>
+  <p class="intro">A narrative journey through SQL fundamentals. You just joined Spotify's data team &mdash; and your first day is anything but quiet.</p>
+</div>
+
+<div class="container">
+
+  <div class="story-text">
+    You just joined Spotify's data team. It's 9:15 AM on your second Monday when your manager rushes over: "Weekly active users dropped 15% &mdash; the VP wants answers by end of day. Here's access to our database. Good luck."
+  </div>
+
+  <!-- Scene 1 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 1</span> First Look &mdash; Query Execution Order</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        You open the query editor and start typing. But your first query fails &mdash; you used an alias in the WHERE clause and got a cryptic error. Before diving deeper, you need to understand how SQL actually processes your queries. It's not top to bottom.
+      </div>
+
+      <p class="explain">When you write SQL, the clauses appear as <code>SELECT</code> &rarr; <code>FROM</code> &rarr; <code>WHERE</code>, but the engine processes them in a different logical order. Understanding this explains why you can't use a <code>SELECT</code> alias in <code>WHERE</code> &mdash; the alias doesn't exist yet when <code>WHERE</code> runs.</p>
+
+      <div class="exec-steps">
+        <div class="exec-step"><div class="step-num">1</div><div class="step-kw">FROM / JOIN</div><div class="step-desc">Identify source tables and perform joins</div></div>
+        <div class="exec-step"><div class="step-num">2</div><div class="step-kw">WHERE</div><div class="step-desc">Filter individual rows before grouping</div></div>
+        <div class="exec-step"><div class="step-num">3</div><div class="step-kw">GROUP BY</div><div class="step-desc">Collapse rows into groups</div></div>
+        <div class="exec-step"><div class="step-num">4</div><div class="step-kw">HAVING</div><div class="step-desc">Filter groups after aggregation</div></div>
+        <div class="exec-step"><div class="step-num">5</div><div class="step-kw">SELECT</div><div class="step-desc">Evaluate expressions and aliases</div></div>
+        <div class="exec-step"><div class="step-num">6</div><div class="step-kw">ORDER BY</div><div class="step-desc">Sort the result set</div></div>
+        <div class="exec-step"><div class="step-num">7</div><div class="step-kw">LIMIT</div><div class="step-desc">Restrict the number of returned rows</div></div>
+      </div>
+
+      <p class="explain">Let's trace through a concrete query. You have a table called <code>orders</code> with columns <code>customer_id</code>, <code>amount</code>, and <code>order_date</code>. You want to find customers who spent more than $1,000 in 2024:</p>
+
+      <div class="code-block"><pre><span class="kw">SELECT</span>   customer_id,
+         <span class="fn">SUM</span>(amount) <span class="kw">AS</span> total_spent
+<span class="kw">FROM</span>     orders
+<span class="kw">WHERE</span>    order_date >= <span class="str">'2024-01-01'</span>
+<span class="kw">GROUP BY</span> customer_id
+<span class="kw">HAVING</span>   <span class="fn">SUM</span>(amount) > <span class="num">1000</span>
+<span class="kw">ORDER BY</span> total_spent <span class="kw">DESC</span>
+<span class="kw">LIMIT</span>    <span class="num">10</span>;</pre></div>
+
+      <p class="explain">The engine proceeds: <strong>Step 1 (FROM):</strong> load the <code>orders</code> table. <strong>Step 2 (WHERE):</strong> discard rows before 2024. <strong>Step 3 (GROUP BY):</strong> group by <code>customer_id</code>. <strong>Step 4 (HAVING):</strong> remove groups with SUM &le; 1000. <strong>Step 5 (SELECT):</strong> compute <code>SUM(amount)</code> and assign the alias. <strong>Step 6 (ORDER BY):</strong> sort descending. <strong>Step 7 (LIMIT):</strong> return top 10.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Written Order</th><th>Execution Order</th><th>Why It Matters</th></tr></thead>
+        <tbody>
+          <tr><td>SELECT (first written)</td><td>5th to execute</td><td>Aliases aren't available until here</td></tr>
+          <tr><td>FROM (second written)</td><td>1st to execute</td><td>Engine starts by finding the data</td></tr>
+          <tr><td>WHERE (third written)</td><td>2nd to execute</td><td>Can't use aggregates &mdash; groups don't exist yet</td></tr>
+          <tr><td>HAVING (later written)</td><td>4th to execute</td><td>CAN use aggregates &mdash; groups exist now</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p><code>HAVING</code> must use <code>SUM(amount)</code> rather than the alias <code>total_spent</code>, because the alias isn't created until <code>SELECT</code> runs in step 5. Some databases (MySQL) relax this, but standard SQL does not.</p>
+      </div>
+
+      <div class="story-text">
+        Now you know why your alias failed in WHERE. You fix the query and pull the first results. The numbers confirm a real drop &mdash; but you'll need more tables to find out why. Time to join some data.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 2 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 2</span> Joining the Clues &mdash; Joins</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        The <code>users</code> table alone isn't enough. You need to join it with <code>sessions</code> and <code>subscriptions</code> to see the full picture. But which join type? If you use INNER JOIN, you'll silently drop users who never had a session this week &mdash; exactly the users you're looking for.
+      </div>
+
+      <p class="explain">An <strong>INNER JOIN</strong> returns only rows that have a match in both tables. A <strong>LEFT JOIN</strong> returns every row from the left table, filling NULLs where no match exists. A <strong>FULL OUTER JOIN</strong> keeps all rows from both sides.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Join Type</th><th>Keeps</th><th>Non-Matches</th><th>Use When</th></tr></thead>
+        <tbody>
+          <tr><td><code>INNER JOIN</code></td><td>Only matched rows</td><td>Dropped from both sides</td><td>You only want records in both tables</td></tr>
+          <tr><td><code>LEFT JOIN</code></td><td>All left + matched right</td><td>Right fills with NULL</td><td>Need complete roster from left table</td></tr>
+          <tr><td><code>RIGHT JOIN</code></td><td>All right + matched left</td><td>Left fills with NULL</td><td>Mirror of LEFT &mdash; swap table order instead</td></tr>
+          <tr><td><code>FULL OUTER</code></td><td>All rows from both</td><td>NULLs on both sides</td><td>Reconciliation &mdash; find records missing from either</td></tr>
+          <tr><td><code>CROSS JOIN</code></td><td>Every row &times; every row</td><td>N/A (Cartesian product)</td><td>Generate combinations (e.g., date spines)</td></tr>
+        </tbody>
+      </table>
+
+      <p class="explain">Consider two small tables for an example:</p>
+
+      <p class="explain"><strong>employees:</strong> Alice (dept 10), Bob (dept 20), Carol (NULL). <strong>departments:</strong> 10=Engineering, 20=Marketing, 30=Finance.</p>
+
+      <div class="code-block"><pre><span class="cm">-- INNER JOIN: only matched rows</span>
+<span class="kw">SELECT</span> e.name, d.dept_name
+<span class="kw">FROM</span>   employees e
+<span class="kw">INNER JOIN</span> departments d
+  <span class="kw">ON</span> e.dept_id = d.dept_id;
+<span class="cm">-- Result: Alice|Engineering, Bob|Marketing</span>
+<span class="cm">-- Carol excluded (NULL dept_id), Finance excluded (no employee)</span>
+
+<span class="cm">-- LEFT JOIN: all employees, even unmatched</span>
+<span class="kw">SELECT</span> e.name, d.dept_name
+<span class="kw">FROM</span>   employees e
+<span class="kw">LEFT JOIN</span> departments d
+  <span class="kw">ON</span> e.dept_id = d.dept_id;
+<span class="cm">-- Result: Alice|Engineering, Bob|Marketing, Carol|NULL</span></pre></div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>A common interview pattern: find rows with no match using <code>LEFT JOIN</code> + <code>WHERE d.dept_id IS NULL</code>. This is more readable (and equally efficient) than a <code>NOT EXISTS</code> subquery.</p>
+      </div>
+
+      <div class="story-text">
+        You use a LEFT JOIN from users to sessions &mdash; and immediately see thousands of rows where session data is NULL. These users didn't open the app at all this week. Now you need to rank which segments had the biggest drops.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 3 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 3</span> Ranking the Suspects &mdash; Window Functions</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        Your manager leans over: "Which user segments had the biggest drops? Can you rank them?" You need window functions &mdash; aggregate-like computations that don't collapse your rows. Each row keeps its identity but gains a ranking value.
+      </div>
+
+      <p class="explain">A window function performs a calculation across a "window" of rows defined by an <code>OVER</code> clause. Unlike aggregates, the rows are <strong>not collapsed</strong> &mdash; you still get one output row for each input row.</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Function</th><th>Ties</th><th>Gaps After Ties</th><th>Example (95k, 95k, 88k)</th><th>Use Case</th></tr></thead>
+        <tbody>
+          <tr><td><code>ROW_NUMBER()</code></td><td>Broken arbitrarily</td><td>N/A &mdash; always unique</td><td>1, 2, 3</td><td>Deduplication, top-N per group</td></tr>
+          <tr><td><code>RANK()</code></td><td>Same rank</td><td>Yes &mdash; skips next</td><td>1, 1, 3</td><td>Competitive standing (Olympics)</td></tr>
+          <tr><td><code>DENSE_RANK()</code></td><td>Same rank</td><td>No &mdash; consecutive</td><td>1, 1, 2</td><td>Consecutive labels regardless of ties</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block"><pre><span class="kw">SELECT</span>
+  name, department, salary,
+  <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> department <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> row_num,
+  <span class="fn">RANK</span>()       <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> department <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> rnk,
+  <span class="fn">DENSE_RANK</span>() <span class="kw">OVER</span> (<span class="kw">PARTITION BY</span> department <span class="kw">ORDER BY</span> salary <span class="kw">DESC</span>) <span class="kw">AS</span> d_rnk
+<span class="kw">FROM</span> employees;</pre></div>
+
+      <p class="explain">Alice and Bob tie at $95,000 in Engineering. <code>ROW_NUMBER</code> assigns them 1 and 2 (arbitrary). <code>RANK</code> gives both 1, then skips to 3 for Carol. <code>DENSE_RANK</code> gives both 1, then proceeds to 2 for Carol.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Beyond ranking, window functions support running totals (<code>SUM() OVER</code>), moving averages (<code>AVG() OVER (ROWS BETWEEN ...)</code>), and access to other rows via <code>LAG()</code> and <code>LEAD()</code>. The <code>LAG</code> function will be crucial when we build the final report.</p>
+      </div>
+
+      <div class="story-text">
+        Your ranking query reveals that the biggest drop is concentrated among iOS users in the US and UK. Premium subscribers are barely affected. Now you need to aggregate the numbers to present a clean summary.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 4 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 4</span> The Aggregation &mdash; GROUP BY</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        Now you need to aggregate: how many users per platform, per week? You write a quick GROUP BY query, but it fails &mdash; you tried to use WHERE with COUNT(*). Time to learn the difference between WHERE and HAVING.
+      </div>
+
+      <p class="explain"><code>WHERE</code> filters individual rows <strong>before</strong> grouping (cannot reference aggregates). <code>HAVING</code> filters <strong>after</strong> grouping (can reference aggregates). This follows directly from the execution order in Scene 1.</p>
+
+      <div class="code-block"><pre><span class="cm">-- This FAILS: WHERE cannot use aggregates</span>
+<span class="kw">SELECT</span>   department, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> headcount
+<span class="kw">FROM</span>     employees
+<span class="kw">WHERE</span>    <span class="fn">COUNT</span>(*) > <span class="num">5</span>      <span class="cm">-- ERROR!</span>
+<span class="kw">GROUP BY</span> department;
+
+<span class="cm">-- This WORKS: HAVING filters after aggregation</span>
+<span class="kw">SELECT</span>   department, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> headcount
+<span class="kw">FROM</span>     employees
+<span class="kw">GROUP BY</span> department
+<span class="kw">HAVING</span>   <span class="fn">COUNT</span>(*) > <span class="num">5</span>;</pre></div>
+
+      <table class="comp-table">
+        <thead><tr><th>Function</th><th>Counts NULLs?</th><th>Returns</th></tr></thead>
+        <tbody>
+          <tr><td><code>COUNT(*)</code></td><td>Yes &mdash; counts all rows</td><td>Total rows in group</td></tr>
+          <tr><td><code>COUNT(col)</code></td><td>No &mdash; skips NULLs</td><td>Number of non-NULL values</td></tr>
+          <tr><td><code>SUM(col)</code></td><td>Skips NULLs</td><td>Sum of non-NULL values</td></tr>
+          <tr><td><code>AVG(col)</code></td><td>Skips NULLs</td><td>Average of non-NULL values</td></tr>
+        </tbody>
+      </table>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Every column in <code>SELECT</code> must either appear in <code>GROUP BY</code> or be wrapped in an aggregate function. MySQL may silently pick an arbitrary value &mdash; almost always a bug. Always write with the standard in mind.</p>
+      </div>
+
+      <div class="story-text">
+        Your aggregated results are stark: iOS users dropped 22% while Android only dipped 3%. And it started exactly on Tuesday. Now you need to build a clean month-over-month comparison for the VP. Time for CTEs.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 5 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 5</span> Building the Report &mdash; CTEs</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        Time to build the final report. The VP wants a month-over-month comparison showing exactly when the drop started and how it compares to previous trends. You could nest subqueries inside subqueries &mdash; but that would be unreadable. CTEs let you break it into named steps.
+      </div>
+
+      <p class="explain">A Common Table Expression (CTE) is a named, temporary result set introduced with <code>WITH</code>. It lets you break complex queries into digestible, named steps &mdash; like assigning intermediate results to variables in a programming language.</p>
+
+      <div class="code-block"><pre><span class="kw">WITH</span> monthly_revenue <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    <span class="fn">DATE_TRUNC</span>(<span class="str">'month'</span>, order_date) <span class="kw">AS</span> month,
+    <span class="fn">SUM</span>(amount) <span class="kw">AS</span> revenue
+  <span class="kw">FROM</span>   orders
+  <span class="kw">GROUP BY</span> <span class="num">1</span>
+),
+with_prior <span class="kw">AS</span> (
+  <span class="kw">SELECT</span>
+    month, revenue,
+    <span class="fn">LAG</span>(revenue) <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> month) <span class="kw">AS</span> prev_revenue
+  <span class="kw">FROM</span> monthly_revenue
+)
+<span class="kw">SELECT</span> month, revenue, prev_revenue,
+  <span class="fn">ROUND</span>(<span class="num">100.0</span> * (revenue - prev_revenue) / prev_revenue, <span class="num">1</span>) <span class="kw">AS</span> pct_change
+<span class="kw">FROM</span> with_prior
+<span class="kw">ORDER BY</span> month;</pre></div>
+
+      <p class="explain">The first CTE, <code>monthly_revenue</code>, computes the aggregate. The second, <code>with_prior</code>, uses <code>LAG</code> to fetch the preceding month's revenue. The final <code>SELECT</code> calculates the percentage change. Each step is self-contained and easy to verify independently.</p>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>CTEs are also invaluable for recursive queries (traversing hierarchies), though recursive CTEs are less commonly tested in DS interviews. Focus on chaining two or three CTEs to build up a result step by step.</p>
+      </div>
+
+      <div class="story-text">
+        The report is clean and tells a clear story: a sharp week-over-week decline starting Tuesday, concentrated on iOS. But the query takes 45 seconds on production data. Your senior engineer says: "That won't fly for the VP demo. Optimize it."
+      </div>
+    </div>
+  </div>
+
+  <!-- Scene 6 -->
+  <div class="section">
+    <div class="section-head" onclick="toggle(this)">
+      <h2><span class="num">Scene 6</span> The Presentation &mdash; Optimization + Resolution</h2>
+      <span class="toggle">&#9662;</span>
+    </div>
+    <div class="section-body">
+      <div class="story-text">
+        The query is taking too long on production data. Your senior tells you to run EXPLAIN and look for full table scans. "Every slow query has the same problem," she says. "It's reading more data than it needs to."
+      </div>
+
+      <p class="explain">Writing correct SQL is necessary but not sufficient. A few optimization principles go a long way:</p>
+
+      <table class="comp-table">
+        <thead><tr><th>Principle</th><th>Why</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Use EXPLAIN</strong></td><td>Shows query plan &mdash; indexes, scans, row estimates</td><td>Primary diagnostic tool</td></tr>
+          <tr><td><strong>Index filter/join columns</strong></td><td>Turns full scan O(n) into index lookup O(log n)</td><td>Orders of magnitude faster</td></tr>
+          <tr><td><strong>Avoid SELECT *</strong></td><td>Forces reading all columns; costly in columnar storage</td><td>Less I/O, faster queries</td></tr>
+          <tr><td><strong>Filter early</strong></td><td>Push WHERE before JOIN to reduce rows entering the join</td><td>Dramatically reduces join size</td></tr>
+          <tr><td><strong>EXISTS over IN</strong></td><td>EXISTS short-circuits; IN evaluates entire subquery</td><td>Faster for large subqueries</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block"><pre><span class="kw">EXPLAIN ANALYZE</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> orders
+<span class="kw">WHERE</span> customer_id = <span class="num">42</span>;</pre></div>
+
+      <div class="insight">
+        <div class="label">Key Insight</div>
+        <p>Optimization is about reducing the amount of data the engine must read at each step. Every principle above &mdash; indexing, projection, early filtering &mdash; serves that single goal. When a query is slow, ask: "Where is the engine reading more data than it needs to?"</p>
+      </div>
+
+      <div class="story-text">
+        You add an index on the date column, push the WHERE clause inside the CTE, and drop SELECT *. Query time drops from 45 seconds to 1.2. The report loads instantly for the VP demo.
+      </div>
+
+      <div class="resolution">
+        <div class="label">Story Resolution</div>
+        <p>You found it &mdash; an iOS app update (v4.7) introduced a crash on startup for users running iOS 16.x. The crash only affected the music player initialization, so users on newer iOS versions were fine. The drop started exactly when the update rolled out on Tuesday. The VP is impressed. The engineering team ships a hotfix by Wednesday. WAU recovers 12 of the 15 lost points within a week. Your manager says: "Not bad for your second week."</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Data Science Interview Prep &middot; v16 &middot; <a href="index.html">Home</a> &middot; <a href="../index.html">Gallery</a></p>
+</footer>
+
+<script>
+function toggle(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('open')}
+function toggleTheme(){var d=document.documentElement;if(d.getAttribute('data-theme')==='dark'){d.removeAttribute('data-theme');localStorage.setItem('ds-theme','light')}else{d.setAttribute('data-theme','dark');localStorage.setItem('ds-theme','dark')}}
+</script>
+</body>
+</html>

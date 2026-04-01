@@ -1,0 +1,131 @@
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#fafbfe;--surface:#ffffff;--surface2:#f0f2f8;--border:#e2e5ef;
+  --text:#3a3d4a;--text-muted:#7c8094;--heading:#1a1c2b;
+  --accent:#5b4cdb;--accent-light:#ede9ff;--accent-glow:rgba(91,76,219,0.08);
+  --green:#16a34a;--green-light:#dcfce7;
+  --amber:#d97706;--amber-light:#fef3c7;
+  --rose:#dc2626;--rose-light:#fee2e2;
+  --cyan:#0891b2;--cyan-light:#cffafe;
+  --sql:#2563eb;--sql-light:#dbeafe;
+  --python:#ca8a04;--python-light:#fef9c3;
+  --ml:#7c3aed;--ml-light:#ede9fe;
+  --stats:#059669;--stats-light:#d1fae5;
+  --prob:#db2777;--prob-light:#fce7f3;
+  --case:#0891b2;--case-light:#cffafe;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);
+  --shadow-lg:0 4px 16px rgba(0,0,0,0.08),0 8px 32px rgba(0,0,0,0.06);
+  --radius:14px;
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:0 32px;height:56px;background:rgba(255,255,255,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+nav .brand{font-weight:800;font-size:1rem;color:var(--heading);display:flex;align-items:center;gap:8px;text-decoration:none}
+nav .brand .logo{width:22px;height:22px;border-radius:7px;background:linear-gradient(135deg,var(--accent),var(--cyan))}
+nav .back{text-decoration:none;color:var(--text-muted);font-size:.8rem;font-weight:600;padding:6px 14px;border-radius:8px;border:1px solid var(--border);transition:all .2s;background:var(--surface)}
+nav .back:hover{border-color:var(--accent);color:var(--accent);box-shadow:var(--shadow)}
+
+/* Hero */
+.hero{padding:110px 32px 48px;text-align:center;max-width:720px;margin:0 auto}
+.hero .badge{display:inline-flex;align-items:center;gap:6px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:2.5px;padding:6px 16px;border-radius:20px;background:var(--accent-light);color:var(--accent);border:1px solid rgba(91,76,219,0.15);margin-bottom:24px}
+.hero h1{font-size:2.6rem;font-weight:800;color:var(--heading);letter-spacing:-1px;line-height:1.15;margin-bottom:14px}
+.hero h1 span{background:linear-gradient(135deg,var(--accent),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:1.05rem;color:var(--text-muted);line-height:1.65;max-width:540px;margin:0 auto 40px}
+
+/* CTA Button */
+.cta-wrap{text-align:center;padding:0 32px 60px}
+.cta-btn{display:inline-flex;align-items:center;gap:10px;padding:18px 48px;font-size:1.1rem;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--cyan));border:none;border-radius:12px;text-decoration:none;cursor:pointer;transition:all .25s;box-shadow:0 4px 20px rgba(91,76,219,0.3)}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(91,76,219,0.4)}
+
+/* Grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;max-width:1100px;margin:0 auto;padding:0 32px 40px}
+
+/* Score Ring */
+.score-ring-wrap{text-align:center;padding:20px 32px 40px;max-width:1100px;margin:0 auto}
+.score-ring-container{display:inline-flex;flex-direction:column;align-items:center;gap:10px}
+.score-ring svg{width:160px;height:160px;transform:rotate(-90deg)}
+.score-ring .ring-bg{fill:none;stroke:var(--border);stroke-width:10}
+.score-ring .ring-fill{fill:none;stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .8s ease}
+.score-ring .ring-text{font-size:2rem;font-weight:800;fill:var(--heading);text-anchor:middle;dominant-baseline:central}
+.score-ring .ring-label{font-size:.85rem;color:var(--text-muted);font-weight:600}
+
+/* Topic mastery cards */
+.topic-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;display:flex;gap:16px;align-items:flex-start;transition:all .25s;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.topic-card:hover{border-color:#c8cde0;transform:translateY(-2px);box-shadow:var(--shadow-lg)}
+.topic-card .icon-wrap{width:48px;height:48px;border-radius:12px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.topic-card .card-content{flex:1;min-width:0}
+.topic-card .card-content h2{font-size:1rem;font-weight:700;color:var(--heading);margin-bottom:4px}
+.topic-card .score-text{font-size:.82rem;color:var(--text-muted);margin-bottom:8px}
+
+/* Mastery bars */
+.mastery-bar-bg{width:100%;height:8px;border-radius:4px;background:var(--surface2);overflow:hidden;margin-bottom:8px}
+.mastery-bar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+
+/* Mastery levels */
+.mastery-badge{display:inline-flex;align-items:center;gap:4px;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 10px;border-radius:10px}
+.mastery-strong{background:var(--green-light);color:var(--green)}
+.mastery-review{background:var(--amber-light);color:var(--amber)}
+.mastery-weak{background:var(--rose-light);color:var(--rose)}
+
+.study-btn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:7px 16px;font-size:.78rem;font-weight:600;color:var(--accent);background:var(--accent-light);border:none;border-radius:8px;text-decoration:none;cursor:pointer;transition:all .2s}
+.study-btn:hover{background:var(--accent);color:#fff}
+
+/* Focus Zone */
+.focus-zone{max-width:1100px;margin:0 auto;padding:0 32px 50px}
+.focus-zone h2{font-size:1.2rem;font-weight:800;color:var(--heading);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.focus-zone h2 .fz-icon{font-size:1.1rem}
+.focus-card{display:flex;align-items:center;gap:16px;padding:20px 24px;background:var(--rose-light);border:1px solid #fca5a5;border-left:4px solid var(--rose);border-radius:var(--radius);margin-bottom:12px;box-shadow:var(--shadow)}
+.focus-card .fc-info{flex:1}
+.focus-card .fc-info h3{font-size:.95rem;font-weight:700;color:var(--heading);margin-bottom:2px}
+.focus-card .fc-info p{font-size:.8rem;color:var(--text-muted)}
+.focus-card .start-btn{padding:8px 20px;font-size:.78rem;font-weight:700;color:#fff;background:var(--rose);border:none;border-radius:8px;text-decoration:none;cursor:pointer;transition:all .2s}
+.focus-card .start-btn:hover{background:#b91c1c;transform:translateY(-1px)}
+
+/* Retake */
+.retake-wrap{text-align:center;padding:10px 32px 60px}
+.retake-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 32px;font-size:.9rem;font-weight:600;color:var(--text-muted);background:var(--surface);border:1px solid var(--border);border-radius:10px;text-decoration:none;cursor:pointer;transition:all .2s}
+.retake-btn:hover{border-color:var(--accent);color:var(--accent);box-shadow:var(--shadow)}
+
+/* Section label */
+.section-label{font-size:.85rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;text-align:center;margin-bottom:20px;padding-top:10px}
+
+/* Diagnostic quiz styles */
+.quiz-container{max-width:640px;margin:0 auto;padding:90px 32px 60px}
+.quiz-progress{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.quiz-progress .qp-text{font-size:.75rem;font-weight:700;color:var(--text-muted);white-space:nowrap}
+.quiz-progress .qp-bar{flex:1;height:6px;border-radius:3px;background:var(--surface2)}
+.quiz-progress .qp-fill{height:100%;border-radius:3px;background:linear-gradient(135deg,var(--accent),var(--cyan));transition:width .3s ease}
+.quiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:36px 32px;box-shadow:var(--shadow-lg)}
+.quiz-card .q-topic{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;padding:4px 12px;border-radius:8px;display:inline-block}
+.quiz-card .q-text{font-size:1.1rem;font-weight:700;color:var(--heading);line-height:1.5;margin-bottom:24px}
+.quiz-options{display:flex;flex-direction:column;gap:10px}
+.quiz-option{display:flex;align-items:center;gap:14px;padding:14px 18px;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:all .2s;background:var(--surface);font-size:.9rem;color:var(--text)}
+.quiz-option:hover{border-color:var(--accent);background:var(--accent-glow)}
+.quiz-option.selected{border-color:var(--accent);background:var(--accent-light);color:var(--accent);font-weight:600}
+.quiz-option.correct{border-color:var(--green);background:var(--green-light);color:var(--green);font-weight:600}
+.quiz-option.wrong{border-color:var(--rose);background:var(--rose-light);color:var(--rose);font-weight:600}
+.quiz-option .opt-letter{width:28px;height:28px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;transition:all .2s}
+.quiz-option.selected .opt-letter{border-color:var(--accent);background:var(--accent);color:#fff}
+.quiz-option.correct .opt-letter{border-color:var(--green);background:var(--green);color:#fff}
+.quiz-option.wrong .opt-letter{border-color:var(--rose);background:var(--rose);color:#fff}
+.quiz-next{display:none;margin-top:24px;padding:12px 32px;font-size:.9rem;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--cyan));border:none;border-radius:10px;cursor:pointer;transition:all .2s;width:100%}
+.quiz-next:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(91,76,219,0.3)}
+.quiz-next.show{display:block}
+
+/* Color helpers */
+.ib{background:var(--sql-light);color:var(--sql)}.ip{background:var(--python-light);color:var(--python)}
+.im{background:var(--ml-light);color:var(--ml)}.is{background:var(--stats-light);color:var(--stats)}
+.ir{background:var(--prob-light);color:var(--prob)}.ic{background:var(--case-light);color:var(--case)}
+
+footer{text-align:center;padding:32px;font-size:.8rem;color:var(--text-muted);border-top:1px solid var(--border)}
+footer a{color:var(--accent);text-decoration:none}
+
+@media(max-width:700px){
+  .hero h1{font-size:2rem}
+  .grid{grid-template-columns:1fr;padding:0 16px 32px}
+  nav{padding:0 16px}
+  .quiz-container{padding:80px 16px 40px}
+  .quiz-card{padding:24px 20px}
+  .focus-zone,.score-ring-wrap,.cta-wrap,.retake-wrap{padding-left:16px;padding-right:16px}
+}
